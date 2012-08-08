@@ -1,0 +1,80 @@
+.master-container {
+  position: relative;
+}
+.master-actions {
+  position: fixed;
+  width: 14.894%;
+  max-width: 14.894%;
+  height: 2em;
+  padding: 5px;
+  border-bottom: 1px solid $grayLighter;
+  margin-left: -10px;
+  border-right: 1px solid #ddd;
+  @include buttonBackground($btnBackground, $btnBackgroundHighlight);
+  .list-filter {
+    input {
+      margin-left: 10px;
+      width: 75%;
+    }
+  }
+  a {
+    height: 1.3em;
+    @include clearfix();
+  }
+}
+.items {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: fixed;
+  top: 85px;
+  background: lighten($sci-blue, 75%);
+  border-right: 1px solid #ddd;
+  width: 14.894%;
+  max-width: 14.894%;
+  height: 100%;
+  margin: 0;
+  .item {
+    position: relative;
+    color: $black;
+    margin: 0;
+    height: 3em;
+    padding: 5px 0 5px 15px;
+    border-bottom: 1px solid $grayLighter;
+    .title {
+      font-weight: bold;
+    }
+    &:hover {
+      background-color: $grayLighter;
+      .btn {
+        right: 10px;
+        @include opacity(1);
+        @include transition(all .4s ease-in-out .6s);
+      }
+    }
+    .btn {
+      position: absolute;
+      top: 1em;
+      right: -5em;
+      @include opacity(0);
+      @include transition(all .4s ease-in-out .2s);
+    }
+    
+
+  }
+  .is-active >.item {
+      background-color: $sci-blueLighter;
+   } 
+}
+
+#detail-pane
+{
+  padding-left: 5px;
+
+  h1 input {
+    height: 1.4em;
+    padding: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0;
+  }
+}

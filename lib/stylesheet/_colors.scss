@@ -1,0 +1,21 @@
+$sci-blue: #1458A5;
+$sci-blueLight: lighten($sci-blue, 25%);
+$sci-blueLighter: lighten($sci-blueLight, 25%);
+$sci-blueDark: #20569C;
+$sci-yellow: #F8B033;
+$sci-yellowLight: lighten($sci-yellow, 25%);
+$sci-yellowLighter: lighten($sci-yellowLight, 25%);
+$sci-yellowDark: darken($sci-yellow, 25%);
+$sci-blueHalfLight: lighten($sci-blue, 12.5%);
+$sci-blueDarker: darken($sci-blueDark, 25%);
+$sci-black: #231f20;
+$sci-blackLight: lighten($sci-black, 15%);
+$sci-green: #08B357;
+$sci-greenDark: darken($sci-green, 25%);
+$sci-red: #BE3636;
+$sci-redDark: darken($sci-red, 25%);
+
+/* Override the Bootstrap defaults */
+$navbarBackground: $sci-blue;
+$navbarBackgroundHighlight: $sci-blueLight;
+$navbarBrandColor: $sci-yellow;

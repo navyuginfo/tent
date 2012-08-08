@@ -1,0 +1,21 @@
+<div class="span2">
+  <div class="master-container">
+    <div class="master-actions">
+      <a class="btn pull-right" href="#">
+        <i class="icon-plus"></i>
+      </a>
+    </div>
+    <div class="items">
+      {{#collection view.collectionView}}
+        <div class="item">
+         <div class="content">
+            {{yield}}
+          </div>
+        </div>
+      {{/collection}}
+    </div>
+  </div>
+</div>
+<div class="span10" id="detail-pane">
+{{outlet}}
+</div>
