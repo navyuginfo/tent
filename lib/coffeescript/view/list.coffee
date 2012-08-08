@@ -7,7 +7,7 @@ set=Ember.set
 getPath=Ember.getPath
 setPath=Ember.setPath
 require '../template/list'
-Tent.ItemsView=Ember.View.extend
+Tent.List=Ember.View.extend
   layoutName: 'list'
   modelName:null
   click: (event) ->
