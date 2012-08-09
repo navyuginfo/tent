@@ -1,6 +1,8 @@
+$iconSpritePath:          url("../images/glyphicons-halflings.png") !default;
+$iconWhiteSpritePath:     url("../images/glyphicons-halflings-white.png") !default;
+@import "colors";
 @import "bootstrap";
 @import "bootstrap-responsive";
-@import "colors";
 @import "list";
 
 .tent-button-group{

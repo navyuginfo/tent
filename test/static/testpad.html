@@ -44,7 +44,7 @@
         Pad.clickEvent= function(){
          	$('#click-label').text('clicked '+(count++)+' times')
 		}
-				
+		 		
         Pad.btnOptions = [Ember.Object.create({label: "Add", target: "Pad.groupTarget", action: "addEvent"}),
                       Ember.Object.create({label: "Edit", target: "Pad.groupTarget", action: "editEvent"}),
                       Ember.Object.create({label: "Delete", target: "Pad.groupTarget", action: "deleteEvent"})]
@@ -68,14 +68,17 @@
             	alert("action delete clicked");
             	return false
           	}
-        }) 
-        
+        }) 	
 
       })(minispade);
     </script>
 
     <script type="text/x-handlebars">
-
+    	<div id="list-view" style="display: block">
+		{{#view Tent.List modelName="Ember" contentBinding="Pad.content" modelTypeBinding="Ember.Object" filterKey="stateName"}}
+        {{view.content.stateName}}
+      	{{/view}}
+      	</div>
       {{#view Tent.Panel span="4"}}
         {{#view Tent.Form name="Fields"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input"}}
@@ -114,7 +117,7 @@
       {{/view}}
 
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
-		
+	  
     </script>
 
   </body>

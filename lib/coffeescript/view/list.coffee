@@ -10,12 +10,16 @@ require '../template/list'
 Tent.List=Ember.View.extend
   layoutName: 'list'
   modelName:null
+  modelType:null
+  app:null
+  filterKey:null
+  listFilter:Tent.ListFilter.extend()
   click: (event) ->
     if event.target.className is "icon-plus"
       event.preventDefault()
       @getPath('controller.controllers').send('new'+@modelName)  
   collectionView:Ember.CollectionView.extend
-    contentBinding: 'parentView.controller.content'
+    contentBinding: 'parentView.content'
     controllersBinding: 'parentView.controller.controllers'
     itemViewClass: Ember.View.extend
       classNameBindings:['isActive:is-active']
