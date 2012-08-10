@@ -11,13 +11,14 @@ Tent.ListFilter = Ember.View.extend
   appBinding: 'parentView.app'
   contentBinding: 'parentView.content'
   filterKeyBinding:'parentView.filterKey'
+  filterContentBinding:'parentView.filterContent'
   filter: (->
     query = convertQueryToWildcard(@get('query'))
     regex = new RegExp(query, 'i')
     type = @get('type')
     filterKey=@get('filterKey')
     if @get('app')? and @getPath('app.store')?
-      @set('content', @get('app').store.filter(type, (data) ->
+      @set('filterContent', @get('app').store.filter(type, (data) ->
         query == '' || regex.test(data.get('_savedData')[filterKey])
       ))
     else
@@ -25,8 +26,9 @@ Tent.ListFilter = Ember.View.extend
       for content in @get('content')
         if query == '' || regex.test(content[filterKey])
           filterData.push(content)
-      @set('content',filterData)
+      @set('filterContent',filterData)
   ).observes('query')
-  searchBox: Ember.TextField.extend
+  searchBox: Ember.TextField.extend 
     valueBinding: 'parentView.query'
     placeholderBinding: 'msg.filter'
+

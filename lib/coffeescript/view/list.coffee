@@ -14,12 +14,13 @@ Tent.List=Ember.View.extend
   app:null
   filterKey:null
   listFilter:Tent.ListFilter.extend()
+  filterContent:null
   click: (event) ->
     if event.target.className is "icon-plus"
       event.preventDefault()
       @getPath('controller.controllers').send('new'+@modelName)  
   collectionView:Ember.CollectionView.extend
-    contentBinding: 'parentView.content'
+    contentBinding: 'parentView.filterContent'
     controllersBinding: 'parentView.controller.controllers'
     itemViewClass: Ember.View.extend
       classNameBindings:['isActive:is-active']
@@ -30,3 +31,7 @@ Tent.List=Ember.View.extend
       click: (event) ->
         event.preventDefault()
         @setPath('parentView.parentView.selected', @get('content'))
+  willInsertElement: ->
+    @_super()
+    if @get('filterContent') == null
+      @set('filterContent',@get('content'))
