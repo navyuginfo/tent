@@ -10,3 +10,15 @@
 .tent-width-small{
   width: 20px;
 }
+
+.slick-row {
+	&:hover {
+		background-color: whiteSmoke;
+	}
+}
+.slick-cell {
+	&.selected {
+		background-color: #eff;
+	}
+}
+
