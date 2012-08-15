@@ -66,7 +66,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 				grid.selectedRowIds = selectedRowIds
 
 			@removeUnselectedRows = (selectedRowIds, currentPageSelectedRows) ->
-				for rowInCurrentPage in @getRows() 
+				counter = @getLength()
+				while counter
+					rowInCurrentPage = @getItem(counter-=1)
 					selectedRowIds = $.grep(selectedRowIds, (element, index) ->
 						if element == rowInCurrentPage.id
 							if element not in currentPageSelectedRows then return false
