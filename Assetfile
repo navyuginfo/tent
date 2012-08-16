@@ -202,4 +202,15 @@ input ['vendor'] do
   end
 end
 
+output "lib/vendor"
+
+input ['public'] do
+	match 'javascript/{gem-dependencies.js,tent.js}' do
+		concat
+	end
+	match 'stylesheet/tent.css' do
+		concat
+	end
+end
+
 # vim: filetype=ruby
