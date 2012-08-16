@@ -5,6 +5,7 @@
 
 require 'tent'
 require 'ember-data'
+require '~test/mocks/ember_data_mocks'
 
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
@@ -14,17 +15,6 @@ setup = ->
 	@emptyRecordArray = DS.RecordArray.create({
 		content: []
 	})
-
-	MockDSModel = (hash) ->
-		this.hash = hash
-		@toJSON = () ->
-			return this.hash
-		return true
-	MockRecordArray = (array) ->
-		this.array = array
-		@toArray = ->
-			return this.array
-		return true
 
 	model1 = new MockDSModel({title:"account123"})
 	model2 = new MockDSModel({title:"account321"})

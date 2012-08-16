@@ -20,7 +20,7 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 	list: (->
 		# The store returns a cache of DS.Model objects, so we need to convert
 		# to an ordinary array
-		return @getArrayFromRecordArray(@get('content'))
+		return @getArrayFromRecordArray(@get('content')) if @get('content')
 	).property('content')
 
 	getArrayFromRecordArray: (modelArray)-> 
