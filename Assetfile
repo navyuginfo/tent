@@ -68,6 +68,11 @@ def load_gem_assets(output_dir, *gems)
       match "images/*" do
         concat
       end
+      
+      match "stylesheets/**/*.scss" do
+        concat
+      end
+      
     end
   end
 
@@ -208,9 +213,17 @@ input ['public'] do
 	match 'javascript/{gem-dependencies.js,tent.js}' do
 		concat
 	end
-	match 'stylesheet/tent.css' do
+end
+
+input ['tmp/rakep-gem-assets'] do
+	match 'stylesheets/**/*.scss' do
 		concat
 	end
 end
 
+input ['lib'] do
+	match 'stylesheet/_tentmain.scss' do
+		concat "stylesheets/tentmain.scss"
+	end
+end 
 # vim: filetype=ruby

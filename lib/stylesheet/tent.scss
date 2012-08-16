@@ -1,12 +1,3 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
-
-.tent-button-group{
-  position: relative; 
-}
-.tent-selected{
-  background-color: #CCC;
-}
-.tent-width-small{
-  width: 20px;
-}
+@import "tentmain";
