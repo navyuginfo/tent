@@ -213,6 +213,9 @@ input ['public'] do
 	match 'javascript/{gem-dependencies.js,tent.js}' do
 		concat
 	end
+	match "images/*" do
+       concat
+    end
 end
 
 input ['tmp/rakep-gem-assets'] do
