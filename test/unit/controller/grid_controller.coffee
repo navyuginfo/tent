@@ -16,10 +16,10 @@ setup = ->
 		content: []
 	})
 
-	model1 = new MockDSModel({title:"account123"})
-	model2 = new MockDSModel({title:"account321"})
+	model1 = Tent.Mock.DSModel.create({content: {title:"account123"}})
+	model2 = Tent.Mock.DSModel.create({content: {title:"account321"}})
 	records = [model1, model2]
-	@recordArray = new MockRecordArray(records)
+	@recordArray = Tent.Mock.RecordArray.create({content: records})
 
 teardown = ->
 	if view

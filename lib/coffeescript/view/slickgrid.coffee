@@ -64,12 +64,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 
 	createDataView: -> 
 		@dataView = new Slick.Data.DataView()
-		@dataView.setPagingOptions({pageSize: @get("pageSize")})
+		if @get("pageSize")
+			@dataView.setPagingOptions({pageSize: @get("pageSize")})
 		@dataView.syncPagedGridSelection = @handlePagedSelections
 		@setDataViewItems()
 
 	createGrid: ->
-		@grid = new Slick.Grid(@.$().find(".grid"), @dataView, @columns, @options)
+		@grid = new Slick.Grid(@.$().find(".grid"), @dataView, @get('columns'), @get('options'))
 
 	setDataViewItems: ->
 		@dataView.beginUpdate();
@@ -177,7 +178,7 @@ Tent.MultiSelectGrid = Ember.Object.extend
 		checkboxSelector = new Slick.CheckboxSelectColumn({
 			cssClass: "slick-cell-checkboxsel"
 		});
-		@parent.columns.splice(0,0,checkboxSelector.getColumnDefinition())  #Add the checkbox column
+		@parent.get('columns').splice(0,0,checkboxSelector.getColumnDefinition())  #Add the checkbox column
 		@grid = @parent.createGrid()
 		@grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
 		@grid.registerPlugin(checkboxSelector)

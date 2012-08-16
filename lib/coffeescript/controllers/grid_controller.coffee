@@ -23,9 +23,9 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		return @getArrayFromRecordArray(@get('content')) if @get('content')
 	).property('content')
 
-	getArrayFromRecordArray: (modelArray)-> 
+	getArrayFromRecordArray: (recordArray)-> 
 		_list = []
-		for item in modelArray.toArray()
+		for item in recordArray.toArray()
 			if item?
 				# TO REMOVE: this is here to show that the sort is being applied
 				json = item.toJSON()
