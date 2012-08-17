@@ -65,18 +65,38 @@
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
         {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
-    	{{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
-    	<p id="click-label"></p>
-    	<br/>
-    	{{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
-    	<br/>
-    	{{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
-    	<br/>
-    	{{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
-    	<br/>
-    	{{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
-    
-    	<p id="click-label"></p>
+      	{{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
+      	<p id="click-label"></p>
+      	<br/>
+      	{{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
+      	<br/>
+      	{{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+      	<br/>
+      	{{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
+      	<br/>
+      	{{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
+      
+      	<p id="click-label"></p>
+        
+        {{#view Tent.Tabs id="tabstrip" active="settings"}}
+          {{view Tent.Tab title="Profile" pane="profile"}}
+          {{view Tent.Tab title="Messages" pane="messages"}}
+          {{view Tent.Tab title="Settings" pane="settings"}}
+        {{/view}}
+
+        {{#view Tent.TabPanes active="settings"}}
+          {{#view Tent.TabPane id="profile"}}
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          {{/view}}
+          {{#view Tent.TabPane id="messages"}}
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
+          {{/view}}
+          {{#view Tent.TabPane id="settings"}}
+              At vero eos et accusamus et iusto odio dignissimos ducimus
+          {{/view}}
+        {{/view}}
+
+
       {{/view}}
 
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
