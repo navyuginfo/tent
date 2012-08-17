@@ -19,9 +19,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     @set('_options', Ember.ArrayProxy.create({content:  @get('optionList')}) || [] )
   targetObject: (->
     target = @get('target')
-    if Ember.typeOf(target) is "string"
-      value = Em.get(target)
-      value = Em.get(window, target) if value is `undefined`
+    if Ember.typeOf(target) is "string" and value is `undefined`
+      value = Em.getPath(window, target)
       target = value
     target || @get('content') || @get('context') 
   ).property('target', 'content','context')

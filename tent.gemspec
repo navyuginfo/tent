@@ -5,5 +5,5 @@ Gem::Specification.new do |s|
   s.summary = "Widget library using twitter bootstrap for ember.js "
   s.homepage = "https://github.com/PrimeRevenue/tent"
   s.require_paths = ["lib"]
-  s.files = Dir["coffeescript/**/*"] + Dir["stylesheet/*.scss"] + Dir["vendor/**/*.{js,css}"]
+  s.files = Dir["lib/coffeescript/**/*"]+Dir["lib/vendor/**/*.{js,scss}"]
 end
