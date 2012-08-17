@@ -115,13 +115,13 @@
       
       	<p id="click-label"></p>
         
-        {{#view Tent.Tabs id="tabstrip" active=""}}
+        {{#view Tent.Tabs id="tabstrip" active="settings"}}
           {{view Tent.Tab title="Profile" pane="profile"}}
           {{view Tent.Tab title="Messages" pane="messages"}}
           {{view Tent.Tab title="Settings" pane="settings"}}
         {{/view}}
 
-        {{#view Tent.TabPanes}}
+        {{#view Tent.TabPanes active="settings"}}
           {{#view Tent.TabPane id="profile"}}
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
           {{/view}}

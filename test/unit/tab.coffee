@@ -6,7 +6,7 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 setup = ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '
-		{{#view Tent.Tabs id="tabstrip" active=""}}
+		{{#view Tent.Tabs id="tabstrip" active="settings"}}
           {{view Tent.Tab title="Profile" pane="profile"}}
           {{view Tent.Tab title="Messages" pane="messages"}}
           {{view Tent.Tab title="Settings" pane="settings"}}
@@ -43,8 +43,10 @@ test 'Ensure the tabs get rendered correctly', ->
 	
 test 'Ensure clicking applies the correct classes', ->
 	appendView()
-	equal view.$('.nav-tabs li.active').length, 0, 'No tabs are active'
-	equal view.$('.tab-content .tab-pane.active').length, 0, 'No panes are active'
+	equal view.$('.nav-tabs li.active').length, 1, '1 tab is active'
+	equal view.$('.tab-content .tab-pane.active').length, 1, '1 pane is active'
+	ok view.$('.nav-tabs li').eq(2).hasClass("active"), 'last tab is active'
+
 	view.$('.nav-tabs a').eq(0).trigger("click")
 	ok view.$('.nav-tabs li').eq(0).hasClass("active"), 'First li becomes active'
 	ok view.$('.tab-content .tab-pane').eq(0).hasClass("active"), 'First pane becomes active'
