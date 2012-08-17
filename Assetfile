@@ -175,8 +175,6 @@ input "lib" do
     concat "javascript/tent.js"
   end
 
-
-
   match "**/*.handlebars" do
     handlebars :key_name_proc => proc { |input| 
       %r{template/(.*).handlebars}.match(input.path)

@@ -94,12 +94,12 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	setupSorting: -> 
 		@grid.onSort.subscribe((e, args) =>
 			@sortCallback e,args
+
 		)
 
 	willDestroyElement: ->
 		@grid.onClick.unsubscribe(->)
 		@grid.destroy()
-
 	
 	# The native grid/dataview does not manage selections across pages
 	# This code adds listeners to enable this 
@@ -134,6 +134,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 					grid.setSelectedRows(selectedRows)
 					inHandler = false
 			)
+
 
 	sortCallback: (e, args) ->
 		console.log 'sort'
@@ -194,4 +195,5 @@ Tent.MultiSelectGrid = Ember.Object.extend
 		for id in ids
 			rowSelection.push(@grid.getData().getItemById(id))
 		@parent.set("rowSelection", rowSelection)
-		e.stopPropagation
+		e.stopPropagation	
+

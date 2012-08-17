@@ -13,3 +13,4 @@ Pad.Controllers.TaskListController = Tent.Controllers.GridController.extend
 		{id: "finish", name: "Finish", field: "finish"},
 		{id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
 	]
+
