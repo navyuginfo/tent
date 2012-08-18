@@ -34,6 +34,11 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 				#_list.push item.toJSON()
 		return _list
 
+	page: (pageInfo)->
+		query = pageInfo
+		result = @store.findQuery(@modelType, query)
+		@set('content', result)
+
 	sortMultiColumn: (cols) ->
 		query = @generateQueryFromCols(cols)
 		result = @store.findQuery(@modelType, query)

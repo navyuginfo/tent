@@ -18,6 +18,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	multiSelect: false
 	listBinding: 'controller.list'
 	paged: false
+	remotePaging: true
 
 	defaults:  
 		enableCellNavigation: true
@@ -63,14 +64,23 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		@set("options", $.extend({}, @get('defaults'), customOptions))
 
 	createDataView: -> 
-		@dataView = new Slick.Data.DataView()
+		if @get("remotePaging")
+			@dataView = Tent.RemotePagedData.create(
+				controller: @get("controller")
+			)
+		else
+			@dataView = new Slick.Data.DataView()
+			@dataView.syncPagedGridSelection = @handlePagedSelections
 		if @get("pageSize")
 			@dataView.setPagingOptions({pageSize: @get("pageSize")})
-		@dataView.syncPagedGridSelection = @handlePagedSelections
 		@setDataViewItems()
 
+
 	createGrid: ->
-		@grid = new Slick.Grid(@.$().find(".grid"), @dataView, @get('columns'), @get('options'))
+		if @get("remotePaging")
+			@grid = new Slick.Grid(@.$().find(".grid"), @dataView.getItems(), @get('columns'), @get('options'))
+		else
+			@grid = new Slick.Grid(@.$().find(".grid"), @dataView, @get('columns'), @get('options'))
 
 	setDataViewItems: ->
 		@dataView.beginUpdate();
@@ -88,13 +98,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		)
 
 	setupPaging: ->
-		if @paged
+		if @get("paged")
 			pager = new Slick.Controls.Pager(@dataView, @grid, @$().find(".pager"));
+
 
 	setupSorting: -> 
 		@grid.onSort.subscribe((e, args) =>
 			@sortCallback e,args
-
 		)
 
 	willDestroyElement: ->
@@ -196,4 +206,48 @@ Tent.MultiSelectGrid = Ember.Object.extend
 			rowSelection.push(@grid.getData().getItemById(id))
 		@parent.set("rowSelection", rowSelection)
 		e.stopPropagation	
+
+Tent.RemotePagedData = Ember.Object.extend
+	pagesize: 5
+	pagenum: 1
+	totalRows: 9
+
+	getPagingInfo: ->
+		@totalPages = if @pagesize then Math.max(1, Math.ceil(@totalRows / @pagesize)) else 1
+		return {pageSize: @pagesize, pageNum: @pagenum, totalRows: @totalRows, totalPages: @totalPages}
+    
+	setPagingOptions: (args) ->
+		if args.pageSize != undefined
+			@pagesize = args.pageSize
+			@pagenum = if @pagesize then Math.min(@pagenum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1)) else 0
+		
+		if args.pageNum != undefined
+			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1))
+
+		@get("controller").page(@getPagingInfo())
+		@onPagingInfoChanged.notify(@getPagingInfo(), null, @);
+
+	onPagingInfoChanged: new Slick.Event()
+	onRowCountChanged: new Slick.Event()
+	onRowsChanged: new Slick.Event()
+
+	beginUpdate: ->
+
+	endUpdate: ->
+
+	setItems: (items)->
+		@set("items", items)
+
+	getItems: ->
+		@get("items")
+
+	getItem: (i)->
+		return @get("items")[i]
+
+	setRefreshHints: ->
+
+	syncPagedGridSelection: ->
+
+	syncGridSelection: ->
+
 
