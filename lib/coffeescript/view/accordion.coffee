@@ -27,8 +27,7 @@ Tent.AccordionHeader = Ember.View.extend
 Tent.AccordionBody = Ember.View.extend
 	classNames: ['accordion-body', 'collapse']
 	idBinding: 'id'
-	layoutName: 'accordion_body'
-
+	layout: Ember.Handlebars.compile '<div class="accordion-inner">{{yield}}</div>'
 	didInsertElement: ->
 		console.log 'breaker'
 
