@@ -6,16 +6,12 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 setup = ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '
-			{{#view Tent.Accordion id="testaccordion"}}
-	          {{#view Tent.AccordionGroup}}
-	            {{view Tent.AccordionHeader title="Title1" target="collapsible1"}}
-	            {{#view Tent.AccordionBody id="collapsible1"}}
-	            {{/view}}
+			{{#view Tent.Accordion}}
+	          {{#view Tent.AccordionGroup title="Title1"}}
+	            
 	          {{/view}}
-	          {{#view Tent.AccordionGroup}}
-	            {{view Tent.AccordionHeader title="Title2" target="collapsible2"}}
-	            {{#view Tent.AccordionBody id="collapsible2"}}
-	            {{/view}}
+	          {{#view Tent.AccordionGroup title="Title2"}}
+	            
 	          {{/view}}
 	         {{/view}}'
 
@@ -29,8 +25,7 @@ test 'Ensure markup is correct', ->
 	appendView()
 	equal view.$('.accordion').length, 1, 'Accordion root has been created'
 	equal view.$('.accordion-group').length, 2, '2 accordion groups created'
-	equal view.$('.accordion-heading a').eq(0).attr("href"), '#collapsible1', 'Href for anchor 1'
-	equal view.$('.accordion-heading a').eq(0).attr("data-parent"), '#testaccordion', 'data-parent for anchor 1'
+	ok view.$('.accordion-heading a').eq(0).attr("href").split(" ").contains(".accordion-body"),  'Href for anchor 1'
 
 test 'Ensure clicking applies the correct classes', ->
 	appendView()

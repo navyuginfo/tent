@@ -116,31 +116,19 @@
     	<p id="click-label"></p>
 
         <h3>Accordion</h3>
-        {{#view Tent.Accordion id="testaccordion"}}
-          {{#view Tent.AccordionGroup}}
-            {{view Tent.AccordionHeader title="Title1" target="collapsible1"}}
-            {{#view Tent.AccordionBody id="collapsible1"}}
-              {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
-            {{/view}}
+        {{#view Tent.Accordion}}
+          {{#view Tent.AccordionGroup title="Title1"}}
+            {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
           {{/view}}
-          {{#view Tent.AccordionGroup}}
-            {{view Tent.AccordionHeader title="Title2" target="collapsible2"}}
-            {{#view Tent.AccordionBody id="collapsible2"}}
+          {{#view Tent.AccordionGroup title="Title2"}}
               {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
               {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
-            {{/view}}
           {{/view}}
-          {{#view Tent.AccordionGroup}}
-            {{view Tent.AccordionHeader title="Title3" target="collapsible3"}}
-            {{#view Tent.AccordionBody id="collapsible3"}}
+          {{#view Tent.AccordionGroup title="Title3"}}
               Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-            {{/view}}
           {{/view}}
-          {{#view Tent.AccordionGroup}}
-            {{view Tent.AccordionHeader title="Title4" target="collapsible4"}}
-            {{#view Tent.AccordionBody id="collapsible4"}}
+          {{#view Tent.AccordionGroup title="Title4"}}
               Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-            {{/view}}
           {{/view}}
         {{/view}}
       {{/view}}
