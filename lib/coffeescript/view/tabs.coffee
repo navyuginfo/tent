@@ -1,4 +1,3 @@
-require '../template/tab'
 require 'bootstrap-sass/bootstrap-tab'
 
 Tent.Tabs = Ember.View.extend
