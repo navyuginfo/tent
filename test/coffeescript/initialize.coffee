@@ -43,6 +43,13 @@
 		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
 		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
 	]
+
+	Pad.contents = [
+		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
+		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
+		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
+	]
+
 	Pad.checkGroupContent = ["AP", "AL", "AT"]
 	count = 1
 
