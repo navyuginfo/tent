@@ -28,10 +28,10 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		for item in modelArray.toArray()
 			if item?
 				# TO REMOVE: this is here to show that the sort is being applied
-				json = item.toJSON()
-				json.title += Math.round(Math.random() * 100)
-				_list.push json
-				#_list.push item.toJSON()
+				#json = item.toJSON()
+				#json.title += Math.round(Math.random() * 100)
+				#_list.push json
+				_list.push item.toJSON()
 		return _list
 
 	sortMultiColumn: (cols) ->
