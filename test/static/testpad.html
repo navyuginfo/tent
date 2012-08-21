@@ -21,8 +21,14 @@
       {{#view Tent.Panel span="4"}}
         {{#view Tent.Form name="Fields"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input"}}
+          {{view Tent.TextField valueBinding="Pad.appName" label="" isEditable=false}}
+          
+
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
-          {{view Tent.NumericTextField value="10000" label="Numeric input" currency="EUR" isVisible="true"}}
+          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true"}}
+          {{view Tent.TextField valueBinding="Pad.numeric" label="" isEditable=false}}
+          
+
           {{view Tent.AmountField value="10000" label="Amount input" currency="EUR"}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
           {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" }}
