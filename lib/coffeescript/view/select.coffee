@@ -11,7 +11,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
 
   init: ->
     @_super()
-    @set('_list', Tent.SelectableArrayProxy.create({content: @get('list')}) || [])
 
   selectionDidChange: (->
     @set('selection', @get('list.selected'))
