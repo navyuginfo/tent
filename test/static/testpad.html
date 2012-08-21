@@ -65,6 +65,7 @@
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
         {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
+ 
       	{{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
       	<p id="click-label"></p>
       	<br/>
@@ -96,8 +97,28 @@
           {{/view}}
         {{/view}}
 
+        <h3>Accordion</h3>
+        {{#view Tent.Accordion}}
+          {{#view Tent.AccordionGroup title="Title1"}}
+            {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title2"}}
+              {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
+              {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title3"}}
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title4"}}
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+          {{/view}}
+        {{/view}}
 
+ 
       {{/view}}
+
+      <br/>
+
 
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
 		
