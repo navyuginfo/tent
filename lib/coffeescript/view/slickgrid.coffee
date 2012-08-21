@@ -18,7 +18,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	multiSelect: false
 	listBinding: 'controller.list'
 	paged: false
-	remotePaging: true
+	remotePaging: false
 
 	defaults:  
 		enableCellNavigation: true

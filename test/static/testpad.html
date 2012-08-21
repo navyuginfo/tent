@@ -29,21 +29,7 @@
           {{view Tent.EmailTextField value="test@test.com" label="Email input" placeholder="Enter email.."}}
           {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
            
-          {{view Pad.TaskList
-              id="multitaskselectionview"
-              controllerBinding="Pad.taskMultiSelectListController"
-              multiSelect=true
-              style="form"
-              label="SlickGrid"
-              paged=true
-              pageSize=3
-          }}
-
-            <p>Selected SlickGrid Multiple Items : 
-                {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-                  <{{item.title}}>
-                {{/each}}
-            </p>  
+          
         {{/view}}
       {{/view}}
       {{#view Tent.Panel span="7" name="Main Content"}}
@@ -66,6 +52,22 @@
         
         <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
 
+
+        {{view Pad.TaskList
+            id="multitaskselectionview"
+            controllerBinding="Pad.taskMultiSelectListController"
+            multiSelect=true
+            style="form"
+            label="SlickGrid"
+            paged=true
+            pageSize=3
+        }}
+
+          <p>Selected SlickGrid Multiple Items : 
+              {{#each item in Pad.taskMultiSelectListController.rowSelection}}
+                <{{item.title}}>
+              {{/each}}
+          </p>  
         <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
 
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
