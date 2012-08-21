@@ -27,17 +27,17 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 
 	init: ->
 		@_super()
-		@delegate = if @multiSelect then Tent.MultiSelectGrid.create({parent: @}) else Tent.SingleSelectGrid.create({parent:@})
+		@set('delegate', if @get('multiSelect') then Tent.MultiSelectGrid.create({parent: @}) else Tent.SingleSelectGrid.create({parent:@}))
 
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
 	).property()
 	
 	_listContentDidChange: (->
-		if @grid?
+		if @get('grid')?
 			@setDataViewItems()
-			@grid.invalidate()
-			@grid.render()
+			@get('grid').invalidate()
+			@get('grid').render()
 	).observes 'list'
 
 	_rowSelectionDidChange: (->
@@ -51,11 +51,11 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	renderGrid: ->
 		@extendOptions()
 		@createDataView()
-		@delegate.createGrid()
+		@get('delegate').createGrid()
 		@listenForSelections()
 		@setupPaging()
 		@setupSorting()
-		@grid.render()
+		@get('grid').render()
 
 	extendOptions: ->
 		# Allow custom options to be specified in the markup
@@ -65,51 +65,51 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 
 	createDataView: -> 
 		if @get("remotePaging")
-			@dataView = Tent.RemotePagedData.create(
+			@set('dataView', Tent.RemotePagedData.create(
 				controller: @get("controller")
-			)
+			))
 		else
-			@dataView = new Slick.Data.DataView()
-			@dataView.syncPagedGridSelection = @handlePagedSelections
+			@set('dataView', new Slick.Data.DataView())
+			@get('dataView').syncPagedGridSelection = @handlePagedSelections
 		if @get("pageSize")
-			@dataView.setPagingOptions({pageSize: @get("pageSize")})
+			@get('dataView').setPagingOptions({pageSize: @get("pageSize")})
 		@setDataViewItems()
 
 
 	createGrid: ->
 		if @get("remotePaging")
-			@grid = new Slick.Grid(@.$().find(".grid"), @dataView.getItems(), @get('columns'), @get('options'))
+			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems(), @get('columns'), @get('options')))
 		else
-			@grid = new Slick.Grid(@.$().find(".grid"), @dataView, @get('columns'), @get('options'))
+			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
 
 	setDataViewItems: ->
-		@dataView.beginUpdate();
-		@dataView.setItems(@get('list'));
-		@dataView.endUpdate();		
+		@get('dataView').beginUpdate();
+		@get('dataView').setItems(@get('list'));
+		@get('dataView').endUpdate();		
 
 	listenForSelections: ->
-		@dataView.onRowCountChanged.subscribe((e, args) =>
-			@grid.updateRowCount()
-			@grid.render()
+		@get('dataView').onRowCountChanged.subscribe((e, args) =>
+			@get('grid').updateRowCount()
+			@get('grid').render()
 		)
-		@dataView.onRowsChanged.subscribe((e, args) =>
-			@grid.invalidateRows(args.rows)
-			@grid.render()
+		@get('dataView').onRowsChanged.subscribe((e, args) =>
+			@get('grid').invalidateRows(args.rows)
+			@get('grid').render()
 		)
 
 	setupPaging: ->
 		if @get("paged")
-			pager = new Slick.Controls.Pager(@dataView, @grid, @$().find(".pager"));
+			pager = new Slick.Controls.Pager(@get('dataView'), @get('grid'), @$().find(".pager"));
 
 
 	setupSorting: -> 
-		@grid.onSort.subscribe((e, args) =>
+		@get('grid').onSort.subscribe((e, args) =>
 			@sortCallback e,args
 		)
 
 	willDestroyElement: ->
-		@grid.onClick.unsubscribe(->)
-		@grid.destroy()
+		@get('grid').onClick.unsubscribe(->)
+		@get('grid').destroy()
 	
 	# The native grid/dataview does not manage selections across pages
 	# This code adds listeners to enable this 
@@ -162,12 +162,13 @@ Tent.SlickGrid.STYLES =
 Tent.SingleSelectGrid = Ember.Object.extend
 	
 	createGrid: ->
-		@grid = @parent.createGrid()
-		@grid.setSelectionModel(new Slick.RowSelectionModel())
-		@grid.onSelectedRowsChanged.subscribe((e, args) =>
+		@get('parent').createGrid()
+		grid = @get('parent').get('grid')
+		grid.setSelectionModel(new Slick.RowSelectionModel())
+		grid.onSelectedRowsChanged.subscribe((e, args) =>
 			@rowSelectionCallback e,args
 		)
-		@parent.dataView.syncGridSelection(@grid, true);
+		@get('parent').get('dataView').syncGridSelection(grid, true);
 
 	rowSelectionCallback: (e, range) ->
 		# When paging occurs (single-select) there may be nothing on the page
@@ -175,12 +176,12 @@ Tent.SingleSelectGrid = Ember.Object.extend
 			# Check that the item is not already selected. 
 			# If it is, we dont want to trigger an update
 			newSelectedRow = @getSelectedRow(range)
-			if not (@parent.get('rowSelection')? and @parent.get('rowSelection').id == newSelectedRow.id)
-				@parent.set('rowSelection', newSelectedRow)
+			if not (@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedRow.id)
+				@get('parent').set('rowSelection', newSelectedRow)
 		e.stopPropagation
 
 	getSelectedRow: (range) ->
-		row = @parent.grid.getDataItem range.rows[0]		
+		row = @get('parent').get('grid').getDataItem range.rows[0]		
 
 
 Tent.MultiSelectGrid = Ember.Object.extend
@@ -189,22 +190,23 @@ Tent.MultiSelectGrid = Ember.Object.extend
 		checkboxSelector = new Slick.CheckboxSelectColumn({
 			cssClass: "slick-cell-checkboxsel"
 		});
-		@parent.get('columns').splice(0,0,checkboxSelector.getColumnDefinition())  #Add the checkbox column
-		@grid = @parent.createGrid()
-		@grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
-		@grid.registerPlugin(checkboxSelector)
-		@parent.dataView.syncPagedGridSelection(@grid, true);
-		@grid.onSelectedRowsChanged.subscribe((e, args) =>
+		@get('parent').get('columns').splice(0,0,checkboxSelector.getColumnDefinition())  #Add the checkbox column
+		@get('parent').createGrid()
+		grid = @get('parent').get('grid')
+		grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
+		grid.registerPlugin(checkboxSelector)
+		@get('parent').get('dataView').syncPagedGridSelection(grid, true);
+		grid.onSelectedRowsChanged.subscribe((e, args) =>
 			@rowSelectionCallback e,args
 		)
 
 	rowSelectionCallback: (e, range) ->
 		# Rebuild the selection from the dataView
 		rowSelection = []
-		ids = @grid.selectedRowIds
+		ids = @get('parent').get('grid').selectedRowIds
 		for id in ids
-			rowSelection.push(@grid.getData().getItemById(id))
-		@parent.set("rowSelection", rowSelection)
+			rowSelection.push(@get('parent').get('grid').getData().getItemById(id))
+		@get('parent').set("rowSelection", rowSelection)
 		e.stopPropagation	
 
 Tent.RemotePagedData = Ember.Object.extend
