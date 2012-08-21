@@ -4,8 +4,9 @@
 #
 
 require '../mixin/field_support'
+require '../mixin/formatting_support'
 require '../template/text_field'
 
-Tent.TextField = Ember.View.extend Tent.FieldSupport,
-  templateName: 'text_field'
-  classNames: ['tent-text-field', 'control-group']
+Tent.TextField = Ember.View.extend Tent.FieldSupport, Tent.FormattingSupport,
+	templateName: 'text_field'
+	classNames: ['tent-text-field', 'control-group']

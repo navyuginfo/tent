@@ -25,6 +25,8 @@
 	Pad.appName = "Tent Editable"
 	Pad.editableName = "Tent Uneditable"
 
+	Pad.numeric = 123.456
+
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
 		Ember.Object.create({name: 'Raghu', age: 1000})
