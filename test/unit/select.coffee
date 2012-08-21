@@ -8,23 +8,26 @@ require 'tent'
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
+setup = ->
+  @TemplateTests = Ember.Namespace.create()
+  @application = Ember.Namespace.create()
 
-module "Tent.Select tests", ->
-    @TemplateTests = Ember.Namespace.create()
-  , ->
-    if view
+teardown = ->
+  if view
       Ember.run -> view.destroy()
       view = null
-    @TemplateTests = undefined
+  @TemplateTests = undefined  
+  @application = null
+
+module "Tent.Select tests", setup, teardown
+
 
 test 'Ensure Tent.Select renders for list', ->
-  application = Ember.Namespace.create()
-
-  application.content = [
+  application.set("content", [
       Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
       Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
       Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
-    ]
+    ])
 
   application.stateSelection = Ember.Object.create()  
 
@@ -34,8 +37,7 @@ test 'Ensure Tent.Select renders for list', ->
                           listBinding="app.content" 
                           optionLabelPath="content.stateName"  
                           optionValuePath="content.stateCode"
-                          selectionBinding="application.stateSelection"
-                          viewName="select"}}'
+                          selectionBinding="application.stateSelection"}}'
 
   appendView()
 
@@ -49,6 +51,23 @@ test 'Ensure Tent.Select renders for list', ->
   equal view.$('option').length, application.content.length + 1,  'New option was added'  
 
 
+test 'Ensure binding for content allows content to be null initially', ->
+  view = Ember.View.create
+    app: application
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          listBinding="app.content" 
+                          optionLabelPath="content.stateName"  
+                          optionValuePath="content.stateCode"
+                          selectionBinding="application.stateSelection"}}'
+  appendView()
+  ok view.$().length, 'Select was rendered'  
+  equal view.$('option').length, 1,  'zero options rendered'
 
-
+  Ember.run ->
+    application.set("content", [
+      Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
+      Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
+      Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
+    ])
   
+  equal view.$('option').length, 4,  'Options were created'  

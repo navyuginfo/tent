@@ -18,73 +18,116 @@
 
     <script type="text/x-handlebars">
 
-      {{#view Tent.Panel span="4"}}
+      {{#view Tent.Panel span="5"}}
         {{#view Tent.Form name="Fields"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input"}}
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
           {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true"}}
           {{view Tent.AmountField value="10000" label="Amount input" currency="EUR"}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
-          {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" }}
+          {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false}}
+          <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
+          
+          {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true}}
+          
+
           {{view Tent.EmailTextField value="test@test.com" label="Email input" placeholder="Enter email.."}}
           {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
+           
+          
         {{/view}}
 
         {{#view Tent.Form name="Values"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" isEditable=false}}
           {{view Tent.TextField valueBinding="Pad.numeric" label="Numeric input" isEditable=false}}
           <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
+          <p>Selected States :</p>
+          <ul>
+            {{#each state in Pad.statesSelection}}
+              <li>{{state.stateName}}: {{state.stateCode}}</li>
+            {{/each}}
+          </ul>
         {{/view}}
 
       {{/view}}
-      {{#view Tent.Panel span="8" name="Main Content"}}
+
+      {{#view Tent.Panel span="7" name="Main Content"}}
         <p>Tag {{view Tent.Tag text="Important"}}</p>
         <h3>Table</h3>
         {{view Tent.Table listBinding="Pad.people" headers="Name,Age" columns="name,age" selectionBinding="Pad.selectedPerson" multiselection=true defaultSelectionBinding="Pad.selectedPerson" isEditable=true}}
         <p>Selected Person is {{Pad.selectedPerson.name}}</p>
- 
+
         <h3>SlickGrid</h3>
         {{view Pad.TaskList
           id="taskselectionview"
           controllerBinding="Pad.taskListController"
           multiSelect=false
+
+          paged=true
+          pageSize=4
+          options="{\"enableColumnReorder\": false}"
+
         }}
         
         <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
 
-        <h3>SlickGrid: MultipleSelect </h3>
+
         {{view Pad.TaskList
-          id="multitaskselectionview"
-          controllerBinding="Pad.taskMultiSelectListController"
-          multiSelect=true
+            id="multitaskselectionview"
+            controllerBinding="Pad.taskMultiSelectListController"
+            multiSelect=true
+            style="form"
+            label="SlickGrid"
+            paged=true
+            pageSize=3
         }}
 
-        <p>Selected SlickGrid Multiple Items : 
-            {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-              <{{item.title}}>
-            {{/each}}
-        </p>  
-
-
+          <p>Selected SlickGrid Multiple Items : 
+              {{#each item in Pad.taskMultiSelectListController.rowSelection}}
+                <{{item.title}}>
+              {{/each}}
+          </p>  
         
-
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
         {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
-      	{{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
-      	<p id="click-label"></p>
-      	<br/>
-      	{{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
-      	<br/>
-      	{{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
-      	<br/>
-      	{{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
-      	<br/>
-      	{{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
+
+        {{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
+        <p id="click-label"></p>
+        <br/>
+        {{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
+        <br/>
+        {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+        <br/>
+        {{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
+        <br/>
+        {{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
+    
+        <p id="click-label"></p>
       
-      	<p id="click-label"></p>
+        <br/>
         
+        <h3>Accordion</h3>
+        {{#view Tent.Accordion}}
+          {{#view Tent.AccordionGroup title="Title1"}}
+            {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title2"}}
+              {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
+              {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title3"}}
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+          {{/view}}
+          {{#view Tent.AccordionGroup title="Title4"}}
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+          {{/view}}
+        {{/view}}
+
+        <br/><br/>
+
+        <h3>Tabs</h3>
         {{#view Tent.Tabs id="tabstrip" active="settings"}}
           {{view Tent.Tab title="Profile" pane="profile"}}
           {{view Tent.Tab title="Messages" pane="messages"}}
@@ -106,8 +149,10 @@
 
       {{/view}}
 
+      <br/>
+
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
-		
+    
     </script>
 
   </body>
