@@ -62,15 +62,12 @@
           id="taskselectionview"
           controllerBinding="Pad.taskListController"
           multiSelect=false
-
           paged=true
-          pageSize=4
+          pageSize=7
           options="{\"enableColumnReorder\": false}"
-
         }}
         
         <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
-
 
         {{view Pad.TaskList
             id="multitaskselectionview"
@@ -79,7 +76,7 @@
             style="form"
             label="SlickGrid"
             paged=true
-            pageSize=3
+            pageSize=7
         }}
 
           <p>Selected SlickGrid Multiple Items : 
