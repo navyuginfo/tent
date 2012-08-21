@@ -1,2 +1,11 @@
-   
-<div class="grid" style="width:auto;height:200px;"></div>
+ 
+{{#if view.formLayout}}
+	<label class="control-label">{{view.label}}</label>
+	<div class="controls">
+		<div class="grid" style="width:auto;height:200px;"></div>
+		<div class="pager"></div>
+	</div>
+{{else}}   
+	<div class="grid" style="width:auto;height:200px;"></div>
+	<div class="pager"></div>
+{{/if}}

@@ -20,19 +20,24 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 	list: (->
 		# The store returns a cache of DS.Model objects, so we need to convert
 		# to an ordinary array
-		return @getArrayFromModelArray(@get('content'))
+		return @getArrayFromRecordArray(@get('content')) if @get('content')
 	).property('content')
 
-	getArrayFromModelArray: (modelArray)-> 
+	getArrayFromRecordArray: (recordArray)-> 
 		_list = []
-		for item in modelArray.toArray()
+		for item in recordArray.toArray()
 			if item?
 				# TO REMOVE: this is here to show that the sort is being applied
-				json = item.toJSON()
-				json.title += Math.round(Math.random() * 100)
-				_list.push json
-				#_list.push item.toJSON()
+				#json = item.toJSON()
+				#json.title += Math.round(Math.random() * 100)
+				#_list.push json
+				_list.push item.toJSON()
 		return _list
+
+	page: (pageInfo)->
+		query = pageInfo
+		result = @store.findQuery(@modelType, query)
+		@set('content', result)
 
 	sortMultiColumn: (cols) ->
 		query = @generateQueryFromCols(cols)
