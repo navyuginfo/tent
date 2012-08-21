@@ -5,6 +5,7 @@ Pad.Controllers.TaskMultiSelectListController = Tent.Controllers.GridController.
 	content: Pad.store.findAll(Pad.Models.TaskModel)
 	store: Pad.store
 	columns: [
+		    {id: "id", name: "ID", field: "id", sortable: true},
 		    {id: "title", name: "Title", field: "title", sortable: true},
 		    {id: "duration", name: "Duration", field: "duration", sortable: true},
 		    {id: "%", name: "% Complete", field: "percentComplete"},
