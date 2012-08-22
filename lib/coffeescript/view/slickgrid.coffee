@@ -18,7 +18,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	multiSelect: false
 	listBinding: 'controller.list'
 	paged: false
-	remotePaging: true
+	remotePaging: false
 
 	defaults:  
 		enableCellNavigation: true
@@ -74,6 +74,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		else
 			@set('dataView', new Slick.Data.DataView())
 			@get('dataView').syncPagedGridSelection = @handlePagedSelections
+
 		if @get("pageSize")
 			@get('dataView').setPagingOptions({pageSize: @get("pageSize")})
 		@setDataViewItems()
@@ -176,8 +177,8 @@ Tent.SingleSelectGrid = Ember.Object.extend
 	createGrid: ->
 		grid = @get('parent').createGrid()
 		grid.setSelectionModel(new Slick.RowSelectionModel())
-		@_listenForSelectedRowsChange(grid)
 		@_listenForDisplayedContentChange(grid)
+		@_listenForSelectedRowsChange(grid)
 	
 	# If new rows are selected, update the controller with the new selected objects
 	_listenForSelectedRowsChange: (grid) ->
@@ -210,8 +211,9 @@ Tent.MultiSelectGrid = Ember.Object.extend
 	createGrid: ->
 		grid = @_createGridWithCheckbox()
 		grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
-		@_listenForSelectedRowsChange(grid)
 		@_listenForDisplayedContentChange(grid)
+		@_listenForSelectedRowsChange(grid)
+		
 
 	_createGridWithCheckbox: ->
 		checkboxSelector = new Slick.CheckboxSelectColumn
@@ -275,7 +277,7 @@ Tent.MultiSelectGrid = Ember.Object.extend
 
 	_updateRowSelectionOnClient: ->
 		rowSelection = []
-		idsForAllRowsSelected = @get('parent').get('grid').selectedRowIds
+		idsForAllRowsSelected = @get('parent').get('grid').selectedRowIds || []
 		for id in idsForAllRowsSelected
 			rowSelection.push(@get('parent').get('grid').getData().getItemById(id))
 		@get('parent').set("rowSelection", rowSelection)
