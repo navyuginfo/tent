@@ -69,10 +69,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	createDataView: -> 
 		if @get("remotePaging")
 			@set('dataView', Tent.RemotePagedData.create(
-				controller: @get("controller")
+				parentView: @
 			))
-			#@get('dataView').syncPagedGridSelection = @handleRemotePagedSelections
-
 		else
 			@set('dataView', new Slick.Data.DataView())
 			@get('dataView').syncPagedGridSelection = @handlePagedSelections
@@ -84,9 +82,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	createGrid: ->
 		if @get("remotePaging")
 			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems() || [], @get('columns'), @get('options')))
-			@get('dataView').set('grid', @get('grid'))			
 		else
 			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
+		return @get('grid')
 
 	setDataViewItems: ->
 		if (@get('list')?)
@@ -156,7 +154,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			)
 
 	
-
+	page: (pagingInfo)->
+		@get('controller').page(pagingInfo)
 
 	sortCallback: (e, args) ->
 		console.log 'sort'
@@ -164,6 +163,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			@get('controller').sortMultiColumn(args.sortCols)
 		else
 			@get('controller').sortSingleColumn(args.sortCol, args.sortAsc)
+
 
 Tent.SlickGrid.STYLES = 
 	FORM: "form"
@@ -174,92 +174,113 @@ Tent.SlickGrid.STYLES =
 Tent.SingleSelectGrid = Ember.Object.extend
 	
 	createGrid: ->
-		@get('parent').createGrid()
-		grid = @get('parent').get('grid')
+		grid = @get('parent').createGrid()
 		grid.setSelectionModel(new Slick.RowSelectionModel())
+		@_listenForSelectedRowsChange(grid)
+		@_listenForDisplayedContentChange(grid)
+	
+	# If new rows are selected, update the controller with the new selected objects
+	_listenForSelectedRowsChange: (grid) ->
 		grid.onSelectedRowsChanged.subscribe((e, args) =>
-			@updateRowSelectionWithCurrentlySelectedItem e,args
+			@_updateRowSelectionWithCurrentlySelectedItem e,args
 		)
-		@get('parent').get('dataView').syncGridSelection(grid, true);
 
-	updateRowSelectionWithCurrentlySelectedItem: (e, range) ->
+	_updateRowSelectionWithCurrentlySelectedItem: (e, range) ->
 		# When paging occurs (single-select) there may be nothing on the page
 		if range.rows.length
 			# Check that the item is not already selected. 
 			# If it is, we dont want to trigger an update
-			newSelectedRow = @getSelectedRow(range)
-			if not (@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedRow.id)
-				@get('parent').set('rowSelection', newSelectedRow)
-				@get('parent').get('dataView').selectedRowIds = [newSelectedRow.id]
+			newSelectedObject = @_getSelectedObjectFromGrid(range)
+			if not (@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedObject.id)
+				@get('parent').set('rowSelection', newSelectedObject)
+				@get('parent').get('dataView').selectedRowIds = [newSelectedObject.id]
 		e.stopPropagation
 
-	getSelectedRow: (range) ->
+	_getSelectedObjectFromGrid: (range) ->
 		row = @get('parent').get('grid').getDataItem range.rows[0]		
+
+	# Ensure that we respond to paging events and updated data content
+	_listenForDisplayedContentChange: (grid) ->
+		@get('parent').get('dataView').syncGridSelection(grid, true);
+
 
 
 Tent.MultiSelectGrid = Ember.Object.extend
 
 	createGrid: ->
-		checkboxSelector = new Slick.CheckboxSelectColumn({
-			cssClass: "slick-cell-checkboxsel"
-		});
-		@get('parent').get('columns').splice(0,0,checkboxSelector.getColumnDefinition())  #Add the checkbox column
-		@get('parent').createGrid()
-		grid = @get('parent').get('grid')
+		grid = @_createGridWithCheckbox()
 		grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
+		@_listenForSelectedRowsChange(grid)
+		@_listenForDisplayedContentChange(grid)
+
+	_createGridWithCheckbox: ->
+		checkboxSelector = new Slick.CheckboxSelectColumn
+			cssClass: "slick-cell-checkboxsel"
+		@_addCheckboxesAsFirstColumn(checkboxSelector)
+		grid = @get('parent').createGrid()
 		grid.registerPlugin(checkboxSelector)
-		@get('parent').get('dataView').syncPagedGridSelection(grid, true);
+		return grid
+
+	_addCheckboxesAsFirstColumn: (checkboxSelector)->
+		@get('parent').get('columns').splice(0,0,checkboxSelector.getColumnDefinition())
+
+	# If new rows are selected, update the controller with the new selected objects
+	_listenForSelectedRowsChange: (grid) ->
 		grid.onSelectedRowsChanged.subscribe((e, args) =>
-			@updateRowSelectionWithAllItems e,args
+			@_updateRowSelectionWithAllItems e,args
 		)
 
-	updateRowSelectionWithAllItems: (e, range) ->
+	_updateRowSelectionWithAllItems: (e, range) ->
 		# Rebuild the selection from the dataView
 		if @get('parent').get('remotePaging')
-			
-			currentSelection = @get('parent').get("rowSelection") || []
-			
-			#remove unselected rows
-			idsForAllRowsSelected = @get('parent').get('dataView').selectedRowIds
-			
-			allRowObjects = @get('parent').get('dataView').getItems()
-			idsToRemove = []
-			$.each(allRowObjects, (index, value) ->
-				if not (index in range.rows)
-					id = value.id
-					idsToRemove.push(id)
-					if (pos = idsForAllRowsSelected.indexOf(id)) != -1
-						idsForAllRowsSelected.splice(pos, 1)
-					# remove item from currentSelection
-					
-					#currentSelection.grep
-					#if (pos = currentSelection.indexOf(value)) != -1
-					#	currentSelection.splice(pos, 1)
-					return true
-			)
-			
-			currentSelectionAfterRemovals = []
-			$.each(currentSelection, (index, value) ->
-				currentSelectionAfterRemovals.push(value) if value.id not in idsToRemove
-			)
-
-			@get('parent').get('dataView').set('selectedRowIds', idsForAllRowsSelected)
-			
-			newSelection = @getNewSelectedObjects(range)
-			#@removeUnselectedRows(currentSelection, range)
-			merged = $.merge(newSelection,currentSelectionAfterRemovals)
-			 
-			@get('parent').set("rowSelection", merged)
+			@_updateRowSelectionRemote(range)
 		else
-			rowSelection = []
-			idsForAllRowsSelected = @get('parent').get('grid').selectedRowIds
-			for id in idsForAllRowsSelected
-				rowSelection.push(@get('parent').get('grid').getData().getItemById(id))
-			@get('parent').set("rowSelection", rowSelection)
+			@_updateRowSelectionOnClient()
+		e.stopPropagation
 
-		e.stopPropagation	
+	_updateRowSelectionRemote: (range) ->
+		currentSelectionAfterRemovals = @_removeDeselectedItems(range)
+		newSelection = @_getNewSelectedObjects(range)
+		@get('parent').set("rowSelection", $.merge(newSelection,currentSelectionAfterRemovals))
 
-	getNewSelectedObjects: (range)->
+	_removeDeselectedItems: (range) ->
+		idsToRemove = @_getIdsToRemove(range)
+		@_removeItemsFromSelectedRowIds(idsToRemove)
+		return @_removeObjectsFromRowSelection(idsToRemove)
+
+	_getIdsToRemove: (range)->
+		allObjectsInGrid = @get('parent').get('dataView').getItems()
+		idsToRemove = []
+		$.each(allObjectsInGrid, (index, value) ->
+			if not (index in range.rows)
+				id = value.id
+				idsToRemove.push(id)
+		)
+		return idsToRemove
+
+	_removeItemsFromSelectedRowIds: (idsToRemove)->
+		currentSelectedObjectIDs = @get('parent').get('dataView').selectedRowIds
+		for id in idsToRemove
+			if (pos = currentSelectedObjectIDs.indexOf(id)) != -1
+					currentSelectedObjectIDs.splice(pos, 1)
+		@get('parent').get('dataView').set('selectedRowIds', currentSelectedObjectIDs)
+
+	_removeObjectsFromRowSelection: (idsToRemove) ->
+		currentSelectedObjects = @get('parent').get("rowSelection") || []
+		currentSelectionAfterRemovals = []
+		$.each(currentSelectedObjects, (index, value) ->
+			currentSelectionAfterRemovals.push(value) if value.id not in idsToRemove
+		)
+		return currentSelectionAfterRemovals
+
+	_updateRowSelectionOnClient: ->
+		rowSelection = []
+		idsForAllRowsSelected = @get('parent').get('grid').selectedRowIds
+		for id in idsForAllRowsSelected
+			rowSelection.push(@get('parent').get('grid').getData().getItemById(id))
+		@get('parent').set("rowSelection", rowSelection)
+
+	_getNewSelectedObjects: (range)->
 		newSelection = []
 		idsForAllRowsSelected = @get('parent').get('dataView').selectedRowIds
 		for rownum in range.rows
@@ -269,13 +290,13 @@ Tent.MultiSelectGrid = Ember.Object.extend
 					idsForAllRowsSelected.push(item.id)
 		return newSelection
 
-	 
-
- 
- 
+	# Ensure that we respond to paging events and updated data content
+	_listenForDisplayedContentChange: (grid) ->
+		@get('parent').get('dataView').syncPagedGridSelection(grid, true);
 
 
 Tent.RemotePagedData = Ember.Object.extend
+	parentView: null
 	pagesize: 5
 	pagenum: 0
 	totalRows: 9
@@ -288,6 +309,7 @@ Tent.RemotePagedData = Ember.Object.extend
 		@totalPages = if @pagesize then Math.max(1, Math.ceil(@totalRows / @pagesize)) else 1
 		return {pageSize: @pagesize, pageNum: @pagenum, totalRows: @totalRows, totalPages: @totalPages}
     
+    # This will be called by the slick pager plugin
 	setPagingOptions: (args) ->
 		if args.pageSize != undefined
 			@pagesize = args.pageSize
@@ -296,42 +318,26 @@ Tent.RemotePagedData = Ember.Object.extend
 		if args.pageNum != undefined
 			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1))
 
-		@get("controller").page(@getPagingInfo())
+		@get("parentView").page(@getPagingInfo())
 	
 	listDataDidChange: ->
 		@highlightSelectedRowsOnGrid()
 
 	highlightSelectedRowsOnGrid: ->
-		if (@get('selectedRowIds').length > 0) and @get('grid')?
+		grid=  @get('parentView').get('grid')
+		if (@get('selectedRowIds').length > 0) and grid?
 			selectedRowsOnCurrentPage = []
 			items = @get('items')
 			for item, i in items
 				for match in @get('selectedRowIds') when match == item.id
 					selectedRowsOnCurrentPage.push(i)
-			@get('grid').setSelectedRows(selectedRowsOnCurrentPage)
+			grid.setSelectedRows(selectedRowsOnCurrentPage)
 
-	mapIdsToRows: () ->
-		#for id in @get('selectedRowIds')
-
-
-	
 	beginUpdate: ->
-
 	endUpdate: ->
-
-	setItems: (items)->
-		@set("items", items)
-
-	getItems: ->
-		@get("items")
-
-	getItem: (i)->
-		return @get("items")[i]
-
+	setItems: (items)->	@set("items", items)
+	getItems: -> @get("items")
+	getItem: (i)-> return @get("items")[i]
 	setRefreshHints: ->
-
 	syncPagedGridSelection: ->
-
 	syncGridSelection: ->
-
-
