@@ -86,9 +86,10 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
 
 	setDataViewItems: ->
-		@get('dataView').beginUpdate();
-		@get('dataView').setItems(@get('list'));
-		@get('dataView').endUpdate();		
+		if (@get('list')?)
+			@get('dataView').beginUpdate();
+			@get('dataView').setItems(@get('list'));
+			@get('dataView').endUpdate();		
 
 	listenForSelections: ->
 		@get('dataView').onRowCountChanged.subscribe((e, args) =>
@@ -150,9 +151,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 					grid.setSelectedRows(selectedRowsOnCurrentPage)
 					inHandler = false
 			)
-
-	 
-
 
 	sortCallback: (e, args) ->
 		console.log 'sort'
