@@ -18,7 +18,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	multiSelect: false
 	listBinding: 'controller.list'
 	paged: false
-	remotePaging: false
+	remotePaging: true
 
 	defaults:  
 		enableCellNavigation: true
@@ -39,12 +39,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			@get('grid').invalidate()
 			if @get('remotePaging')
 				@get('grid').setData(@get('list'))
+				@get('dataView').listDataDidChange()
 			@get('grid').render()
 	).observes 'list'
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
-		@set('controller.rowSelection', @get('rowSelection'))
+		@get('controller').set('rowSelection', @get('rowSelection'))
 	).observes 'rowSelection'
 	 
 	didInsertElement: ->
@@ -70,7 +71,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			@set('dataView', Tent.RemotePagedData.create(
 				controller: @get("controller")
 			))
-			#@get('dataView').syncPagedGridSelection = @handlePagedSelections
+			#@get('dataView').syncPagedGridSelection = @handleRemotePagedSelections
+
 		else
 			@set('dataView', new Slick.Data.DataView())
 			@get('dataView').syncPagedGridSelection = @handlePagedSelections
@@ -81,7 +83,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 
 	createGrid: ->
 		if @get("remotePaging")
-			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems(), @get('columns'), @get('options')))
+			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems() || [], @get('columns'), @get('options')))
+			@get('dataView').set('grid', @get('grid'))			
 		else
 			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
 
@@ -152,6 +155,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 					inHandler = false
 			)
 
+	
+
+
 	sortCallback: (e, args) ->
 		console.log 'sort'
 		if args.multiColumnSort
@@ -184,6 +190,7 @@ Tent.SingleSelectGrid = Ember.Object.extend
 			newSelectedRow = @getSelectedRow(range)
 			if not (@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedRow.id)
 				@get('parent').set('rowSelection', newSelectedRow)
+				@get('parent').get('dataView').selectedRowIds = [newSelectedRow.id]
 		e.stopPropagation
 
 	getSelectedRow: (range) ->
@@ -209,7 +216,40 @@ Tent.MultiSelectGrid = Ember.Object.extend
 	updateRowSelectionWithAllItems: (e, range) ->
 		# Rebuild the selection from the dataView
 		if @get('parent').get('remotePaging')
+			
+			currentSelection = @get('parent').get("rowSelection") || []
+			
+			#remove unselected rows
+			idsForAllRowsSelected = @get('parent').get('dataView').selectedRowIds
+			
+			allRowObjects = @get('parent').get('dataView').getItems()
+			idsToRemove = []
+			$.each(allRowObjects, (index, value) ->
+				if not (index in range.rows)
+					id = value.id
+					idsToRemove.push(id)
+					if (pos = idsForAllRowsSelected.indexOf(id)) != -1
+						idsForAllRowsSelected.splice(pos, 1)
+					# remove item from currentSelection
+					
+					#currentSelection.grep
+					#if (pos = currentSelection.indexOf(value)) != -1
+					#	currentSelection.splice(pos, 1)
+					return true
+			)
+			
+			currentSelectionAfterRemovals = []
+			$.each(currentSelection, (index, value) ->
+				currentSelectionAfterRemovals.push(value) if value.id not in idsToRemove
+			)
 
+			@get('parent').get('dataView').set('selectedRowIds', idsForAllRowsSelected)
+			
+			newSelection = @getNewSelectedObjects(range)
+			#@removeUnselectedRows(currentSelection, range)
+			merged = $.merge(newSelection,currentSelectionAfterRemovals)
+			 
+			@get('parent').set("rowSelection", merged)
 		else
 			rowSelection = []
 			idsForAllRowsSelected = @get('parent').get('grid').selectedRowIds
@@ -219,27 +259,30 @@ Tent.MultiSelectGrid = Ember.Object.extend
 
 		e.stopPropagation	
 
+	getNewSelectedObjects: (range)->
+		newSelection = []
+		idsForAllRowsSelected = @get('parent').get('dataView').selectedRowIds
+		for rownum in range.rows
+				item = @get('parent').get('dataView').getItem(rownum)
+				if not (item.id in idsForAllRowsSelected)
+					newSelection.push(item)
+					idsForAllRowsSelected.push(item.id)
+		return newSelection
+
+	 
+
+ 
+ 
+
+
 Tent.RemotePagedData = Ember.Object.extend
 	pagesize: 5
-	pagenum: 1
+	pagenum: 0
 	totalRows: 9
 	selectedRowIds: []
 	onPagingInfoChanged: new Slick.Event()
 	onRowCountChanged: new Slick.Event()
 	onRowsChanged: new Slick.Event()
-
-	init: ->
-		###@onRowsChanged.subscribe((e, args) =>
-			if @
-				if selectedRowIds.length > 0
-					inHandler = true
-					selectedRowsOnCurrentPage = @mapIdsToRows(selectedRowIds)
-					if not preserveHidden 
-						selectedRowIds = @mapRowsToIds(selectedRowsOnCurrentPage)
-					grid.setSelectedRows(selectedRowsOnCurrentPage)
-					inHandler = false
-			)
-		###
 
 	getPagingInfo: ->
 		@totalPages = if @pagesize then Math.max(1, Math.ceil(@totalRows / @pagesize)) else 1
@@ -254,17 +297,19 @@ Tent.RemotePagedData = Ember.Object.extend
 			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1))
 
 		@get("controller").page(@getPagingInfo())
-
-		#@onPagingInfoChanged.notify(@getPagingInfo(), null, @);
+	
+	listDataDidChange: ->
 		@highlightSelectedRowsOnGrid()
 
-	
 	highlightSelectedRowsOnGrid: ->
-		#if @get('selectedRowIds').length > 0
-		#	selectedRowsOnCurrentPage = @mapIdsToRows()
-		# For each selected item, get the row number
-		# grid.setSelectedRows(selectedRowsOnCurrentPage)
-	 
+		if (@get('selectedRowIds').length > 0) and @get('grid')?
+			selectedRowsOnCurrentPage = []
+			items = @get('items')
+			for item, i in items
+				for match in @get('selectedRowIds') when match == item.id
+					selectedRowsOnCurrentPage.push(i)
+			@get('grid').setSelectedRows(selectedRowsOnCurrentPage)
+
 	mapIdsToRows: () ->
 		#for id in @get('selectedRowIds')
 

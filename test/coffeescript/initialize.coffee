@@ -7,15 +7,15 @@
 	loader.require('ember-data')
 	loader.require('tent')
 	loader.require('coffeescript/app')
-
+	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
 
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
 	# Ensure the Rest adapter is working correctly 
-	DS.fixtureAdapter.simulateRemoteResponse = false;
+	Pad.pagingAdapter.simulateRemoteResponse = false;
 	Pad.store = DS.Store.create({
 		revision: 4,
-		adapter: DS.fixtureAdapter
+		adapter: Pad.pagingAdapter
 	});
 
 	loader.require('coffeescript/view/task_list')
@@ -94,6 +94,7 @@
 			console.log('initializing ...');
 		taskListController: Pad.Controllers.TaskListController.create()
 		taskMultiSelectListController: Pad.Controllers.TaskMultiSelectListController.create()
+		invoiceGridController: Pad.InvoiceGridController.create()
 	)
 
 )(minispade)
