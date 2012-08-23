@@ -9,21 +9,10 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 					#type: 'sorting'
 					#field: col.field
 					#sortAsc: ascending
-				that = this
 				if query.multiColumn
-					fixtures.sort((dataRow1, dataRow2) =>
-						for item,i in query.fields
-							field = query.fields[i].field
-							asc = query.fields[i].sortAsc
-							return that.compare(dataRow1, dataRow2, field, asc)
-						return 0
-					)
+					@sortMultiColumn(fixtures, query)
 				else
-					fixtures.sort((dataRow1, dataRow2) =>
-						field = query.field
-						asc = query.sortAsc
-						that.compare(dataRow1, dataRow2, field, asc)
-					)
+					@sortSingleColumn(fixtures, query)
 				# When sorting over multiple pages, we return the first page
 				return @getPage(fixtures, query)
 			else
@@ -34,6 +23,24 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 		end = start + query.pageSize - 1
 		if (end > fixtures.length) then end = fixtures.length 
 		return fixtures[start..end]
+
+	sortMultiColumn: (fixtures, query) ->
+		that = this
+		fixtures.sort((dataRow1, dataRow2) =>
+			for item,i in query.fields
+				field = query.fields[i].field
+				asc = query.fields[i].sortAsc
+				return that.compare(dataRow1, dataRow2, field, asc)
+			return 0
+		)
+
+	sortSingleColumn: (fixtures, query) ->
+		that = this
+		fixtures.sort((dataRow1, dataRow2) =>
+			field = query.field
+			asc = query.sortAsc
+			that.compare(dataRow1, dataRow2, field, asc)
+		)
 
 	compare: (dataRow1, dataRow2, field, asc)->
 		sign = if asc then 1 else -1
