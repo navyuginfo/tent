@@ -9,17 +9,16 @@ require "vendor/scripts/slick.pager"
 require "vendor/scripts/slick.core"
 require "vendor/scripts/slick.grid"
 require '../mixin/grid_sorting_support'
+require '../mixin/grid_paging_support'
 
 # TODO: refactor out single and multi select code
 
-Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport,
+Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport, Tent.GridPagingSupport,
 	templateName: 'slick'
 	rowSelection: null
 	grid: null
 	multiSelect: false
 	listBinding: 'controller.list'
-	paged: false
-	remotePaging: false
 
 	defaults:  
 		enableCellNavigation: true
@@ -57,7 +56,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport,
 		@createDataView()
 		@get('delegate').createGrid()
 		@listenForSelections()
-		@setupPaging()
 		@get('grid').render()
 
 	extendOptions: ->
@@ -73,7 +71,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport,
 			))
 		else
 			@set('dataView', new Slick.Data.DataView())
-			@get('dataView').syncPagedGridSelection = @handlePagedSelections
 
 		if @get("pageSize")
 			@get('dataView').setPagingOptions({pageSize: @get("pageSize")})
@@ -104,51 +101,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport,
 			@get('grid').render()
 		)
 
-	setupPaging: ->
-		if @get("paged")
-			pager = new Slick.Controls.Pager(@get('dataView'), @get('grid'), @$().find(".pager"));
-
 	willDestroyElement: ->
 		@get('grid').onClick.unsubscribe(->)
 		@get('grid').destroy()
-	
-	# The native grid/dataview does not manage selections across pages
-	# This code adds listeners to enable this 
-	handlePagedSelections: (grid, preserveHidden) ->
-			selectedRowIds = @mapRowsToIds(grid.getSelectedRows())
-			inHandler = false
-			grid.onSelectedRowsChanged.subscribe (e, args) =>
-				if inHandler then return # Called from a paging request
-				@updateSelectedIdsWithCurrentPageSelection(grid)
-
-			@updateSelectedIdsWithCurrentPageSelection = (grid) ->
-				currentPageSelectedIds = @mapRowsToIds(grid.getSelectedRows())
-				for id in currentPageSelectedIds
-					selectedRowIds.push(id) if id not in selectedRowIds
-				selectedRowIds = @removeUnselectedRows(selectedRowIds, currentPageSelectedIds)
-				grid.selectedRowIds = selectedRowIds
-
-			@removeUnselectedRows = (selectedRowIds, currentPageSelectedIds) ->
-				counter = @getLength()
-				while counter
-					rowInCurrentPage = @getItem(counter-=1)
-					selectedRowIds = $.grep(selectedRowIds, (element, index) ->
-						if element == rowInCurrentPage.id
-							if element not in currentPageSelectedIds then return false
-						return true
-					)
-				selectedRowIds
-
-			@onRowsChanged.subscribe((e, args) =>
-				if selectedRowIds.length > 0
-					inHandler = true
-					selectedRowsOnCurrentPage = @mapIdsToRows(selectedRowIds)
-					if not preserveHidden 
-						selectedRowIds = @mapRowsToIds(selectedRowsOnCurrentPage)
-					grid.setSelectedRows(selectedRowsOnCurrentPage)
-					inHandler = false
-			)
-
 	
 	page: (pagingInfo)->
 		@get('controller').page(pagingInfo)
