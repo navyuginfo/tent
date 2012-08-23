@@ -19,10 +19,7 @@ Tent.GridSortingSupport = Ember.Mixin.create
 			# Sorting is to be done on the server
 			# Pass control to the controller, which will update the grid 
 			# with the sorted data items
-			if args.multiColumnSort
-				@get('controller').sortMultiColumn(args.sortCols, @get('dataView').getPagingInfo())
-			else
-				@get('controller').sortSingleColumn(args.sortCol, args.sortAsc, @get('dataView').getPagingInfo())
+			@get('controller').sort(args, @get('dataView').getPagingInfo())
 		else
 			@clientSort(args)
 

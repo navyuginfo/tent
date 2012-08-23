@@ -23,7 +23,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	defaults:  
 		enableCellNavigation: true
 		enableColumnReorder: true
-		multiColumnSort: false
+		multiColumnSort: true
 
 	init: ->
 		@_super()

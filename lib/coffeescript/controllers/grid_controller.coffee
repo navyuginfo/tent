@@ -45,24 +45,36 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		query = $.extend(pageInfo, {type:'paging'})
 		@set('content', @store.findQuery(@modelType, query))
 
-	sortMultiColumn: (cols, pagingInfo) ->
-		query = @generateQueryFromCols(cols)
-		query = $.extend(query, pagingInfo)
-		result = @store.findQuery(@modelType, query)
-		@set('content', result)
-	
-	sortSingleColumn: (col, ascending, pagingInfo) ->
-		query = @generateQueryFromCol(col, ascending)
-		query = $.extend(query, pagingInfo)
+	sort: (args, pagingInfo) ->
+		if args.multiColumnSort
+			query = @getMultiColumnQuery(args, pagingInfo)
+		else
+			query = @getSingleColumnQuery(args, pagingInfo)
+
+		query = $.extend(query, pagingInfo, {multiColumn:args.multiColumnSort})
 		result = @store.findQuery(@modelType, query)
 		@set('content', result)
 
+	getMultiColumnQuery: (args, pagingInfo) ->
+		cols = args.sortCols
+		query = @generateQueryFromCols(cols)
+	
+	getSingleColumnQuery: (args, pagingInfo) ->
+		col = args.sortCol
+		ascending = args.sortAsc
+		query = @generateQueryFromCol(col, ascending)	
+
 	generateQueryFromCols: (cols) ->
-		query = []
+		fields = []
 		for col in cols
-			query.push
-				sortDir: if col.sortAsc then 'up' else 'down'
-				sortKey: col.sortCol.field
+			fields.push
+				sortAsc: col.sortAsc
+				field: col.sortCol.field
+
+		query = 
+			type: 'sorting'
+			fields: fields
+
 		return query
 		
 	generateQueryFromCol: (col, ascending) ->

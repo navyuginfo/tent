@@ -10,11 +10,20 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 					#field: col.field
 					#sortAsc: ascending
 				that = this
-				fixtures.sort((dataRow1, dataRow2) =>
-					field = query.field
-					asc = query.sortAsc
-					that.compare(dataRow1, dataRow2, field, asc)
-				)
+				if query.multiColumn
+					fixtures.sort((dataRow1, dataRow2) =>
+						for item,i in query.fields
+							field = query.fields[i].field
+							asc = query.fields[i].sortAsc
+							return that.compare(dataRow1, dataRow2, field, asc)
+						return 0
+					)
+				else
+					fixtures.sort((dataRow1, dataRow2) =>
+						field = query.field
+						asc = query.sortAsc
+						that.compare(dataRow1, dataRow2, field, asc)
+					)
 				# When sorting over multiple pages, we return the first page
 				return @getPage(fixtures, query)
 			else
