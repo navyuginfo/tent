@@ -1,7 +1,13 @@
 Tent.GridSortingSupport = Ember.Mixin.create
+
 	init: ->
 		@_super()
-		
+	
+	# Lets always sort remotely when we are paging remotely
+	remoteSorting: (->
+		@get('remotePaging')
+	).property 'remotePaging'
+
 	attachSortingBehavior: (->
 		@get('grid').onSort.subscribe((e, args) =>
 			@sortCallback e,args
@@ -9,14 +15,14 @@ Tent.GridSortingSupport = Ember.Mixin.create
 	).observes 'grid'
 	
 	sortCallback: (e, args) ->
-		if @remoteSorting
+		if @get('remoteSorting')
 			# Sorting is to be done on the server
 			# Pass control to the controller, which will update the grid 
 			# with the sorted data items
 			if args.multiColumnSort
-				@get('controller').sortMultiColumn(args.sortCols)
+				@get('controller').sortMultiColumn(args.sortCols, @get('dataView').getPagingInfo())
 			else
-				@get('controller').sortSingleColumn(args.sortCol, args.sortAsc)
+				@get('controller').sortSingleColumn(args.sortCol, args.sortAsc, @get('dataView').getPagingInfo())
 		else
 			@clientSort(args)
 

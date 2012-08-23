@@ -1,6 +1,6 @@
 Tent.GridPagingSupport = Ember.Mixin.create
 	paged: false
-	remotePaging: false
+	remotePaging: false #paging, sorting, searching are done remotely
 
 	init: ->
 		@_super()
@@ -11,7 +11,8 @@ Tent.GridPagingSupport = Ember.Mixin.create
 	).observes 'grid'
 
 	addListenersForPageChange: (->
-		@get('dataView').syncPagedGridSelection = @handlePagedSelections
+		if not @get('remotePaging')
+			@get('dataView').syncPagedGridSelection = @handlePagedSelections
 	).observes('dataView')
 
 
@@ -51,3 +52,6 @@ Tent.GridPagingSupport = Ember.Mixin.create
 				grid.setSelectedRows(selectedRowsOnCurrentPage)
 				inHandler = false
 		)
+
+	page: (pagingInfo)->
+		@get('controller').page(pagingInfo)

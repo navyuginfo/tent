@@ -45,13 +45,15 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		query = $.extend(pageInfo, {type:'paging'})
 		@set('content', @store.findQuery(@modelType, query))
 
-	sortMultiColumn: (cols) ->
+	sortMultiColumn: (cols, pagingInfo) ->
 		query = @generateQueryFromCols(cols)
+		query = $.extend(query, pagingInfo)
 		result = @store.findQuery(@modelType, query)
 		@set('content', result)
 	
-	sortSingleColumn: (col, ascending) ->
+	sortSingleColumn: (col, ascending, pagingInfo) ->
 		query = @generateQueryFromCol(col, ascending)
+		query = $.extend(query, pagingInfo)
 		result = @store.findQuery(@modelType, query)
 		@set('content', result)
 
@@ -66,5 +68,5 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 	generateQueryFromCol: (col, ascending) ->
 		query =
 			type: 'sorting'
-			sortKey: col.field
-			sortDir: if ascending then 'up' else 'down'
+			field: col.field
+			sortAsc: ascending

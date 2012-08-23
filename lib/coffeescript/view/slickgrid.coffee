@@ -13,7 +13,7 @@ require '../mixin/grid_paging_support'
 
 # TODO: refactor out single and multi select code
 
-Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport, Tent.GridPagingSupport,
+Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, 
 	templateName: 'slick'
 	rowSelection: null
 	grid: null
@@ -105,8 +105,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport, T
 		@get('grid').onClick.unsubscribe(->)
 		@get('grid').destroy()
 	
-	page: (pagingInfo)->
-		@get('controller').page(pagingInfo)
+	
 
 
 Tent.SlickGrid.STYLES = 
