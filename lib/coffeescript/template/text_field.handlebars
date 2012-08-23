@@ -11,6 +11,8 @@
     {{/if}}
   </div>
   {{#if view.hasErrors}}
-    <span class="help-inline">{{view.validationErrors}}</span>
+    {{#each error in view.validationErrors}}
+      <span class="help-inline">{{view.validationErrors}}</span>
+    {{/each}}
   {{/if}}  
 </div>
