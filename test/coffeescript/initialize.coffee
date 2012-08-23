@@ -94,7 +94,6 @@
 			console.log('initializing ...');
 		taskListController: Pad.Controllers.TaskListController.create()
 		taskMultiSelectListController: Pad.Controllers.TaskMultiSelectListController.create()
-		invoiceGridController: Pad.InvoiceGridController.create()
 	)
 
 )(minispade)

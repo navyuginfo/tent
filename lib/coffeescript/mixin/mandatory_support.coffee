@@ -4,15 +4,22 @@
 #
 
 require '../util/computed'
-
+ 
 Tent.MandatorySupport = Ember.Mixin.create
-  isMandatory: false
-  isMandatoryAsBoolean: Tent.computed.boolCoerceGently 'isMandatory'
+	isMandatory: false
+	isMandatoryAsBoolean: Tent.computed.boolCoerceGently 'isMandatory'
 
-  validate: ->
-    @_super()
-    value = this.get('value')  
-    isValid = value? && value != '' 
-    @addValidationError(Tent.messages.MANDATORY_ERROR) unless isValid
-    isValid
+	validate: ->
+		isValid = @_super()
+		value = this.get('value')
+		isValid = isValid && ((not @isMandatory) or (not @isValueEmpty(value)))
+		@addValidationError(Tent.messages.MANDATORY_ERROR) unless isValid
+		isValid
+
+	isValueEmpty: (value) ->
+		not (value? && value != '')
+
+
+
+
 

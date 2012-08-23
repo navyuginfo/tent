@@ -22,7 +22,8 @@
         {{#view Tent.Form name="Fields"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input"}}
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
-          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true"}}
+          {{view Tent.TextField label="Mandatory input" isMandatory=true}}
+          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true}}
           {{view Tent.AmountField value="10000" label="Amount input" currency="EUR"}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
           {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false}}
@@ -31,7 +32,7 @@
           {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true}}
           
 
-          {{view Tent.EmailTextField value="test@test.com" label="Email input" placeholder="Enter email.."}}
+          {{view Tent.EmailTextField value="test@test.com" label="Email input" placeholder="Enter email.." isMandatory=true}}
           {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
            
           
@@ -56,13 +57,6 @@
         <h3>Table</h3>
         {{view Tent.Table listBinding="Pad.people" headers="Name,Age" columns="name,age" selectionBinding="Pad.selectedPerson" multiselection=true defaultSelectionBinding="Pad.selectedPerson" isEditable=true}}
         <p>Selected Person is {{Pad.selectedPerson.name}}</p>
-
-        {{view Pad.InvoiceGridView
-          id="multiinvoicesselectionview"
-          controllerBinding="Pad.invoiceGridController"
-          multiSelect=false
-        }}
-
 
         <h3>SlickGrid</h3>
         {{view Pad.TaskList

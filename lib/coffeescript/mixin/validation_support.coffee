@@ -25,5 +25,6 @@ Tent.ValidationSupport = Ember.Mixin.create
     @set('validationErrors', [])
     
   addValidationError: (error) ->
+    # Do we need more than one error?
     @set('validationErrors', error)
 
