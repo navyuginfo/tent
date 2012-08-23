@@ -8,10 +8,11 @@ require "vendor/scripts/slick.dataview"
 require "vendor/scripts/slick.pager"
 require "vendor/scripts/slick.core"
 require "vendor/scripts/slick.grid"
+require '../mixin/grid_sorting_support'
 
 # TODO: refactor out single and multi select code
 
-Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
+Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridSortingSupport,
 	templateName: 'slick'
 	rowSelection: null
 	grid: null
@@ -20,11 +21,10 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	paged: false
 	remotePaging: false
 
-
 	defaults:  
 		enableCellNavigation: true
 		enableColumnReorder: true
-		multiColumnSort: true
+		multiColumnSort: false
 
 	init: ->
 		@_super()
@@ -58,7 +58,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		@get('delegate').createGrid()
 		@listenForSelections()
 		@setupPaging()
-		@setupSorting()
 		@get('grid').render()
 
 	extendOptions: ->
@@ -109,12 +108,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		if @get("paged")
 			pager = new Slick.Controls.Pager(@get('dataView'), @get('grid'), @$().find(".pager"));
 
-
-	setupSorting: -> 
-		@get('grid').onSort.subscribe((e, args) =>
-			@sortCallback e,args
-		)
-
 	willDestroyElement: ->
 		@get('grid').onClick.unsubscribe(->)
 		@get('grid').destroy()
@@ -160,45 +153,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	page: (pagingInfo)->
 		@get('controller').page(pagingInfo)
 
-	sortCallback: (e, args) ->
-		if @remoteSorting
-			if args.multiColumnSort
-				@get('controller').sortMultiColumn(args.sortCols)
-			else
-				@get('controller').sortSingleColumn(args.sortCol, args.sortAsc)
-		else
-			@localSort(args)
-
-	localSort: (args) ->
-		if args.multiColumnSort
-			cols = args.sortCols
-			data = @get('grid').getData().getItems()
-			data.sort((dataRow1, dataRow2) ->
-				for item,i in cols
-					field = cols[i].sortCol.field
-					sign = if cols[i].sortAsc then 1 else -1
-					value1 = dataRow1[field]
-					value2 = dataRow2[field]
-
-					#result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
-					if value1 == value2 
-						result = 0
-					else 
-						if value1 > value2 
-							result = 1 * sign
-						else 
-							result = -1 * sign
-					if result != 0
-						return result
-				return 0
-			)
-		else
-		
-		@get('grid').invalidate()
-		@setDataViewItems(data)
-		
-		@get('grid').render()
-		
 
 Tent.SlickGrid.STYLES = 
 	FORM: "form"
