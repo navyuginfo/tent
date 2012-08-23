@@ -7,6 +7,8 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 				end = start + query.pageSize - 1
 				if (end > fixtures.length) then end = fixtures.length 
 				return fixtures[start..end]
+			when 'sorting'
+				return fixtures
 			else
 		   		return fixtures
   	

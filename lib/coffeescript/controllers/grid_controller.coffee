@@ -65,5 +65,6 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		
 	generateQueryFromCol: (col, ascending) ->
 		query =
+			type: 'sorting'
 			sortKey: col.field
 			sortDir: if ascending then 'up' else 'down'

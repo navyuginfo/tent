@@ -64,7 +64,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 		},
 		{
 			id: 57,
-			title: "Task 7",
+			title: "XTask 7",
 			duration: "75 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",
@@ -73,7 +73,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 		},
 		{
 			id: 58,
-			title: "Task 8",
+			title: "YTask 8",
 			duration: "7 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",
@@ -82,7 +82,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 		},
 		{
 			id: 59,
-			title: "Task 9",
+			title: "ZTask 9",
 			duration: "7 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",

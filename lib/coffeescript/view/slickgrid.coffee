@@ -20,6 +20,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 	paged: false
 	remotePaging: false
 
+
 	defaults:  
 		enableCellNavigation: true
 		enableColumnReorder: true
@@ -87,10 +88,11 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
 		return @get('grid')
 
-	setDataViewItems: ->
-		if (@get('list')?)
+	setDataViewItems: (items)->
+		dataItems = if items? then items else @get('list')
+		if dataItems?
 			@get('dataView').beginUpdate();
-			@get('dataView').setItems(@get('list'));
+			@get('dataView').setItems(dataItems);
 			@get('dataView').endUpdate();		
 
 	listenForSelections: ->
@@ -159,12 +161,44 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport,
 		@get('controller').page(pagingInfo)
 
 	sortCallback: (e, args) ->
-		console.log 'sort'
-		if args.multiColumnSort
-			@get('controller').sortMultiColumn(args.sortCols)
+		if @remoteSorting
+			if args.multiColumnSort
+				@get('controller').sortMultiColumn(args.sortCols)
+			else
+				@get('controller').sortSingleColumn(args.sortCol, args.sortAsc)
 		else
-			@get('controller').sortSingleColumn(args.sortCol, args.sortAsc)
+			@localSort(args)
 
+	localSort: (args) ->
+		if args.multiColumnSort
+			cols = args.sortCols
+			data = @get('grid').getData().getItems()
+			data.sort((dataRow1, dataRow2) ->
+				for item,i in cols
+					field = cols[i].sortCol.field
+					sign = if cols[i].sortAsc then 1 else -1
+					value1 = dataRow1[field]
+					value2 = dataRow2[field]
+
+					#result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+					if value1 == value2 
+						result = 0
+					else 
+						if value1 > value2 
+							result = 1 * sign
+						else 
+							result = -1 * sign
+					if result != 0
+						return result
+				return 0
+			)
+		else
+		
+		@get('grid').invalidate()
+		@setDataViewItems(data)
+		
+		@get('grid').render()
+		
 
 Tent.SlickGrid.STYLES = 
 	FORM: "form"
