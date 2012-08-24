@@ -30,8 +30,12 @@ test 'Ensure it gives error for non numeric values', ->
     label: 'FooBar'
 
   appendView()
+  equal view.$('.error').length, 0, 'error class does not get applied on insertion'
 
-  equal view.$('.error').length, 1, 'error class gets applied'
+  Ember.run ->
+      view.$('input').val('newValue')
+      view.$('input').trigger('change')
+  equal view.$('.error').length, 1, 'Error reported for non-numeric value'
   equal view.$('.help-inline').text(), Tent.messages.NUMERIC_ERROR, 'Received Tent.messages.NUMERIC_ERROR'  
 
 test 'Ensure it gives no error for numeric values', ->
@@ -42,6 +46,9 @@ test 'Ensure it gives no error for numeric values', ->
 
   appendView()
 
+  Ember.run ->
+      view.$('input').val('123.456')
+      view.$('input').trigger('change')
   equal view.$('.error').length, 0, 'no error class applied'
   equal view.$('.help-inline').text(), '', 'no error received'
 
@@ -76,12 +83,12 @@ test 'Formatting is actually called', ->
   Ember.run ->
       view.$('input').val('newValue')
       view.$('input').trigger('change')
-    equal view.get('name'), 'newValue', 'Controller value is set to "newValue"'
+  equal view.get('name'), 'newValue', 'Controller value is set to "newValue"'
 
   Ember.run ->
       view.$('input').val('')
       view.$('input').trigger('change')
-    equal view.get('name'), null, 'Controller value is set to null'
+  equal view.get('name'), null, 'Controller value is set to null'
 
 test 'Formatting of read-only', ->
   view = Ember.View.create

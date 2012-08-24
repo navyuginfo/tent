@@ -19,7 +19,7 @@ teardown = ->
   @TemplateTests = undefined  
   @application = null
 
-module "Tent.Select tests", setup, teardown
+module "Tent.Select", setup, teardown
 
 
 test 'Ensure Tent.Select renders for list', ->
@@ -71,3 +71,5 @@ test 'Ensure binding for content allows content to be null initially', ->
     ])
   
   equal view.$('option').length, 4,  'Options were created'  
+
+ 
