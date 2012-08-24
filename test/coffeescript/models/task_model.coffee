@@ -9,7 +9,7 @@ Pad.Models.TaskModel = DS.Model.extend
 	effortDriven: DS.attr('string')
 
 Pad.Models.TaskModel.FIXTURES = [{
-			id: 1,
+			id: 51,
 			title: "Task 1",
 			duration: "5 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -18,7 +18,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 2,
+			id: 52,
 			title: "Task 2",
 			duration: "6 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -27,7 +27,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 3,
+			id: 53,
 			title: "Task 3",
 			duration: "7 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -36,7 +36,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 4,
+			id: 54,
 			title: "Task 4",
 			duration: "14 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -45,7 +45,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 5,
+			id: 55,
 			title: "Task 5",
 			duration: "27 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -54,7 +54,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 6,
+			id: 56,
 			title: "Task 6",
 			duration: "2 days",
 			percentComplete: Math.round(Math.random() * 100),
@@ -63,8 +63,8 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 7,
-			title: "Task 7",
+			id: 57,
+			title: "XTask 7",
 			duration: "75 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",
@@ -72,8 +72,8 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 8,
-			title: "Task 8",
+			id: 58,
+			title: "YTask 8",
 			duration: "7 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",
@@ -81,8 +81,8 @@ Pad.Models.TaskModel.FIXTURES = [{
 			effortDriven: 1
 		},
 		{
-			id: 9,
-			title: "Task 9",
+			id: 59,
+			title: "ZTask 9",
 			duration: "7 days",
 			percentComplete: Math.round(Math.random() * 100),
 			start: "01/01/2009",

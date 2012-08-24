@@ -23,6 +23,13 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		return @getArrayFromRecordArray(@get('content')) if @get('content')
 	).property('content')
 
+	rowSelectionDidChange: (->
+		#alert('changed rowSelection')
+		console.log('#####################')
+		for obj in @get('rowSelection')
+			console.log(obj.id + "  :  " + obj.title)
+	).observes 'rowSelection'
+
 	getArrayFromRecordArray: (recordArray)-> 
 		_list = []
 		for item in recordArray.toArray()
@@ -35,29 +42,43 @@ Tent.Controllers.GridController = Ember.ArrayController.extend
 		return _list
 
 	page: (pageInfo)->
-		query = pageInfo
+		query = $.extend(pageInfo, {type:'paging'})
+		@set('content', @store.findQuery(@modelType, query))
+
+	sort: (args, pagingInfo) ->
+		if args.multiColumnSort
+			query = @getMultiColumnQuery(args, pagingInfo)
+		else
+			query = @getSingleColumnQuery(args, pagingInfo)
+
+		query = $.extend(query, pagingInfo, {multiColumn:args.multiColumnSort})
 		result = @store.findQuery(@modelType, query)
 		@set('content', result)
 
-	sortMultiColumn: (cols) ->
+	getMultiColumnQuery: (args, pagingInfo) ->
+		cols = args.sortCols
 		query = @generateQueryFromCols(cols)
-		result = @store.findQuery(@modelType, query)
-		@set('content', result)
 	
-	sortSingleColumn: (col, ascending) ->
-		query = @generateQueryFromCol(col, ascending)
-		result = @store.findQuery(@modelType, query)
-		@set('content', result)
+	getSingleColumnQuery: (args, pagingInfo) ->
+		col = args.sortCol
+		ascending = args.sortAsc
+		query = @generateQueryFromCol(col, ascending)	
 
 	generateQueryFromCols: (cols) ->
-		query = []
+		fields = []
 		for col in cols
-			query.push
-				sortDir: if col.sortAsc then 'up' else 'down'
-				sortKey: col.sortCol.field
+			fields.push
+				sortAsc: col.sortAsc
+				field: col.sortCol.field
+
+		query = 
+			type: 'sorting'
+			fields: fields
+
 		return query
 		
 	generateQueryFromCol: (col, ascending) ->
 		query =
-			sortKey: col.field
-			sortDir: if ascending then 'up' else 'down'
+			type: 'sorting'
+			field: col.field
+			sortAsc: ascending

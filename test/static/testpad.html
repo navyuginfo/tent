@@ -57,20 +57,25 @@
         {{view Tent.Table listBinding="Pad.people" headers="Name,Age" columns="name,age" selectionBinding="Pad.selectedPerson" multiselection=true defaultSelectionBinding="Pad.selectedPerson" isEditable=true}}
         <p>Selected Person is {{Pad.selectedPerson.name}}</p>
 
+        {{view Pad.InvoiceGridView
+          id="multiinvoicesselectionview"
+          controllerBinding="Pad.invoiceGridController"
+          multiSelect=false
+        }}
+
+
         <h3>SlickGrid</h3>
         {{view Pad.TaskList
           id="taskselectionview"
           controllerBinding="Pad.taskListController"
           multiSelect=false
-
           paged=true
-          pageSize=4
+          pageSize=7
+          remotePaging=true
           options="{\"enableColumnReorder\": false}"
-
         }}
         
         <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
-
 
         {{view Pad.TaskList
             id="multitaskselectionview"
@@ -79,10 +84,12 @@
             style="form"
             label="SlickGrid"
             paged=true
-            pageSize=3
+            pageSize=7
+            remotePaging=true
         }}
 
           <p>Selected SlickGrid Multiple Items : 
+            {{debug}}
               {{#each item in Pad.taskMultiSelectListController.rowSelection}}
                 <{{item.title}}>
               {{/each}}
