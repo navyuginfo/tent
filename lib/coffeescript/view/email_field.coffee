@@ -17,3 +17,6 @@ Tent.EmailTextField = Tent.TextField.extend
 
 	isValueEmpty: (value) ->
 		not (value? && value != '')
+
+	change: ->
+		alert("EmailField : " + @get('value'))

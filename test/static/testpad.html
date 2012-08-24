@@ -32,7 +32,9 @@
           {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true}}
           
 
-          {{view Tent.EmailTextField value="test@test.com" label="Email input" placeholder="Enter email.." isMandatory=true}}
+          {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  }}
+          <p>email : {{Pad.email}}</p>
+
           {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
            
           
