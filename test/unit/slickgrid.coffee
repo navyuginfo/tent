@@ -22,6 +22,8 @@ setup = ->
 
 	@TemplateTests.testController = Tent.Controllers.GridController.create(
 		content: TemplateTests.store.findAll(Tent.Fixtures.ListDataModel)
+		store: TemplateTests.store
+		modelType: Tent.Fixtures.ListDataModel
 		columns: [
 			{id: "id", name: "ID", field: "id", sortable: true},
 			{id: "title", name: "Title", field: "title", sortable: true},
@@ -56,15 +58,32 @@ test 'Test that rendering occurred correctly', ->
 	equal view.$('.slick-header-column').length, 7, 'There should be 7 columns'
 	ok view.$('.slick-row').length > 0, 'There should be at least one visible row'
 
-test 'Tests for paging', ->
+test 'Tests for client-side paging', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.SlickGrid
 				controllerBinding="TemplateTests.testController"
 				columnsBinding="TemplateTests.testController.columns"
 				paged=true
 				pageSize=3
+				remotePaging=false
 				id="taskselectionview"
 			}}'
 
 	appendView()
 	equal view.$('.slick-row').length, 3, 'There should be 3 rows per page'
+
+###
+test 'Tests for Tent.SingleSelectGrid ', ->
+	parentView = Ember.Object.create()
+		createGrid: ->
+			@grid = 
+				setSelectionModel: ->
+				onSelectedRowsChanged: ->
+					subscribe: ->	
+			
+
+	singleGrid = Tent.SingleSelectGrid.create
+		parent: parentView
+###
+
+	
