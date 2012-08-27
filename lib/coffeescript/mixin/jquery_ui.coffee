@@ -1,9 +1,14 @@
 
 
-Tent.JQWidget = Em.Mixin.create 
+Tent.JQWidget = Em.Mixin.create
+	
+	init: ->
+		@set('options', @_gatherOptions())
+		@_super()
+
 	didInsertElement: ->
 		# Make jQuery UI options available as Ember properties
-		@set('options', @_gatherOptions())
+		#@set('options', @_gatherOptions())
 
 		#Make sure that jQuery UI events trigger methods on this view.
 		@_gatherEvents(@get('options'))
@@ -41,9 +46,8 @@ Tent.JQWidget = Em.Mixin.create
 
 		# The view can specify a list of jQuery UI options that should be treated
 		# as Ember properties.
-
 		optionsCallback = (key) ->  
-			options[key] = @get(key)
+			options[key] = @get(key) || @get('defaultOptions')[key]
 
 			#Set up an observer on the Ember property. When it changes,
 			# call jQuery UI's `setOption` method to reflect the property onto
