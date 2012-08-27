@@ -24,7 +24,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
       @set('selection', @get('selected'))
     else 
       @set('selection', null) 
-  ).observes('list.selected')
+  ).observes('selected')
 
   _prompt: (-> 
     if !@get('multiple')
