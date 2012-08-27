@@ -7,11 +7,14 @@ require '../template/text_field'
 
 Tent.NumericTextField = Tent.TextField.extend
 	validate: ->
-		isValid = @_super()
+		didOtherValidationPass = @_super()
 		value = @get('value')
-		isValidNumber = isValid && @isValidNumber(value)
+		isValidNumber = @isValueEmpty(value) or @isValidNumber(value)
 		@addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber
-		isValidNumber
+		didOtherValidationPass && isValidNumber
+
+	isValueEmpty: (value) ->
+		not (value? && value != '')
 
 	isValidNumber: (value)->
 		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 

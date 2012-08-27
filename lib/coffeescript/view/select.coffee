@@ -12,8 +12,18 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
   init: ->
     @_super()
 
+  valueForMandatoryValidation: (->
+    if @get('multiple')
+      @get('selection')
+    else
+      @get('value')
+  ).property('value', 'selection')
+
   selectionDidChange: (->
-    @set('selection', @get('selected'))
+    if @get('selected') 
+      @set('selection', @get('selected'))
+    else 
+      @set('selection', null) 
   ).observes('selected')
 
   _prompt: (-> 
@@ -21,3 +31,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
       if prompt = @get('prompt') then prompt else "Please Select..." 
   ).property('prompt')
   
+  change: ->
+      @_super()
+      @set('isValid', @validate())

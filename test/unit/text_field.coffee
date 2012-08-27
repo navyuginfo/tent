@@ -73,4 +73,24 @@ test 'Ensure value is propagated back from DOM to controller', ->
   Ember.run ->
     TemplateTests.controller.set('content', 'resetValue') 
   equal view.$('input').val(), 'resetValue', 'DOM value is reset'
+
+test 'Ensure mandatory check', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label"
+      isMandatory=true
+      isValidBinding="isValid"}}'
+    name: 'foobar'
+    label: 'FooBar'
+
+  appendView()
+  Ember.run ->
+    view.$('input').val('newValue')
+    view.$('input').trigger('change')
+  ok view.get('isValid')
+
+  Ember.run ->
+    view.$('input').val('')
+    view.$('input').trigger('change')
+  ok not view.get('isValid')  
   
