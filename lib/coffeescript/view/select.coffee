@@ -12,6 +12,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
   init: ->
     @_super()
 
+  
   _prompt: (-> 
     if !@get('multiple')
       if prompt = @get('prompt') then prompt else "Please Select..." 
