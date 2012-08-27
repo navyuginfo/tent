@@ -75,14 +75,12 @@ Tent.TableRow = Ember.View.extend
 Tent.TableCell = Ember.View.extend
   tagName: 'td'
   classNameBindings: ['isRadio:tent-width-small']
-  defaultTemplate: Ember.Handlebars.compile('{{view.value}}')
-  value: (->
-    row = @get('parentView').get('parentView').get('content')
-    if row 
-      _const = row.__proto__.constructor
-      if _const is Object then row[@get('content')] else row.get(@get('content'))
-    else '' 
-  ).property('content', 'parentView')
+  defaultTemplate: (->
+    Ember.Handlebars.compile('{{view.row.'+ @get('content') + '}}')
+  ).property('row', 'content')
+  row: (->
+    @get('parentView').get('parentView').get('content')
+  ).property('parentView')
 
 Tent.TableHeader = Ember.View.extend
   tagName: 'th'
