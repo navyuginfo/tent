@@ -27,13 +27,15 @@
 	Pad.email = "test@test.com"
 	Pad.numeric = 123.456
 
-	Pad.people = [
+	###Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
 		Ember.Object.create({name: 'Raghu', age: 1000})
 		Ember.Object.create({name: 'Sakshi', age: 21})
 		Ember.Object.create({name: 'Amit', age: 30})
 		Ember.Object.create({name: 'Khajan', age: 31})          
-	]
+	]###
+
+	Pad.columns = "name,age"
 
 	selectedPerson = {}
 	Tent.Enumeration =

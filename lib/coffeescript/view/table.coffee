@@ -13,11 +13,11 @@ Tent.Table = Ember.View.extend
   tagName: 'table'
   templateName: 'table'
   _columnHeaders: (->
-    @get('headers').split(',')
+    @get('headers').split(',') if @get('headers')?
   ).property('headers')
   visibleHeaders: (-> @get('_columnHeaders')).property('_columnHeaders')
   _columns: (->
-    @get('columns').split(',')
+    @get('columns').split(',') if @get('columns')?
     ).property('columns')
   visibleColumns: (-> @get('_columns')).property('_columns')
 
@@ -79,8 +79,7 @@ Tent.TableCell = Ember.View.extend
   value: (->
     row = @get('parentView').get('parentView').get('content')
     if row 
-      _const = row.__proto__.constructor
-      if _const is Object then row[@get('content')] else row.get(@get('content'))
+      Ember.get(row, this.get('content'))      
     else '' 
   ).property('content', 'parentView')
 

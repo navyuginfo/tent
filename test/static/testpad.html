@@ -57,8 +57,36 @@
       {{#view Tent.Panel span="7" name="Main Content"}}
         <p>Tag {{view Tent.Tag text="Important"}}</p>
         <h3>Table</h3>
-        {{view Tent.Table listBinding="Pad.people" headers="Name,Age" columns="name,age" selectionBinding="Pad.selectedPerson" multiselection=true defaultSelectionBinding="Pad.selectedPerson" isEditable=true}}
-        <p>Selected Person is {{Pad.selectedPerson.name}}</p>
+
+        
+        {{view Tent.Table listBinding="Pad.people" 
+            headers="Name,Age" 
+            columnsBinding="Pad.columns" 
+            selectionBinding="Pad.selectedPerson" 
+            defaultSelectionBinding="Pad.selectedPerson" 
+            isEditable=true}}
+
+        <p>Selected Person is 
+            {{#each person in Pad.selectedPerson}}
+              {{person.name}}
+            {{/each}}
+        </p>
+
+        <h3>Multi-select Table</h3>
+        {{view Tent.Table listBinding="Pad.people" 
+            headers="Name,Age" 
+            columns="name,age" 
+            selectionBinding="Pad.multiSelectedPerson" 
+            multiselection=true 
+            defaultSelectionBinding="Pad.multiSelectedPerson" 
+            isEditable=true}}
+
+        <p>Selected People are 
+          {{#each person in Pad.multiSelectedPerson}}
+            {{person.name}}
+          {{/each}}
+        </p>
+
 
         <h3>SlickGrid</h3>
         {{view Pad.TaskList
