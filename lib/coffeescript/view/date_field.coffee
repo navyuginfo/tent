@@ -26,14 +26,15 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@_super()
 		@.$('input').datepicker(@get('options'))
 	
-	#gatherOptions: ->
-	#	@set('options', $.extend({}, @get('defaultOptions'), @get('options')))
+	change: ->
+    	@_super()
+    	@set('isValid', @validate())
 
 	validate: ->
 		isValid = @_super()
 		isValidDate = true
 		try
-			@unFormat(@get('formattedValue'))
+			isValidDate = $.datepicker.parseDate(@get('options').dateFormat, @get("formattedValue"))
 		catch e
 			isValidDate = false
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless isValidDate
