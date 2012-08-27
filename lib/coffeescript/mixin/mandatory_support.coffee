@@ -11,13 +11,15 @@ Tent.MandatorySupport = Ember.Mixin.create
 
 	validate: ->
 		isValid = @_super()
-		value = @get('value')
+		value = @get('valueForMandatoryValidation')
 		isValid = isValid && ((not @isMandatory) or (not @isValueEmpty(value)))
 		@addValidationError(Tent.messages.MANDATORY_ERROR) unless isValid
 		isValid
 
 	isValueEmpty: (value) ->
-		not (value? && value != '')
+		not (value? && value != '' && (if value.length? then value.length > 0 else true))
+
+
 
 
 

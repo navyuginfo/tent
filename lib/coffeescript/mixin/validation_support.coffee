@@ -6,14 +6,14 @@
 Tent.ValidationSupport = Ember.Mixin.create  
   isValid: true
   
-  validate: -> 
+  validate: ->
     @flushValidationErrors()
     true
 
   hasErrors: (->
-    (!@validate() if @validate?) || false
-    #return not @get('isValid')
-  ).property('value') 
+    #(!@validate() if @validate?) || false
+    return not @get('isValid')
+  ).property('isValid') 
 
   observesErrors: (->
     classNames = @get('classNames')
@@ -30,7 +30,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     # Do we need more than one error?
     @get('validationErrors').push(error)
 
-
+ 
 
  
 
