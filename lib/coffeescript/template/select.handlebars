@@ -10,4 +10,10 @@
          multipleBinding="view.multiple"
          promptBinding = "view._prompt" 
          valueBinding = "view.value"}} 
+	
+	{{#if view.hasErrors}}
+    	{{#each error in view.validationErrors}}
+      		<span class="help-inline">{{view.validationErrors}}</span>
+    	{{/each}}
+  	{{/if}} 
 </div>

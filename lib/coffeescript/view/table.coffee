@@ -13,11 +13,11 @@ Tent.Table = Ember.View.extend
   tagName: 'table'
   templateName: 'table'
   _columnHeaders: (->
-    @get('headers').split(',')
+    @get('headers').split(',') if @get('headers')?
   ).property('headers')
   visibleHeaders: (-> @get('_columnHeaders')).property('_columnHeaders')
   _columns: (->
-    @get('columns').split(',')
+    @get('columns').split(',') if @get('columns')?
     ).property('columns')
   visibleColumns: (-> @get('_columns')).property('_columns')
 
