@@ -10,12 +10,20 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		'showOn', 'buttonImage', 'showAnim'
 	]
 	classNames: ['tent-date-field']
+	
+	placeholder: (->
+		@get('options').dateFormat
+	).property('options.dateFormat')
+
+	valueForMandatoryValidation: (->
+		@get('formattedValue')
+	).property('formattedValue')
 
 	defaultOptions: 
 		dateFormat: "mm/dd/yy"
 		changeMonth: true
 		changeYear: true
-		showOn: "both"
+		showOn: "button"
 		buttonImage: "images/calendar.gif"
 		buttonImageOnly: true
 
@@ -34,7 +42,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		isValid = @_super()
 		isValidDate = true
 		try
-			isValidDate = $.datepicker.parseDate(@get('options').dateFormat, @get("formattedValue"))
+			isValidDate = (@get("formattedValue")=="") or $.datepicker.parseDate(@get('options').dateFormat, @get("formattedValue"))
 		catch e
 			isValidDate = false
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless isValidDate
