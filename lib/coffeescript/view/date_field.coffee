@@ -7,7 +7,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 
 		'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths',
 		'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 
-		'showOn', 'buttonImage', 'showAnim'
+		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim'
 	]
 	classNames: ['tent-date-field']
 	
@@ -24,7 +24,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		changeMonth: true
 		changeYear: true
 		showOn: "button"
-		buttonImage: "images/calendar.gif"
+		buttonImage: "stylesheet/images/calendar.gif"
 		buttonImageOnly: true
 
 	init: ->		 
