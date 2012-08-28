@@ -20,9 +20,9 @@
 
       {{#view Tent.Panel span="5"}}
         {{#view Tent.Form name="Fields"}}
-          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input"}}
+          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.."}}
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
-          {{view Tent.TextField label="Mandatory input" isMandatory=true}}
+          {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
           {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true}}
           {{view Tent.AmountField value="10000" label="Amount input" currency="EUR" isMandatory=true}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
@@ -36,7 +36,9 @@
           <p>email : {{Pad.email}}</p>
 
           {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
-           
+
+          {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatory=true}}
+
           
         {{/view}}
 
@@ -50,6 +52,7 @@
               <li>{{state.stateName}}: {{state.stateCode}}</li>
             {{/each}}
           </ul>
+          <p>Signature Date : {{Pad.date}}</p>
         {{/view}}
 
       {{/view}}

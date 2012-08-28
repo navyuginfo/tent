@@ -26,6 +26,8 @@
 	Pad.editableName = "Tent Uneditable"
 	Pad.email = "test@test.com"
 	Pad.numeric = 123.456
+	Pad.dateFormat= "dd/mm/yy"
+	Pad.date = new Date()
 
 	###Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
