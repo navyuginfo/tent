@@ -95,10 +95,11 @@
         {{view Pad.TaskList
           id="taskselectionview"
           controllerBinding="Pad.taskListController"
+          contentBinding="Pad.taskListController.content"
           multiSelect=false
           paged=true
           pageSize=7
-          remotePaging=true
+          remotePaging=false
           options="{\"enableColumnReorder\": false}"
         }}
         
@@ -107,12 +108,13 @@
         {{view Pad.TaskList
             id="multitaskselectionview"
             controllerBinding="Pad.taskMultiSelectListController"
+            contentBinding="Pad.taskListController.content"
             multiSelect=true
             style="form"
             label="SlickGrid"
             paged=true
             pageSize=7
-            remotePaging=true
+            remotePaging=false
         }}
 
           <p>Selected SlickGrid Multiple Items : 

@@ -20,6 +20,22 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	multiSelect: false
 	listBinding: 'controller.list'
 
+	list: (->
+		return @getArrayFromRecordArray(@get('content')) if @get('content')
+	).property('content')
+
+	getArrayFromRecordArray: (recordArray)-> 
+		_list = []
+		for item in recordArray.toArray()
+			if item?
+				# TO REMOVE: this is here to show that the sort is being applied
+				#json = item.toJSON()
+				#json.title += Math.round(Math.random() * 100)
+				#_list.push json
+				_list.push item.toJSON()
+		return _list
+
+
 	defaults:  
 		enableCellNavigation: true
 		enableColumnReorder: true
@@ -45,9 +61,12 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
-		@get('controller').set('rowSelection', @get('rowSelection'))
+		if @get('selection')
+			@set('selection', @get('rowSelection'))
+		else
+			@get('controller').set('rowSelection', @get('rowSelection'))
 	).observes 'rowSelection'
-	 
+	
 	didInsertElement: ->
 		@renderGrid()
 
@@ -79,9 +98,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 
 	createGrid: ->
 		if @get("remotePaging")
-			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems() || [], @get('columns'), @get('options')))
+			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView').getItems() || [], @get('adaptedColumns'), @get('options')))
 		else
-			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('columns'), @get('options')))
+			@set('grid', new Slick.Grid(@.$().find(".grid"), @get('dataView'), @get('adaptedColumns'), @get('options')))
 		return @get('grid')
 
 	setDataViewItems: (items)->
@@ -117,11 +136,15 @@ Tent.SlickGrid.STYLES =
 Tent.SingleSelectGrid = Ember.Object.extend
 	
 	createGrid: ->
+		@_initializeColumns()
 		grid = @get('parent').createGrid()
 		grid.setSelectionModel(new Slick.RowSelectionModel())
 		@_listenForDisplayedContentChange(grid)
 		@_listenForSelectedRowsChange(grid)
 	
+	_initializeColumns: ->
+		@get('parent').set('adaptedColumns', @get('parent').get('columns'))
+
 	# If new rows are selected, update the controller with the new selected objects
 	_listenForSelectedRowsChange: (grid) ->
 		grid.onSelectedRowsChanged.subscribe((e, args) =>
@@ -166,7 +189,9 @@ Tent.MultiSelectGrid = Ember.Object.extend
 		return grid
 
 	_addCheckboxesAsFirstColumn: (checkboxSelector)->
-		@get('parent').get('columns').splice(0,0,checkboxSelector.getColumnDefinition())
+		adaptedColumns = $.merge([], @get('parent').get('columns'))
+		adaptedColumns.splice(0,0,checkboxSelector.getColumnDefinition())
+		@get('parent').set('adaptedColumns', adaptedColumns)
 
 	# If new rows are selected, update the controller with the new selected objects
 	_listenForSelectedRowsChange: (grid) ->
