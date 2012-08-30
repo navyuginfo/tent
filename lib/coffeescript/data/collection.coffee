@@ -1,10 +1,14 @@
-require('coffeescript/models/task_model')
+require './pager'
+require './sorter'
 
-Pad.Controllers.TaskListController = Tent.Controllers.GridController.extend
-	modelType: Pad.Models.TaskModel
-	content: Pad.dataStore.findAll(Pad.Models.TaskModel)
-	store: Pad.dataStore
-	columns: [
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter,
+	content: null
+	dataType: null
+	serverPaging: false
+	liveStreaming: false
+	store: null
+
+	columnsDescriptor: [
 		{id: "id", name: "ID", field: "id", sortable: true},
 		{id: "title", name: "Title", field: "title", sortable: true},
 		{id: "duration", name: "Duration", field: "duration", sortable: true},
@@ -14,3 +18,9 @@ Pad.Controllers.TaskListController = Tent.Controllers.GridController.extend
 		{id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
 	]
 
+	init: ->
+		@update()
+
+	update: ->
+		if @get('dataType')? && @get('store')? 
+			@set('content', @get('store').findAll(eval @get('dataType')))

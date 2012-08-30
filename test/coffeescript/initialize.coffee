@@ -7,6 +7,8 @@
 	loader.require('ember-data')
 	loader.require('tent')
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/store/datastore')
+
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
 
@@ -17,6 +19,8 @@
 		revision: 4,
 		adapter: Pad.pagingAdapter
 	});
+
+	Pad.dataStore = Pad.DataStore.create()
 
 	loader.require('coffeescript/view/task_list')
 	loader.require('coffeescript/controllers/task_list_controller')

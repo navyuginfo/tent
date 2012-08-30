@@ -1,0 +1,7 @@
+Add paging mixin
+Add sorting mixin
+Add filtering mixin
+Create mock DataSource with Ember fixtures
+Add init() method to collection
+Add customFilter mixin
+

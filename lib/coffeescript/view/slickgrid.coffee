@@ -1,5 +1,6 @@
 require "./table"
 require "../template/slick"
+require "../data/collection"
 require "vendor/scripts/jquery-ui-1.8.16.custom.min"
 require "vendor/scripts/jquery.event.drag-2.0.min"
 require "vendor/scripts/slick.rowselectionmodel"
@@ -19,6 +20,29 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	grid: null
 	multiSelect: false
 	listBinding: 'controller.list'
+	dataType: null
+	dataStore: null
+	contentBinding: 'collection.content'
+	columnsBinding: 'collection.columnsDescriptor'
+
+	defaults:  
+		enableCellNavigation: true
+		enableColumnReorder: true
+		multiColumnSort: true
+
+	init: ->
+		@_super()
+		@ensureCollectionAvailable()
+		@set('delegate', if @get('multiSelect') then Tent.MultiSelectGrid.create({parent: @}) else Tent.SingleSelectGrid.create({parent:@}))
+
+	ensureCollectionAvailable: ->
+		if !@get('collection')
+			collection = Tent.Data.Collection.create
+				store: @get('dataStore')
+				dataType: @get('dataType')
+				projection: @get('projection') || 'default'
+			@set('collection', collection)
+
 
 	list: (->
 		return @getArrayFromRecordArray(@get('content')) if @get('content')
@@ -34,16 +58,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 				#_list.push json
 				_list.push item.toJSON()
 		return _list
-
-
-	defaults:  
-		enableCellNavigation: true
-		enableColumnReorder: true
-		multiColumnSort: true
-
-	init: ->
-		@_super()
-		@set('delegate', if @get('multiSelect') then Tent.MultiSelectGrid.create({parent: @}) else Tent.SingleSelectGrid.create({parent:@}))
 
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
@@ -61,21 +75,30 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
-		if @get('selection')
-			@set('selection', @get('rowSelection'))
-		else
-			@get('controller').set('rowSelection', @get('rowSelection'))
+		@set('selection', @get('rowSelection'))
 	).observes 'rowSelection'
 	
 	didInsertElement: ->
 		@renderGrid()
 
+	click: ->
+		console.log 'clicked'
+
+	readyToRender: ->
+		@get('columns')
+
+	columnsDidChange: (->
+		if @.$() 		# if dom ready
+			@renderGrid()
+	).observes('columns')
+
 	renderGrid: ->
-		@extendOptions()
-		@createDataView()
-		@get('delegate').createGrid()
-		@listenForSelections()
-		@get('grid').render()
+		if @readyToRender()
+			@extendOptions()
+			@createDataView()
+			@get('delegate').createGrid()
+			@listenForSelections()
+			@get('grid').render()
 
 	extendOptions: ->
 		# Allow custom options to be specified in the markup

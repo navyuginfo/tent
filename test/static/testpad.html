@@ -66,7 +66,7 @@
             headers="Name,Age" 
             columnsBinding="Pad.columns" 
             selectionBinding="Pad.selectedPerson" 
-            defaultSelectionBinding="Pad.selectedPerson" 
+            defaultSelectionBinding="Pad.selectedPerson"
             isEditable=true}}
 
         <p>Selected Person is 
@@ -92,38 +92,23 @@
 
 
         <h3>SlickGrid</h3>
-        {{view Pad.TaskList
-          id="taskselectionview"
-          controllerBinding="Pad.taskListController"
-          contentBinding="Pad.taskListController.content"
-          multiSelect=false
-          paged=true
-          pageSize=7
-          remotePaging=false
-          options="{\"enableColumnReorder\": false}"
-        }}
-        
-        <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
 
-        {{view Pad.TaskList
-            id="multitaskselectionview"
-            controllerBinding="Pad.taskMultiSelectListController"
-            contentBinding="Pad.taskListController.content"
-            multiSelect=true
-            style="form"
-            label="SlickGrid"
+        <h4>Using Collection</h4>
+        {{view Tent.SlickGrid
+            dataType="Pad.Models.TaskModel"
+            dataStoreBinding="Pad.dataStore"
+            projection="default"
+            selectionBinding="Pad.gridSelection"
+            id="usingcollection"
             paged=true
-            pageSize=7
-            remotePaging=false
+            pageSize=5
+            remotePaging=true
+            multiSelect=false
         }}
 
-          <p>Selected SlickGrid Multiple Items : 
-            {{debug}}
-              {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-                <{{item.title}}>
-              {{/each}}
-          </p>  
+         <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p>        
         
+           
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
