@@ -1,6 +1,9 @@
 
 setup = ->
-	Pager = Ember.Object.extend Tent.Data.Pager
+	Pager = Ember.Object.extend Tent.Data.Pager,
+		update: (type) ->
+		REQUEST_TYPE: {}
+
 	@pager = Pager.create()
 teardown = ->
 	@pager = null
@@ -29,9 +32,23 @@ test 'Current page', ->
 
 	pager.set('currentPage', 2)
 	equal pager.get('_page'), 2, 'Move to page 2'
-	pager.set('currentPage', 4)
-	equal pager.get('_page'), 2, 'Invalid page, remain at previous page'
 
+test 'GotoPage', ->
+	pager.set('pageSize', 4)
+	pager.goToPage(2)
+	equal pager.get('_page'), 2, 'Goto page 2'
+
+test 'NextPage, PrevPage', ->
+	pager.set('pageSize', 4)
+	pager.goToPage(2)
+	pager.nextPage()
+	equal pager.get('_page'), 3, 'Next page'
+	pager.prevPage()
+	equal pager.get('_page'), 2, 'Prev page'
+
+
+###
+tests for client paging
 test 'Content', ->
 	pager.set('data', [51,52,53,54,55,56,57,58])
 	pager.set('pageSize', 7)
@@ -40,6 +57,7 @@ test 'Content', ->
 	pager.set('currentPage', 2)
 	content = pager.get('content')
 	equal content.length, 1, 'Second page contains one item'
+
 
 test 'GotoPage', ->
 	pager.set('data', [51,52,53,54,55,56,57,58,59,60,61,62,63,64])
@@ -59,7 +77,7 @@ test 'NextPage, PrevPage', ->
 	equal pager.get('content')[0], 59, 'Next page'
 	pager.prevPage()
 	equal pager.get('content')[0], 55, 'Prev page'
-	
+###
 	
 
 

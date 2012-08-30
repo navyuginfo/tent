@@ -43,6 +43,9 @@ teardown = ->
 
 module "Tent.SlickGrid", setup, teardown
 
+###
+
+Turn off tests until final approach with collections is determined
 test 'Test that rendering occurred correctly', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.SlickGrid
@@ -72,18 +75,7 @@ test 'Tests for client-side paging', ->
 	appendView()
 	equal view.$('.slick-row').length, 3, 'There should be 3 rows per page'
 
-###
-test 'Tests for Tent.SingleSelectGrid ', ->
-	parentView = Ember.Object.create()
-		createGrid: ->
-			@grid = 
-				setSelectionModel: ->
-				onSelectedRowsChanged: ->
-					subscribe: ->	
-			
 
-	singleGrid = Tent.SingleSelectGrid.create
-		parent: parentView
 ###
 
 	

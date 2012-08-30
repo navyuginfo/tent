@@ -4,9 +4,11 @@ require './sorter'
 Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter,
 	content: null
 	dataType: null
+	data: []
 	serverPaging: false
 	liveStreaming: false
 	store: null
+	REQUEST_TYPE: {'ALL': 'all'}
 
 	columnsDescriptor: [
 		{id: "id", name: "ID", field: "id", sortable: true},
@@ -19,8 +21,12 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	]
 
 	init: ->
-		@update()
+		@_super()
+		@update(@REQUEST_TYPE)
 
-	update: ->
+	update: (requestType)->
 		if @get('dataType')? && @get('store')? 
-			@set('content', @get('store').findAll(eval @get('dataType')))
+			query = $.extend({}, 
+				{type: requestType}, 
+				{paging: @getPagingInfo()})
+			@set('data', @get('store').findQuery(eval(@get('dataType')), query))

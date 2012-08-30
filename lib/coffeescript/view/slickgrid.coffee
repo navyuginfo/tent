@@ -19,10 +19,9 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	rowSelection: null
 	grid: null
 	multiSelect: false
-	listBinding: 'controller.list'
 	dataType: null
 	dataStore: null
-	contentBinding: 'collection.content'
+	 
 	columnsBinding: 'collection.columnsDescriptor'
 
 	defaults:  
@@ -41,23 +40,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 				store: @get('dataStore')
 				dataType: @get('dataType')
 				projection: @get('projection') || 'default'
+				pageSize: @get('pageSize')
 			@set('collection', collection)
-
-
-	list: (->
-		return @getArrayFromRecordArray(@get('content')) if @get('content')
-	).property('content')
-
-	getArrayFromRecordArray: (recordArray)-> 
-		_list = []
-		for item in recordArray.toArray()
-			if item?
-				# TO REMOVE: this is here to show that the sort is being applied
-				#json = item.toJSON()
-				#json.title += Math.round(Math.random() * 100)
-				#_list.push json
-				_list.push item.toJSON()
-		return _list
 
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
@@ -68,10 +52,10 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@setDataViewItems()
 			@get('grid').invalidate()
 			if @get('remotePaging')
-				@get('grid').setData(@get('list'))
+				@get('grid').setData(@get('collection.content'))
 				@get('dataView').listDataDidChange()
 			@get('grid').render()
-	).observes 'list'
+	).observes 'collection.content'
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
@@ -127,7 +111,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		return @get('grid')
 
 	setDataViewItems: (items)->
-		dataItems = if items? then items else @get('list')
+		dataItems = if items? then items else @get('collection.content')
 		if dataItems?
 			@get('dataView').beginUpdate();
 			@get('dataView').setItems(dataItems);

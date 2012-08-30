@@ -54,5 +54,5 @@ Tent.GridPagingSupport = Ember.Mixin.create
 		)
 
 	page: (pagingInfo)->
-		@get('collection').gotoPage(pagingInfo.pageNum)
+		@get('collection').goToPage(pagingInfo.pageNum+1)
 

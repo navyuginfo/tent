@@ -19,8 +19,8 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 		   		return fixtures
 
 	getPage: (fixtures, query) ->
-		start = query.pageNum * query.pageSize
-		end = start + query.pageSize - 1
+		start = (query.paging.pageNum - 1) * query.paging.pageSize
+		end = start + query.paging.pageSize - 1
 		if (end > fixtures.length) then end = fixtures.length 
 		return fixtures[start..end]
 
