@@ -3,6 +3,7 @@ Tent.Data.Pager = Ember.Mixin.create
 	paged: false
 	pageSize: 10
 	_page: 1
+	_totalRows: 27
 
 	init: ->
 		@_super()
@@ -28,9 +29,12 @@ Tent.Data.Pager = Ember.Mixin.create
 		return true #server side paging only => will fail until new data arrives
 
 	totalPages: (->
-		data = @get('data') || []
-		Math.ceil(data.length / @get('pageSize'))
-	).property('data', 'pageSize')
+		@get('_totalPages') || (Math.max(1, Math.ceil(@get('totalRows') / @get('pageSize')))) || 1
+	).property('_totalPages','totalRows', 'pageSize')
+
+	totalRows: (->
+		@get('_totalRows') || @get('totalPages') * @get('pagesize') || 1
+	).property('_totalRows', 'totalPages', 'pageSize')
 
 	goToPage: (page) ->
 		@set('currentPage', page)

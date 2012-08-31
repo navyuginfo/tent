@@ -15,12 +15,14 @@ require '../mixin/grid_paging_support'
 # TODO: refactor out single and multi select code
 
 Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, 
+	classNames: ['slickgrid']
 	templateName: 'slick'
 	rowSelection: null
 	grid: null
 	multiSelect: false
 	dataType: null
 	dataStore: null
+
 	 
 	columnsBinding: 'collection.columnsDescriptor'
 
@@ -28,6 +30,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		enableCellNavigation: true
 		enableColumnReorder: true
 		multiColumnSort: true
+		
 
 	init: ->
 		@_super()
@@ -83,6 +86,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@get('delegate').createGrid()
 			@listenForSelections()
 			@get('grid').render()
+			@setupFilter()
 
 	extendOptions: ->
 		# Allow custom options to be specified in the markup
@@ -94,9 +98,10 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		if @get("remotePaging")
 			@set('dataView', Tent.RemotePagedData.create(
 				parentView: @
+				collection: @get('collection')
 			))
 		else
-			@set('dataView', new Slick.Data.DataView())
+			@set('dataView', new Slick.Data.DataView({inlineFilters: true}))
 
 		if @get("pageSize")
 			@get('dataView').setPagingOptions({pageSize: @get("pageSize")})
@@ -125,6 +130,14 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		@get('dataView').onRowsChanged.subscribe((e, args) =>
 			@get('grid').invalidateRows(args.rows)
 			@get('grid').render()
+		)
+
+	setupFilter: ->
+		@.$('.filter-toggle').click( =>
+			if $(@get('grid').getTopPanel()).is(":visible")
+				@get('grid').hideTopPanel()
+			else
+				@get('grid').showTopPanel()
 		)
 
 	willDestroyElement: ->
@@ -273,26 +286,25 @@ Tent.MultiSelectGrid = Ember.Object.extend
 
 Tent.RemotePagedData = Ember.Object.extend
 	parentView: null
-	pagesize: 5
+	collection: null
 	pagenum: 0
-	totalRows: 9
 	selectedRowIds: []
 	onPagingInfoChanged: new Slick.Event()
 	onRowCountChanged: new Slick.Event()
 	onRowsChanged: new Slick.Event()
 
 	getPagingInfo: ->
-		@totalPages = if @pagesize then Math.max(1, Math.ceil(@totalRows / @pagesize)) else 1
-		return {pageSize: @pagesize, pageNum: @pagenum, totalRows: @totalRows, totalPages: @totalPages}
+		@set('totalPages', if @get('collection.pageSize') then Math.max(1, Math.ceil(@get('collection.totalRows') / @get('collection.pageSize'))) else 1)
+		return {pageSize: @get('collection.pageSize'), pageNum: @get('pagenum'), totalRows: @get('collection.totalRows'), totalPages: @get('totalPages')}
     
     # This will be called by the slick pager plugin
 	setPagingOptions: (args) ->
 		if args.pageSize != undefined
 			@pagesize = args.pageSize
-			@pagenum = if @pagesize then Math.min(@pagenum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1)) else 0
+			@pagenum = if @get('collection.pageSize') then Math.min(@pagenum, Math.max(0, Math.ceil(@get('collection.totalRows') / @get('collection.pageSize')) - 1)) else 0
 		
 		if args.pageNum != undefined
-			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@totalRows / @pagesize) - 1))
+			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@get('collection.totalRows') / @get('collection.pageSize')) - 1))
 
 		@get("parentView").page(@getPagingInfo())
 	
@@ -317,3 +329,4 @@ Tent.RemotePagedData = Ember.Object.extend
 	setRefreshHints: ->
 	syncPagedGridSelection: ->
 	syncGridSelection: ->
+

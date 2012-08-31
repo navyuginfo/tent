@@ -1,6 +1,12 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
 
+.grid-header, 
+.pager *
+{
+	box-sizing: border-box; 
+}
+
 .tent-button-group{
   position: relative; 
 }
@@ -13,14 +19,46 @@
   width: 20px;
 }
 
-.slick-row {
-	&:hover {
-		background-color: whiteSmoke;
+/* Slickgrid Overrides */
+
+.slickgrid {
+
+	.grid {
+		border-left: 1px solid #aaa;
+		border-right: 1px solid #aaa;
+	}
+
+	.slick-row {
+		&:hover {
+			background-color: whiteSmoke;
+		}
+	}
+	.slick-cell {
+		&.selected {
+			background-color: #eff;
+		}
+	}
+
+	.grid-header {
+		box-sizing: border-box; 
+		color: #333;
+		padding: 3px;
+
+		label {
+			display: inline;
+			margin-bottom: 0px;
+		}
+		.button-bar {
+			float: right;
+			.ui-icon {
+				float: right;
+			}
+		}
+	}
+
+	.slick-pager {
+		border: 1px solid #aaa;
 	}
 }
-.slick-cell {
-	&.selected {
-		background-color: #eff;
-	}
-}
+
 

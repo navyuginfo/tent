@@ -12,9 +12,9 @@ teardown = ->
 module 'Tent.Data.Pager', setup, teardown	
 
 test 'Total pages', ->
-	equal pager.get('totalPages'), 0, 'Initially no pages'
 	pager.set('data', [51,52,53,54,55,56,57,58])
 	pager.set('pageSize', 7)
+	pager.set('_totalRows', 8)
 	equal pager.get('totalPages'), 2, 'Total pages should be 2'
 	pager.set('pageSize', 8)
 	equal pager.get('totalPages'), 1, 'Total pages should be 1'
