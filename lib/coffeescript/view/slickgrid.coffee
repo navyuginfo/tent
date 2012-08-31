@@ -1,7 +1,7 @@
 require "./table"
 require "../template/slick"
 require "../data/collection"
-require "vendor/scripts/jquery-ui-1.8.16.custom.min"
+require "vendor/scripts/jquery-ui-1.8.23.custom"
 require "vendor/scripts/jquery.event.drag-2.0.min"
 require "vendor/scripts/slick.rowselectionmodel"
 require "vendor/scripts/slick.checkboxselectcolumn"
@@ -11,10 +11,11 @@ require "vendor/scripts/slick.core"
 require "vendor/scripts/slick.grid"
 require '../mixin/grid_sorting_support'
 require '../mixin/grid_paging_support'
+require '../mixin/grid_filtering_support'
 
 # TODO: refactor out single and multi select code
 
-Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, 
+Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, Tent.GridFilteringSupport,
 	classNames: ['slickgrid']
 	templateName: 'slick'
 	rowSelection: null
@@ -22,6 +23,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	multiSelect: false
 	dataType: null
 	dataStore: null
+	columnFilters: {}
+	useColumnFilters: false
 
 	 
 	columnsBinding: 'collection.columnsDescriptor'
@@ -87,11 +90,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@listenForSelections()
 			@get('grid').render()
 			@setupFilter()
+			@setupColumnFilters()
 
 	extendOptions: ->
 		# Allow custom options to be specified in the markup
 		# e.g. {{view Pad.CustomList ... options="{\"enableColumnReorder\": false}"
 		customOptions = if @get("options") then JSON.parse(@get('options')) else {}
+		customOptions.showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
 		@set("options", $.extend({}, @get('defaults'), customOptions))
 
 	createDataView: -> 
@@ -131,14 +136,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@get('grid').invalidateRows(args.rows)
 			@get('grid').render()
 		)
-
-	setupFilter: ->
-		@.$('.filter-toggle').click( =>
-			if $(@get('grid').getTopPanel()).is(":visible")
-				@get('grid').hideTopPanel()
-			else
-				@get('grid').showTopPanel()
-		)
+  	
 
 	willDestroyElement: ->
 		@get('grid').onClick.unsubscribe(->)
@@ -329,4 +327,6 @@ Tent.RemotePagedData = Ember.Object.extend
 	setRefreshHints: ->
 	syncPagedGridSelection: ->
 	syncGridSelection: ->
+	refresh: ->
+
 

@@ -59,6 +59,14 @@
 	.slick-pager {
 		border: 1px solid #aaa;
 	}
+
+	.slick-headerrow {
+		input, select {
+			height: 8px;
+			width: 5em;
+			font-size: 0.8em;
+		}
+	}
 }
 
 
