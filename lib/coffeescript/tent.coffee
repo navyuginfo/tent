@@ -3,6 +3,8 @@
 # All rights reserved.
 #
 
+# TENT.JS
+
 require './namespace'
 require './util'
 require './view'

@@ -148,6 +148,49 @@ input "test" do
 end
 
 input "lib" do
+  match "coffeescript/**/*.coffee" do
+    coffee_script
+    filter RequireRewriteFilter
+    minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
+      puts input.path
+      id = input.path.dup
+      id.gsub!(/^coffeescript\//, '')
+      RequireRewriteFilter.module_id(id)
+    }
+    if ENV['RACK_ENV'] == 'production'
+      uglify
+    end
+    concat "javascript/tent.js"
+  end
+
+  match "vendor/**/*.js" do
+    filter RequireRewriteFilter
+    minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
+      id = input.path.dup
+      id.gsub!(/^coffeescript\//, '')
+      RequireRewriteFilter.module_id(id)
+    }
+    if ENV['RACK_ENV'] == 'production'
+      uglify
+    end
+    concat "javascript/tent.js"
+  end
+
+  match "**/*.handlebars" do
+    handlebars :key_name_proc => proc { |input| 
+      %r{template/(.*).handlebars}.match(input.path)
+      $1
+    }
+    filter RequireRewriteFilter
+    minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
+      RequireRewriteFilter.module_id(input.path)
+    }
+    if ENV['RACK_ENV'] == 'production'
+      uglify
+    end
+    concat "javascript/tent.js"
+  end
+
   match /^stylesheet\/tent.scss/ do
     sass additional_load_paths: 'lib/stylesheet/',
       load_paths: GemHelpers.sass_load_paths('bootstrap-sass')
@@ -198,7 +241,7 @@ input "lib" do
 end
 
 input "tmp/build" do
-  output 'public/dist'
+  output 'dist'
   match "tent.js" do
     neuter(
       :additional_dependencies => proc { |input|
@@ -212,6 +255,13 @@ input "tmp/build" do
     ) do |filename|
       'tent.js'
     end
+  end
+end
+
+input "dist" do
+  output "public/dist"
+  match "tent.js" do
+    concat "tent.js"
   end
 end
 
