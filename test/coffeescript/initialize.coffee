@@ -1,11 +1,6 @@
 
 ((loader) -> 
 	
-	loader.require('jquery')
-	loader.require('handlebars')
-	loader.require('ember')
-	loader.require('ember-data')
-	loader.require('tent')
 	loader.require('coffeescript/app')
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')

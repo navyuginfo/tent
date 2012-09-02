@@ -1,4 +1,4 @@
-require 'tent'
+
 setup = (->
   @TemplateTests = Ember.Namespace.create()
 )

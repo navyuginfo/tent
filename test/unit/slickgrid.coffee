@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-require 'ember-data'
 require '~test/mocks/ember_data_mocks'
 require('~test/fixtures/list_data_model')
 

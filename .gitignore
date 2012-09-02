@@ -38,6 +38,7 @@ application.css
 
 # Generated stuff
 public/
+dist/
 
 # Asset pipeline filter
 .bundle
