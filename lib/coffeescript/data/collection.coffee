@@ -1,7 +1,8 @@
 require './pager'
 require './sorter'
+require './filter'
 
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter,
 	content: null
 	dataType: null
 	data: []
@@ -24,6 +25,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 				{}, 
 				{type: requestType}, 
 				{paging: @getPagingInfo()},
-				{sorting: @getSortingInfo()}
+				{sorting: @getSortingInfo()},
+				{filtering: @getFilteringInfo()}
 			)
 			@set('data', @get('store').findQuery(eval(@get('dataType')), query))

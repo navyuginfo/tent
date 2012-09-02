@@ -1,4 +1,8 @@
 Tent.GridFilteringSupport = Ember.Mixin.create
+	init: ->
+		@_super()
+		@get('defaults').showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
+
 	setupFilter: ->
 		@.$('.filter-toggle').click( =>
 			if $(@get('grid').getTopPanel()).is(":visible")
@@ -9,14 +13,14 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 
 	setupColumnFilters: ->
 		if @get('useColumnFilters')
+			@set('columnFilters', {})
 			grid = @get('grid')
 			columnFilters = @get('columnFilters')
 			grid.showHeaderRowColumns()
-			@set('columnFilters', {})
+			
 			that = this
 			$(grid.getHeaderRow()).delegate(":input", "change keyup", (e) ->
-				that.columnFilters[$(this).data("columnId")] = $.trim($(this).val())
-				that.get('dataView').refresh()
+				that.filterValueDidChange($(this).data("columnId"), $.trim($(this).val()))
 			)
 
 			@updateHeaderRow()
@@ -28,11 +32,17 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 			grid.onColumnsResized.subscribe((e, args) =>
 				@updateHeaderRow()
 			)
-			@get('dataView').setFilterArgs(
-				slickGrid: @
-			)
-			@get('dataView').setFilter(@columnFiltering)
 
+			if not @get('remotePaging')
+				@get('dataView').setFilterArgs(
+					slickGrid: @
+				)
+				@get('dataView').setFilter(@columnFiltering)
+
+	filterValueDidChange: (columnId, val) ->
+		this.columnFilters[columnId] = val
+		this.get('dataView').refresh()
+		
 	updateHeaderRow: ->
 		columnFilters = @get('columnFilters')
 		for col in @get('adaptedColumns')
@@ -56,3 +66,6 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 				if !re.test(item[c.field])
 					return false
 		return true
+
+	doFilter: ->
+		@get('collection').filter(@get('columnFilters'))

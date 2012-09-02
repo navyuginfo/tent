@@ -13,6 +13,8 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 				@doSort(fixtures, query.sorting)
 				# When sorting over multiple pages, we return the first page
 				return @getPage(fixtures, query.paging)
+			when 'filtering'
+				return @getPage(@doFilter(fixtures, query.filtering), query.paging)
 			else
 		   		return fixtures
 
@@ -45,5 +47,15 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 				result = -1 * sign
 		if result != 0
 			return result
+
+	doFilter: (fixtures, filters) ->
+		filteredFixtures = []
+		for item in fixtures
+			for columnId of filters
+				if columnId != undefined && filters[columnId] != ""
+					re = new RegExp("^" + filters[columnId],"i")
+					if re.test(item[columnId])
+						filteredFixtures.push(item)
+		return filteredFixtures
   	
 Pad.pagingAdapter = Pad.PagingAdapter.create();

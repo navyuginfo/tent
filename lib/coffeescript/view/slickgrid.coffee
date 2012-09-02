@@ -25,15 +25,12 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	dataStore: null
 	columnFilters: {}
 	useColumnFilters: false
-
-	 
 	columnsBinding: 'collection.columnsDescriptor'
 
 	defaults:  
 		enableCellNavigation: true
 		enableColumnReorder: true
 		multiColumnSort: true
-		
 
 	init: ->
 		@_super()
@@ -71,12 +68,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	didInsertElement: ->
 		@renderGrid()
 
-	click: ->
-		console.log 'clicked'
-
-	readyToRender: ->
-		@get('columns')
-
 	columnsDidChange: (->
 		if @.$() 		# if dom ready
 			@renderGrid()
@@ -92,11 +83,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@setupFilter()
 			@setupColumnFilters()
 
+	readyToRender: ->
+		@get('columns')
+
 	extendOptions: ->
 		# Allow custom options to be specified in the markup
 		# e.g. {{view Pad.CustomList ... options="{\"enableColumnReorder\": false}"
 		customOptions = if @get("options") then JSON.parse(@get('options')) else {}
-		customOptions.showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
 		@set("options", $.extend({}, @get('defaults'), customOptions))
 
 	createDataView: -> 
