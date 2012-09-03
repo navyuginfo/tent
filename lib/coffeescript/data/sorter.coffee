@@ -1,4 +1,6 @@
 Tent.Data.Sorter = Ember.Mixin.create
+	columnFilters: {}
+	
 	init: ->
 		@_super()
 		@REQUEST_TYPE.SORT = 'sorting'

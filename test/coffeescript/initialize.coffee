@@ -33,6 +33,18 @@
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
 
+
+	Pad.remoteCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: true
+
+	Pad.clientSideCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: false
+
+
 	###Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
 		Ember.Object.create({name: 'Raghu', age: 1000})

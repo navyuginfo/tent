@@ -1,4 +1,8 @@
 Tent.GridFilteringSupport = Ember.Mixin.create
+	columnFiltersBinding: 'collection.columnFilters'
+	
+	useColumnFilters: false
+
 	init: ->
 		@_super()
 		@get('defaults').showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
@@ -40,8 +44,8 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 				@get('dataView').setFilter(@columnFiltering)
 
 	filterValueDidChange: (columnId, val) ->
-		this.columnFilters[columnId] = val
-		this.get('dataView').refresh()
+		@get('columnFilters')[columnId] = val
+		@get('dataView').refresh()
 		
 	updateHeaderRow: ->
 		columnFilters = @get('columnFilters')
@@ -67,5 +71,3 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 					return false
 		return true
 
-	doFilter: ->
-		@get('collection').filter(@get('columnFilters'))

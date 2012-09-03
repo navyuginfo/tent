@@ -91,22 +91,44 @@
         </p>
 
 
+
         <h3>SlickGrid</h3>
 
-        <h4>Using Collection</h4>
+        <h4>Client-side Paging, Sorting, Filtering</h4>
         {{view Tent.SlickGrid
             label="Tasks"
-            dataType="Pad.Models.TaskModel"
-            dataStoreBinding="Pad.dataStore"
-            projection="default"
+            collectionBinding="Pad.clientSideCollection"
             selectionBinding="Pad.gridSelection"
-            id="usingcollection"
+            paged=true
+            pageSize=5
+            remotePaging=false
+            multiSelect=false
+            useColumnFilters=true
+        }}
+
+
+           
+        {{#view Tent.Form name="Filters"}}
+          {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
+          {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
+          {{view Tent.DateField formattedValueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
+        {{/view}}
+        {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
+        
+        <h4>Remote Paging, Sorting, Filtering</h4>
+        {{view Tent.SlickGrid
+            label="Tasks"
+            collectionBinding="Pad.remoteCollection"
+            selectionBinding="Pad.gridSelection"
             paged=true
             pageSize=5
             remotePaging=true
             multiSelect=false
-            useColumnFilters=true
+            useColumnFilters=false
         }}
+
+        <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
+
 
          <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p>        
         

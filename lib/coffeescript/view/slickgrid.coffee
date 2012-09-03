@@ -23,8 +23,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	multiSelect: false
 	dataType: null
 	dataStore: null
-	columnFilters: {}
-	useColumnFilters: false
 	columnsBinding: 'collection.columnsDescriptor'
 
 	defaults:  
@@ -45,6 +43,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 				projection: @get('projection') || 'default'
 				pageSize: @get('pageSize')
 			@set('collection', collection)
+		else
+			@get('collection').set('pageSize', @get('pageSize'))
 
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
@@ -129,7 +129,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@get('grid').invalidateRows(args.rows)
 			@get('grid').render()
 		)
-  	
 
 	willDestroyElement: ->
 		@get('grid').onClick.unsubscribe(->)

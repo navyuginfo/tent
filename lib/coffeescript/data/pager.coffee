@@ -52,10 +52,13 @@ Tent.Data.Pager = Ember.Mixin.create
 
 
 	getPagingInfo: ->
+		if @get('paged')
 			pageSize: @get('pageSize')
 			pageNum: @get('currentPage')
 			totalPages: @get('totalPages')
-
+		else
+			{}
+			
 	updatePagingInfo: (info) ->
 		@set('_totalRows', info.totalRows)
 		@set('_page', info.pageNum)

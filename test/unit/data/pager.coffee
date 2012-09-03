@@ -25,10 +25,10 @@ test 'Current page', ->
 	pager.set('data', [51,52,53,54,55,56,57,58])
 	pager.set('pageSize', 7)
 
-	equal pager.get('_page'), 1, 'Default page number'
-	equal pager.get('currentPage'), 1, 'Current page'
+	equal pager.get('_page'), 0, 'Default page number'
+	equal pager.get('currentPage'), 0, 'Current page'
 	pager.set('_page', 20)
-	equal pager.get('currentPage'), 1, 'Invalid page defaults to 1'
+	equal pager.get('currentPage'), 0, 'Invalid page defaults to 0'
 
 	pager.set('currentPage', 2)
 	equal pager.get('_page'), 2, 'Move to page 2'

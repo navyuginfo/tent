@@ -87,7 +87,7 @@ Pad.DataStore = Ember.Object.extend
 		for item in fixtures
 			passed = true
 			for columnId of filters
-				if columnId != undefined 
+				if columnId != undefined and filters[columnId]?
 					re = new RegExp("^" + filters[columnId],"i")
 					if !re.test(item[columnId])
 						passed = false
