@@ -18,7 +18,7 @@ Pad.DataStore = Ember.Object.extend
 			{id: "title", name: "Title", field: "title", sortable: true},
 			{id: "duration", name: "Duration", field: "duration", sortable: true},
 			{id: "%", name: "% Complete", field: "percentComplete"},
-			{id: "start", name: "Start", field: "start"},
+			{id: "start", name: "Start", field: "start", formatter: Tent.Formatters.Date},
 			{id: "finish", name: "Finish", field: "finish"},
 			{id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
 		]
@@ -88,8 +88,12 @@ Pad.DataStore = Ember.Object.extend
 			passed = true
 			for columnId of filters
 				if columnId != undefined and filters[columnId]?
-					re = new RegExp("^" + filters[columnId],"i")
-					if !re.test(item[columnId])
-						passed = false
+					if item[columnId] instanceof String
+							re = new RegExp("^" + filters[columnId],"i")
+							if !re.test(item[columnId])
+								passed = false
+					if item[columnId] instanceof Date
+							if filters[columnId].getTime() != item[columnId].getTime()
+								passed = false	
 			if passed then filteredFixtures.push(item)
 		return filteredFixtures

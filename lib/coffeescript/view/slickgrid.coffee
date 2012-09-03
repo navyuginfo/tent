@@ -12,6 +12,7 @@ require "vendor/scripts/slick.grid"
 require '../mixin/grid_sorting_support'
 require '../mixin/grid_paging_support'
 require '../mixin/grid_filtering_support'
+require './grid/cell_formatters'
 
 # TODO: refactor out single and multi select code
 

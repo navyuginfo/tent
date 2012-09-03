@@ -5,6 +5,7 @@
 	loader.require('handlebars')
 	loader.require('ember')
 	loader.require('ember-data')
+	loader.require('coffeescript/models/ember_custom_attribute_types')
 	loader.require('tent')
 	loader.require('coffeescript/app')
 	loader.require('coffeescript/store/datastore')

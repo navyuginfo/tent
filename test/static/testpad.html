@@ -111,7 +111,7 @@
         {{#view Tent.Form name="Filters"}}
           {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
           {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
-          {{view Tent.DateField formattedValueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
+          {{view Tent.DateField valueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
         {{/view}}
         {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
         
