@@ -17,7 +17,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 
 	init: ->
 		@_super()
-		@update(@REQUEST_TYPE)
+		@update(@REQUEST_TYPE.ALL)
 
 	update: (requestType)->
 		if @get('dataType')? && @get('store')? 
@@ -28,4 +28,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 				{sorting: @getSortingInfo()},
 				{filtering: @getFilteringInfo()}
 			)
-			@set('data', @get('store').findQuery(eval(@get('dataType')), query))
+			# Add support for asynch calls later
+			response = @get('store').findQuery(eval(@get('dataType')), query)
+			@set('data', response.data)
+			@updatePagingInfo(response.pagingInfo)

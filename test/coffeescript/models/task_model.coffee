@@ -1,4 +1,4 @@
-
+	
 Pad.Models.TaskModel = DS.Model.extend
 	id: DS.attr('number')
 	title: DS.attr('string')

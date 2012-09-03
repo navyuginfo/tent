@@ -286,7 +286,7 @@ Tent.RemotePagedData = Ember.Object.extend
 
 	getPagingInfo: ->
 		@set('totalPages', if @get('collection.pageSize') then Math.max(1, Math.ceil(@get('collection.totalRows') / @get('collection.pageSize'))) else 1)
-		return {pageSize: @get('collection.pageSize'), pageNum: @get('pagenum'), totalRows: @get('collection.totalRows'), totalPages: @get('totalPages')}
+		return {pageSize: @get('collection.pageSize'), pageNum: @get('collection.currentPage'), totalRows: @get('collection.totalRows'), totalPages: @get('totalPages')}
     
     # This will be called by the slick pager plugin
 	setPagingOptions: (args) ->
@@ -297,7 +297,15 @@ Tent.RemotePagedData = Ember.Object.extend
 		if args.pageNum != undefined
 			@pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(@get('collection.totalRows') / @get('collection.pageSize')) - 1))
 
+		@set('collection.currentPage', @pagenum)
 		@get("parentView").page(@getPagingInfo())
+		@onPagingInfoChanged.notify(@getPagingInfo(), null, null);
+
+	notifyPagerUI: (->
+		@onPagingInfoChanged.notify(@getPagingInfo(), null, null);
+	).observes('collection.totalRows', 'collection.currentPage')
+	
+
 	
 	listDataDidChange: ->
 		@highlightSelectedRowsOnGrid()

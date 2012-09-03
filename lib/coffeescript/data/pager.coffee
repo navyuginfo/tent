@@ -2,7 +2,7 @@
 Tent.Data.Pager = Ember.Mixin.create
 	paged: false
 	pageSize: 10
-	_page: 1
+	_page: 0
 	_totalRows: 27
 
 	init: ->
@@ -18,7 +18,7 @@ Tent.Data.Pager = Ember.Mixin.create
 
 	currentPage: ((key, value) ->
 		if arguments.length == 1
-			if @isValidPage(@get('_page')) then @get('_page') else 1
+			if @isValidPage(@get('_page')) then @get('_page') else 0
 		else
 			@set('_page', value) unless !@isValidPage(value)
 			@get('_page')
@@ -33,8 +33,8 @@ Tent.Data.Pager = Ember.Mixin.create
 	).property('_totalPages','totalRows', 'pageSize')
 
 	totalRows: (->
-		@get('_totalRows') || @get('totalPages') * @get('pagesize') || 1
-	).property('_totalRows', 'totalPages', 'pageSize')
+		@get('_totalRows') || @get('_totalPages') * @get('pagesize') || 1
+	).property('_totalRows', '_totalPages', 'pageSize')
 
 	goToPage: (page) ->
 		@set('currentPage', page)
@@ -51,11 +51,11 @@ Tent.Data.Pager = Ember.Mixin.create
 		@update(@REQUEST_TYPE.PAGE)
 
 
-	#page: (pageInfo)->
-	#	query = $.extend(pageInfo, {type:'paging'})
-	#	@set('content', @get('store').findQuery(eval(@get('dataType')), query))
-
 	getPagingInfo: ->
 			pageSize: @get('pageSize')
 			pageNum: @get('currentPage')
 			totalPages: @get('totalPages')
+
+	updatePagingInfo: (info) ->
+		@set('_totalRows', info.totalRows)
+		@set('_page', info.pageNum)
