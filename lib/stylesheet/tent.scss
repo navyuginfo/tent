@@ -30,12 +30,12 @@
 
 	.slick-row {
 		&:hover {
-			background-color: whiteSmoke;
+			background: #D7E0FC;
 		}
 	}
 	.slick-cell {
 		&.selected {
-			background-color: #eff;
+			background-color: #ccc;
 		}
 	}
 

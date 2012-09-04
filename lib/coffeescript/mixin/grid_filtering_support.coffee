@@ -5,7 +5,6 @@ Tent.GridFilteringSupport = Ember.Mixin.create
 
 	init: ->
 		@_super()
-		@get('defaults').showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
 
 	setupFilter: ->
 		@.$('.filter-toggle').click( =>

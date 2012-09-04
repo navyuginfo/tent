@@ -91,6 +91,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		# Allow custom options to be specified in the markup
 		# e.g. {{view Pad.CustomList ... options="{\"enableColumnReorder\": false}"
 		customOptions = if @get("options") then JSON.parse(@get('options')) else {}
+		customOptions.showHeaderRow = if @get('useColumnFilters')? then @get('useColumnFilters') else false
 		@set("options", $.extend({}, @get('defaults'), customOptions))
 
 	createDataView: -> 

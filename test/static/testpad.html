@@ -93,7 +93,7 @@
 
 
         <h3>SlickGrid</h3>
-
+        <br/>
         <h4>Client-side Paging, Sorting, Filtering</h4>
         {{view Tent.SlickGrid
             label="Tasks"
@@ -105,9 +105,10 @@
             multiSelect=false
             useColumnFilters=true
         }}
+        <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
 
+        <h4>Remote Paging, Sorting, Filtering</h4>
 
-           
         {{#view Tent.Form name="Filters"}}
           {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
           {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
@@ -115,11 +116,11 @@
         {{/view}}
         {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
         
-        <h4>Remote Paging, Sorting, Filtering</h4>
+        
         {{view Tent.SlickGrid
             label="Tasks"
             collectionBinding="Pad.remoteCollection"
-            selectionBinding="Pad.gridSelection"
+            selectionBinding="Pad.gridRemoteSelection"
             paged=true
             pageSize=5
             remotePaging=true
@@ -130,7 +131,7 @@
         <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
 
 
-         <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p>        
+         <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
         
            
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
