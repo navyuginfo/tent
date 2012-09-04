@@ -10,7 +10,9 @@
          multipleBinding="view.multiple"
          promptBinding = "view._prompt" 
          valueBinding = "view.value"}} 
-	
+	{{#if view.tooltip}}
+    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+  {{/if}}
 	{{#if view.hasErrors}}
     	{{#each error in view.validationErrors}}
       		<span class="help-inline">{{view.validationErrors}}</span>
