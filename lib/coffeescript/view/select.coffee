@@ -4,6 +4,7 @@
 #
 
 require '../template/select'
+require '../template/radio_group'
 
 Tent.Select = Ember.View.extend Tent.FieldSupport,
   templateName: 'select'

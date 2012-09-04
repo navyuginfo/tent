@@ -9,6 +9,16 @@
   background-color: #CCC;
 }
 
+.tent-radio-group label {
+	display: inline;
+	vertical-align: middle;
+}
+
+input.tent-radio-option[type="radio"]  {
+	margin-right: 10px;
+	margin-top: 0px;
+}
+
 .tent-width-small{
   width: 20px;
 }

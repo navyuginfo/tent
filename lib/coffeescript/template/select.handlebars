@@ -1,15 +1,28 @@
 <label class="control-label">{{view.label}}</label>
 
 <div class="controls">
-  {{view Ember.Select 
-         contentBinding="view.list" 
-         classBinding="view.inputSizeClass" 
-         optionLabelPathBinding="view.optionLabelPath" 
-         optionValuePathBinding ="view.optionValuePath" 
-         selectionBinding="view.selected"
-         multipleBinding="view.multiple"
-         promptBinding = "view._prompt" 
-         valueBinding = "view.value"}} 
+  {{#if view.isRadioGroup}}
+    {{view Ember.Select 
+           contentBinding="view.list" 
+           class="tent-radio-group"
+           optionLabelPathBinding="view.optionLabelPath" 
+           optionValuePathBinding ="view.optionValuePath" 
+           selectionBinding="view.selected"
+           valueBinding = "view.value"
+           tagName = "div"
+           templateName = "radio_group"
+    }} 
+  {{else}}
+    {{view Ember.Select 
+           contentBinding="view.list" 
+           classBinding="view.inputSizeClass" 
+           optionLabelPathBinding="view.optionLabelPath" 
+           optionValuePathBinding ="view.optionValuePath" 
+           selectionBinding="view.selected"
+           multipleBinding="view.multiple"
+           promptBinding = "view._prompt" 
+           valueBinding = "view.value"}} 
+  {{/if}}
 	
 	{{#if view.hasErrors}}
     	{{#each error in view.validationErrors}}
