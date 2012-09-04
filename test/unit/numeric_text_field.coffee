@@ -100,3 +100,17 @@ test 'Formatting of read-only', ->
 
     appendView()
     equal view.$('.uneditable-input').text(), '1234', 'Initial DOM value'
+
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" 
+      labelBinding="label"
+      tooltip="tooltip here.."
+      }}'
+    name: 'foobar'
+    label: 'FooBar'
+  appendView()
+
+  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
