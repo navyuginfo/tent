@@ -20,7 +20,7 @@
 
       {{#view Tent.Panel span="5"}}
         {{#view Tent.Form name="Fields"}}
-          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.."}}
+          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here"}}
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
           {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
           {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true}}
