@@ -3,7 +3,6 @@ Tent.RadioOption = Ember.SelectOption.extend
  	classNames: ['tent-radio-option']
  	attributeBindings: ['type','value', 'checked', 'name']
  	type: "radio"
- 	defaultTemplate: Ember.Handlebars.compile('<label {{bindAttr for="view.radioId"}}>{{view.label}}</label>')
  	
  	name: (->
  		@get('parentView.elementId')
