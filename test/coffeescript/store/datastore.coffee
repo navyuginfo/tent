@@ -5,25 +5,36 @@ Pad.DataStore = Ember.Object.extend
 
 	findAll: (dataType) ->
 		@addPagingData(@fixtures)
-	findQuery: (modelType, query) ->
-		@queryFixtures(@fixtures, query)
 
-	addPagingData: (list, paging)->
-			data: list
+	findQuery: (modelType, query) ->
+		#@queryFixtures(@fixtures, query)
+		modelData = Pad.store.findAll(modelType).toArray()
+		@queryFixtures(modelData, query)
+
+	getDataAsObjects: (modelData) ->	
+		_list = []
+		for item in modelData
+			if item?
+				_list.push item.toJSON()
+		return _list
+
+	addCombinedData: (modelData, paging)->
+			data: @getDataAsObjects(modelData)
 			pagingInfo: paging
+			modelData: modelData
 	
 	getColumnsForType: ->
 		[
 			{id: "id", name: "ID", field: "id", sortable: true},
 			{id: "title", name: "Title", field: "title", sortable: true},
-			{id: "duration", name: "Duration", field: "duration", sortable: true},
+			{id: "duration", name: "Duration", field: "duration.test", sortable: true},
 			{id: "%", name: "% Complete", field: "percentComplete"},
 			{id: "start", name: "Start", field: "start", formatter: Tent.Formatters.Date},
 			{id: "finish", name: "Finish", field: "finish"},
 			{id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
 		]
 
-	queryFixtures: (fixtures, query) ->
+	queryFixtures: (modelData, query) ->
 		data = []
 		###switch query.type
 			when 'paging'
@@ -34,30 +45,30 @@ Pad.DataStore = Ember.Object.extend
 
 			else
 		###
-		filteredData = @doFilter(fixtures, query.filtering)
+		filteredData = @doFilter(modelData, query.filtering)
 		sortedData = @doSort(filteredData, query.sorting)
 		query.paging.totalRows = filteredData.length
 		pagedData = @getPage(sortedData, query.paging)
-		return @addPagingData(pagedData, query.paging)
+		return @addCombinedData(pagedData, query.paging)
 
-	getPage: (fixtures, paging) ->
+	getPage: (modelData, paging) ->
 		if !paging?
-			return fixtures
+			return modelData
 
 		start = (paging.pageNum) * paging.pageSize
-		if (start > fixtures.length) 
+		if (start > modelData.length) 
 			start = 0
 			paging.pageNum = 0
 		end = start + paging.pageSize - 1
-		if (end > fixtures.length) then end = fixtures.length 
-		return fixtures[start..end]
+		if (end > modelData.length) then end = modelData.length 
+		return modelData[start..end]
 
-	doSort: (fixtures, sorting) ->
+	doSort: (modelData, sorting) ->
 		if !sorting?
-			return fixtures
+			return modelData
 
 		that = this
-		fixtures.sort((dataRow1, dataRow2) =>
+		modelData.sort((dataRow1, dataRow2) =>
 			for item,i in sorting.fields
 				field = sorting.fields[i].field
 				asc = sorting.fields[i].sortAsc
@@ -67,8 +78,8 @@ Pad.DataStore = Ember.Object.extend
 
 	compare: (dataRow1, dataRow2, field, asc)->
 		sign = if asc then 1 else -1
-		value1 = dataRow1[field]
-		value2 = dataRow2[field]
+		value1 = dataRow1.get(field)
+		value2 = dataRow2.get(field)
 		if value1 == value2 
 			result = 0
 		else 
@@ -79,22 +90,21 @@ Pad.DataStore = Ember.Object.extend
 		if result != 0
 			return result
 
-	doFilter: (fixtures, filters) ->
+	doFilter: (modelData, filters) ->
 		if !filters?
-			return fixtures
+			return modelData
 
 		filteredFixtures = []
-		for item in fixtures
+		for item in modelData
 			passed = true
 			for columnId of filters
 				if columnId != undefined and filters[columnId]?
-					if item[columnId] instanceof Date
-						if filters[columnId].getTime() != item[columnId].getTime()
+					if item.get(columnId) instanceof Date
+						if filters[columnId].getTime() != item.get(columnId).getTime()
 							passed = false	
 					else
 						re = new RegExp("^" + filters[columnId],"i")
-						if !re.test(item[columnId])
+						if !re.test(item.get(columnId))
 							passed = false
-
 			if passed then filteredFixtures.push(item)
 		return filteredFixtures

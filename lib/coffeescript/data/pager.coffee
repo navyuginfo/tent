@@ -9,13 +9,6 @@ Tent.Data.Pager = Ember.Mixin.create
 		@_super()
 		@REQUEST_TYPE.PAGE = 'paging'
 
-	contentShouldChange: (->
-		#page = @get('currentPage')
-		#size = @get('pageSize')
-		#@set('content', @get('data')?.slice(((page - 1) * size), (page * size)) || [])	
-		@set('content', @get('data'))
-	).observes('data', 'pageSize')
-
 	currentPage: ((key, value) ->
 		if arguments.length == 1
 			if @isValidPage(@get('_page')) then @get('_page') else 0

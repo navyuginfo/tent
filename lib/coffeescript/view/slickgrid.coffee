@@ -30,6 +30,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		enableCellNavigation: true
 		enableColumnReorder: true
 		multiColumnSort: true
+		
 
 	init: ->
 		@_super()
@@ -64,7 +65,12 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
 		@set('selection', @get('rowSelection'))
+		@set('modelSelection', @getModelWithId(@get('rowSelection').id))
 	).observes 'rowSelection'
+
+	getModelWithId: (id) ->
+		for model in @get('collection.modelData').toArray()
+			return model if model.get('id') == id
 	
 	didInsertElement: ->
 		@renderGrid()
@@ -135,7 +141,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	willDestroyElement: ->
 		@get('grid').onClick.unsubscribe(->)
 		@get('grid').destroy()
-	
 	
 
 
