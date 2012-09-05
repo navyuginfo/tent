@@ -93,4 +93,19 @@ test 'Ensure mandatory check', ->
     view.$('input').val('')
     view.$('input').trigger('change')
   ok not view.get('isValid')  
-  
+
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label"
+      isMandatory=true
+      isValidBinding="isValid"
+      tooltip="tooltip here.."
+      }}'
+    name: 'foobar'
+    label: 'FooBar'
+  appendView()
+
+  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'

@@ -274,3 +274,27 @@ test 'Ensure a single row is rendered with no input elements in case of uneditab
   equal view.$('td:eq(1)').text(), "22", 'Age column gets rendered'
   equal Ember.View.views[view.$('table').attr('id')].get('selection').length,
     1,'1 selected row is rendered'  
+
+test 'Ensure that the selectableArrayProxy gets updated if the list changes', ->
+  people = [Ember.Object.create({name: 'Matt', age: 22}),
+          Ember.Object.create({name: 'Raghu', age: 1000}),
+          Ember.Object.create({name: 'Sakshi', age: 21})]
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Table listBinding="people"
+    headers="Name,Age" columns="name,age" selectionBinding="selectedPerson" defaultSelectionBinding="sel" isEditable=false}}'
+    people: people
+    sel: people.slice(0,1)
+  appendView()
+  tableView = Ember.View.views[view.$('table').attr('id')]
+  contentDidChangeCalled = false
+  tableView.get('_list').contentDidChange = ->
+    contentDidChangeCalled = true
+  ok !contentDidChangeCalled, 'False to start'
+  tableView.set('list', [Ember.Object.create({name: 'Dave', age: 32})])
+  ok contentDidChangeCalled, 'Content should have changed'
+
+
+
+
+
+

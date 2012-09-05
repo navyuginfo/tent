@@ -52,4 +52,6 @@ test 'Ensure the email text field accepts emails', ->
   appendView()
 
   equal view.$('.error').length, 0, 'no error class applied'
-  equal view.$('.help-inline').text(), '', 'no error received'     
+  equal view.$('.help-inline').text(), '', 'no error received'
+
+     

@@ -4,8 +4,9 @@
 #
 
 require '../template/select'
+require '../mixin/tooltip_support'
 
-Tent.Select = Ember.View.extend Tent.FieldSupport,
+Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
 

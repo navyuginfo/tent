@@ -1,4 +1,5 @@
-
+view = null
+appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
 
@@ -22,3 +23,16 @@ test 'Test Validate', ->
 
 	view.set('formattedValue', '')
 	ok view.validate(), 'Empty string is valid'
+
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.DateField 
+                          tooltip="tooltip here.."
+                          }}'
+  appendView()
+
+  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
+
+ 

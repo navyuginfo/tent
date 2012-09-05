@@ -72,4 +72,20 @@ test 'Ensure binding for content allows content to be null initially', ->
   
   equal view.$('option').length, 4,  'Options were created'  
 
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    app: application
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          listBinding="app.content" 
+                          optionLabelPath="content.stateName"  
+                          optionValuePath="content.stateCode"
+                          selectionBinding="application.stateSelection"
+                          tooltip="tooltip here.."
+                          }}'
+  appendView()
+
+  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
+
  
