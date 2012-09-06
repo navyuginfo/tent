@@ -31,6 +31,7 @@
           
           {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true isMandatory=true}}
           
+          {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true isMandatory=true}}
 
           {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  isMandatory=true tooltip="Provide some information here"}}
           <p>email : {{Pad.email}}</p>
@@ -52,6 +53,8 @@
               <li>{{state.stateName}}: {{state.stateCode}}</li>
             {{/each}}
           </ul>
+          {{view Tent.TextField valueBinding="Pad.radioSelection.stateName" label="Radio Selection" isEditable=false}}
+          {{view Tent.TextField valueBinding="Pad.radioValue" label="Radio Value" isEditable=false}}
           <p>Signature Date : {{Pad.date}}</p>
         {{/view}}
 

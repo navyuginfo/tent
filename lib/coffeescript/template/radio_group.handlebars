@@ -1,0 +1,4 @@
+{{#if view.prompt}}{{view.prompt}}{{/if}}
+{{#each view.content}}
+	<label>{{view Tent.RadioOption contentBinding="this"}}{{view.label}}</label>
+{{/each}}
