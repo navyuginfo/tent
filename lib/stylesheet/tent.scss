@@ -1,5 +1,8 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
+/*@import "compass";*/
+
+ 
 
 .tent-button-group{
   position: relative; 
@@ -16,6 +19,15 @@ input.tent-radio-option[type="radio"]  {
 
 .tent-width-small{
   width: 20px;
+}
+
+a[rel=tooltip] {
+	width: 16px;
+	height: 16px;
+	background-image: url(images/ui-icons_454545_256x240.png);
+	background-position: -16px -144px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .slick-row {

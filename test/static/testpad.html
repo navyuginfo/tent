@@ -20,25 +20,25 @@
 
       {{#view Tent.Panel span="5"}}
         {{#view Tent.Form name="Fields"}}
-          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.."}}
-          {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false}}
+          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here"}}
+          {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false tooltip="Provide some information here"}}
           {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
-          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true}}
-          {{view Tent.AmountField value="10000" label="Amount input" currency="EUR" isMandatory=true}}
+          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true tooltip="Provide some information here"}}
+          {{view Tent.AmountField value="10000" label="Amount input" currency="EUR" isMandatory=true tooltip="Provide some information here"}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
-          {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatory=true}}
+          {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatory=true tooltip="Provide some information here"}}
           <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
           
           {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true isMandatory=true}}
           
           {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true isMandatory=true}}
 
-          {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  isMandatory=true}}
+          {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  isMandatory=true tooltip="Provide some information here"}}
           <p>email : {{Pad.email}}</p>
 
-          {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy"}}
+          {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" tooltip="Provide some information here"}}
 
-          {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatory=true}}
+          {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatory=true tooltip="Provide some information here"}}
 
           
         {{/view}}
