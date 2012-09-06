@@ -1,13 +1,5 @@
 require "./table"
 require "../template/slick"
-require "vendor/scripts/jquery-ui-1.8.16.custom.min"
-require "vendor/scripts/jquery.event.drag-2.0.min"
-require "vendor/scripts/slick.rowselectionmodel"
-require "vendor/scripts/slick.checkboxselectcolumn"
-require "vendor/scripts/slick.dataview"
-require "vendor/scripts/slick.pager"
-require "vendor/scripts/slick.core"
-require "vendor/scripts/slick.grid"
 require '../mixin/grid_sorting_support'
 require '../mixin/grid_paging_support'
 

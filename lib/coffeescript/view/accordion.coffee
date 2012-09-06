@@ -1,5 +1,4 @@
 require '../template/accordion_group'
-require 'bootstrap-sass/bootstrap-collapse'
 
 Tent.Accordion = Ember.View.extend
 	classNames: ['accordion']

@@ -3,9 +3,9 @@
 # All rights reserved.
 #
 
-@Tent = {} unless @Tent?
-@Tent.Controllers = Em.Namespace.create
+# TENT.JS
 
+require './namespace'
 require './util'
 require './view'
 require './controllers'

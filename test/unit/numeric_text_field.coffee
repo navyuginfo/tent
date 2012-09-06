@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
