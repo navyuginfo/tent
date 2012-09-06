@@ -35,10 +35,47 @@
 	Pad.date = new Date()
 
 
+	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
+	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
+
+	Pad.gridSelection = Ember.Object.create({
+			id: 52,
+			title: "Task 2",
+			duration: "6 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})
+	Pad.gridRemoteSelection = Ember.Object.create({
+			id: 56,
+			title: "Task 6",
+			duration: "2 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})
+
+	Pad.gridRemoteSelectionMultiple = [Ember.Object.create({
+			id: 54,
+			title: "Task 4",
+			duration: "2 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})]
+
 	Pad.remoteCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
 		paged: true
+
+	Pad.remoteMultiselectCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: false
 
 	Pad.clientSideCollection = Tent.Data.Collection.create
 		store: Pad.dataStore

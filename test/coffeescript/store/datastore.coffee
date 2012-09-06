@@ -11,15 +11,7 @@ Pad.DataStore = Ember.Object.extend
 		modelData = Pad.store.findAll(modelType).toArray()
 		@queryFixtures(modelData, query)
 
-	getDataAsObjects: (modelData) ->	
-		_list = []
-		for item in modelData
-			if item?
-				_list.push item.toJSON()
-		return _list
-
 	addCombinedData: (modelData, paging)->
-			data: @getDataAsObjects(modelData)
 			pagingInfo: paging
 			modelData: modelData
 	

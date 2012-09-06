@@ -47,6 +47,5 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			)
 			# Add support for asynch calls later
 			response = @get('store').findQuery(eval(@get('dataType')), query)
-			@set('data', response.data)
 			@set('modelData', response.modelData)
 			@updatePagingInfo(response.pagingInfo)

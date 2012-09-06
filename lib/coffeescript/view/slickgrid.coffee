@@ -64,8 +64,14 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
-		@set('selection', @get('rowSelection'))
-		@set('modelSelection', @getModelWithId(@get('rowSelection').id))
+		#@set('selection', @get('rowSelection'))
+		if @get('multiSelect')
+			select = []
+			for item in @get('rowSelection')
+				select.push(@getModelWithId(item.id))
+			@set('selection', select)
+		else
+			@set('selection', @getModelWithId(@get('rowSelection').id))
 	).observes 'rowSelection'
 
 	getModelWithId: (id) ->
@@ -158,6 +164,7 @@ Tent.SingleSelectGrid = Ember.Object.extend
 		grid.setSelectionModel(new Slick.RowSelectionModel())
 		@_listenForDisplayedContentChange(grid)
 		@_listenForSelectedRowsChange(grid)
+		@selectionDidChange()
 	
 	_initializeColumns: ->
 		@get('parent').set('adaptedColumns', @get('parent').get('columns'))
@@ -166,26 +173,63 @@ Tent.SingleSelectGrid = Ember.Object.extend
 	_listenForSelectedRowsChange: (grid) ->
 		grid.onSelectedRowsChanged.subscribe((e, args) =>
 			@_updateRowSelectionWithCurrentlySelectedItem e,args
+			#grid.selectedRowIds = grid.mapRowsToIds(grid.getSelectedRows());
 		)
 
 	_updateRowSelectionWithCurrentlySelectedItem: (e, range) ->
 		# When paging occurs (single-select) there may be nothing on the page
+		# Range gives the index of the selected item in the current page
 		if range.rows.length
 			# Check that the item is not already selected. 
 			# If it is, we dont want to trigger an update
 			newSelectedObject = @_getSelectedObjectFromGrid(range)
-			if not (@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedObject.id)
+			if not @_isRowAlreadySelected(newSelectedObject)
 				@get('parent').set('rowSelection', newSelectedObject)
 				@get('parent').get('dataView').selectedRowIds = [newSelectedObject.id]
+		# Need to override the default behavior of clearing selectedRowIds when the selected
+		# item is not on the current page
+		@get('parent').get('dataView').selectedRowIds = @get('parent').get('dataView').selectedRowIdsAllPages
+		@get('parent').get('grid').selectedRowIds = @get('parent').get('dataView').selectedRowIdsAllPages
 		e.stopPropagation
+
+	_isRowAlreadySelected: (newSelectedObject) ->
+		@get('parent').get('rowSelection')? and @get('parent').get('rowSelection').id == newSelectedObject.id
 
 	_getSelectedObjectFromGrid: (range) ->
 		row = @get('parent').get('grid').getDataItem range.rows[0]		
 
 	# Ensure that we respond to paging events and updated data content
 	_listenForDisplayedContentChange: (grid) ->
-		@get('parent').get('dataView').syncGridSelection(grid, true);
+		#@get('parent').get('dataView').syncGridSelection(grid, true);
+		grid = @get('parent').get('grid')
+		dataView = @get('parent').get('dataView')
+		preserveHidden = true
+		@get('parent').get('dataView').onRowsChanged.subscribe((e, args) ->
+			if dataView.selectedRowIds? and dataView.selectedRowIds.length > 0
+				inHandler = true
+				selectedRows = dataView.mapIdsToRows(dataView.selectedRowIds)
+				if (!preserveHidden)
+					dataView.selectedRowIds = dataView.mapRowsToIds(selectedRows)
+				grid.setSelectedRows(selectedRows)
+				inHandler = false
+		)
 
+	# Changes to the selection should be reflected in the grid 
+	selectionDidChange: (->
+		if not @get("parent.remotePaging")
+			selectedIds = []
+			selectedIds.push(@get('parent.selection').get('id'))
+			@get('parent.dataView').selectedRowIdsAllPages = selectedIds
+			@get('parent.dataView').selectedRowIds = selectedIds
+			selectedRows = @get('parent.dataView').mapIdsToRows(selectedIds)
+			@get('parent.grid').setSelectedRows(selectedRows)
+		else 
+			selectedIds = []
+			selectedIds.push(@get('parent.selection').get('id'))
+			@get('parent.dataView').selectedRowIdsAllPages = selectedIds
+			@get('parent.dataView').selectedRowIds = selectedIds
+			@get('parent.dataView').highlightSelectedRowsOnGrid()
+	).observes('parent.selection')
 
 
 Tent.MultiSelectGrid = Ember.Object.extend
@@ -195,7 +239,7 @@ Tent.MultiSelectGrid = Ember.Object.extend
 		grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}))
 		@_listenForDisplayedContentChange(grid)
 		@_listenForSelectedRowsChange(grid)
-		
+		@selectionDidChange()
 
 	_createGridWithCheckbox: ->
 		checkboxSelector = new Slick.CheckboxSelectColumn
@@ -280,6 +324,31 @@ Tent.MultiSelectGrid = Ember.Object.extend
 	_listenForDisplayedContentChange: (grid) ->
 		@get('parent').get('dataView').syncPagedGridSelection(grid, true);
 
+	# Changes to the selection should be reflected in the grid 
+	selectionDidChange: (->
+		if not @get("parent.remotePaging")
+			selectedIds = []
+			for item in @get('parent.selection') 
+				selectedIds.push(item.get('id'))
+			@get('parent.dataView').selectedRowIdsAllPages = selectedIds
+			@get('parent.dataView').selectedRowIds = selectedIds
+			selectedRows = @get('parent.dataView').mapIdsToRows(selectedIds)
+
+			if not @rowsHaveChanged(@get('parent.grid').getSelectedRows(), selectedRows)
+				@get('parent.grid').setSelectedRows(selectedRows)
+		else 
+			selectedIds = []
+			for item in @get('parent.selection') ? []
+				selectedIds.push(item.get('id'))
+			@get('parent.dataView').selectedRowIdsAllPages = selectedIds
+			@get('parent.dataView').selectedRowIds = selectedIds
+			@get('parent.dataView').highlightSelectedRowsOnGrid()
+	).observes('parent.selection')
+
+	rowsHaveChanged: (rows1, rows2)->
+		(rows1.length == rows2.length) and rows1.every((element,index,array)->
+			return element in rows2
+		)
 
 Tent.RemotePagedData = Ember.Object.extend
 	parentView: null
@@ -311,20 +380,27 @@ Tent.RemotePagedData = Ember.Object.extend
 		@onPagingInfoChanged.notify(@getPagingInfo(), null, null);
 	).observes('collection.totalRows', 'collection.currentPage')
 	
-
-	
 	listDataDidChange: ->
 		@highlightSelectedRowsOnGrid()
 
 	highlightSelectedRowsOnGrid: ->
 		grid=  @get('parentView').get('grid')
-		if (@get('selectedRowIds').length > 0) and grid?
+		if @get('selectedRowIds')? and (@get('selectedRowIds').length > 0) and grid?
 			selectedRowsOnCurrentPage = []
 			items = @get('items')
 			for item, i in items
 				for match in @get('selectedRowIds') when match == item.id
 					selectedRowsOnCurrentPage.push(i)
-			grid.setSelectedRows(selectedRowsOnCurrentPage)
+			if not @rowsHaveChanged(grid.getSelectedRows(), selectedRowsOnCurrentPage)
+				grid.setSelectedRows(selectedRowsOnCurrentPage)
+
+	# Dont re-select if there is no change
+	rowsHaveChanged: (rows1, rows2)->
+		(rows1.length == rows2.length) and rows1.every((element,index,array)->
+			return element in rows2
+		)
+
+			
 
 	beginUpdate: ->
 	endUpdate: ->

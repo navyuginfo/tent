@@ -133,7 +133,19 @@
 
          <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
         
-           
+        
+
+        {{view Tent.SlickGrid
+            label="Tasks"
+            collectionBinding="Pad.remoteMultiselectCollection"
+            selectionBinding="Pad.gridRemoteSelectionMultiple"
+            paged=true
+            pageSize=5
+            remotePaging=false
+            multiSelect=true
+            useColumnFilters=false
+        }}
+
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
