@@ -2,7 +2,25 @@
 @import "bootstrap-responsive";
 /*@import "compass";*/
 
- 
+.form-horizontal {
+	.help-inline {
+		display: block;
+	}
+}
+
+.tent-widget {
+	.tent-mandatory {
+		width: .5em;
+		color: red;
+		display: inline-block;
+		vertical-align: top;
+	} 
+	&.mandatory {
+		.tent-mandatory:before {
+			content: '*';
+		}
+	}
+}
 
 .tent-button-group{
   position: relative; 

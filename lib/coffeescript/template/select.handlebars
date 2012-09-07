@@ -1,6 +1,7 @@
 <label class="control-label">{{view.label}}</label>
 
 <div class="controls">
+  <span class='tent-mandatory'/>
   {{#if view.isRadioGroup}}
     {{view Ember.Select 
            contentBinding="view.list" 

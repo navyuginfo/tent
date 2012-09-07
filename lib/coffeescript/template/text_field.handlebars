@@ -1,6 +1,9 @@
-<label class="control-label">{{view.label}}</label>
+<label class="control-label">{{view.label}}</span></label>
+
 <div class="controls">
+  <span class='tent-mandatory'/>
   <div class="input-prepend">
+    
     {{#if view.hasPrefix}}  
       <span class="add-on">{{view.prefix}}</span>
     {{/if}}     
@@ -9,14 +12,15 @@
     {{else}}
       <span {{bindAttr class="view.unEditableClass view.inputSizeClass"}}>{{view.formattedValue}}</span>
     {{/if}}
+    {{#if view.hasErrors}}
+      {{#each error in view.validationErrors}}
+        <span class="help-inline">{{view.error}}</span>
+      {{/each}}
+    {{/if}}  
   </div>
   {{#if view.tooltip}}
     <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
   {{/if}}
-  {{#if view.hasErrors}}
-    {{#each error in view.validationErrors}}
-      <span class="help-inline">{{view.error}}</span>
-    {{/each}}
-  {{/if}}  
+  
 
 </div>
