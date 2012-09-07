@@ -8,10 +8,14 @@ require '../template/text_field'
 
 Tent.AmountField = Tent.TextField.extend
   hasPrefix: true
+  hasHelpBlock: true
   placeholder: accounting.settings.number.pattern
   prefix: (->
     @get('currency')
   ).property('currency')
+  helpBlock: (->
+    '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
+  ).property()
   
   validate: ->
     didOtherValidationPass = @_super()

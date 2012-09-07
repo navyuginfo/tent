@@ -2,7 +2,13 @@
 @import "bootstrap-responsive";
 /*@import "compass";*/
 
- 
+/* Bootstrap Modifications */
+
+.help-block {
+	font-style: italic;
+}
+
+/* Tent-Specific */
 
 .tent-button-group{
   position: relative; 
