@@ -31,7 +31,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		enableColumnReorder: true
 		multiColumnSort: true
 		
-
 	init: ->
 		@_super()
 		@ensureCollectionAvailable()
@@ -42,7 +41,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			collection = Tent.Data.Collection.create
 				store: @get('dataStore')
 				dataType: @get('dataType')
-				projection: @get('projection') || 'default'
 				pageSize: @get('pageSize')
 			@set('collection', collection)
 		else
@@ -64,7 +62,6 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
-		#@set('selection', @get('rowSelection'))
 		if @get('multiSelect')
 			select = []
 			for item in @get('rowSelection')
@@ -90,6 +87,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		if @readyToRender()
 			@extendOptions()
 			@createDataView()
+			@setDataViewItems()
 			@get('delegate').createGrid()
 			@listenForSelections()
 			@get('grid').render()
@@ -114,10 +112,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			))
 		else
 			@set('dataView', new Slick.Data.DataView({inlineFilters: true}))
-
 		if @get("pageSize")
 			@get('dataView').setPagingOptions({pageSize: @get("pageSize")})
-		@setDataViewItems()
 
 
 	createGrid: ->
@@ -396,6 +392,8 @@ Tent.RemotePagedData = Ember.Object.extend
 
 	# Dont re-select if there is no change
 	rowsHaveChanged: (rows1, rows2)->
+		if not(rows1? and rows2?)
+			return false
 		(rows1.length == rows2.length) and rows1.every((element,index,array)->
 			return element in rows2
 		)

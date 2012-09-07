@@ -52,6 +52,8 @@ test 'highlightSelectedRowsOnGrid', ->
 			setSelectedRows: (selectedRowIds)->
 				@selectedRowIds = selectedRowIds
 				@setSelectedRowsCalled = true
+			getSelectedRows: ->
+				@selectedRowIds
 		}
 
 	dataView = Tent.RemotePagedData.create

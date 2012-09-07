@@ -36,7 +36,8 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.TranslationSupport
   ).property('form')
   		
   form: (->
-    Ember.View.views[@$().closest('form').attr('id')]
+    if @$()?
+      Ember.View.views[@$().closest('form').attr('id')]
   ).property()
   
   resize: ->

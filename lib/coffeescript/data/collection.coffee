@@ -30,7 +30,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
-	).property().cacheable()
+	).property('dataType').cacheable()
 
 	init: ->
 		@_super()
