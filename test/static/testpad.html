@@ -12,6 +12,7 @@
     <script src="javascript/bootstrap.js" type="text/javascript"></script>
     <script src="javascript/jquery-ui.js" type="text/javascript"></script>
     <script src="javascript/slick-grid.js" type="text/javascript"></script>
+    <script src="javascript/accounting.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
   </head>
@@ -32,7 +33,7 @@
           {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false tooltip="Provide some information here"}}
           {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
           {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true tooltip="Provide some information here"}}
-          {{view Tent.AmountField value="10000" label="Amount input" currency="EUR" isMandatory=true tooltip="Provide some information here"}}
+          {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" isMandatory=true tooltip="Provide some information here"}}
           {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
           {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatory=true tooltip="Provide some information here"}}
           <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
@@ -54,6 +55,7 @@
         {{#view Tent.Form name="Values"}}
           {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" isEditable=false}}
           {{view Tent.TextField valueBinding="Pad.numeric" label="Numeric input" isEditable=false}}
+          {{view Tent.TextField valueBinding="Pad.amount" label="Amount input" isEditable=false}}
           <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
           <p>Selected States :</p>
           <ul>

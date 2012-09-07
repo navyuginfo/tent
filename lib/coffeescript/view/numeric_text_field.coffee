@@ -8,7 +8,7 @@ require '../template/text_field'
 Tent.NumericTextField = Tent.TextField.extend
 	validate: ->
 		didOtherValidationPass = @_super()
-		value = @get('value')
+		value = @get('formattedValue')
 		isValidNumber = @isValueEmpty(value) or @isValidNumber(value)
 		@addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber
 		didOtherValidationPass && isValidNumber
