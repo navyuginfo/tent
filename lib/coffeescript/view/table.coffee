@@ -42,7 +42,7 @@ Tent.Table = Ember.View.extend
   # method to populate the new list of items or push a single item
   ##
   select: (selection) ->
-    if selection and selection.constructor == Array
+    if selection and selection instanceof Array
       prevSelection = @get('_list.selected')
       if prevSelection
         for element in prevSelection
