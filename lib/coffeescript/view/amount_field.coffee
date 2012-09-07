@@ -18,29 +18,22 @@ Tent.AmountField = Tent.TextField.extend
     formattedValue = @get('formattedValue')
     isValidAmount = @isValidAmount(formattedValue)
     @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
-    console.log('valid = ' + isValidAmount + '     value = ' + formattedValue + '    formattedValue = ' + accounting.formatNumber(formattedValue))
     didOtherValidationPass && isValidAmount
 
   isValidAmount: (value)->
-    #(accounting.formatNumber(value) == value)
+    # Let the formatter re-format the value for now
     true
 
   #Format for display
   format: (value)->
     # Convert from a number to a string
-    formatted = accounting.formatNumber(value, {
-        precision: 2
-        thousand: ','
-        decimal: '.'
-    })
-    console.log('formatting from ' + value + '   to ' + formatted)
+    formatted = accounting.formatNumber(value)
     return formatted
 
 
   # Format for binding
   unFormat: (value)->
-    unFormatted = accounting.toFixed(value)
-    console.log('unformatting from ' + value + '   to ' + unFormatted)
+    unFormatted = accounting.unformat(value)
     return unFormatted
 
   inputSizeClass: (->
