@@ -14,8 +14,11 @@ Tent.AmountField = Tent.TextField.extend
     @get('currency')
   ).property('currency')
   helpBlock: (->
-    '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
+    @getFormatPattern()
   ).property()
+
+  getFormatPattern: ->
+    '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
   
   validate: ->
     didOtherValidationPass = @_super()

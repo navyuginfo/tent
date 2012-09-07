@@ -34,7 +34,7 @@
           {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
           {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true tooltip="Provide some information here"}}
           {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" isMandatory=true tooltip="Provide some information here"}}
-          {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false}}
+          {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false hasHelpBlock=false}}
           {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatory=true tooltip="Provide some information here"}}
           <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
           

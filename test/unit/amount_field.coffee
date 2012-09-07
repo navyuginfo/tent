@@ -30,6 +30,18 @@ test 'Ensure currency is appended and has numeric only', ->
   equal view.$('.add-on').text(), view.get('currency'), 'currency is rendered'
   equal view.$('.error').length, 0, 'error class gets applied'
 
+test 'Ensure formatting help is displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" 
+        labelBinding="label" currencyBinding="currency"}}'
+    name: '111111'
+    label: 'FooBar'
+    currency: 'USD'
+  appendView()
+  amountView = Ember.View.views[view.$('.tent-text-field').attr('id')]
+  equal view.$('.help-block').text(), amountView.getFormatPattern(), 'Format pattern was displayed'
+
+
 test 'Formatting tests', ->
   amount = Tent.AmountField.create()
   equal amount.format(123), '123.00', '123'
