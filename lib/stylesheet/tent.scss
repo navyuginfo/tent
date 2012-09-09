@@ -14,6 +14,7 @@
 		color: red;
 		display: inline-block;
 		vertical-align: top;
+		padding-top: .5em;
 	} 
 	&.mandatory {
 		.tent-mandatory:before {
@@ -30,9 +31,12 @@
   background-color: #CCC;
 }
 
-input.tent-radio-option[type="radio"]  {
-	margin-right: 10px;
-	margin-top: -2px;
+.radio-group {
+	display: inline-block;
+	input.tent-radio-option[type="radio"]  {
+		margin-right: 10px;
+		margin-top: -2px;
+	}
 }
 
 .tent-width-small{

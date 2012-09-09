@@ -3,6 +3,7 @@
 <div class="controls">
   <span class='tent-mandatory'/>
   {{#if view.isRadioGroup}}
+    <div class="radio-group">
     {{view Ember.Select 
            contentBinding="view.list" 
            class="tent-radio-group"
@@ -13,6 +14,7 @@
            tagName = "div"
            templateName = "radio_group"
     }} 
+    </div>
   {{else}}
     {{view Ember.Select 
            contentBinding="view.list" 
