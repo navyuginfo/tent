@@ -15,197 +15,287 @@
     <script src="javascript/accounting.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
+    <style>
+      /* Needed to allow the sidebar to push content to the right */
+      [class*="span"] {
+        min-height: 1px;
+      }
+
+      .sidenav.affix {
+        position: fixed;
+        top: 10px;
+      }
+
+      .sidenav > li > a {
+        display: block;
+        margin: 0 0 -1px;
+        padding: 8px 14px;
+        border: 1px solid #E5E5E5;         
+      }
+    </style>
   </head>
-  <body>
-    <hr/>
+  <body data-spy="scroll" >
+     
     <script type="text/javascript">
       $(document).ready(function() {
         minispade.require('tent');
         minispade.require('coffeescript/initialize');
+        $('.sidenav').scrollspy()
       });
     </script>
-
+    <container>
+      <row>
     <script type="text/x-handlebars">
 
-      {{#view Tent.Panel span="5"}}
-        {{#view Tent.Form name="Fields"}}
-          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here"}}
-          {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false tooltip="Provide some information here"}}
-          {{view Tent.TextField label="Mandatory input" isMandatory=true placeholder="Must fill out.."}}
-          {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatory=true tooltip="Provide some information here"}}
-          {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" isMandatory=true tooltip="Provide some information here"}}
-          {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false hasHelpBlock=false}}
-          {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatory=true tooltip="Provide some information here"}}
-          <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
-          
-          {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true isMandatory=true}}
-          
-          {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true isMandatory=true}}
+      {{#view Tent.Panel span="2" id="sidebar"}}
+        <ul class="nav nav-list affix sidenav">
+          <li class="active">
+            <a href="#form-section"><i class="icon-chevron-right"></i> Form Fields</a>
+          </li>
+          <li>
+            <a href="#table-section"><i class="icon-chevron-right"></i> Tables and Grids</a>
+          </li>
+          <li>
+            <a href="#other-section"><i class="icon-chevron-right"></i> Other Widgets</a>
+          </li>
+          <li>
+            <a href="#button-section"><i class="icon-chevron-right"></i> Buttons</a>
+          </li>
+          <li>
+            <a href="#container-section"><i class="icon-chevron-right"></i> Containers</a>
+          </li>
 
-          {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  isMandatory=true tooltip="Provide some information here"}}
-          <p>email : {{Pad.email}}</p>
-
-          {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" tooltip="Provide some information here"}}
-
-          {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatory=true tooltip="Provide some information here"}}
-
-          {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" isMandatory=true tooltip="This is a textarea widget"
-          }}
-
-          
-        {{/view}}
-
-        {{#view Tent.Form name="Values"}}
-          {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" isEditable=false}}
-          {{view Tent.TextField valueBinding="Pad.numeric" label="Numeric input" isEditable=false}}
-          {{view Tent.TextField valueBinding="Pad.amount" label="Amount input" isEditable=false}}
-          <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
-          <p>Selected States :</p>
-          <ul>
-            {{#each state in Pad.statesSelection}}
-              <li>{{state.stateName}}: {{state.stateCode}}</li>
-            {{/each}}
-          </ul>
-          {{view Tent.TextField valueBinding="Pad.radioSelection.stateName" label="Radio Selection" isEditable=false}}
-          {{view Tent.TextField valueBinding="Pad.radioValue" label="Radio Value" isEditable=false}}
-          <p>Signature Date : {{Pad.date}}</p>
-          {{view Tent.TextField valueBinding="Pad.textarea" label="Text Area" isEditable=false}}
-          
-        {{/view}}
-
+        </ul>
       {{/view}}
 
-      {{#view Tent.Panel span="7" name="Main Content"}}
-        <p>Tag {{view Tent.Tag text="Important"}}</p>
-        <h3>Table</h3>
-
-        
-        {{view Tent.Table listBinding="Pad.people" 
-            headers="Name,Age" 
-            columnsBinding="Pad.columns" 
-            selectionBinding="Pad.selectedPerson" 
-            defaultSelectionBinding="Pad.selectedPerson" 
-            isEditable=true}}
-
-        <p>Selected Person is 
-            {{#each person in Pad.selectedPerson}}
-              {{person.name}}
-            {{/each}}
-        </p>
-
-        <h3>Multi-select Table</h3>
-        {{view Tent.Table listBinding="Pad.people" 
-            headers="Name,Age" 
-            columns="name,age" 
-            selectionBinding="Pad.multiSelectedPerson" 
-            multiselection=true 
-            defaultSelectionBinding="Pad.multiSelectedPerson" 
-            isEditable=true}}
-
-        <p>Selected People are 
-          {{#each person in Pad.multiSelectedPerson}}
-            {{person.name}}
-          {{/each}}
-        </p>
-
-
-        <h3>SlickGrid</h3>
-        {{view Pad.TaskList
-          id="taskselectionview"
-          controllerBinding="Pad.taskListController"
-          multiSelect=false
-          paged=true
-          pageSize=7
-          remotePaging=true
-          options="{\"enableColumnReorder\": false}"
-        }}
-        
-        <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
-
-        {{view Pad.TaskList
-            id="multitaskselectionview"
-            controllerBinding="Pad.taskMultiSelectListController"
-            multiSelect=true
-            style="form"
-            label="SlickGrid"
-            paged=true
-            pageSize=7
-            remotePaging=true
-        }}
-
-          <p>Selected SlickGrid Multiple Items : 
-            {{debug}}
-              {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-                <{{item.title}}>
-              {{/each}}
-          </p>  
-        
-        {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
-        {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
-        {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
-        {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
-
-        {{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
-        <p id="click-label"></p>
-        <br/>
-        {{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
-        <br/>
-        {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
-        <br/>
-        {{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
-        <br/>
-        {{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
-    
-        <p id="click-label"></p>
+      {{#view Tent.Panel span="10"}}
       
-        <br/>
-        
-        <h3>Accordion</h3>
-        {{#view Tent.Accordion}}
-          {{#view Tent.AccordionGroup title="Title1"}}
+        <div class="row">
+        {{#view Tent.Panel span="7" }}
+
+          {{#view Tent.Form name="Fields" id="form-section"}}
+            <div class="row">
+              {{#view Tent.Panel span="7"}}          
+                {{#view Tent.Panel span="2"}}
+                  {{view Tent.Checkbox label="Mandatory" checkedBinding="Pad.isMandatory"}}
+                {{/view}}
+                {{#view Tent.Panel span="2"}}
+                  {{view Tent.Checkbox label="Readonly" checkedBinding="Pad.isReadonly"}}
+                {{/view}}
+                {{#view Tent.Panel span="2"}}
+                  {{view Tent.Checkbox label="Disabled" checkedBinding="Pad.isDisabled"}}
+                {{/view}}
+                {{#view Tent.Panel span="2"}}
+                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.isTextDisplay"}}
+                {{/view}}
+              {{/view}}
+            </div>
+            {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here" isMandatoryBinding="Pad.isMandatory"}}
+            {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false hasHelpBlock=false isMandatoryBinding="Pad.isMandatory"}}
+            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            
+            
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true isMandatoryBinding="Pad.isMandatory"}}
+            
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true isMandatoryBinding="Pad.isMandatory"}}
+
+            {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.."  isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            
+
+            {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" tooltip="Provide some information here"}}
+
+            {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+
+            {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" isMandatoryBinding="Pad.isMandatory" tooltip="This is a textarea widget"
+            }}
+
+            
+          {{/view}}
+
+          
+
+        {{/view}}
+
+        {{#view Tent.Panel span="3"}} 
+          {{#view Tent.Form name="Values"}}
+            <p>Focussed Input : {{Pad.appName}}</p>
+            <p>Numeric Input : {{Pad.numeric}}</p>
+            <p>Amount Input : {{Pad.amount}}</p>
+            <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
+            <p>Selected States :</p>
+            <ul>
+              {{#each state in Pad.statesSelection}}
+                <li>{{state.stateName}}: {{state.stateCode}}</li>
+              {{/each}}
+            </ul>
+            <p>Radio Selection : {{Pad.radioSelection.stateName}}</p>
+            <p>Radio Value : {{Pad.radioValue}}</p>
+            <p>email : {{Pad.email}}</p>
+            <p>Signature Date : {{Pad.date}}</p>
+            <p>Text Area : {{Pad.textarea}}</p>
+          {{/view}}
+        {{/view}}       
+
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Tables and Grids" id="table-section"}}
+            <h5>Table</h5>
+            
+            {{view Tent.Table listBinding="Pad.people" 
+                headers="Name,Age" 
+                columnsBinding="Pad.columns" 
+                selectionBinding="Pad.selectedPerson" 
+                defaultSelectionBinding="Pad.selectedPerson" 
+                isEditable=true}}
+
+            <p>Selected Person is 
+                {{#each person in Pad.selectedPerson}}
+                  {{person.name}}
+                {{/each}}
+            </p>
+
+            <h3>Multi-select Table</h3>
+            {{view Tent.Table listBinding="Pad.people" 
+                headers="Name,Age" 
+                columns="name,age" 
+                selectionBinding="Pad.multiSelectedPerson" 
+                multiselection=true 
+                defaultSelectionBinding="Pad.multiSelectedPerson" 
+                isEditable=true}}
+
+            <p>Selected People are 
+              {{#each person in Pad.multiSelectedPerson}}
+                {{person.name}}
+              {{/each}}
+            </p>
+
+
+            <h3>SlickGrid</h3>
+            {{view Pad.TaskList
+              id="taskselectionview"
+              controllerBinding="Pad.taskListController"
+              multiSelect=false
+              paged=true
+              pageSize=7
+              remotePaging=true
+              options="{\"enableColumnReorder\": false}"
+            }}
+            
+            <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
+
+            {{view Pad.TaskList
+                id="multitaskselectionview"
+                controllerBinding="Pad.taskMultiSelectListController"
+                multiSelect=true
+                style="form"
+                label="SlickGrid"
+                paged=true
+                pageSize=7
+                remotePaging=true
+            }}
+
+              <p>Selected SlickGrid Multiple Items : 
+                {{debug}}
+                  {{#each item in Pad.taskMultiSelectListController.rowSelection}}
+                    <{{item.title}}>
+                  {{/each}}
+              </p>  
+          {{/view}}  
+        {{/view}}
+
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Other Widgets" id="other-section"}}
+            <h5>Other Widgets</h5>
+
+            {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
+            {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
+            {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
+            {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
+
+            <p>Tag {{view Tent.Tag text="Important"}}</p>
+          {{/view}}
+        {{/view}}
+
+
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="buttons" id="button-section"}}
+            <h5>buttons</h5>
+            {{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
+            <p id="click-label"></p>
+            <br/>
+            {{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
+            <br/>
             {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+            <br/>
+            {{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
+            <br/>
+            {{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
+
+            <h4>Toggle button</h4>
+            {{view Tent.Button label="Toggle Me" type="primary" dataToggle="button"}}
+            <p id="click-label"></p>
+        
+            <p id="click-label"></p>
           {{/view}}
-          {{#view Tent.AccordionGroup title="Title2"}}
-              {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
-              {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
-          {{/view}}
-          {{#view Tent.AccordionGroup title="Title3"}}
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-          {{/view}}
-          {{#view Tent.AccordionGroup title="Title4"}}
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+        {{/view}}
+          
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Containers" id="container-section"}}
+            <h5>Accordion</h5>
+            {{#view Tent.Accordion}}
+              {{#view Tent.AccordionGroup title="Title1"}}
+                {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+              {{/view}}
+              {{#view Tent.AccordionGroup title="Title2"}}
+                  {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
+                  {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
+              {{/view}}
+              {{#view Tent.AccordionGroup title="Title3"}}
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+              {{/view}}
+              {{#view Tent.AccordionGroup title="Title4"}}
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+              {{/view}}
+            {{/view}}
+
+            <br/><br/>
+
+            <h5>Tabs</h5>
+            {{#view Tent.Tabs id="tabstrip" active="settings"}}
+              {{view Tent.Tab title="Profile" pane="profile"}}
+              {{view Tent.Tab title="Messages" pane="messages"}}
+              {{view Tent.Tab title="Settings" pane="settings"}}
+            {{/view}}
+
+            {{#view Tent.TabPanes active="settings"}}
+              {{#view Tent.TabPane id="profile"}}
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              {{/view}}
+              {{#view Tent.TabPane id="messages"}}
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
+              {{/view}}
+              {{#view Tent.TabPane id="settings"}}
+                  At vero eos et accusamus et iusto odio dignissimos ducimus
+              {{/view}}
+            {{/view}}
+
           {{/view}}
         {{/view}}
 
-        <br/><br/>
-
-        <h3>Tabs</h3>
-        {{#view Tent.Tabs id="tabstrip" active="settings"}}
-          {{view Tent.Tab title="Profile" pane="profile"}}
-          {{view Tent.Tab title="Messages" pane="messages"}}
-          {{view Tent.Tab title="Settings" pane="settings"}}
-        {{/view}}
-
-        {{#view Tent.TabPanes active="settings"}}
-          {{#view Tent.TabPane id="profile"}}
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-          {{/view}}
-          {{#view Tent.TabPane id="messages"}}
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-          {{/view}}
-          {{#view Tent.TabPane id="settings"}}
-              At vero eos et accusamus et iusto odio dignissimos ducimus
-          {{/view}}
-        {{/view}}
 
 
-      {{/view}}
+         
+      
+      </div>
+    {{/view}} 
 
-      <br/>
-
+      <!--
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
-    
+      -->
     </script>
-
+      </row>
+    </container>
   </body>
 </html>

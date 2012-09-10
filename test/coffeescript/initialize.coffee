@@ -23,7 +23,11 @@
 	Pad.numeric = 123.456
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
-	Pad.amount = '1234ss567.67'
+	Pad.amount = '1234567.67'
+	Pad.isMandatory = false
+	Pad.isReadonly = false
+	Pad.isDisabled = false
+	Pad.isTextDisplay = false
 
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})

@@ -7,7 +7,11 @@
 	.help-inline {
 		display: block;
 	}
+	.controls {
+		margin-left: 20px;
+	}
 }
+
 
 .tent-widget {
 	.tent-mandatory {
@@ -16,6 +20,7 @@
 		display: inline-block;
 		vertical-align: top;
 		padding-top: .5em;
+		padding-left: 10px;
 	} 
 	&.mandatory {
 		.tent-mandatory:before {
