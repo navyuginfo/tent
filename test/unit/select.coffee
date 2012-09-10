@@ -104,6 +104,13 @@ test 'test for Radio presentation', ->
     view.$('.tent-radio-group label').eq(2).click()
   equal application.get('stateSelection').stateCode, 'AR', 'Selected the correct 3rd item'
 
+test 'Mandatory behaviour', ->
+  view = Ember.View.create
+    app: application
+    template: Ember.Handlebars.compile '{{view Tent.Select isMandatory=true}}'
+  appendView()
+  
+  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
@@ -120,5 +127,17 @@ test 'Ensure tooltip gets displayed', ->
   ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
   equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
   ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
+
+
+test 'Ensure aria attributes are applied ', ->
+  view = Ember.View.create
+    app: application
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          listBinding="app.content" 
+                          isMandatory=true
+                          }}'
+  appendView()
+  equal view.$('select[required=required]').length, 1, 'required html attribute'
+  equal view.$('select[aria-required=true]').length, 1, 'Aria-required'
 
 
