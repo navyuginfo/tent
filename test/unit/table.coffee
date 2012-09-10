@@ -21,7 +21,7 @@ teardown = ( ->
   @TemplateTests = undefined
 )
 
-module "Tent - Basic Widgets - table", setup, teardown
+module "Tent.Table", setup, teardown
 
 test 'Ensure Table is rendered with radio buttons(single selection)', ->
   view = Ember.View.create
@@ -148,33 +148,32 @@ test 'Ensure Multiple Selection And Deselection', ->
   rowView1 = Ember.View.views[view.$('tr:eq(1)').attr('id')]
   rowView2 = Ember.View.views[view.$('tr:eq(2)').attr('id')]
   rowView1.mouseUp()
-  equal Ember.View.views[view.$('table').attr('id')].get('selection').length,
-    1, '1 row is selected'
-  equal Ember.View.views[view.$('table').attr('id')].get('selection')
-    .objectAt(0), rowView1.get('content'), 'selection object is updated'
+
+  tableView = Ember.View.views[view.$('table').attr('id')]
+
+  equal tableView.get('selection').length, 1, '1 row is selected'
+  equal tableView.get('selection').objectAt(0), rowView1.get('content'), 'selection object is updated'
   equal $(rowView1.$()[0]).prop('classList').contains('tent-selected'),
     true, 'css gets added on selection'
+
   rowView2.mouseUp()
-  equal Ember.View.views[view.$('table').attr('id')].get('selection').length,
-    2, '2 rows are selected'
-  equal Ember.View.views[view.$('table').attr('id')].get('selection')
-   .objectAt(1), rowView2.get('content'), 'selection property updated'
+  equal tableView.get('selection').length, 2, '2 rows are selected'
+  equal tableView.get('selection').objectAt(1), rowView2.get('content'), 'selection property updated'
   equal $(rowView1.$()[0]).prop('classList').contains('tent-selected'),
     true, 'css is not removed from the previously selected row'
   equal $(rowView2.$()[0]).prop('classList').contains('tent-selected'),
     true, 'class added to the new selection'
+
   rowView2.mouseUp()
-  equal Ember.View.views[view.$('table').attr('id')].get('selection').length,
-    1, '1 row is selected after deselection'
-  equal Ember.View.views[view.$('table').attr('id')].get('selection')
-    .objectAt(0), rowView1.get('content'), 'selection property updated'
+  equal tableView.get('selection').length, 1, '1 row is selected after deselection'
+  equal tableView.get('selection').objectAt(0), rowView1.get('content'), 'selection property updated'
   equal $(rowView1.$()[0]).prop('classList').contains('tent-selected'),
     true, 'css is not removed from the previously selected row'
   equal $(rowView2.$()[0]).prop('classList').contains('tent-selected'),
     false, 'class removed on deselection'
+
   rowView1.mouseUp()
-  equal Ember.View.views[view.$('table').attr('id')].get('selection').length,
-    0, 'none of the rows are selected'
+  equal tableView.get('selection').length, 0, 'none of the rows are selected'
   equal $(rowView1.$()[0]).prop('classList').contains('tent-selected'),
     false, 'css is removed on deselection'
 

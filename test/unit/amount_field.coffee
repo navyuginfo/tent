@@ -9,7 +9,7 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 #
 # This module specifically tests AmountField UI Widget part of the tent library.
 #
-module "Tent.AmountField Widget", ->
+module "Tent.AmountField", ->
     @TemplateTests = Ember.Namespace.create()
   , ->
     if view
@@ -19,7 +19,8 @@ module "Tent.AmountField Widget", ->
 
 test 'Ensure currency is appended and has numeric only', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" labelBinding="label" currencyBinding="currency"}}'
+    template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" 
+        labelBinding="label" currencyBinding="currency"}}'
     name: '111111'
     label: 'FooBar'
     currency: 'USD'
@@ -28,6 +29,7 @@ test 'Ensure currency is appended and has numeric only', ->
 
   equal view.$('.add-on').text(), view.get('currency'), 'currency is rendered'
   equal view.$('.error').length, 0, 'error class gets applied'
+
 
 test 'Mandatory behaviour', ->
   view = Ember.View.create
@@ -42,3 +44,26 @@ test 'Ensure aria attributes are applied ', ->
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
+
+test 'Ensure formatting help is displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" 
+        labelBinding="label" currencyBinding="currency"}}'
+    name: '111111'
+    label: 'FooBar'
+    currency: 'USD'
+  appendView()
+  amountView = Ember.View.views[view.$('.tent-text-field').attr('id')]
+  equal view.$('.help-block').text(), amountView.getFormatPattern(), 'Format pattern was displayed'
+
+
+test 'Formatting tests', ->
+  amount = Tent.AmountField.create()
+  equal amount.format(123), '123.00', '123'
+  equal amount.format('123'), '123.00', '123'
+  equal amount.format('123,2.3'), '1,232.30', '123,2'
+
+  ok not (amount.unFormat('123' == '123.00')), 'amount is a number not a string'
+  ok amount.unFormat('123') == 123.00, '123 number unformat'
+  ok amount.unFormat('abc') == 0.00, 'Invalid string returns 0.00'
+

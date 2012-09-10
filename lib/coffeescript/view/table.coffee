@@ -38,16 +38,36 @@ Tent.Table = Ember.View.extend
       else
         false
 
+  ##
+  # method to populate the new list of items or push a single item
+  ##
   select: (selection) ->
-    @get('_list').set('selected', selection)
+    if selection and selection instanceof Array
+      prevSelection = @get('_list.selected')
+      if prevSelection
+        for element in prevSelection
+          @select element
+      if selection
+        for element in selection
+          @select element
+    else
+      @get('_list').set('selected', selection)
   
   updateContent: ( ->
     @get('_list').set('content',@get('list'))
   ).observes('list') 
 
-  selectionDidChange: (->
-    @set('selection', @get('_list').get('selected'))
-  ).observes('_list.selected')
+  ##
+  # Compute the selected list of items associated with
+  # table
+  ##
+  selection: ((key,value)->
+    if value isnt undefined
+      @select value
+    else
+      @get('_list.selected')
+  ).property('_list.selected')
+  
 
 Tent.TableRow = Ember.View.extend
   tagName: 'tr'

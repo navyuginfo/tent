@@ -25,6 +25,9 @@
   {{#if view.tooltip}}
     <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
   {{/if}}
-  
+
+  {{#if view.hasHelpBlock}}
+    <span class="help-block">{{view.helpBlock}}</span>
+  {{/if}}
 
 </div>

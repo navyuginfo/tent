@@ -81,7 +81,7 @@ test 'Formatting is actually called', ->
   Ember.run ->
       view.$('input').val('newValue')
       view.$('input').trigger('change')
-  equal view.get('name'), 'newValue', 'Controller value is set to "newValue"'
+  equal view.get('name'), '1234', 'Controller value is set to 1234'
 
   Ember.run ->
       view.$('input').val('')
