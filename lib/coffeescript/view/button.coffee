@@ -23,7 +23,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   targetObject: (->
     target = @get('target')
     if Ember.typeOf(target) is "string"
-      value = Em.get(@get('context'), target)
+      #value = Em.get(@get('context'), target)
+      value = Em.get(this, target)
       value = Em.get(window, target) if value is `undefined`
       target = value
     target || @get('context.target') || @get('content') || @get('context') 
