@@ -32,6 +32,7 @@ test 'Ensure TextField renders for text', ->
   equal view.$('input').length, 1, 'text input field gets rendered'
   equal view.$('.tent-text-field').length, 1, 'tent-text-field class gets applied'
   equal view.$('label').text(), view.get('label'), 'label is rendered'
+  equal view.$('label').attr('for'), view.$('input').attr('id'), 'label has the correct "for" attribute'
 
 test 'Ensure Textfield renders Span if isEditable=false', ->
   view = Ember.View.create

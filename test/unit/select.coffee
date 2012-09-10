@@ -37,7 +37,9 @@ test 'Ensure Tent.Select renders for list', ->
 
   view = Ember.View.create
     app: application
+    label: 'label1'
     template: Ember.Handlebars.compile '{{view Tent.Select 
+                          labelBinding="view.label"
                           listBinding="app.content" 
                           optionLabelPath="content.stateName"  
                           optionValuePath="content.stateCode"
@@ -47,8 +49,9 @@ test 'Ensure Tent.Select renders for list', ->
 
   ok view.$().length, 'Select was rendered'
   equal view.$('option').length, application.content.length + 1,  'Options were rendered'
-  equal view.$().text().trim(), "Please Select...GeorgiaFloridaArkansas", 'Option values were rendered'
   equal view.get('selection'), null, 'Nothing has been selected'
+  equal view.$('label.control-label').text(), view.get('label'), 'label is rendered'
+  equal view.$('label.control-label').attr('for'), view.$('select').attr('id'), 'label has the correct "for" attribute'
 
   # add a new object to the list and see if the select holds that object 
   Ember.run -> application.content.pushObject(Ember.Object.create({stateName: 'Alaska', stateCode: 'AK'}))

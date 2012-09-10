@@ -11,9 +11,16 @@ require '../mixin/aria_support'
 Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
+  
+  forId: (->
+    @get('inputIdentifier')
+  ).property('inputIdentifier')
 
   init: ->
     @_super()
+
+  didInsertElement: ->
+    @set('inputIdentifier', @$('select').attr('id'))
 
   valueForMandatoryValidation: (->
     if @get('multiple')

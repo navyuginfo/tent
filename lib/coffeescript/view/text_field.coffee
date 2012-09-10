@@ -14,6 +14,13 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	templateName: 'text_field'
 	classNames: ['tent-text-field', 'control-group']
 
+	forId: (->
+		@get('inputIdentifier')
+	).property('inputIdentifier')
+
+	didInsertElement: ->
+		@set('inputIdentifier', @$('input').attr('id'))
+
 	valueForMandatoryValidation: (->
 		@get('formattedValue')
 	).property('formattedValue')
@@ -27,4 +34,3 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 			@set('formattedValue', @format(unformatted))
 
 Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support
-
