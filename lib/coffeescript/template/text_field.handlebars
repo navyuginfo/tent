@@ -16,6 +16,9 @@
     {{else}}
       <span {{bindAttr class="view.unEditableClass view.inputSizeClass"}}>{{view.formattedValue}}</span>
     {{/if}}
+    {{#if view.hasHelpBlock}}
+      <span class="help-block">{{view.helpBlock}}</span>
+    {{/if}}
     {{#if view.hasErrors}}
       {{#each error in view.validationErrors}}
         <span class="help-inline">{{view.error}}</span>
@@ -26,8 +29,6 @@
     <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
   {{/if}}
 
-  {{#if view.hasHelpBlock}}
-    <span class="help-block">{{view.helpBlock}}</span>
-  {{/if}}
+
 
 </div>
