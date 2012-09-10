@@ -6,6 +6,7 @@
 require '../template/select'
 require '../template/radio_group'
 require '../mixin/tooltip_support'
+require '../mixin/aria_support'
 
 Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
@@ -36,3 +37,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   change: ->
       @_super()
       @set('isValid', @validate())
+
+
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support

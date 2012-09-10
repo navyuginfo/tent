@@ -6,11 +6,14 @@
 require '../mixin/field_support'
 require '../mixin/formatting_support'
 require '../mixin/tooltip_support'
+require '../mixin/aria_support'
+require '../mixin/html5_support'
 require '../template/text_field'
 
 Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport,
 	templateName: 'text_field'
 	classNames: ['tent-text-field', 'control-group']
+
 	valueForMandatoryValidation: (->
 		@get('formattedValue')
 	).property('formattedValue')
@@ -22,3 +25,6 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 			unformatted = @unFormat(@get('formattedValue'))
 			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
+
+Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support
+

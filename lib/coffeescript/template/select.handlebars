@@ -1,7 +1,9 @@
 <label class="control-label">{{view.label}}</label>
 
 <div class="controls">
+  <span class='tent-mandatory'/>
   {{#if view.isRadioGroup}}
+    <div class="radio-group">
     {{view Ember.Select 
            contentBinding="view.list" 
            class="tent-radio-group"
@@ -12,8 +14,9 @@
            tagName = "div"
            templateName = "radio_group"
     }} 
+    </div>
   {{else}}
-    {{view Ember.Select 
+    {{view Tent.SelectElement 
            contentBinding="view.list" 
            classBinding="view.inputSizeClass" 
            optionLabelPathBinding="view.optionLabelPath" 

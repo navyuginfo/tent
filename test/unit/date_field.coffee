@@ -24,6 +24,13 @@ test 'Test Validate', ->
 	view.set('formattedValue', '')
 	ok view.validate(), 'Empty string is valid'
 
+test 'Mandatory behaviour', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.DateField isMandatory=true}}'
+  appendView()
+  
+  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.DateField 
@@ -35,4 +42,9 @@ test 'Ensure tooltip gets displayed', ->
   equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
   ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
 
- 
+test 'Ensure aria attributes are applied ', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.DateField isMandatory=true}}'
+  appendView()
+  equal view.$('input[required=required]').length, 1, 'required html5 attribute'
+  equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
