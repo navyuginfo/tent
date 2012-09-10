@@ -2,36 +2,38 @@
 
 <div class="controls">
   <span class='tent-mandatory'/>
-  {{#if view.isRadioGroup}}
-    <div class="radio-group">
-    {{view Ember.Select 
-           contentBinding="view.list" 
-           class="tent-radio-group"
-           optionLabelPathBinding="view.optionLabelPath" 
-           optionValuePathBinding ="view.optionValuePath" 
-           selectionBinding="view.selected"
-           valueBinding = "view.value"
-           tagName = "div"
-           templateName = "radio_group"
-    }} 
-    </div>
-  {{else}}
-    {{view Tent.SelectElement 
-           contentBinding="view.list" 
-           classBinding="view.inputSizeClass" 
-           optionLabelPathBinding="view.optionLabelPath" 
-           optionValuePathBinding ="view.optionValuePath" 
-           selectionBinding="view.selected"
-           multipleBinding="view.multiple"
-           promptBinding = "view._prompt" 
-           valueBinding = "view.value"}} 
-  {{/if}}
-	{{#if view.tooltip}}
-    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
-  {{/if}}
-	{{#if view.hasErrors}}
-    	{{#each error in view.validationErrors}}
-      		<span class="help-inline">{{view.validationErrors}}</span>
-    	{{/each}}
-  	{{/if}} 
+  <div class="input-prepend">
+    {{#if view.isRadioGroup}}
+      <div class="radio-group">
+      {{view Ember.Select 
+             contentBinding="view.list" 
+             class="tent-radio-group"
+             optionLabelPathBinding="view.optionLabelPath" 
+             optionValuePathBinding ="view.optionValuePath" 
+             selectionBinding="view.selected"
+             valueBinding = "view.value"
+             tagName = "div"
+             templateName = "radio_group"
+      }} 
+      </div>
+    {{else}}
+      {{view Tent.SelectElement 
+             contentBinding="view.list" 
+             classBinding="view.inputSizeClass" 
+             optionLabelPathBinding="view.optionLabelPath" 
+             optionValuePathBinding ="view.optionValuePath" 
+             selectionBinding="view.selected"
+             multipleBinding="view.multiple"
+             promptBinding = "view._prompt" 
+             valueBinding = "view.value"}} 
+    {{/if}}
+  	{{#if view.tooltip}}
+      <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+    {{/if}}
+  	{{#if view.hasErrors}}
+      	{{#each error in view.validationErrors}}
+        		<span class="help-inline">{{view.validationErrors}}</span>
+      	{{/each}}
+    	{{/if}}
+  </div>
 </div>

@@ -29,7 +29,7 @@ test 'Ensure TextField renders for text', ->
 
   appendView()
 
-  ok view.$('input')?, 'text input field gets rendered'
+  equal view.$('input').length, 1, 'text input field gets rendered'
   equal view.$('.tent-text-field').length, 1, 'tent-text-field class gets applied'
   equal view.$('label').text(), view.get('label'), 'label is rendered'
 
@@ -41,7 +41,7 @@ test 'Ensure Textfield renders Span if isEditable=false', ->
 
   appendView()
   
-  ok view.$('span')?, 'span gets rendered'
+  equal view.$('span').length, 2, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
   equal view.$('.uneditable-input').length, 1, 'uneditable-input class gets applied'
 
@@ -107,7 +107,7 @@ test 'Ensure tooltip gets displayed', ->
     label: 'FooBar'
   appendView()
 
-  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').length, 1, 'Tooltip anchor exists'
   equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
   ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
 

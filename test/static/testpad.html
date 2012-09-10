@@ -49,6 +49,9 @@
 
           {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" isMandatory=true tooltip="Provide some information here"}}
 
+          {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" isMandatory=true tooltip="This is a textarea widget"
+          }}
+
           
         {{/view}}
 
@@ -66,6 +69,8 @@
           {{view Tent.TextField valueBinding="Pad.radioSelection.stateName" label="Radio Selection" isEditable=false}}
           {{view Tent.TextField valueBinding="Pad.radioValue" label="Radio Value" isEditable=false}}
           <p>Signature Date : {{Pad.date}}</p>
+          {{view Tent.TextField valueBinding="Pad.textarea" label="Text Area" isEditable=false}}
+          
         {{/view}}
 
       {{/view}}

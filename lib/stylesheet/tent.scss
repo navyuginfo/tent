@@ -59,10 +59,11 @@
 a[rel=tooltip] {
 	width: 16px;
 	height: 16px;
+	margin-top: 6px;
 	background-image: url(images/ui-icons_454545_256x240.png);
 	background-position: -16px -144px;
 	display: inline-block;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 .slick-row {
