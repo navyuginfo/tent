@@ -19,6 +19,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	).property('inputIdentifier')
 
 	didInsertElement: ->
+		@_super()
 		@set('inputIdentifier', @$('input').attr('id'))
 
 	valueForMandatoryValidation: (->
