@@ -27,6 +27,4 @@ Tent.FormattingSupport = Ember.Mixin.create
 	unFormat: (value) ->
 		value
 
-	change: ->
-		unformatted = @unFormat(@get('formattedValue'))
-		@set('value', unformatted)
+	
