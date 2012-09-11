@@ -36,19 +36,18 @@ test 'Create a textarea', ->
 	equal view.$('textarea').attr('cols'), 40, 'Cols was rendered'
 
 
-test 'Ensure Textarea renders Span if isEditable=false', ->
+test 'Ensure Textarea renders Span if textDisplay=true', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.Textarea 
-    			valueBinding="name" labelBinding="label" isEditable=false}}'
+    			valueBinding="name" labelBinding="label" textDisplay=true}}'
     name: 'foobar'
     label: 'FooBar'
 
   appendView()
   
-  equal view.$('span').length, 2, 'span gets rendered'
+  equal view.$('span.text-display').length, 1, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
-  equal view.$('.uneditable-input').length, 1, 'uneditable-input class gets applied'
-
+  
 
 test 'Ensure value is propagated back from DOM to controller', ->
 
@@ -89,7 +88,7 @@ test 'Ensure required check', ->
 
   appendView()
 
-  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
   Ember.run ->
     view.$('textarea').val('newValue')
@@ -120,6 +119,19 @@ test 'Test for disabled', ->
   appendView()
 
   equal view.$('textarea').attr('disabled'), 'disabled', 'disabled attribute detected'
+
+test 'Test for textDisplay', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Textarea valueBinding="name" 
+      labelBinding="label" textDisplay=true}}'
+    name: 'foobar'
+    label: 'FooBar'
+
+  appendView()
+  
+  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal $('.controls span').text(), view.get('name') , 'value is set to span'
+
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create

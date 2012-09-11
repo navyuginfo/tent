@@ -103,26 +103,25 @@
               readOnlyBinding="Pad.isReadOnly" 
               disabledBinding="Pad.isDisabled"
               textDisplayBinding="Pad.textDisplay"}}
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" tooltip="Provide some information here"}}
-            {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" tooltip="Provide some information here"}}
-            {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false hasHelpBlock=false requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" }}
-            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" tooltip="Provide some information here"}}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" textDisplayBinding="Pad.textDisplay"  hasHelpBlock=false requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" }}
+            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
             
             
-            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" }}
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
             
-            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  }}
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  textDisplayBinding="Pad.textDisplay" }}
 
-            {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.." requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" tooltip="Provide some information here"}}
+            {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.." requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
             
-
-            {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" tooltip="Provide some information here"}}
+            {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
 
             {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="Provide some information here"
-              disabledBinding="Pad.isDisabled"
+              disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
 
-            {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" tooltip="This is a textarea widget"
+            {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="This is a textarea widget"
             }}
 
             

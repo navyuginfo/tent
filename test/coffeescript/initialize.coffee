@@ -29,6 +29,7 @@
 	Pad.isDisabled = false
 	Pad.textDisplay = false
 
+
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
 		Ember.Object.create({name: 'Raghu', age: 1000})
@@ -50,11 +51,15 @@
 		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
 	]
 
+	Pad.stateSelection = Pad.content[1]
+
 	Pad.contents = [
 		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
 		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
 		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
 	]
+
+	Pad.statesSelection = [Pad.contents[1], Pad.contents[2]]
 
 	Pad.checkGroupContent = ["AP", "AL", "AT"]
 	count = 1

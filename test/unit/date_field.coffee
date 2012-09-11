@@ -29,7 +29,7 @@ test 'required behaviour', ->
     template: Ember.Handlebars.compile '{{view Tent.DateField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create

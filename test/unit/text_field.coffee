@@ -98,7 +98,7 @@ test 'Ensure required check', ->
 
   appendView()
 
-  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
   Ember.run ->
     view.$('input').val('newValue')
@@ -129,6 +129,8 @@ test 'Test for disabled', ->
   appendView()
 
   equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
+
+ 
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create

@@ -71,6 +71,11 @@ a[rel=tooltip] {
 	vertical-align: top;
 }
 
+.text-display {
+	margin-top: 5px;
+	display: inline-block;
+}
+
 .slick-row {
 	&:hover {
 		background-color: whiteSmoke;

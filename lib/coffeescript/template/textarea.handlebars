@@ -5,7 +5,9 @@
     {{#if view.hasPrefix}}  
       <span class="add-on">{{view.prefix}}</span>
     {{/if}}     
-    {{#if view.isEditable}}
+    {{#if view.textDisplay}}
+      <span class="text-display">{{view.formattedValue}}</span>
+    {{else}}
       {{view Tent.TextareaInput 
           classBinding="view.inputSizeClass" 
           valueBinding="view.formattedValue" 
@@ -13,8 +15,6 @@
           rowsBinding="view.rows"
           colsBinding="view.cols"
       }}
-    {{else}}
-      <span {{bindAttr class="view.unEditableClass view.inputSizeClass"}}>{{view.formattedValue}}</span>
     {{/if}}
     {{#if view.tooltip}}
       <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>

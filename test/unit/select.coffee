@@ -113,7 +113,7 @@ test 'Required behaviour', ->
     template: Ember.Handlebars.compile '{{view Tent.Select required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
 test 'Test for readonly attribute', ->
   view = Ember.View.create
@@ -128,6 +128,28 @@ test 'Test for disabled', ->
   appendView()
 
   equal view.$('select').attr('disabled'), 'disabled', 'disabled attribute detected'
+
+test 'Test for textDisplay', ->
+  application.set("content", [
+    Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
+    Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
+    Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
+  ])
+  application.set("stateSelection", application.get('content')[1])
+
+  view = Ember.View.create
+    app: application
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          listBinding="app.content"
+                          optionLabelPath="content.stateName"  
+                          optionValuePath="content.stateCode"
+                          selectionBinding="app.stateSelection"
+                          textDisplay=true
+                          }}'
+  appendView()
+  
+  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal $('.controls span').text(), 'Florida' , 'value is set to florida'
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
