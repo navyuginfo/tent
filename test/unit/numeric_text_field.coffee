@@ -99,12 +99,12 @@ test 'Formatting of read-only', ->
     appendView()
     equal view.$('.text-display').text(), '1234', 'Initial DOM value'
 
-test 'Mandatory behaviour', ->
+test 'Required behaviour', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.NumericTextField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
 test 'Test for readonly attribute', ->
   view = Ember.View.create

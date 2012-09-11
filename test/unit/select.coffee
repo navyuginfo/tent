@@ -107,13 +107,13 @@ test 'test for Radio presentation', ->
     view.$('.tent-radio-group label').eq(2).click()
   equal application.get('stateSelection').stateCode, 'AR', 'Selected the correct 3rd item'
 
-test 'Mandatory behaviour', ->
+test 'Required behaviour', ->
   view = Ember.View.create
     app: application
-    template: Ember.Handlebars.compile '{{view Tent.Select isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.Select required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
 test 'Test for readonly attribute', ->
   view = Ember.View.create

@@ -24,12 +24,12 @@ test 'Test Validate', ->
 	view.set('formattedValue', '')
 	ok view.validate(), 'Empty string is valid'
 
-test 'Mandatory behaviour', ->
+test 'required behaviour', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.DateField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.DateField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create

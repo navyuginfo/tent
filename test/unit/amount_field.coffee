@@ -31,12 +31,12 @@ test 'Ensure currency is appended and has numeric only', ->
   equal view.$('.error').length, 0, 'error class gets applied'
 
 
-test 'Mandatory behaviour', ->
+test 'required behaviour', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.AmountField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.AmountField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
 test 'Test for readonly attribute', ->
   view = Ember.View.create

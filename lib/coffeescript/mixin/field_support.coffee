@@ -15,7 +15,7 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.TranslationSupport
   classNames: ['tent-widget']
   classNameBindings: [
     'mixinClasses',
-    'isMandatoryAsBoolean:mandatory',
+    'requiredAsBoolean:required',
     'isHidden:hidden',
     'isViewOnly:view-only',
     'hasErrors:error']

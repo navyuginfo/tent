@@ -14,7 +14,7 @@
 
 
 .tent-widget {
-	.tent-mandatory {
+	.tent-required {
 		width: .5em;
 		color: red;
 		display: inline-block;
@@ -22,8 +22,8 @@
 		padding-top: .5em;
 		padding-left: 10px;
 	} 
-	&.mandatory {
-		.tent-mandatory:before {
+	&.required {
+		.tent-required:before {
 			content: '*';
 		}
 	}

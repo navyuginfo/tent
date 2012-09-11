@@ -78,18 +78,18 @@ test 'Ensure value is propagated back from DOM to controller', ->
   equal view.$('textarea').val(), 'resetValue', 'DOM value is reset'
 
 
-test 'Ensure mandatory check', ->
+test 'Ensure required check', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.Textarea valueBinding="name" 
       labelBinding="label"
-      isMandatory=true
+      required=true
       isValidBinding="isValid"}}'
     name: 'foobar'
     label: 'FooBar'
 
   appendView()
 
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
   Ember.run ->
     view.$('textarea').val('newValue')

@@ -52,12 +52,12 @@ test 'Ensure the email text field accepts emails', ->
   equal view.$('.error').length, 0, 'no error class applied'
   equal view.$('.help-inline').text(), '', 'no error received'
 
-test 'Mandatory behaviour', ->
+test 'Required behaviour', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.EmailTextField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.EmailTextField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-mandatory').length, 1, 'required icon displayed' 
 
 test 'Test for readonly attribute', ->
   view = Ember.View.create
