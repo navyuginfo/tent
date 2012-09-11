@@ -1,12 +1,12 @@
 
 ((loader) -> 
-	
 	loader.require('jquery')
 	loader.require('handlebars')
 	loader.require('ember')
 	loader.require('ember-data')
 	loader.require('coffeescript/models/ember_custom_attribute_types')
 	loader.require('tent')
+
 	loader.require('coffeescript/app')
 	loader.require('coffeescript/store/datastore')
 
@@ -33,7 +33,7 @@
 	Pad.numeric = 123.456
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
-
+	Pad.amount = '1234ss567.67'
 
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
@@ -81,7 +81,6 @@
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
 		paged: false
-
 
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})

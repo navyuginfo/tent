@@ -4,13 +4,23 @@
 #
 
 require '../template/select'
+require '../template/radio_group'
+require '../mixin/tooltip_support'
+require '../mixin/aria_support'
 
-Tent.Select = Ember.View.extend Tent.FieldSupport,
+Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
+  
+  forId: (->
+    @get('inputIdentifier')
+  ).property('inputIdentifier')
 
   init: ->
     @_super()
+
+  didInsertElement: ->
+    @set('inputIdentifier', @$('select').attr('id'))
 
   valueForMandatoryValidation: (->
     if @get('multiple')
@@ -34,3 +44,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport,
   change: ->
       @_super()
       @set('isValid', @validate())
+
+
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support

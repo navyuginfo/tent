@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
@@ -83,7 +81,7 @@ test 'Formatting is actually called', ->
   Ember.run ->
       view.$('input').val('newValue')
       view.$('input').trigger('change')
-  equal view.get('name'), 'newValue', 'Controller value is set to "newValue"'
+  equal view.get('name'), '1234', 'Controller value is set to 1234'
 
   Ember.run ->
       view.$('input').val('')
@@ -100,3 +98,31 @@ test 'Formatting of read-only', ->
 
     appendView()
     equal view.$('.uneditable-input').text(), '1234', 'Initial DOM value'
+
+test 'Mandatory behaviour', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField isMandatory=true}}'
+  appendView()
+  
+  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" 
+      labelBinding="label"
+      tooltip="tooltip here.."
+      }}'
+    name: 'foobar'
+    label: 'FooBar'
+  appendView()
+
+  ok view.$('a[rel=tooltip]')?, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
+
+test 'Ensure aria attributes are applied ', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField isMandatory=true}}'
+  appendView()
+  equal view.$('input[required=required]').length, 1, 'required html5 attribute'
+  equal view.$('input[aria-required=true]').length, 1, 'Aria-required'

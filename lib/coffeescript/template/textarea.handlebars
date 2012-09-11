@@ -1,0 +1,35 @@
+<label class="control-label">{{view.label}}</label>
+<div class="controls">
+  <span class='tent-mandatory'/>
+  <div class="input-prepend">
+    {{#if view.hasPrefix}}  
+      <span class="add-on">{{view.prefix}}</span>
+    {{/if}}     
+    {{#if view.isEditable}}
+      {{view Tent.TextareaInput 
+          classBinding="view.inputSizeClass" 
+          valueBinding="view.formattedValue" 
+          placeholderBinding="view.placeholder"
+          rowsBinding="view.rows"
+          colsBinding="view.cols"
+      }}
+    {{else}}
+      <span {{bindAttr class="view.unEditableClass view.inputSizeClass"}}>{{view.formattedValue}}</span>
+    {{/if}}
+    {{#if view.tooltip}}
+      <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+    {{/if}}
+    {{#if view.hasHelpBlock}}
+      <span class="help-block">{{view.helpBlock}}</span>
+    {{/if}}
+    {{#if view.hasErrors}}
+      {{#each error in view.validationErrors}}
+        <span class="help-inline">{{view.error}}</span>
+      {{/each}}
+    {{/if}}  
+  </div>
+  
+  
+  
+
+</div>

@@ -7,6 +7,7 @@ Tent.JQWidget = Em.Mixin.create
 		@_super()
 
 	didInsertElement: ->
+		@_super()
 		# Make jQuery UI options available as Ember properties
 		#@set('options', @_gatherOptions())
 

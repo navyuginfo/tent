@@ -3,10 +3,7 @@
 # All rights reserved.
 #
 
-@Tent = {} unless @Tent?
-@Tent.Controllers = Em.Namespace.create
-@Tent.Data = Em.Namespace.create
-
+require './namespace'
 require './util'
 require './view'
 require './controllers'

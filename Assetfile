@@ -152,6 +152,7 @@ input "lib" do
     coffee_script
     filter RequireRewriteFilter
     minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
+      puts input.path
       id = input.path.dup
       id.gsub!(/^coffeescript\//, '')
       RequireRewriteFilter.module_id(id)
@@ -208,16 +209,59 @@ input "lib" do
       filename.gsub(/^static\//, '')
     end
   end
-
-  filter Rake::Pipeline::ConcatFilter
 end
 
 input ['vendor'] do
   match '**/*' do
-    minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
-      /([^\/]*)\//.match(input.path)[1]
+    concat do |filename|
+      File.join('javascript', "#{/([^\/]*)/.match(filename)[1]}.js")
+    end
+  end
+end
+
+input "lib" do
+  output 'tmp/build'
+  match "coffeescript/**/*.coffee" do
+    coffee_script
+    filter RequireRewriteFilter
+    concat do |filename| 
+      /coffeescript\/(.*)/.match(filename)[1]
+    end
+  end
+  match "**/*.handlebars" do
+    handlebars :key_name_proc => proc { |input| 
+      %r{template/(.*).handlebars}.match(input.path)
+      $1
     }
-    concat 'javascript/dependencies.js'
+    filter RequireRewriteFilter
+    concat do |filename| 
+      /coffeescript\/(.*)/.match(filename)[1]
+    end
+  end
+end
+
+input "tmp/build" do
+  output 'dist'
+  match "tent.js" do
+    neuter(
+      :additional_dependencies => proc { |input|
+        Dir.glob(File.join(File.dirname(input.fullpath),'**','*.js'))
+      },
+      :path_transform => proc { |path, input|
+        transformed = File.directory?(File.join(File.dirname(input.fullpath), path))? File.join(path, "index.js"): "#{path}.js"
+        File.exists?(File.join(input.root,transformed))? transformed: nil
+      },
+      :closure_wrap => false
+    ) do |filename|
+      'tent.js'
+    end
+  end
+end
+
+input "dist" do
+  output "public/dist"
+  match "tent.js" do
+    concat "tent.js"
   end
 end
 

@@ -1,7 +1,3 @@
-require 'jquery'
-require 'handlebars'
-require 'ember'
-
 @TEST = true
 @Mock = sinon.mock
 @Stub = sinon.stub

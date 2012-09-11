@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-require 'ember-data'
 require '~test/mocks/ember_data_mocks'
 
 view = null

@@ -1,5 +1,40 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
+/*@import "compass";*/
+
+
+.form-horizontal {
+	.help-inline {
+		display: block;
+	}
+}
+
+.tent-widget {
+	.tent-mandatory {
+		width: .5em;
+		color: red;
+		display: inline-block;
+		vertical-align: top;
+		padding-top: .5em;
+	} 
+	&.mandatory {
+		.tent-mandatory:before {
+			content: '*';
+		}
+	}
+}
+
+/* Bootstrap Modifications */
+
+.help-block {
+	font-style: italic;
+}
+
+.help-inline {
+	padding-left: 0px;
+}
+
+/* Tent-Specific */
 
 .grid-header, 
 .pager *
@@ -15,8 +50,26 @@
   background-color: #CCC;
 }
 
+.radio-group {
+	display: inline-block;
+	input.tent-radio-option[type="radio"]  {
+		margin-right: 10px;
+		margin-top: -2px;
+	}
+}
+
 .tent-width-small{
   width: 20px;
+}
+
+a[rel=tooltip] {
+	width: 16px;
+	height: 16px;
+	margin-top: 6px;
+	background-image: url(images/ui-icons_454545_256x240.png);
+	background-position: -16px -144px;
+	display: inline-block;
+	vertical-align: top;
 }
 
 /* Slickgrid Overrides */

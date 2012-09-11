@@ -12,6 +12,7 @@ require './span_support'
 Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.TranslationSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, 
   fieldClass: 'field'
   mixinClasses: 'control-group'
+  classNames: ['tent-widget']
   classNameBindings: [
     'mixinClasses',
     'isMandatoryAsBoolean:mandatory',

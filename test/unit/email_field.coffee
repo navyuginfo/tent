@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
@@ -52,4 +50,18 @@ test 'Ensure the email text field accepts emails', ->
   appendView()
 
   equal view.$('.error').length, 0, 'no error class applied'
-  equal view.$('.help-inline').text(), '', 'no error received'     
+  equal view.$('.help-inline').text(), '', 'no error received'
+
+test 'Mandatory behaviour', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.EmailTextField isMandatory=true}}'
+  appendView()
+  
+  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+
+test 'Ensure aria attributes are applied ', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.EmailTextField isMandatory=true}}'
+  appendView()
+  equal view.$('input[required=required]').length, 1, 'required html5 attribute'
+  equal view.$('input[aria-required=true]').length, 1, 'Aria-required'  

@@ -1,4 +1,3 @@
-require 'bootstrap-sass/bootstrap-tab'
 
 Tent.Tabs = Ember.View.extend
 	classNames: ["nav", "nav-tabs"]

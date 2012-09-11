@@ -1,4 +1,3 @@
-require 'tent'
 
 Tent.Mock = Tent.Mock || Ember.Namespace.create()
 

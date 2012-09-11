@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
-
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
@@ -31,9 +29,10 @@ test 'Ensure TextField renders for text', ->
 
   appendView()
 
-  ok view.$('input')?, 'text input field gets rendered'
+  equal view.$('input').length, 1, 'text input field gets rendered'
   equal view.$('.tent-text-field').length, 1, 'tent-text-field class gets applied'
   equal view.$('label').text(), view.get('label'), 'label is rendered'
+  equal view.$('label').attr('for'), view.$('input').attr('id'), 'label has the correct "for" attribute'
 
 test 'Ensure Textfield renders Span if isEditable=false', ->
   view = Ember.View.create
@@ -43,7 +42,7 @@ test 'Ensure Textfield renders Span if isEditable=false', ->
 
   appendView()
   
-  ok view.$('span')?, 'span gets rendered'
+  equal view.$('span').length, 2, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
   equal view.$('.uneditable-input').length, 1, 'uneditable-input class gets applied'
 
@@ -84,6 +83,9 @@ test 'Ensure mandatory check', ->
     label: 'FooBar'
 
   appendView()
+
+  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+
   Ember.run ->
     view.$('input').val('newValue')
     view.$('input').trigger('change')
@@ -93,4 +95,29 @@ test 'Ensure mandatory check', ->
     view.$('input').val('')
     view.$('input').trigger('change')
   ok not view.get('isValid')  
-  
+
+test 'Ensure tooltip gets displayed', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label"
+      isMandatory=true
+      isValidBinding="isValid"
+      tooltip="tooltip here.."
+      }}'
+    name: 'foobar'
+    label: 'FooBar'
+  appendView()
+
+  equal view.$('a[rel=tooltip]').length, 1, 'Tooltip anchor exists'
+  equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
+  ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
+
+test 'Ensure aria attributes are applied ', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField isMandatory=true}}'
+  appendView()
+  equal view.$('input[required=required]').length, 1, 'required html5 attribute'
+  equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
+
+
+
