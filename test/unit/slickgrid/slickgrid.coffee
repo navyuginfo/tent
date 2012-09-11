@@ -4,7 +4,6 @@
 #
 
 require 'tent'
-require 'ember-data'
 require '~test/mocks/ember_data_mocks'
 require('~test/fixtures/list_data_model')
 
@@ -199,43 +198,3 @@ test 'Listen for selections on dataView', ->
 	# Revert back to original init() method
 	Tent.SlickGrid.reopen
 		init: init
-
-
-###
-Turn off tests until final approach with collections is determined
-
-
-
-
-test 'Test that rendering occurred correctly', ->
-	view = Ember.View.create
-		template: Ember.Handlebars.compile '{{view Tent.SlickGrid
-				controllerBinding="TemplateTests.testController"
-				columnsBinding="TemplateTests.testController.columns"
-				paged=false
-				id="taskselectionview"
-			}}'
-
-	appendView()
-	equal view.$('.grid').length, 1, 'Container created with class=grid'
-	equal view.$('.slick-header').length, 1, 'Header created'
-	equal view.$('.slick-header-column').length, 7, 'There should be 7 columns'
-	ok view.$('.slick-row').length > 0, 'There should be at least one visible row'
-
-test 'Tests for client-side paging', ->
-	view = Ember.View.create
-		template: Ember.Handlebars.compile '{{view Tent.SlickGrid
-				controllerBinding="TemplateTests.testController"
-				columnsBinding="TemplateTests.testController.columns"
-				paged=true
-				pageSize=3
-				remotePaging=false
-				id="taskselectionview"
-			}}'
-
-	appendView()
-	equal view.$('.slick-row').length, 3, 'There should be 3 rows per page'
-
-###
-
-	
