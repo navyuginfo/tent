@@ -40,7 +40,15 @@
       $(document).ready(function() {
         minispade.require('tent');
         minispade.require('coffeescript/initialize');
-        $('.sidenav').scrollspy()
+        
+        $('body').on('click', '.nav-list a', function(){
+          console.log('clicked')
+          $('.nav-list li').removeClass('active');
+          $(this).parent('li').addClass('active');
+        })
+
+
+
       });
     </script>
     <container>
@@ -86,12 +94,11 @@
                   {{view Tent.Checkbox label="Disabled" checkedBinding="Pad.isDisabled"}}
                 {{/view}}
                 {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.isTextDisplay"}}
+                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.textDisplay"}}
                 {{/view}}
               {{/view}}
             </div>
-            {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here" isMandatoryBinding="Pad.isMandatory"}}
-            {{view Tent.TextField valueBinding="Pad.editableName" label="Uneditable input" isEditable=false isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
+            {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here" isMandatoryBinding="Pad.isMandatory" textDisplayBinding="Pad.textDisplay"}}
             {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
             {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" isMandatoryBinding="Pad.isMandatory" tooltip="Provide some information here"}}
             {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" isEditable=false hasHelpBlock=false isMandatoryBinding="Pad.isMandatory"}}

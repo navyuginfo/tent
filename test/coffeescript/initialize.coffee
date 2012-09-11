@@ -27,7 +27,7 @@
 	Pad.isMandatory = false
 	Pad.isReadonly = false
 	Pad.isDisabled = false
-	Pad.isTextDisplay = false
+	Pad.textDisplay = false
 
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})

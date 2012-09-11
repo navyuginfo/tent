@@ -12,8 +12,14 @@ require '../template/text_field'
 
 Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport,
 	templateName: 'text_field'
+	textDisplay: false
+	isReadOnly: false
 	classNames: ['tent-text-field', 'control-group']
 
+	isTextDisplay: (->
+		@get('textDisplay') or (not @get('isEditable'))
+	).property('textDisplay', 'isEditable')
+	
 	forId: (->
 		@get('inputIdentifier')
 	).property('inputIdentifier')
