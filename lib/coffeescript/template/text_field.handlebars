@@ -3,21 +3,20 @@
 <div class="controls">
   <span class='tent-required'/>
   <div class="input-prepend">
-    
-    {{#if view.hasPrefix}}  
-      <span class="add-on">{{view.prefix}}</span>
-    {{/if}}     
     {{#if view.isTextDisplay}}
-      <span class="text-display">{{view.formattedValue}}</span>
+      <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{view.prefix}}</span>{{/if}} {{view.formattedValue}}</span>
     {{else}}
+      {{#if view.hasPrefix}}  
+        <span class="add-on">{{view.prefix}}</span>
+      {{/if}} 
       {{view Tent.TextFieldInput 
         classBinding="view.inputSizeClass" 
         valueBinding="view.formattedValue" 
         placeholderBinding="view.placeholder"
       }}
-    {{/if}}
-    {{#if view.hasHelpBlock}}
-      <span class="help-block">{{view.helpBlock}}</span>
+      {{#if view.hasHelpBlock}}
+        <span class="help-block">{{view.helpBlock}}</span>
+      {{/if}}
     {{/if}}
     {{#if view.hasErrors}}
       {{#each error in view.validationErrors}}
