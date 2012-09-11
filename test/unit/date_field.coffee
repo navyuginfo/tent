@@ -42,6 +42,20 @@ test 'Ensure tooltip gets displayed', ->
   equal view.$('a[rel=tooltip]').attr('data-original-title'), "tooltip here..", 'Tooltip text'
   ok typeof view.$("a[rel=tooltip]").tooltip, "function", 'tooltip plugin has been applied'
 
+test 'Test for readonly attribute', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.DateField readOnly=true}}'
+  appendView()
+
+  equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
+ 
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.DateField disabled=true}}'
+  appendView()
+
+  equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
+
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.DateField isMandatory=true}}'

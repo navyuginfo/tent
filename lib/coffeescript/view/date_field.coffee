@@ -7,7 +7,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 
 		'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths',
 		'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 
-		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim'
+		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'
 	]
 	classNames: ['tent-date-field']
 	
@@ -33,6 +33,14 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	didInsertElement: ->
 		@_super()
 		@.$('input').datepicker(@get('options'))
+
+	optionDidChange: (->
+		#@set('options', @_gatherOptions())
+		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
+			@.$('input').datepicker('disable')
+		else
+			@.$('input').datepicker('enable')
+	).observes('disabled', 'readOnly', 'isReadOnly')
 	
 	change: ->
     	@_super()

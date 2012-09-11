@@ -106,6 +106,20 @@ test 'Mandatory behaviour', ->
   
   ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
 
+test 'Test for readonly attribute', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField readOnly=true}}'
+  appendView()
+
+  equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
+
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField disabled=true}}'
+  appendView()
+
+  equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
+
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" 

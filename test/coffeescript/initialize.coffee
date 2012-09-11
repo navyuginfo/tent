@@ -25,7 +25,7 @@
 	Pad.date = new Date()
 	Pad.amount = '1234567.67'
 	Pad.isMandatory = false
-	Pad.isReadonly = false
+	Pad.isReadOnly = false
 	Pad.isDisabled = false
 	Pad.textDisplay = false
 

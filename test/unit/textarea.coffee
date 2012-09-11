@@ -101,6 +101,26 @@ test 'Ensure mandatory check', ->
     view.$('textarea').trigger('change')
   ok not view.get('isValid')  
 
+
+test 'Ensure readonly attribute', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Textarea valueBinding="name" 
+      labelBinding="label"
+      readOnly=true}}'
+    name: 'foobar'
+    label: 'FooBar'
+
+  appendView()
+
+  equal view.$('textarea').attr('readonly'), 'readonly', 'readonly attribute detected'
+
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Textarea disabled=true}}'
+  appendView()
+
+  equal view.$('textarea').attr('disabled'), 'disabled', 'disabled attribute detected'
+
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.Textarea valueBinding="name" 

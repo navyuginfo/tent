@@ -115,6 +115,20 @@ test 'Mandatory behaviour', ->
   
   ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
 
+test 'Test for readonly attribute', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Select readOnly=true}}'
+  appendView()
+
+  ok not view.$('select').attr('readonly')?, 'select does not support readonly'
+
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.Select disabled=true}}'
+  appendView()
+
+  equal view.$('select').attr('disabled'), 'disabled', 'disabled attribute detected'
+
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
     app: application

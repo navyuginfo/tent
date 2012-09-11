@@ -115,7 +115,7 @@ test 'Test for readonly', ->
     template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
       labelBinding="label"
       isMandatory=true
-      isReadOnly=true
+      readOnly=true
       isValidBinding="isValid"}}'
     name: 'foobar'
     label: 'FooBar'
@@ -123,6 +123,12 @@ test 'Test for readonly', ->
 
   equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
 
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField disabled=true}}'
+  appendView()
+
+  equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
