@@ -3,43 +3,35 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 	queryFixtures: (fixtures, query) ->
 		switch query.type
 			when 'paging'
-				return @getPage(fixtures, query)
+				return @getPage(fixtures, query.paging)
 			when 'sorting'
 				#query =
 					#type: 'sorting'
-					#field: col.field
-					#sortAsc: ascending
-				if query.multiColumn
-					@sortMultiColumn(fixtures, query)
-				else
-					@sortSingleColumn(fixtures, query)
+					#fields: 
+					#	field: col.field
+					#	sortAsc: ascending 
+				@doSort(fixtures, query.sorting)
 				# When sorting over multiple pages, we return the first page
-				return @getPage(fixtures, query)
+				return @getPage(fixtures, query.paging)
+			when 'filtering'
+				return @getPage(@doFilter(fixtures, query.filtering), query.paging)
 			else
 		   		return fixtures
 
-	getPage: (fixtures, query) ->
-		start = query.pageNum * query.pageSize
-		end = start + query.pageSize - 1
+	getPage: (fixtures, paging) ->
+		start = (paging.pageNum - 1) * paging.pageSize
+		end = start + paging.pageSize - 1
 		if (end > fixtures.length) then end = fixtures.length 
 		return fixtures[start..end]
 
-	sortMultiColumn: (fixtures, query) ->
+	doSort: (fixtures, sorting) ->
 		that = this
 		fixtures.sort((dataRow1, dataRow2) =>
-			for item,i in query.fields
-				field = query.fields[i].field
-				asc = query.fields[i].sortAsc
+			for item,i in sorting.fields
+				field = sorting.fields[i].field
+				asc = sorting.fields[i].sortAsc
 				return that.compare(dataRow1, dataRow2, field, asc)
 			return 0
-		)
-
-	sortSingleColumn: (fixtures, query) ->
-		that = this
-		fixtures.sort((dataRow1, dataRow2) =>
-			field = query.field
-			asc = query.sortAsc
-			that.compare(dataRow1, dataRow2, field, asc)
 		)
 
 	compare: (dataRow1, dataRow2, field, asc)->
@@ -55,5 +47,15 @@ Pad.PagingAdapter = DS.FixtureAdapter.extend
 				result = -1 * sign
 		if result != 0
 			return result
+
+	doFilter: (fixtures, filters) ->
+		filteredFixtures = []
+		for item in fixtures
+			for columnId of filters
+				if columnId != undefined && filters[columnId] != ""
+					re = new RegExp("^" + filters[columnId],"i")
+					if re.test(item[columnId])
+						filteredFixtures.push(item)
+		return filteredFixtures
   	
 Pad.pagingAdapter = Pad.PagingAdapter.create();

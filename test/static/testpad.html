@@ -84,7 +84,7 @@
             headers="Name,Age" 
             columnsBinding="Pad.columns" 
             selectionBinding="Pad.selectedPerson" 
-            defaultSelectionBinding="Pad.selectedPerson" 
+            defaultSelectionBinding="Pad.selectedPerson"
             isEditable=true}}
 
         <p>Selected Person is 
@@ -109,37 +109,61 @@
         </p>
 
 
+
         <h3>SlickGrid</h3>
-        {{view Pad.TaskList
-          id="taskselectionview"
-          controllerBinding="Pad.taskListController"
-          multiSelect=false
-          paged=true
-          pageSize=7
-          remotePaging=true
-          options="{\"enableColumnReorder\": false}"
-        }}
-        
-        <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
-
-        {{view Pad.TaskList
-            id="multitaskselectionview"
-            controllerBinding="Pad.taskMultiSelectListController"
-            multiSelect=true
-            style="form"
-            label="SlickGrid"
+        <br/>
+        <h4>Client-side Paging, Sorting, Filtering</h4>
+        {{view Tent.SlickGrid
+            label="Tasks"
+            collectionBinding="Pad.clientSideCollection"
+            selectionBinding="Pad.gridSelection"
             paged=true
-            pageSize=7
+            pageSize=5
+            remotePaging=false
+            multiSelect=false
+            useColumnFilters=true
+        }}
+        <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
+
+        <h4>Remote Paging, Sorting, Filtering</h4>
+
+        {{#view Tent.Form name="Filters"}}
+          {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
+          {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
+          {{view Tent.DateField valueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
+        {{/view}}
+        {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
+        
+        
+        {{view Tent.SlickGrid
+            label="Tasks"
+            collectionBinding="Pad.remoteCollection"
+            selectionBinding="Pad.gridRemoteSelection"
+            paged=true
+            pageSize=5
             remotePaging=true
+            multiSelect=false
+            useColumnFilters=false
         }}
 
-          <p>Selected SlickGrid Multiple Items : 
-            {{debug}}
-              {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-                <{{item.title}}>
-              {{/each}}
-          </p>  
+        <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
+
+
+         <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
         
+        
+
+        {{view Tent.SlickGrid
+            label="Tasks"
+            collectionBinding="Pad.remoteMultiselectCollection"
+            selectionBinding="Pad.gridRemoteSelectionMultiple"
+            paged=true
+            pageSize=5
+            remotePaging=false
+            multiSelect=true
+            useColumnFilters=false
+        }}
+
         {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
         {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
         {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
