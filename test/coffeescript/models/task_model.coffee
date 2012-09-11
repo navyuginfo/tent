@@ -4,8 +4,8 @@ Pad.Models.TaskModel = DS.Model.extend
 	title: DS.attr('string')
 	duration: DS.attr('string')
 	percentComplete: DS.attr('string')
-	start: DS.attr('nativeDate')
-	finish: DS.attr('nativeDate')
+	start: DS.attr('date')
+	finish: DS.attr('date')
 	effortDriven: DS.attr('string')
 
 Pad.Models.TaskModel.FIXTURES = [{
