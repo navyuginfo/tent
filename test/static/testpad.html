@@ -153,67 +153,90 @@
 
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
-            <h5>Table</h5>
-            
-            {{view Tent.Table listBinding="Pad.people" 
-                headers="Name,Age" 
-                columnsBinding="Pad.columns" 
-                selectionBinding="Pad.selectedPerson" 
-                defaultSelectionBinding="Pad.selectedPerson" 
-                isEditable=true}}
+                <h3>Table</h3>
+                {{view Tent.Table listBinding="Pad.people" 
+                  headers="Name,Age" 
+                  columnsBinding="Pad.columns" 
+                  selectionBinding="Pad.selectedPerson" 
+                  defaultSelectionBinding="Pad.selectedPerson"
+                  isEditable=true}}
 
-            <p>Selected Person is 
-                {{#each person in Pad.selectedPerson}}
+              <p>Selected Person is 
+                  {{#each person in Pad.selectedPerson}}
+                    {{person.name}}
+                  {{/each}}
+              </p>
+
+              <h3>Multi-select Table</h3>
+              {{view Tent.Table listBinding="Pad.people" 
+                  headers="Name,Age" 
+                  columns="name,age" 
+                  selectionBinding="Pad.multiSelectedPerson" 
+                  multiselection=true 
+                  defaultSelectionBinding="Pad.multiSelectedPerson" 
+                  isEditable=true}}
+
+              <p>Selected People are 
+                {{#each person in Pad.multiSelectedPerson}}
                   {{person.name}}
                 {{/each}}
-            </p>
-
-            <h3>Multi-select Table</h3>
-            {{view Tent.Table listBinding="Pad.people" 
-                headers="Name,Age" 
-                columns="name,age" 
-                selectionBinding="Pad.multiSelectedPerson" 
-                multiselection=true 
-                defaultSelectionBinding="Pad.multiSelectedPerson" 
-                isEditable=true}}
-
-            <p>Selected People are 
-              {{#each person in Pad.multiSelectedPerson}}
-                {{person.name}}
-              {{/each}}
-            </p>
+              </p>
 
 
-            <h3>SlickGrid</h3>
-            {{view Pad.TaskList
-              id="taskselectionview"
-              controllerBinding="Pad.taskListController"
-              multiSelect=false
-              paged=true
-              pageSize=7
-              remotePaging=true
-              options="{\"enableColumnReorder\": false}"
-            }}
-            
-            <p>Selected SlickGrid Item : {{Pad.taskListController.rowSelection.title}} </p>        
 
-            {{view Pad.TaskList
-                id="multitaskselectionview"
-                controllerBinding="Pad.taskMultiSelectListController"
-                multiSelect=true
-                style="form"
-                label="SlickGrid"
-                paged=true
-                pageSize=7
-                remotePaging=true
-            }}
+              <h3>SlickGrid</h3>
+              <br/>
+              <h4>Client-side Paging, Sorting, Filtering</h4>
+              {{view Tent.SlickGrid
+                  label="Tasks"
+                  collectionBinding="Pad.clientSideCollection"
+                  selectionBinding="Pad.gridSelection"
+                  paged=true
+                  pageSize=5
+                  remotePaging=false
+                  multiSelect=false
+                  useColumnFilters=true
+              }}
+              <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
 
-              <p>Selected SlickGrid Multiple Items : 
-                {{debug}}
-                  {{#each item in Pad.taskMultiSelectListController.rowSelection}}
-                    <{{item.title}}>
-                  {{/each}}
-              </p>  
+              <h4>Remote Paging, Sorting, Filtering</h4>
+
+              {{#view Tent.Form name="Filters"}}
+                {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
+                {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
+                {{view Tent.DateField valueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
+              {{/view}}
+              {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
+              
+              
+              {{view Tent.SlickGrid
+                  label="Tasks"
+                  collectionBinding="Pad.remoteCollection"
+                  selectionBinding="Pad.gridRemoteSelection"
+                  paged=true
+                  pageSize=5
+                  remotePaging=true
+                  multiSelect=false
+                  useColumnFilters=false
+              }}
+
+              <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
+
+
+               <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
+              
+              
+
+              {{view Tent.SlickGrid
+                  label="Tasks"
+                  collectionBinding="Pad.remoteMultiselectCollection"
+                  selectionBinding="Pad.gridRemoteSelectionMultiple"
+                  paged=true
+                  pageSize=5
+                  remotePaging=false
+                  multiSelect=true
+                  useColumnFilters=false
+              }}
           {{/view}}  
         {{/view}}
 

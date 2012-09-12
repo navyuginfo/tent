@@ -6,10 +6,14 @@ teardown = ->
 module 'Tent.RemotePagedData', setup, teardown
 
 test 'Get paging info', ->
+	collection = Tent.Data.Collection.create
+		_totalRows: 9
+		pageSize: 5
+
 	dataView = Tent.RemotePagedData.create
-		pagesize: 5
+		collection: collection		
 		pagenum: 0
-		totalRows: 9
+		
 
 	info = dataView.getPagingInfo()
 	equal info.pageSize, 5, "pagesize"
@@ -17,17 +21,20 @@ test 'Get paging info', ->
 	equal info.totalRows, 9, "totalrows"
 	equal info.totalPages, 2, "total pages"
 
-	dataView.set('pagesize', null)
+	collection.set('pageSize', null)
 	info = dataView.getPagingInfo()
 	equal info.totalPages, 1, "total pages should be one when no pagesize is set"
 
 	dataView = null
 
 test 'Set paging options', ->
+	collection = Tent.Data.Collection.create
+		_totalRows: 9
+		pageSize: 5
+
 	dataView = Tent.RemotePagedData.create
-		pagesize: 5
+		collection: collection
 		pagenum: 0
-		totalRows: 9
 		parentView: 
 			page: (info)->
 
@@ -45,6 +52,8 @@ test 'highlightSelectedRowsOnGrid', ->
 			setSelectedRows: (selectedRowIds)->
 				@selectedRowIds = selectedRowIds
 				@setSelectedRowsCalled = true
+			getSelectedRows: ->
+				@selectedRowIds
 		}
 
 	dataView = Tent.RemotePagedData.create

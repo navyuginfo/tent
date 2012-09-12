@@ -120,6 +120,7 @@ test 'Test for disabled', ->
   appendView()
 
   equal view.$('textarea').attr('disabled'), 'disabled', 'disabled attribute detected'
+  equal view.$('textarea').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
 
 test 'Test for textDisplay', ->
   view = Ember.View.create

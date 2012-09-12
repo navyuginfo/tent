@@ -1,6 +1,5 @@
 require '../template/text_field'
 require '../mixin/jquery_ui'
-require '../mixin/tooltip_support'
 
 Tent.DateField = Tent.TextField.extend Tent.JQWidget, 
 	uiType: 'datepicker'

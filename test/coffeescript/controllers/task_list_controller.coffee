@@ -2,8 +2,7 @@ require('coffeescript/models/task_model')
 
 Pad.Controllers.TaskListController = Tent.Controllers.GridController.extend
 	modelType: Pad.Models.TaskModel
-	content: Pad.store.findAll(Pad.Models.TaskModel)
-	store: Pad.store
+	store: Pad.dataStore
 	columns: [
 		{id: "id", name: "ID", field: "id", sortable: true},
 		{id: "title", name: "Title", field: "title", sortable: true},

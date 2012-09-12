@@ -1,7 +1,9 @@
 
 ((loader) -> 
-	
+
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/store/datastore')
+
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
 
@@ -12,6 +14,8 @@
 		revision: 4,
 		adapter: Pad.pagingAdapter
 	});
+
+	Pad.dataStore = Pad.DataStore.create()
 
 	loader.require('coffeescript/view/task_list')
 	loader.require('coffeescript/controllers/task_list_controller')
@@ -29,6 +33,53 @@
 	Pad.isDisabled = false
 	Pad.textDisplay = false
 
+
+	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
+	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
+
+	Pad.gridSelection = Ember.Object.create({
+			id: 52,
+			title: "Task 2",
+			duration: "6 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})
+	Pad.gridRemoteSelection = Ember.Object.create({
+			id: 56,
+			title: "Task 6",
+			duration: "2 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})
+
+	Pad.gridRemoteSelectionMultiple = [Ember.Object.create({
+			id: 54,
+			title: "Task 4",
+			duration: "2 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortDriven: 1
+	})]
+
+	Pad.remoteCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: true
+
+	Pad.remoteMultiselectCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: false
+
+	Pad.clientSideCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: false
 
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
@@ -101,8 +152,7 @@
 		ready: -> 
 			this._super();
 			console.log('initializing ...');
-		taskListController: Pad.Controllers.TaskListController.create()
-		taskMultiSelectListController: Pad.Controllers.TaskMultiSelectListController.create()
+		 
 	)
 
 )(minispade)

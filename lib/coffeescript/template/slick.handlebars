@@ -5,7 +5,15 @@
 		<div class="grid" style="width:auto;height:200px;"></div>
 		<div class="pager"></div>
 	</div>
-{{else}}   
+{{else}}
+	<div class="grid-header ui-widget-header" style="width:100%">
+      <label>{{view.label}}</label>
+      <span class="button-bar" style="float:right">
+      	<span  class="filter-toggle ui-icon ui-icon-search" title="Toggle search panel" />
+      	<span class="column-selector ui-icon ui-icon-wrench" title="Column Selector">
+      </span>
+    </div>
 	<div class="grid" style="width:auto;height:200px;"></div>
 	<div class="pager"></div>
 {{/if}}
+

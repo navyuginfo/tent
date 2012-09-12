@@ -89,4 +89,149 @@ Tent.Fixtures.ListDataModel.FIXTURES = [{
 			start: "01/01/2009",
 			finish: "01/05/2009",
 			effortDriven: 1
-		}]
+		},
+		{
+			id: 10,
+			title: "Task 10",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 11,
+			title: "Task 11",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 12,
+			title: "Task 12",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 13,
+			title: "Task 13",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 14,
+			title: "Task 14",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 15,
+			title: "Task 15",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 16,
+			title: "Task 16",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 17,
+			title: "Task 17",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 18,
+			title: "Task 18",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 19,
+			title: "Task 19",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 20,
+			title: "Task 20",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 21,
+			title: "Task 21",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 22,
+			title: "Task 22",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 23,
+			title: "Task 23",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 24,
+			title: "Task 24",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		},
+		{
+			id: 25,
+			title: "Task 25",
+			duration: "7 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "01/01/2009",
+			finish: "01/05/2009",
+			effortDriven: 1
+		}
+	]
