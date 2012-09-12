@@ -7,18 +7,26 @@ require '../mixin/field_support'
 require '../mixin/formatting_support'
 require '../mixin/tooltip_support'
 require '../mixin/aria_support'
+require '../mixin/readonly_support'
+require '../mixin/disabled_support'
 require '../mixin/html5_support'
 require '../template/text_field'
 
-Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport,
+Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, 
 	templateName: 'text_field'
+	textDisplay: false
 	classNames: ['tent-text-field', 'control-group']
 
+	isTextDisplay: (->
+		@get('textDisplay') or (not @get('isEditable'))
+	).property('textDisplay', 'isEditable')
+	
 	forId: (->
 		@get('inputIdentifier')
 	).property('inputIdentifier')
 
 	didInsertElement: ->
+		@_super()
 		@set('inputIdentifier', @$('input').attr('id'))
 
 	valueForMandatoryValidation: (->
@@ -33,4 +41,5 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
 
-Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support
+Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport
+	

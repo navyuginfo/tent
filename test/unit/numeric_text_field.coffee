@@ -92,20 +92,36 @@ test 'Formatting of read-only', ->
   view = Ember.View.create
       template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" 
           labelBinding="label"
-          isEditable=false}}'
+          textDisplay=true}}'
       name: +1234
       label: 'FooBar'
 
     appendView()
-    equal view.$('.uneditable-input').text(), '1234', 'Initial DOM value'
+    equal view.$('.text-display').text(), '1234', 'Initial DOM value'
 
-test 'Mandatory behaviour', ->
+test 'Required behaviour', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.NumericTextField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField required=true}}'
   appendView()
   
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
+test 'Test for readonly attribute', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField readOnly=true}}'
+  appendView()
+
+  equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
+  equal view.$('input').attr('aria-readonly'), 'true', 'aria-readonly attribute detected'
+
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField disabled=true}}'
+  appendView()
+
+  equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
+  equal view.$('input').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
+  
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" 
@@ -122,7 +138,7 @@ test 'Ensure tooltip gets displayed', ->
 
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.NumericTextField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField required=true}}'
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'

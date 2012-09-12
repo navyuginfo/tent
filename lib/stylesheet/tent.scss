@@ -7,18 +7,23 @@
 	.help-inline {
 		display: block;
 	}
+	.controls {
+		margin-left: 20px;
+	}
 }
 
+
 .tent-widget {
-	.tent-mandatory {
+	.tent-required {
 		width: .5em;
 		color: red;
 		display: inline-block;
 		vertical-align: top;
 		padding-top: .5em;
+		padding-left: 10px;
 	} 
-	&.mandatory {
-		.tent-mandatory:before {
+	&.required {
+		.tent-required:before {
 			content: '*';
 		}
 	}
@@ -71,6 +76,13 @@ a[rel=tooltip] {
 	display: inline-block;
 	vertical-align: top;
 }
+
+.text-display {
+	margin-top: 5px;
+	display: inline-block;
+}
+
+
 
 /* Slickgrid Overrides */
 

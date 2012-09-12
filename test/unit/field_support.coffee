@@ -22,21 +22,21 @@ module "Tent.FieldSupport mixin tests", ->
     @TemplateTests = undefined
     @dispatcher.destroy()
 
-test 'Mandatory fields identified and enforced', ->
+test 'Required fields identified and enforced', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view TemplateTests.MockField 
       id="mandatoryTest"
       valueBinding="name" 
       labelBinding="label" 
-      isMandatory="true"
+      required="true"
       valueForMandatoryValidationBinding="value"}}'
     name: 'foobar'
     label: 'FooBar'
 
   appendView()
  
-  ok view.$('.control-group').hasClass('mandatory'), 'mandatory class gets applied'
-  ok !view.$('.control-group').hasClass('error'), 'mandatory validation did not kick-in when field has value'
+  ok view.$('.control-group').hasClass('required'), 'required class gets applied'
+  ok !view.$('.control-group').hasClass('error'), 'required validation did not kick-in when field has value'
 
 
 test 'Non-Mandatory fields should not be visually identified', ->

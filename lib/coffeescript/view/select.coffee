@@ -7,10 +7,12 @@ require '../template/select'
 require '../template/radio_group'
 require '../mixin/tooltip_support'
 require '../mixin/aria_support'
+require '../mixin/readonly_support'
 
 Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
+  contentBinding: 'selection'
   
   forId: (->
     @get('inputIdentifier')
@@ -29,12 +31,28 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @get('value')
   ).property('value', 'selection')
 
+  isTextDisplay: (->
+    @get('textDisplay') or (not @get('isEditable'))
+  ).property('textDisplay', 'isEditable')
+
   selectionDidChange: (->
-    if @get('selected') 
-      @set('selection', @get('selected'))
-    else 
-      @set('selection', null) 
+    @set('content', @get('selection'))
   ).observes('selected')
+
+  currentSelectedLabel: (->
+    content = @get('selection')
+    if content? 
+      if content instanceof Array
+        labels = []
+        for item in content 
+          labels.push(@getLabelForContent({content: item}))
+        return labels.join()
+      else
+        return @getLabelForContent(@, @get('optionLabelPath'))
+  ).property('selection')
+
+  getLabelForContent: (item)->
+    Ember.get(item, @get('optionLabelPath'))
 
   _prompt: (-> 
     if !@get('multiple')
@@ -46,4 +64,4 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @set('isValid', @validate())
 
 
-Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport

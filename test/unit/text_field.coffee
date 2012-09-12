@@ -36,15 +36,29 @@ test 'Ensure TextField renders for text', ->
 
 test 'Ensure Textfield renders Span if isEditable=false', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" labelBinding="label" isEditable=false}}'
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label" isEditable=false}}'
     name: 'foobar'
     label: 'FooBar'
 
   appendView()
   
-  equal view.$('span').length, 2, 'span gets rendered'
+  equal view.$('span.text-display').length, 1, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
-  equal view.$('.uneditable-input').length, 1, 'uneditable-input class gets applied'
+  
+
+test 'Ensure Textfield renders Span if textDisplay=true', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label" textDisplay=true}}'
+    name: 'foobar'
+    label: 'FooBar'
+
+  appendView()
+  
+  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal $('.controls span').text(), view.get('name') , 'value is set to span'
+ 
 
 test 'Ensure value is propagated back from DOM to controller', ->
 
@@ -73,18 +87,18 @@ test 'Ensure value is propagated back from DOM to controller', ->
     TemplateTests.controller.set('content', 'resetValue') 
   equal view.$('input').val(), 'resetValue', 'DOM value is reset'
 
-test 'Ensure mandatory check', ->
+test 'Ensure required check', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
       labelBinding="label"
-      isMandatory=true
+      required=true
       isValidBinding="isValid"}}'
     name: 'foobar'
     label: 'FooBar'
 
   appendView()
 
-  ok view.$('span.tent-mandatory').length, 1, 'mandatory icon displayed' 
+  ok view.$('span.tent-required').length, 1, 'required icon displayed' 
 
   Ember.run ->
     view.$('input').val('newValue')
@@ -95,6 +109,29 @@ test 'Ensure mandatory check', ->
     view.$('input').val('')
     view.$('input').trigger('change')
   ok not view.get('isValid')  
+
+test 'Test for readonly', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name" 
+      labelBinding="label"
+      isMandatory=true
+      readOnly=true
+      isValidBinding="isValid"}}'
+    name: 'foobar'
+    label: 'FooBar'
+  appendView()
+
+  equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
+  equal view.$('input').attr('aria-readonly'), 'true', 'aria-readonly attribute detected'
+
+test 'Test for disabled', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField disabled=true}}'
+  appendView()
+
+  equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
+  equal view.$('input').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
+ 
 
 test 'Ensure tooltip gets displayed', ->
   view = Ember.View.create
@@ -114,10 +151,11 @@ test 'Ensure tooltip gets displayed', ->
 
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.TextField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.TextField required=true}}'
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
 
+ 
 
 

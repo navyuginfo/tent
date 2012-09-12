@@ -1,4 +1,5 @@
 require '../template/textarea'
+require '../mixin/readonly_support'
 
 Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport,
 	templateName: 'textarea'
@@ -15,4 +16,4 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
 
-Tent.TextareaInput = Ember.TextArea.extend Tent.AriaSupport, Tent.Html5Support
+Tent.TextareaInput = Ember.TextArea.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport

@@ -27,7 +27,12 @@
 	Pad.numeric = 123.456
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
-	Pad.amount = '1234ss567.67'
+	Pad.amount = '1234567.67'
+	Pad.isMandatory = false
+	Pad.isReadOnly = false
+	Pad.isDisabled = false
+	Pad.textDisplay = false
+
 
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
@@ -97,11 +102,15 @@
 		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
 	]
 
+	Pad.stateSelection = Pad.content[1]
+
 	Pad.contents = [
 		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
 		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
 		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
 	]
+
+	Pad.statesSelection = [Pad.contents[1], Pad.contents[2]]
 
 	Pad.checkGroupContent = ["AP", "AL", "AT"]
 	count = 1

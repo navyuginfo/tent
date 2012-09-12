@@ -35,7 +35,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       if !@get('hasOptions')
         @_super() 
       else 
-        return @.$().toggleClass('open')      
+        return @.$().toggleClass('open')
 
   classes: (->
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")

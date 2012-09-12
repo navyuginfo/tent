@@ -55,7 +55,8 @@ Tent.JQWidget = Em.Mixin.create
 			# the jQuery UI widget.
 			observer = ->
 				value = @get(key)
-				@get('ui')._setOption(key, value)
+				#@get('ui')._setOption(key, value)
+				
 			
 			@addObserver(key, observer)
 
