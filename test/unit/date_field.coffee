@@ -48,17 +48,19 @@ test 'Test for readonly attribute', ->
   appendView()
 
   equal view.$('input').attr('readonly'), 'readonly', 'readonly attribute detected'
- 
+  equal view.$('input').attr('aria-readonly'), 'true', 'aria-readonly attribute detected'
+
 test 'Test for disabled', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.DateField disabled=true}}'
   appendView()
 
   equal view.$('input').attr('disabled'), 'disabled', 'disabled attribute detected'
-
+  equal view.$('input').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
+  
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.DateField isMandatory=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.DateField required=true}}'
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'

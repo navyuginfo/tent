@@ -128,6 +128,7 @@ test 'Test for disabled', ->
   appendView()
 
   equal view.$('select').attr('disabled'), 'disabled', 'disabled attribute detected'
+  equal view.$('select').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
 
 test 'Test for textDisplay', ->
   application.set("content", [
@@ -173,7 +174,7 @@ test 'Ensure aria attributes are applied ', ->
     app: application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
-                          isMandatory=true
+                          required=true
                           }}'
   appendView()
   equal view.$('select[required=required]').length, 1, 'required html attribute'

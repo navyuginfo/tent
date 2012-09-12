@@ -105,7 +105,7 @@
               textDisplayBinding="Pad.textDisplay"}}
             {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
             {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
-            {{view Tent.AmountField value="10000" label="Amount Uneditable" currency="EUR" textDisplayBinding="Pad.textDisplay"  hasHelpBlock=false requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" }}
+        
             {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
             
             
