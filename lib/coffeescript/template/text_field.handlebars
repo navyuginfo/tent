@@ -1,7 +1,5 @@
-<label class="control-label" {{bindAttr for="view.forId"}}>{{view.label}}</label>
-
+<label class="control-label" {{bindAttr for="view.forId"}}>{{view.label}}<span class='tent-required'/></label>
 <div class="controls">
-  <span class='tent-required'/>
   <div class="input-prepend">
     {{#if view.isTextDisplay}}
       <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
@@ -10,7 +8,7 @@
         <span class="add-on">{{view.prefix}}</span>
       {{/if}} 
       {{view Tent.TextFieldInput 
-        classBinding="view.inputSizeClass" 
+        
         valueBinding="view.formattedValue" 
         placeholderBinding="view.placeholder"
       }}

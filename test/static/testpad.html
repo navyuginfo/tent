@@ -32,6 +32,17 @@
         padding: 8px 14px;
         border: 1px solid #E5E5E5;         
       }
+
+      .row.tent form {
+        background-color: #eee;
+      }
+
+      .row.tent {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+
     </style>
   </head>
   <body data-spy="scroll" >
@@ -51,7 +62,8 @@
 
       });
     </script>
-    <container>
+
+    <div class="container-fluid">
       <row>
     <script type="text/x-handlebars">
 
@@ -72,7 +84,9 @@
           <li>
             <a href="#container-section"><i class="icon-chevron-right"></i> Containers</a>
           </li>
-
+          <li>
+            <a href="#layout-section"><i class="icon-chevron-right"></i> Layouts</a>
+          </li>
         </ul>
       {{/view}}
 
@@ -80,24 +94,20 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
+          {{#view Tent.Form formStyle="inline" }}
+            {{view Tent.Checkbox label="Required" checkedBinding="Pad.isRequired"}}
+                 
+                 
+                  {{view Tent.Checkbox label="Readonly" checkedBinding="Pad.isReadOnly"}}
+                 
+                  {{view Tent.Checkbox label="Disabled" checkedBinding="Pad.isDisabled"}}
+                 
+                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.textDisplay"}}
+                 
+          {{/view}}
 
           {{#view Tent.Form name="Fields" id="form-section"}}
-            <div class="row">
-              {{#view Tent.Panel span="7"}}          
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="Required" checkedBinding="Pad.isRequired"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="Readonly" checkedBinding="Pad.isReadOnly"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="Disabled" checkedBinding="Pad.isDisabled"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.textDisplay"}}
-                {{/view}}
-              {{/view}}
-            </div>
+            
             {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here" 
               requiredBinding="Pad.isRequired" 
               readOnlyBinding="Pad.isReadOnly" 
@@ -153,7 +163,7 @@
 
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
-                <h3>Table</h3>
+                <h4>Table</h4>
                 {{view Tent.Table listBinding="Pad.people" 
                   headers="Name,Age" 
                   columnsBinding="Pad.columns" 
@@ -167,7 +177,7 @@
                   {{/each}}
               </p>
 
-              <h3>Multi-select Table</h3>
+              <h4>Multi-select Table</h4>
               {{view Tent.Table listBinding="Pad.people" 
                   headers="Name,Age" 
                   columns="name,age" 
@@ -184,9 +194,9 @@
 
 
 
-              <h3>SlickGrid</h3>
+              <h4>SlickGrid</h4>
               <br/>
-              <h4>Client-side Paging, Sorting, Filtering</h4>
+              <h5>Client-side Paging, Sorting, Filtering</h5>
               {{view Tent.SlickGrid
                   label="Tasks"
                   collectionBinding="Pad.clientSideCollection"
@@ -199,13 +209,13 @@
               }}
               <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
 
-              <h4>Remote Paging, Sorting, Filtering</h4>
+              <h5>Remote Paging, Sorting, Filtering</h5>
 
-              {{#view Tent.Form name="Filters"}}
+               
                 {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
                 {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
                 {{view Tent.DateField valueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
-              {{/view}}
+               
               {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
               
               
@@ -321,7 +331,306 @@
 
 
 
-         
+
+
+        {{#view Tent.Panel span="10" id="layout-section"}}
+        <br/><br/>
+                <h2>Layouts</h2>
+      
+                  <h4>Single Column Form</h4>
+
+                    <div class="row">
+                      <div class="span10">
+                        <form>
+                          <div class="control-group">
+                            <label>Label <div class="controls"><input type="text"></div></label>
+                          </div>
+                          <div class="control-group">
+                            <label>Label <div class="controls"><input type="text"></div></label>
+                          </div>
+                      </form>
+                      </div>
+                    </div>
+
+                     
+                      <div class="row tent">
+                        {{#view Tent.Panel span="10"}}
+                          <form>
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                          </form>
+                        {{/view}}
+                      </div>
+                     
+
+                    <h4>Two Column Form</h4> 
+
+                    <div class="row">
+                      <div class="span5">
+                        <form>
+                          <div class="control-group">
+                            <label>Label 1<div class="controls"><input type="text"></div></label>
+                          </div>
+                          <div class="control-group">
+                            <label>Label 2<div class="controls"><input type="text"></div></label>
+                          </div>
+                        </div>
+                        <div class="span5">
+                          <div class="control-group">
+                            <label>Label 3<div class="controls"><input type="text"></div></label>
+                          </div>
+                          <div class="control-group">
+                            <label>Label 4<div class="controls"><input type="text"></div></label>
+                          </div>
+                      </form>
+                      </div>
+                    </div>
+
+
+                     
+                      <div class="row tent">
+                        {{#view Tent.Panel span="5"}}
+                          <form>
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                          </form>
+                        {{/view}}
+                        {{#view Tent.Panel span="5"}}
+                          <form>
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 4" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                          </form>
+                        {{/view}}
+                      </div>
+                     
+                    <h4>Single Column Form Horizontal label</h4>
+
+                    <div class="row">
+                      <div class="span10">
+                        <form class="form-horizontal">
+                          <div class="control-group">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text" /></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text" /></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 3</label><div class="controls"><input type="text" /></div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+
+       
+                    <div class="row tent">
+                      {{#view Tent.Panel span="10"}}
+                        {{#view Tent.Form }}
+                        <form class="form-horizontal">
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        {{/view}}
+                      {{/view}}
+                    </div>
+       
+
+                    <h4>Two Column Form Horizontal label: column tabbing</h4> 
+
+                    <div class="row">
+                      <div class="span5">
+                        <form class="form-horizontal">
+                          <div class="control-group">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text"></div>
+                          </div>
+                      </form>
+                      </div>
+                      <div class="span5">
+                        <form class="form-horizontal">
+                          <div class="control-group">
+                            <label class="control-label">Label 3</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 4</label><div class="controls"><input type="text"></div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+
+       
+                    <div class="row tent">
+                      {{#view Tent.Form }}
+                        {{#view Tent.Panel span="5"}}
+                        
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        
+                        {{/view}}
+                        {{#view Tent.Panel span="5"}}
+                        
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 4" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        {{/view}}
+                      {{/view}}
+                    </div>
+      
+
+
+                    <h4>Two Column Form Horizontal : row tabbing</h4> 
+
+                    <div class="row tent">
+                      {{#view Tent.Form }}
+                          <div class="control-group span5">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group span5">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group span5">
+                            <label class="control-label">Label 3</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group span5">
+                            <label class="control-label">Label 4</label><div class="controls"><input type="text"></div>
+                          </div>
+                      {{/view}}
+                    </div>
+
+
+       
+                    <div class="row tent">
+                      {{#view Tent.Form }}
+                        {{view Tent.TextField span="5" valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                        }}
+                        {{view Tent.TextField span="5" valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                        }}
+                        {{view Tent.TextField span="5" valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                        }}
+                        {{view Tent.TextField span="5" valueBinding="Pad.appName" label="Label 4" placeholder="Type here.." tooltip="Provide some information here" 
+                        }}
+                      {{/view}}
+                    </div>
+       
+
+
+                    <h4>Form Inline: not obeying grid</h4>
+
+                      <div class="row tent">
+                         
+                          {{#view Tent.Form formStyle="inline" span="10"}}
+                            <input type="text" class="input-small" placeholder="Email">
+                            <input type="password" class="input-small" placeholder="Password">
+                            <label class="checkbox">
+                              <input type="checkbox"> Remember me
+                            </label>
+                            <button type="submit" class="btn">Sign in</button>
+                          {{/view}}
+                         
+                      </div>
+
+       
+                      <div class="row tent">
+                          
+                          {{#view Tent.Form formStyle="inline" span="10"}}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+
+                          {{/view}}
+                          
+                      </div>
+       
+
+
+                      <h4>Form Inline: not using widgets</h4>
+
+                      <div class="row tent">
+                        <div class="span1">{{Pad.lowes.name}}</div>
+                        <div class="span2">{{Pad.lowes.program}}</div>
+                        <div class="span2">{{Pad.lowes.total}}</div>
+                        <div class="span5">Minimum Offer to Cover Adjustments: {{Pad.lowes.min}}</div>
+                      </div>
+                            
+
+                      <br/><br/>
+     
+      
+
+
+                    <h4>Standard Bootstrap Tests</h4>
+
+                    <div class="row">
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      
+                    </div>
+
+                    <h4>Offset</h4>
+                    
+                    <div class="row">
+                      <div class="span4">...</div>
+                      <div class="span6 offset2">...</div>
+                    </div>
+
+                    <h4>Nesting Columns</h4>
+
+                    <div class="row">
+                      <div class="span12">
+                        Level 1 column
+                        <div class="row">
+                          <div class="span6">Level 2</div>
+                          <div class="span6">Level 2</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <h4>Fluid</h4>
+
+                    <div class="row-fluid">
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                      <div class="span2">Lorem Ipsum</div>
+                    </div>
+
+                    <h4>Fluid Nesting</h4>
+                    <div class="row-fluid">
+                      <div class="span12">
+                        Level 1 of column
+                        <div class="row-fluid">
+                          <div class="span6">Level 2</div>
+                          <div class="span6">Level 2</div>
+                        </div>
+                      </div>
+                    </div>
+
+        {{/view}}
+
       
       </div>
     {{/view}} 
@@ -329,6 +638,9 @@
       <!--
       {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
       -->
+
+
+
     </script>
       </row>
     </container>
