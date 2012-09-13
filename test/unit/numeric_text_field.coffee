@@ -60,7 +60,7 @@ test 'Check for formatting', ->
   equal view.format(1e3), "1000", 'Exponent'
   equal view.format("abc"), "abc", 'Dont convert a non-number'
   equal view.format(""), "", 'Empty string'
-  equal view.format(null), null, 'Dont convert a null'
+  equal view.format(null), "", 'Dont convert a null'
 
 test 'Check for unformatting', ->
   view = Tent.NumericTextField.create()

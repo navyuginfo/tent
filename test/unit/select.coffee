@@ -8,7 +8,7 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
   @TemplateTests = Ember.Namespace.create()
-  @application = Ember.Namespace.create()
+  @Application = Ember.Namespace.create()
   Ember.run ->
       @dispatcher = Ember.EventDispatcher.create()
       @dispatcher.setup()
@@ -21,22 +21,22 @@ teardown = ->
     dispatcher.destroy()
 
   @TemplateTests = undefined  
-  @application = null
+  @Application = null
 
 module "Tent.Select", setup, teardown
 
 
 test 'Ensure Tent.Select renders for list', ->
-  application.set("content", [
+  Application.set("content", [
       Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
       Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
       Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
     ])
 
-  application.stateSelection = Ember.Object.create()  
+  Application.stateSelection = Ember.Object.create()  
 
   view = Ember.View.create
-    app: application
+    app: Application
     label: 'label1'
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           labelBinding="view.label"
@@ -48,30 +48,30 @@ test 'Ensure Tent.Select renders for list', ->
   appendView()
 
   ok view.$().length, 'Select was rendered'
-  equal view.$('option').length, application.content.length + 1,  'Options were rendered'
+  equal view.$('option').length, Application.content.length + 1,  'Options were rendered'
   equal view.get('selection'), null, 'Nothing has been selected'
   equal view.$('label.control-label').text(), view.get('label'), 'label is rendered'
   equal view.$('label.control-label').attr('for'), view.$('select').attr('id'), 'label has the correct "for" attribute'
 
   # add a new object to the list and see if the select holds that object 
-  Ember.run -> application.content.pushObject(Ember.Object.create({stateName: 'Alaska', stateCode: 'AK'}))
-  equal view.$('option').length, application.content.length + 1,  'New option was added'  
+  Ember.run -> Application.content.pushObject(Ember.Object.create({stateName: 'Alaska', stateCode: 'AK'}))
+  equal view.$('option').length, Application.content.length + 1,  'New option was added'  
 
 
 test 'Ensure binding for content allows content to be null initially', ->
   view = Ember.View.create
-    app: application
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
                           optionLabelPath="content.stateName"  
                           optionValuePath="content.stateCode"
-                          selectionBinding="application.stateSelection"}}'
+                          selectionBinding="Application.stateSelection"}}'
   appendView()
   ok view.$().length, 'Select was rendered'  
   equal view.$('option').length, 1,  'zero options rendered'
 
   Ember.run ->
-    application.set("content", [
+    Application.set("content", [
       Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
       Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
       Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
@@ -81,18 +81,18 @@ test 'Ensure binding for content allows content to be null initially', ->
 
 
 test 'test for Radio presentation', ->
-  application.set("content", [
+  Application.set("content", [
     Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
     Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
     Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
   ])
   view = Ember.View.create
-    app: application
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
                           optionLabelPath="content.stateName"  
                           optionValuePath="content.stateCode"
-                          selectionBinding="app.stateSelection"
+                          selectionBinding="Application.stateSelection"
                           isRadioGroup=true}}'
                           
   appendView()
@@ -101,15 +101,15 @@ test 'test for Radio presentation', ->
   
   Ember.run ->
     view.$('.tent-radio-group label').eq(0).click()
-  equal application.get('stateSelection').stateCode, 'GA', 'Selected the correct item'
+  equal Application.get('stateSelection').stateCode, 'GA', 'Selected the correct item'
 
   Ember.run ->
     view.$('.tent-radio-group label').eq(2).click()
-  equal application.get('stateSelection').stateCode, 'AR', 'Selected the correct 3rd item'
+  equal Application.get('stateSelection').stateCode, 'AR', 'Selected the correct 3rd item'
 
 test 'Required behaviour', ->
   view = Ember.View.create
-    app: application
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select required=true}}'
   appendView()
   
@@ -131,15 +131,15 @@ test 'Test for disabled', ->
   equal view.$('select').attr('aria-disabled'), 'true', 'aria-disabled attribute detected'
 
 test 'Test for textDisplay', ->
-  application.set("content", [
+  Application.set("content", [
     Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}),
     Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
     Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
   ])
-  application.set("stateSelection", application.get('content')[1])
+  Application.set("stateSelection", Application.get('content')[1])
 
   view = Ember.View.create
-    app: application
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content"
                           optionLabelPath="content.stateName"  
@@ -153,13 +153,13 @@ test 'Test for textDisplay', ->
   equal $('.controls span').text(), 'Florida' , 'value is set to florida'
 
 test 'Ensure tooltip gets displayed', ->
-  view = Ember.View.create
-    app: application
+  view = Ember.View.create 
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
                           optionLabelPath="content.stateName"  
                           optionValuePath="content.stateCode"
-                          selectionBinding="application.stateSelection"
+                          selectionBinding="Application.stateSelection"
                           tooltip="tooltip here.."
                           }}'
   appendView()
@@ -171,7 +171,7 @@ test 'Ensure tooltip gets displayed', ->
 
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    app: application
+    app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
                           required=true

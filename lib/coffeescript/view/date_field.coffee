@@ -19,7 +19,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	).property('formattedValue')
 
 	defaultOptions: 
-		dateFormat: "mm/dd/yy"
+		dateFormat: Tent.Formatting.date.getFormat()
 		changeMonth: true
 		changeYear: true
 		showOn: "button"
@@ -57,12 +57,12 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 
 	#Format for display
 	format: (value)->
-		$.datepicker.formatDate(@get('options').dateFormat, value)
+		Tent.Formatting.date.format(value, @get('dateFormat'))
 
 	# Format for binding
 	unFormat: (value)->
 		try 
-			$.datepicker.parseDate(@get('options').dateFormat, value)
+			Tent.Formatting.date.unformat(value, @get('dateFormat'))
 		catch error
 			return null
 
