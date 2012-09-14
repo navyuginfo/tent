@@ -40,10 +40,6 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		else
 			@.$('input').datepicker('enable')
 	).observes('disabled', 'readOnly', 'isReadOnly')
-	
-	change: ->
-    	@_super()
-    	@set('isValid', @validate())
 
 	validate: ->
 		isValid = @_super()
