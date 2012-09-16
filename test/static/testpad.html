@@ -298,24 +298,19 @@
             <br/><br/>
 
             <h5>Tabs</h5>
-            {{#view Tent.Tabs id="tabstrip" active="settings"}}
-              {{view Tent.Tab title="Profile" pane="profile"}}
-              {{view Tent.Tab title="Messages" pane="messages"}}
-              {{view Tent.Tab title="Settings" pane="settings"}}
-            {{/view}}
+            
 
-            {{#view Tent.TabPanes active="settings"}}
-              {{#view Tent.TabPane id="profile"}}
+            {{#view Tent.Tabs active="settings"}}
+              {{#view Tent.TabPane id="profile" title="Profile"}}
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               {{/view}}
-              {{#view Tent.TabPane id="messages"}}
+              {{#view Tent.TabPane id="messages" title="Messages"}}
                   Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
               {{/view}}
-              {{#view Tent.TabPane id="settings"}}
+              {{#view Tent.TabPane id="settings" title="Settings"}}
                   At vero eos et accusamus et iusto odio dignissimos ducimus
               {{/view}}
             {{/view}}
-
           {{/view}}
         {{/view}}
 
