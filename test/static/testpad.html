@@ -72,7 +72,9 @@
           <li>
             <a href="#container-section"><i class="icon-chevron-right"></i> Containers</a>
           </li>
-
+          <li>
+            <a href="#formatting-section"><i class="icon-chevron-right"></i> Formatting Helpers</a>
+          </li>
         </ul>
       {{/view}}
 
@@ -311,6 +313,25 @@
                   At vero eos et accusamus et iusto odio dignissimos ducimus
               {{/view}}
             {{/view}}
+          {{/view}}
+        {{/view}}
+
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Formatters" id="formatting-section"}}
+             
+            <h5>Amount</h5>
+            Original amount = <b>{{Pad.amount}}</b>
+            Formatted Amount = <b>{{formatAmount Pad.amount}}</b>
+
+            <h5>Date</h5>
+            Original date = <b>{{Pad.date}}</b>
+            Formatted date = <b>{{formatDate Pad.date}}</b>
+
+            <h5>Date</h5>
+            Original number = <b>{{Pad.numeric}}</b>
+            Formatted number = <b>{{formatNumber Pad.numeric}}</b>
+            
+
           {{/view}}
         {{/view}}
 
