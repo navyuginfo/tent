@@ -4,6 +4,9 @@
 #
 Tent.I18n = Ember.Namespace.create
 	language: {}
+	loadTranslations: (translations)->
+		@set('language', translations)
+
 	translate: (code) ->
 		#Stubbed
 		"t_" + code

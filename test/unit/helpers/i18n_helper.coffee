@@ -12,7 +12,7 @@ teardown = ->
 module "Handlebars: loc", setup, teardown
 
 test 'Basic translation', ->
-	Tent.I18n.set('language', {_test_helper: 'testhelper'})
+	Tent.I18n.loadTranslations({_test_helper: 'testhelper'})
 	application.key = "_test_helper"
 
 	view = Ember.View.create
@@ -22,7 +22,7 @@ test 'Basic translation', ->
 	equal view.$().text(), 'testhelper', 'translate testhelper'
 
 test 'Translation with arg substitution', ->
-	Tent.I18n.set('language', {_test_helper: 'My name is %@ %@'})
+	Tent.I18n.loadTranslations({_test_helper: 'My name is %@ %@'})
 	application.key = "_test_helper"
 	application.firstName = "Penelope"
 	application.lastName = "Pitstop"
@@ -34,7 +34,7 @@ test 'Translation with arg substitution', ->
 	equal view.$().text(), 'My name is Penelope Pitstop', 'arg substitution'
 
 test 'Translation with numbered args', ->
-	Tent.I18n.set('language', {_test_helper: 'My name is %@2 %@1'})
+	Tent.I18n.loadTranslations({_test_helper: 'My name is %@2 %@1'})
 	application.key = "_test_helper"
 	application.firstName = "Penelope"
 	application.lastName = "Pitstop"

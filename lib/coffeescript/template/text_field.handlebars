@@ -1,4 +1,4 @@
-<label class="control-label" {{bindAttr for="view.forId"}}>{{view.label}}</label>
+<label class="control-label" {{bindAttr for="view.forId"}}>{{loc view.label}}</label>
 
 <div class="controls">
   <span class='tent-required'/>
@@ -25,9 +25,7 @@
     {{/if}}  
   </div>
   {{#if view.tooltip}}
-    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>
   {{/if}}
-
-
 
 </div>

@@ -2,6 +2,7 @@
 ((loader) -> 
 
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/i18n/translations')
 	loader.require('coffeescript/store/datastore')
 
 	loader.require('coffeescript/models/paging_adapter')
@@ -14,6 +15,8 @@
 		revision: 4,
 		adapter: Pad.pagingAdapter
 	});
+
+	Tent.I18n.loadTranslations(Tent.translations)
 
 	Pad.dataStore = Pad.DataStore.create()
 
