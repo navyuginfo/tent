@@ -3,8 +3,6 @@
 # All rights reserved.
 #
 
-require '../util/translation_support'
-
 Tent.VisibilitySupport = Ember.Mixin.create 
   isVisible: true
   _widgetShowing: true

@@ -74,7 +74,7 @@
 	Pad.remoteMultiselectCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
-		paged: false
+		paged: true
 
 	Pad.clientSideCollection = Tent.Data.Collection.create
 		store: Pad.dataStore

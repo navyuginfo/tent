@@ -235,9 +235,22 @@
                   selectionBinding="Pad.gridRemoteSelectionMultiple"
                   paged=true
                   pageSize=5
-                  remotePaging=false
+                  remotePaging=true
                   multiSelect=true
                   useColumnFilters=false
+              }}
+
+
+               <h4>No Paging</h4>
+              {{view Tent.SlickGrid
+                  label="Tasks"
+                  collectionBinding="Pad.remoteMultiselectCollection"
+                  selectionBinding="Pad.gridRemoteSelectionMultiple"
+                  paged=false
+                  multiSelect=false
+                  useColumnFilters=false
+                  enableColumnReorder=false
+                  width="200px"
               }}
           {{/view}}  
         {{/view}}
