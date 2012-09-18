@@ -114,6 +114,7 @@
 	]
 
 	Pad.statesSelection = [Pad.contents[1], Pad.contents[2]]
+	Pad.radioSelection = Pad.contents[2]
 
 	Pad.checkGroupContent = ["AP", "AL", "AT"]
 	count = 1

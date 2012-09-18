@@ -65,4 +65,18 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @set('isValid', @validate())
 
 
-Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
+  defaultTemplate: Ember.Handlebars.compile('{{#if view.prompt}}<option value>{{view.prompt}}</option>{{/if}}{{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
+
+Tent.SelectOption = Ember.SelectOption.extend
+  labelPathDidChange: Ember.observer(-> 
+    labelPath = Ember.get(@, 'parentView.optionLabelPath')
+    if !labelPath
+      return
+    Ember.defineProperty(@, 'label', Ember.computed(->
+      return Tent.I18n.loc(Ember.get(this, labelPath))
+    ).property(labelPath).cacheable())
+  , 'parentView.optionLabelPath')
+
+
+
