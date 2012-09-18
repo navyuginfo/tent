@@ -4,7 +4,7 @@
   <span class='tent-required'/>
   <div class="input-prepend">
     {{#if view.isTextDisplay}}
-      <span class="text-display">{{view.currentSelectedLabel}}</span>
+      <span class="text-display">{{loc view.currentSelectedLabel}}</span>
     {{else}}
       {{#if view.isRadioGroup}}
         <div class="radio-group">
@@ -32,11 +32,11 @@
       {{/if}}
     {{/if}}
   	{{#if view.tooltip}}
-      <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+      <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>
     {{/if}}
   	{{#if view.hasErrors}}
       	{{#each error in view.validationErrors}}
-        		<span class="help-inline">{{view.validationErrors}}</span>
+        		<span class="help-inline">{{error}}</span>
       	{{/each}}
     	{{/if}}
   </div>

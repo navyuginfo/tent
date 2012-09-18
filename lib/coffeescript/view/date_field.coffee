@@ -30,7 +30,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@_super()
 	
 	didInsertElement: ->
-		@_super()
+		@_super(arguments)
 		@.$('input').datepicker(@get('options'))
 
 	optionDidChange: (->

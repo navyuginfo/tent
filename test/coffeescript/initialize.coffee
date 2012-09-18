@@ -100,17 +100,17 @@
 		STATES: ['AL', 'AK', 'CA', 'GA', 'HI']
 
 	Pad.content = [
-		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
-		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
-		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
+		Ember.Object.create({stateName: "_georgia", stateCode: "GA"}),
+		Ember.Object.create({stateName: "_arkansas", stateCode: "AR"}),
+		Ember.Object.create({stateName: "_florida", stateCode: "FL"})
 	]
 
-	Pad.stateSelection = Pad.content[1]
+	Pad.stateSelection = Pad.content[1]	
 
 	Pad.contents = [
-		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
-		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
-		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
+		Ember.Object.create({stateName: "_georgia", stateCode: "GA"}),
+		Ember.Object.create({stateName: "_arkansas", stateCode: "AR"}),
+		Ember.Object.create({stateName: "_florida", stateCode: "FL"})
 	]
 
 	Pad.statesSelection = [Pad.contents[1], Pad.contents[2]]

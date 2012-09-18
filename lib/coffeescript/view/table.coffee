@@ -110,6 +110,6 @@ Tent.TableHeader = Ember.View.extend
   tagName: 'th'
   defaultTemplate: Ember.Handlebars.compile('{{view.printableColumnName}}')
   printableColumnName: (->
-    columnName = @get('content')
+    columnName = Tent.I18n.loc(@get('content'))
     columnName.camelToWords() if typeof(columnName) == 'string'
   ).property('content')

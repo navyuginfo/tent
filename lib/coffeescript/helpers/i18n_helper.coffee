@@ -7,7 +7,7 @@ Ember.Handlebars.registerHelper 'loc', (property, options) ->
 	pathRoot = normalized.root
 	path = normalized.path
 	#key = (path == 'this') ? pathRoot : getPath(pathRoot, path, options)
-	key = getPath(pathRoot, path, options) || Ember.get(path)
+	key = getPath(pathRoot, path, options) || Ember.get(path) || path
 	
 	if key?
 		args = []

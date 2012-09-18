@@ -17,13 +17,13 @@ Pad.DataStore = Ember.Object.extend
 	
 	getColumnsForType: ->
 		[
-			{id: "id", name: "ID", field: "id", sortable: true},
-			{id: "title", name: "Title", field: "title", sortable: true},
-			{id: "duration", name: "Duration", field: "duration.test", sortable: true},
-			{id: "%", name: "% Complete", field: "percentComplete"},
-			{id: "start", name: "Start", field: "start", formatter: Tent.Formatters.Date},
-			{id: "finish", name: "Finish", field: "finish"},
-			{id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
+			{id: "id", name: "_hID", field: "id", sortable: true},
+			{id: "title", name: "_hTitle", field: "title", sortable: true},
+			{id: "duration", name: "_hDuration", field: "duration.test", sortable: true},
+			{id: "%", name: "_hPercentComplete", field: "percentComplete"},
+			{id: "start", name: "_hStart", field: "start", formatter: Tent.Formatters.Date},
+			{id: "finish", name: "_hFinish", field: "finish"},
+			{id: "effort-driven", name: "_hEffortDriven", field: "effortDriven"}
 		]
 
 	queryFixtures: (modelData, query) ->

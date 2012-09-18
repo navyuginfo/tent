@@ -9,7 +9,7 @@ Tent.RadioOption = Ember.SelectOption.extend
  	).property()
 
  	label: (->
- 		@get('content').get(@get('parentView.optionLabelPath'))
+ 		Tent.I18n.loc(@get('content').get(@get('parentView.optionLabelPath')))
  	).property()
 
  	radioId: (->
@@ -20,4 +20,4 @@ Tent.RadioOption = Ember.SelectOption.extend
  		@get('parentView').set('selection', @get('content'))
 
 	didInsertElement: ->
-		console.log('debugging..')	
+		

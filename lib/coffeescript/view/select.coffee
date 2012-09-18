@@ -22,6 +22,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     @_super()
 
   didInsertElement: ->
+    @_super(arguments)
     @set('inputIdentifier', @$('select').attr('id'))
 
   valueForMandatoryValidation: (->
@@ -60,7 +61,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ).property('prompt')
   
   change: ->
-      @_super()
+      @_super(arguments)
       @set('isValid', @validate())
 
 

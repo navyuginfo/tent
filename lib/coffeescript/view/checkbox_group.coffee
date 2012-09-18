@@ -14,7 +14,6 @@ Tent.CheckboxGroup = Ember.View.extend
     @set('_list', Tent.SelectableArrayProxy.create({content: @get('list')}) || [])
 
   checkedDidChange: (->
-    console.log @get('list.selected')
     @set('selection', @get('list.selected'))
   ).observes('list.selected')    
 
