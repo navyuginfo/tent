@@ -46,10 +46,10 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       if content instanceof Array
         labels = []
         for item in content 
-          labels.push(@getLabelForContent({content: item}))
+          labels.push(Tent.I18n.loc(@getLabelForContent({content: item})))
         return labels.join()
       else
-        return @getLabelForContent(@, @get('optionLabelPath'))
+        return Tent.I18n.loc(@getLabelForContent(@))
   ).property('selection')
 
   getLabelForContent: (item)->
