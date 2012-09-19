@@ -35,7 +35,7 @@
 	Pad.isReadOnly = false
 	Pad.isDisabled = false
 	Pad.textDisplay = false
-
+	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
 
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})

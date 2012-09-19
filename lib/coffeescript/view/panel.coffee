@@ -11,7 +11,7 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
 
 Tent.Form = Tent.Panel.extend
   tagName: 'form'
-  staticClasses: 'well'
+  staticClasses: ''
   classNameBindings: ['spanClass', 'staticClasses', 'formClass']
   formStyle: 'horizontal'
   formClass: (-> 'form-' + @get('formStyle')).property('formStyle')
