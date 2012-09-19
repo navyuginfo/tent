@@ -1,8 +1,8 @@
 <div class="accordion-heading">
 	<a class="accordion-toggle" data-toggle="collapse" 
 		{{bindAttr data-parent="view.dataParent"}}
-		{{bindAttr href="view.href"}}
-		{{view.title}}
+		{{bindAttr href="view.href"}}>
+		{{loc view.title}}
 	</a>
 </div>
 <div class="accordion-body collapse" {{bindAttr id="view.id"}}>

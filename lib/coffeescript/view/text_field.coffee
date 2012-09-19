@@ -26,7 +26,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	).property('inputIdentifier')
 
 	didInsertElement: ->
-		@_super()
+		@_super(arguments)
 		@set('inputIdentifier', @$('input').attr('id'))
 
 	valueForMandatoryValidation: (->
@@ -34,7 +34,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	).property('formattedValue')
 	
 	change: ->
-		@_super()
+		@_super(arguments)
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('formattedValue'))

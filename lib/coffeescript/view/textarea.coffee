@@ -9,7 +9,7 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 	).property('formattedValue')
 
 	change: ->
-		@_super()
+		@_super(arguments)
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('formattedValue'))

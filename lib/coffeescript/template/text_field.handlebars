@@ -1,13 +1,13 @@
-<label class="control-label" {{bindAttr for="view.forId"}}>{{view.label}}</label>
+<label class="control-label" {{bindAttr for="view.forId"}}>{{loc view.label}}</label>
 
 <div class="controls">
   <span class='tent-required'/>
   <div class="input-prepend">
     {{#if view.isTextDisplay}}
-      <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
+      <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
     {{else}}
       {{#if view.hasPrefix}}  
-        <span class="add-on">{{view.prefix}}</span>
+        <span class="add-on">{{loc view.prefix}}</span>
       {{/if}} 
       {{view Tent.TextFieldInput 
         classBinding="view.inputSizeClass" 
@@ -15,19 +15,17 @@
         placeholderBinding="view.placeholder"
       }}
       {{#if view.hasHelpBlock}}
-        <span class="help-block">{{view.helpBlock}}</span>
+        <span class="help-block">{{loc view.helpBlock}}</span>
       {{/if}}
     {{/if}}
     {{#if view.hasErrors}}
       {{#each error in view.validationErrors}}
-        <span class="help-inline">{{view.error}}</span>
+        <span class="help-inline">{{loc error}}</span>
       {{/each}}
     {{/if}}  
   </div>
   {{#if view.tooltip}}
-    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltip"}}></a>
+    <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>
   {{/if}}
-
-
 
 </div>
