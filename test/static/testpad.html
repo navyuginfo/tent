@@ -42,7 +42,10 @@
         margin-bottom: 20px;
       }
 
-
+      .scrollcontainer100 {
+        height: 100px;
+        position: relative;
+      }
     </style>
   </head>
   <body data-spy="scroll" >
@@ -397,13 +400,15 @@
                             }}
                             {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
                             }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
                           </form>
                         {{/view}}
                         {{#view Tent.Panel span="5"}}
                           <form>
-                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 3" placeholder="Type here.." tooltip="Provide some information here" 
-                            }}
                             {{view Tent.TextField valueBinding="Pad.appName" label="Label 4" placeholder="Type here.." tooltip="Provide some information here" 
+                            }}
+                            {{view Tent.TextField valueBinding="Pad.appName" label="Label 5" placeholder="Type here.." tooltip="Provide some information here" 
                             }}
                           </form>
                         {{/view}}
@@ -496,7 +501,7 @@
                     <h4>Two Column Form Horizontal : row tabbing</h4> 
 
                     <div class="row tent">
-                      {{#view Tent.Form }}
+                      <form class="form-horizontal">
                           <div class="control-group span5">
                             <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
                           </div>
@@ -509,7 +514,7 @@
                           <div class="control-group span5">
                             <label class="control-label">Label 4</label><div class="controls"><input type="text"></div>
                           </div>
-                      {{/view}}
+                      </form>
                     </div>
 
 
@@ -527,6 +532,161 @@
                       {{/view}}
                     </div>
        
+
+                    <h4>Two Column Form Horizontal : nested rows in one column</h4> 
+
+                    <div class="row tent">
+                      <form class="form-horizontal">
+                        <div class="span5">
+                          <div class="control-group">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text"></div>
+                          </div>
+                        </div>
+                        <div class="span5">
+                              <div class="row span5">
+                                <h3>Here is a sub panel</h3>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+
+                              <div class="row span5">
+                                <h2>Panel 2</h2>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+                        </div> 
+                      </form>
+                    </div>
+
+
+                    <div class="row tent">
+                      {{#view Tent.Form}}
+                        {{#view Tent.Panel span="5"}}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        {{/view}}
+                        {{#view Tent.Panel span="5"}}
+                           
+                              <div class="row span5">
+                                <h3>Here is a sub panel</h3>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+
+                              <div class="row span5">
+                                <h2>Panel 2</h2>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+                           
+                        {{/view}}
+                      {{/view}}
+                    </div>
+
+
+                    <h4>Two Column Form Horizontal : scrolling</h4> 
+
+                    <div class="row tent scrollcontainer100">
+                      <form class="form-horizontal">
+                        <div class="span5 scrollable">
+                          <div class="control-group">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text"></div>
+                          </div>
+                        </div>
+                        <div class="span5 scrollable right">
+                              <div class="row span5">
+                                <h3>Here is a sub panel</h3>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+
+                              <div class="row span5">
+                                <h2>Panel 2</h2>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+                        </div> 
+                      </form>
+                    </div>
+
+
+                    <div class="row tent scrollcontainer100">
+                      {{#view Tent.Form}}
+                        {{#view Tent.Panel span="5" class="scrollable"}}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        {{/view}}
+                        {{#view Tent.Panel span="5" class="scrollable right"}}
+                           
+                              <div class="row span5">
+                                <h3>Here is a sub panel</h3>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+
+                              <div class="row span5">
+                                <h2>Panel 2</h2>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+                           
+                        {{/view}}
+                      {{/view}}
+                    </div>
+
+
+
+                    <h4>Three Column Form Horizontal : scrolling</h4> 
+
+                    <div class="row tent scrollcontainer100">
+                      {{#view Tent.Form formStyle="vertical"}}
+                        {{#view Tent.Panel span="3" class="scrollable"}}
+                          <div class="control-group">
+                            <label class="control-label">Label 1</label><div class="controls"><input type="text"></div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label">Label 2</label><div class="controls"><input type="text"></div>
+                          </div>
+                        {{/view}}
+                        {{#view Tent.Panel span="3" class="scrollable offset3"}}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 1" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                          {{view Tent.TextField valueBinding="Pad.appName" label="Label 2" placeholder="Type here.." tooltip="Provide some information here" 
+                          }}
+                        {{/view}}
+                        {{#view Tent.Panel span="4" class="scrollable offset6"}}
+                              <div class="row span4">
+                                <h3>Here is a sub panel</h3>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+
+                              <div class="row span4">
+                                <h2>Panel 2</h2>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                                <p>Lorem ipsum blah blah</p>
+                              </div>
+                        {{/view}}
+
+                      {{/view}}
+                    </div>
+
+
 
 
                     <h4>Form Inline: not obeying grid</h4>

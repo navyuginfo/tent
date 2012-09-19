@@ -137,3 +137,21 @@ a[rel=tooltip] {
 }
 
 
+/*  Layout Styles */
+
+.scrollable {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	height: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	&.right {
+		right: 0px;
+	}
+}
+
+
+
+
