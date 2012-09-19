@@ -1,3 +1,15 @@
+
+###*
+* @class Tent.DateField
+* @extends Tent.TextField
+* Usage
+*       {{view Tent.DateField label="" 
+			valueBinding="" 
+			showOtherMonths=true  
+			dateFormat=""
+         }}
+###
+
 require '../template/text_field'
 require '../mixin/jquery_ui'
 

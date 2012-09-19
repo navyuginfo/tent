@@ -1,3 +1,8 @@
+###*
+ * @class Tent.AriaSupport
+ * Some docs here...
+###
+
 Tent.AriaSupport = Ember.Mixin.create
 	attributeBindings: [
 		'ariaRequired:aria-required'

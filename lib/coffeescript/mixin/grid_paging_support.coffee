@@ -1,3 +1,8 @@
+###*
+ * @class Tent.GridPagingSupport
+ * Some docs here...
+###
+
 Tent.GridPagingSupport = Ember.Mixin.create
 	paged: false
 	remotePaging: false #paging, sorting, searching are done remotely

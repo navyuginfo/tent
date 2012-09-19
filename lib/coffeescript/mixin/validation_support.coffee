@@ -3,6 +3,11 @@
 # All rights reserved.
 #
 
+###*
+ * @class Tent.ValidationSupport
+ * Some docs here...
+###
+
 Tent.ValidationSupport = Ember.Mixin.create  
   isValid: true
   

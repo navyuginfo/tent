@@ -1,3 +1,8 @@
+###*
+ * @class Tent.GridFilteringSupport
+ * Some docs here...
+###
+
 Tent.GridFilteringSupport = Ember.Mixin.create
 	columnFiltersBinding: 'collection.columnFilters'
 	

@@ -3,6 +3,16 @@
 # All rights reserved.
 #
 
+###*
+* @class Tent.NumericTextField
+* @extends Tent.TextField
+* Usage
+*       {{view Tent.NumericTextField label="" 
+			valueBinding="" 
+			dateFormat=""
+         }}
+###
+
 require '../template/text_field'
 
 Tent.NumericTextField = Tent.TextField.extend

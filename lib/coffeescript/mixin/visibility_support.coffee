@@ -3,6 +3,11 @@
 # All rights reserved.
 #
 
+###*
+ * @class Tent.VisibilitySupport
+ * Some docs here...
+###
+
 Tent.VisibilitySupport = Ember.Mixin.create 
   isVisible: true
   _widgetShowing: true

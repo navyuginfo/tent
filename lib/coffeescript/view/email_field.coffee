@@ -3,6 +3,16 @@
 # All rights reserved.
 #
 
+###*
+* @class Tent.EmailField
+* @extends Tent.TextField
+* Usage
+*       {{view Tent.EmailField 
+			label="" 
+			valueBinding="" 
+         }}
+###
+
 require '../mixin/field_support'
 require '../template/text_field'
 
