@@ -34,14 +34,11 @@ Tent.AmountField = Tent.TextField.extend
   #Format for display
   format: (value)->
     # Convert from a number to a string
-    formatted = accounting.formatNumber(value)
-    return formatted
-
+    return Tent.Formatting.amount.format(value)
 
   # Format for binding
   unFormat: (value)->
-    unFormatted = accounting.unformat(value)
-    return unFormatted
+    return Tent.Formatting.amount.unformat(value)
 
   inputSizeClass: (->
     return Tent.AmountField.SIZE_CLASSES[@estimateSpan() - 1]

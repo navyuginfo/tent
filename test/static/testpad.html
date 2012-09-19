@@ -88,6 +88,9 @@
             <a href="#container-section"><i class="icon-chevron-right"></i> Containers</a>
           </li>
           <li>
+            <a href="#formatting-section"><i class="icon-chevron-right"></i> Formatting Helpers</a>
+          </li>
+          <li>
             <a href="#layout-section"><i class="icon-chevron-right"></i> Layouts</a>
           </li>
         </ul>
@@ -97,44 +100,39 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
+
           {{#view Tent.Form formStyle="inline" }}
-            {{view Tent.Checkbox label="Required" checkedBinding="Pad.isRequired"}}
-                 
-                 
-                  {{view Tent.Checkbox label="Readonly" checkedBinding="Pad.isReadOnly"}}
-                 
-                  {{view Tent.Checkbox label="Disabled" checkedBinding="Pad.isDisabled"}}
-                 
-                  {{view Tent.Checkbox label="TextDisplay" checkedBinding="Pad.textDisplay"}}
-                 
+            {{view Tent.Checkbox label="_required" checkedBinding="Pad.isRequired"}}
+            {{view Tent.Checkbox label="_readonly" checkedBinding="Pad.isReadOnly"}}
+            {{view Tent.Checkbox label="_disabled" checkedBinding="Pad.isDisabled"}}
+            {{view Tent.Checkbox label="_textDisplay" checkedBinding="Pad.textDisplay"}}     
           {{/view}}
 
           {{#view Tent.Form name="Fields" id="form-section"}}
-            
-            {{view Tent.TextField valueBinding="Pad.appName" label="Focused input" placeholder="Type here.." tooltip="Provide some information here" 
+            {{view Tent.TextField valueBinding="Pad.appName" label="_focussedInput" placeholder="_typeHere" tooltip="_provide_some_info" 
               requiredBinding="Pad.isRequired" 
               readOnlyBinding="Pad.isReadOnly" 
               disabledBinding="Pad.isDisabled"
               textDisplayBinding="Pad.textDisplay"}}
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="Numeric input" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
-            {{view Tent.AmountField valueBinding="Pad.amount" label="Amount input" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
         
-            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
             
             
-            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="State" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
             
-            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="Radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  textDisplayBinding="Pad.textDisplay" }}
+            {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="_radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  textDisplayBinding="Pad.textDisplay" }}
 
-            {{view Tent.EmailTextField valueBinding="Pad.email" label="Email input" placeholder="Enter email.." requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
             
-            {{view Tent.Checkbox label="Agree to privacy policy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="Provide some information here"}}
+            {{view Tent.Checkbox label="_agreeToPrivacyPolicy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
 
-            {{view Tent.DateField label="Signature Date" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="Provide some information here"
+            {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
 
-            {{view Tent.Textarea label="Text Area" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="This is a textarea widget"
+            {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"
             }}
 
             
@@ -146,8 +144,8 @@
 
         {{#view Tent.Panel span="3"}} 
           {{#view Tent.Form name="Values"}}
-            <p>Focussed Input : {{Pad.appName}}</p>
-            <p>Numeric Input : {{Pad.numeric}}</p>
+            <p>{{loc _focussedInput}} : {{Pad.appName}}</p>
+            <p>{{loc _numericInput}} : {{Pad.numeric}}</p>
             <p>Amount Input : {{Pad.amount}}</p>
             <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
             <p>Selected States :</p>
@@ -168,10 +166,9 @@
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
                 <h4>Table</h4>
                 {{view Tent.Table listBinding="Pad.people" 
-                  headers="Name,Age" 
+                  headers="_hName,_hAge" 
                   columnsBinding="Pad.columns" 
                   selectionBinding="Pad.selectedPerson" 
-                  defaultSelectionBinding="Pad.selectedPerson"
                   isEditable=true}}
 
               <p>Selected Person is 
@@ -182,11 +179,10 @@
 
               <h4>Multi-select Table</h4>
               {{view Tent.Table listBinding="Pad.people" 
-                  headers="Name,Age" 
+                  headers="_hName,_hAge" 
                   columns="name,age" 
                   selectionBinding="Pad.multiSelectedPerson" 
                   multiselection=true 
-                  defaultSelectionBinding="Pad.multiSelectedPerson" 
                   isEditable=true}}
 
               <p>Selected People are 
@@ -246,9 +242,22 @@
                   selectionBinding="Pad.gridRemoteSelectionMultiple"
                   paged=true
                   pageSize=5
-                  remotePaging=false
+                  remotePaging=true
                   multiSelect=true
                   useColumnFilters=false
+              }}
+
+
+               <h4>No Paging</h4>
+              {{view Tent.SlickGrid
+                  label="Tasks"
+                  collectionBinding="Pad.remoteMultiselectCollection"
+                  selectionBinding="Pad.gridRemoteSelectionMultiple"
+                  paged=false
+                  multiSelect=false
+                  useColumnFilters=false
+                  enableColumnReorder=false
+                  width="200px"
               }}
           {{/view}}  
         {{/view}}
@@ -257,9 +266,9 @@
           {{#view Tent.Form name="Other Widgets" id="other-section"}}
             <h5>Other Widgets</h5>
 
-            {{view Tent.AlertMessage text="Heads up! This alert needs your attention, but it's not super important." type="info"}}
-            {{view Tent.AlertMessage text="Well done! You successfully read this important alert message." type="success"}}
-            {{view Tent.AlertMessage text="Oh snap! Change a few things up and try submitting again." type="error"}}
+            {{view Tent.AlertMessage text="_headsUp" type="info"}}
+            {{view Tent.AlertMessage text="_wellDone" type="success"}}
+            {{view Tent.AlertMessage text="_submitAgain" type="error"}}
             {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
 
             <p>Tag {{view Tent.Tag text="Important"}}</p>
@@ -270,19 +279,19 @@
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="buttons" id="button-section"}}
             <h5>buttons</h5>
-            {{view Tent.Button label="Click Me" type="primary" action="clickEvent" target="Pad"}}
+            {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad"}}
             <p id="click-label"></p>
             <br/>
-            {{view Tent.Button label="Click Me" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
+            {{view Tent.Button label="_buttonClickMe" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
             <br/>
-            {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
+            {{view Tent.Button label="_buttonOptions" type="info" optionsBinding="Pad.btnOptions"}}
             <br/>
-            {{view Tent.Button label="Label missing in button options" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
+            {{view Tent.Button label="_buttonLabelMissing" type="primary" optionsBinding="Pad.optionsMissingLabel"}}
             <br/>
-            {{view Tent.Button label="Label and Target missing in button options" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
+            {{view Tent.Button label="_buttonLabelTargetMissing" optionsBinding="Pad.optionsMissingLabel" contentBinding="Pad.groupTarget"}}
 
             <h4>Toggle button</h4>
-            {{view Tent.Button label="Toggle Me" type="primary" dataToggle="button"}}
+            {{view Tent.Button label="_buttonToggle" type="primary" dataToggle="button"}}
             <p id="click-label"></p>
         
             <p id="click-label"></p>
@@ -293,17 +302,17 @@
           {{#view Tent.Form name="Containers" id="container-section"}}
             <h5>Accordion</h5>
             {{#view Tent.Accordion}}
-              {{#view Tent.AccordionGroup title="Title1"}}
+              {{#view Tent.AccordionGroup title="_accordionTitle1"}}
                 {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
               {{/view}}
-              {{#view Tent.AccordionGroup title="Title2"}}
+              {{#view Tent.AccordionGroup title="_accordionTitle2"}}
                   {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
                   {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
               {{/view}}
-              {{#view Tent.AccordionGroup title="Title3"}}
+              {{#view Tent.AccordionGroup title="_accordionTitle3"}}
                   Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
               {{/view}}
-              {{#view Tent.AccordionGroup title="Title4"}}
+              {{#view Tent.AccordionGroup title="_accordionTitle4"}}
                   Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
               {{/view}}
             {{/view}}
@@ -311,28 +320,40 @@
             <br/><br/>
 
             <h5>Tabs</h5>
-            {{#view Tent.Tabs id="tabstrip" active="settings"}}
-              {{view Tent.Tab title="Profile" pane="profile"}}
-              {{view Tent.Tab title="Messages" pane="messages"}}
-              {{view Tent.Tab title="Settings" pane="settings"}}
-            {{/view}}
+            
 
-            {{#view Tent.TabPanes active="settings"}}
-              {{#view Tent.TabPane id="profile"}}
+            {{#view Tent.Tabs active="settings"}}
+              {{#view Tent.TabPane id="profile" title="_profile"}}
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               {{/view}}
-              {{#view Tent.TabPane id="messages"}}
+              {{#view Tent.TabPane id="messages" title="_messages"}}
                   Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
               {{/view}}
-              {{#view Tent.TabPane id="settings"}}
+              {{#view Tent.TabPane id="settings" title="_settings"}}
                   At vero eos et accusamus et iusto odio dignissimos ducimus
               {{/view}}
             {{/view}}
-
           {{/view}}
         {{/view}}
 
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Formatters" id="formatting-section"}}
+             
+            <h5>Amount</h5>
+            Original amount = <b>{{Pad.amount}}</b>
+            Formatted Amount = <b>{{formatAmount Pad.amount}}</b>
 
+            <h5>Date</h5>
+            Original date = <b>{{Pad.date}}</b>
+            Formatted date = <b>{{formatDate Pad.date}}</b>
+
+            <h5>Date</h5>
+            Original number = <b>{{Pad.numeric}}</b>
+            Formatted number = <b>{{formatNumber Pad.numeric}}</b>
+            
+
+          {{/view}}
+        {{/view}}
 
 
 
@@ -795,11 +816,9 @@
       </div>
     {{/view}} 
 
-      <!--
-      {{view Tent.ModalPane text="Do you want to perform this action!!!" header="My Heading" primary="OK" secondary="Cancel"}}
-      -->
-
-
+    <!--   
+    {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
+    -->   
 
     </script>
       </row>

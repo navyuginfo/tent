@@ -34,8 +34,8 @@ Tent.ModalPane = Ember.View.extend
 
 Tent.ModalHeader = Ember.View.extend
   tagName: 'h3'
-  defaultTemplate: Ember.Handlebars.compile '{{view.parentView.header}}'
+  defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.header}}'
 
 Tent.ModalBody = Ember.View.extend
   tagName: 'p'
-  defaultTemplate: Ember.Handlebars.compile '{{view.parentView.text}}'  
+  defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.text}}'  

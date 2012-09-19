@@ -9,30 +9,17 @@ Tent.NumericTextField = Tent.TextField.extend
 	validate: ->
 		didOtherValidationPass = @_super()
 		value = @get('formattedValue')
-		isValidNumber = @isValueEmpty(value) or @isValidNumber(value)
+		isValidNumber = @isValueEmpty(value) or Tent.Formatting.number.isValidNumber(value)
 		@addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber
 		didOtherValidationPass && isValidNumber
 
 	isValueEmpty: (value) ->
 		not (value? && value != '')
 
-	isValidNumber: (value)->
-		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 
-
 	#Format for display
 	format: (value)->
-		# Convert from a number to a string
-		if (typeof value == 'number') or value == ''
-			value.toString(10)
-		else
-			value
+		Tent.Formatting.number.format(value)
 
 	# Format for binding
 	unFormat: (value)->
-		# Convert from a string to a number
-		if @isValidNumber(value)
-			val = parseFloat(value)
-		else if value==""
-			return null
-		else 
-			value
+		Tent.Formatting.number.unformat(value)

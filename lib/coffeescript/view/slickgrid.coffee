@@ -11,6 +11,8 @@ require './grid/cell_formatters'
 Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, Tent.GridFilteringSupport,
 	classNames: ['slickgrid']
 	templateName: 'slick'
+	width: '100%'
+	height: '200px'
 	rowSelection: null
 	grid: null
 	multiSelect: false
@@ -22,6 +24,8 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		enableCellNavigation: true
 		enableColumnReorder: true
 		multiColumnSort: true
+		forceFitColumns: false
+		fullWidthRows: false
 		
 	init: ->
 		@_super()
@@ -41,6 +45,13 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
 	).property()
+
+	gridStyle: (->
+		w = @get('width')
+		h = @get('height')
+
+		return "width:" + w + ";height:" + h
+	).property('width', 'height')
 	
 	_listContentDidChange: (->
 		if @get('grid')?

@@ -3,13 +3,13 @@
 # All rights reserved.
 #
 
-require '../util/translation_support'
+require '../i18n/translation_support'
 require './visibility_support'
 require './validation_support'
 require './mandatory_support'
 require './span_support'
 
-Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.TranslationSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, 
+Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, 
   fieldClass: 'field'
   mixinClasses: 'control-group'
   classNames: ['tent-widget']

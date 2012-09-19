@@ -2,6 +2,7 @@
 ((loader) -> 
 
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/i18n/translations')
 	loader.require('coffeescript/store/datastore')
 
 	loader.require('coffeescript/models/paging_adapter')
@@ -14,6 +15,8 @@
 		revision: 4,
 		adapter: Pad.pagingAdapter
 	});
+
+	Tent.I18n.loadTranslations(Tent.translations)
 
 	Pad.dataStore = Pad.DataStore.create()
 
@@ -74,7 +77,7 @@
 	Pad.remoteMultiselectCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
-		paged: false
+		paged: true
 
 	Pad.clientSideCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
@@ -91,26 +94,29 @@
 
 	Pad.columns = "name,age"
 
-	selectedPerson = {}
+	Pad.selectedPerson = [Pad.people[2]]
+	Pad.multiSelectedPerson = [Pad.people[2], Pad.people[3]]
+
 	Tent.Enumeration =
 		YESNO: ['Yes', 'No']
 		STATES: ['AL', 'AK', 'CA', 'GA', 'HI']
 
 	Pad.content = [
-		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
-		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
-		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
+		Ember.Object.create({stateName: "_georgia", stateCode: "GA"}),
+		Ember.Object.create({stateName: "_arkansas", stateCode: "AR"}),
+		Ember.Object.create({stateName: "_florida", stateCode: "FL"})
 	]
 
-	Pad.stateSelection = Pad.content[1]
+	Pad.stateSelection = Pad.content[1]	
 
 	Pad.contents = [
-		Ember.Object.create({stateName: "Georgia", stateCode: "GA"}),
-		Ember.Object.create({stateName: "Arkansas", stateCode: "AR"}),
-		Ember.Object.create({stateName: "Florida", stateCode: "FL"})
+		Ember.Object.create({stateName: "_georgia", stateCode: "GA"}),
+		Ember.Object.create({stateName: "_arkansas", stateCode: "AR"}),
+		Ember.Object.create({stateName: "_florida", stateCode: "FL"})
 	]
 
 	Pad.statesSelection = [Pad.contents[1], Pad.contents[2]]
+	Pad.radioSelection = Pad.contents[2]
 
 	Pad.checkGroupContent = ["AP", "AL", "AT"]
 	count = 1
