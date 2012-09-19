@@ -25,12 +25,13 @@ Tent.Table = Ember.View.extend
     @_super()
     @set('multiselection', false) if @get('multiselection') == undefined
     @set('isEditable', true) if @get('isEditable') == undefined
+    if not @get('_list')? 
+      @createListProxy()
+  
+  createListProxy: ->
     @set('_list', Tent.SelectableArrayProxy.create({content: @get('list')}))
     @get('_list').set('isMultipleSelectionAllowed', @get('multiselection'))
-    if @get('defaultSelection')
-      for element in @get('defaultSelection')
-        @select element
-      
+
   isRowSelected: (row) ->
       if (selElements = @get('_list').get('selected')) isnt null
         #for the time when page first renders or when nothing is selected
@@ -51,8 +52,11 @@ Tent.Table = Ember.View.extend
         for element in selection
           @select element
     else
+      if not @get('_list')? 
+        @createListProxy()
       @get('_list').set('selected', selection)
-  
+     
+
   updateContent: ( ->
     @get('_list').set('content',@get('list'))
   ).observes('list') 
@@ -69,6 +73,7 @@ Tent.Table = Ember.View.extend
   ).property('_list.selected')
   
 
+
 Tent.TableRow = Ember.View.extend
   tagName: 'tr'
   templateName: 'table_row'
@@ -79,8 +84,9 @@ Tent.TableRow = Ember.View.extend
       # checks the radioButtons/checkboxes in case of defaultselection
       @checkSelection()
   
-  isSelected: (-> @get('parentTable').isRowSelected(this))
-    .property('parentTable.selection')
+  isSelected: (-> 
+    @get('parentTable').isRowSelected(this)
+  ).property('parentTable.selection')
   
   checkSelection: (-> 
     if @get 'isSelected'

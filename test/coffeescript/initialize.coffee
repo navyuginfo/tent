@@ -94,7 +94,9 @@
 
 	Pad.columns = "name,age"
 
-	selectedPerson = {}
+	Pad.selectedPerson = [Pad.people[2]]
+	Pad.multiSelectedPerson = [Pad.people[2], Pad.people[3]]
+
 	Tent.Enumeration =
 		YESNO: ['Yes', 'No']
 		STATES: ['AL', 'AK', 'CA', 'GA', 'HI']
