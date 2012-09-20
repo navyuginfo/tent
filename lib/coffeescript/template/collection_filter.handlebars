@@ -1,0 +1,15 @@
+<h5>Collection Filter</h5>
+
+{{view Ember.View templateName="task_collection_filter" collectionBinding="view.collection"}}
+
+<div class="filter-panel">
+	{{view Tent.Select 
+		label="_CurrentFilter" 
+		listBinding="view.availableFilters" 
+		selectionBinding="view.selectedFilter" 
+		optionLabelPath="content.label" 
+		optionValuePath="content.name" 
+	}}
+<div>
+
+<h4>ID in Parent = {{view.selectedFilter.values.id}}</h4>

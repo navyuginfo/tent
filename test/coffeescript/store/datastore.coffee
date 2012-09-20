@@ -85,17 +85,17 @@ Pad.DataStore = Ember.Object.extend
 	doFilter: (modelData, filters) ->
 		if !filters?
 			return modelData
-
+		filterFields = filters.values
 		filteredFixtures = []
 		for item in modelData
 			passed = true
-			for columnId of filters
-				if columnId != undefined and filters[columnId]?
+			for columnId of filterFields
+				if columnId != undefined and filterFields[columnId]?
 					if item.get(columnId) instanceof Date
-						if filters[columnId].getTime() != item.get(columnId).getTime()
+						if filterFields[columnId].getTime() != item.get(columnId).getTime()
 							passed = false	
 					else
-						re = new RegExp("^" + filters[columnId],"i")
+						re = new RegExp("^" + filterFields[columnId],"i")
 						if !re.test(item.get(columnId))
 							passed = false
 			if passed then filteredFixtures.push(item)

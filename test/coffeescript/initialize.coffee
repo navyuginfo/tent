@@ -7,6 +7,7 @@
 
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
+	loader.require('template/task_collection_filter')
 
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
 	# Ensure the Rest adapter is working correctly 

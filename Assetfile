@@ -140,6 +140,21 @@ input "test" do
     concat "javascript/tent-tests.js"
   end
 
+  match "**/*.handlebars" do
+    handlebars :key_name_proc => proc { |input| 
+      %r{template/(.*).handlebars}.match(input.path)
+      $1
+    }
+    filter RequireRewriteFilter
+    minispade string: true, rewrite_requires: true, module_id_generator: ->(input){
+      RequireRewriteFilter.module_id(input.path)
+    }
+    if ENV['RACK_ENV'] == 'production'
+      uglify
+    end
+    concat "javascript/tent-tests.js"
+  end
+
   match /^static\// do
     concat do |filename|
       filename.gsub(/^static\//, '')

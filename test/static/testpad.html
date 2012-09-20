@@ -208,16 +208,14 @@
               }}
               <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
 
+
+
               <h5>Remote Paging, Sorting, Filtering</h5>
 
-               
-                {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.id" label="ID"}}
-                {{view Tent.TextField valueBinding="Pad.remoteCollection.columnFilters.title" label="Title"}}
-                {{view Tent.DateField valueBinding="Pad.remoteCollection.columnFilters.start" label="Start"}}
-               
-              {{view Tent.Button label="Filter" type="primary" action="filterTrigger" target="Pad.remoteCollection"}}
-              
-              
+              {{view Tent.CollectionFilter 
+                  filterTemplate="task_collection_filter" 
+                  collectionBinding="Pad.remoteCollection"}}
+
               {{view Tent.SlickGrid
                   label="Tasks"
                   collectionBinding="Pad.remoteCollection"
@@ -230,9 +228,7 @@
               }}
 
               <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
-
-
-               <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
+              <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
               
               
 

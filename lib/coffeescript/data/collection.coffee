@@ -1,6 +1,6 @@
-require './pager'
-require './sorter'
-require './filter'
+require './mixins/pager'
+require './mixins/sorter'
+require './mixins/filter'
 
 Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter,
 	content: null
@@ -31,6 +31,18 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType').cacheable()
+
+	availableFilters: (->
+		[
+			{
+				name: "outstanding"
+				label: "Outstanding"
+				description: "Outstanding invoices..."
+				values: {id: "51", title: "Task 1"}
+			}
+		]
+
+	).property()
 
 	init: ->
 		@_super()
