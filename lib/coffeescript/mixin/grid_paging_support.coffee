@@ -4,8 +4,16 @@
 ###
 
 Tent.GridPagingSupport = Ember.Mixin.create
+	###*
+	* @property {Boolean} [paged=false] A boolean indicating whether paging is to be supported
+	###
 	paged: false
-	remotePaging: false #paging, sorting, searching are done remotely
+
+	###*
+	* @property {Boolean} [remotePaging=false] A boolean indicating whether paging, sorting and filtering 
+	* are performed on the server
+	###	
+	remotePaging: false
 
 	init: ->
 		@_super()

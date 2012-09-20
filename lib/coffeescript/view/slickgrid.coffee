@@ -1,3 +1,23 @@
+###*
+* @class Tent.SlickGrid
+* @mixins Tent.FieldSupport
+* @mixins Tent.GridPagingSupport
+* @mixins Tent.GridSortingSupport
+* @mixins Tent.GridFilteringSupport
+* 
+* Usage
+*        {{view Tent.SlickGrid
+                  label=""
+                  collectionBinding=""
+                  selectionBinding=""
+                  paged=true
+                  pageSize=5
+                  remotePaging=false
+                  multiSelect=false
+                  useColumnFilters=false
+              }}
+###
+
 require "./table"
 require "../template/slick"
 require "../data/collection"
@@ -15,9 +35,29 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	height: '200px'
 	rowSelection: null
 	grid: null
+
+	###*
+	* @property {Boolean} [multiselect=false] A boolean property to determine whether multiple items can be selected
+	###
 	multiSelect: false
+
+	###*
+	* @property {Tent.Data.Collection} collection A collection which provides access to the list data. If a collection is not
+	* provided, the grid will create one on initialization.
+	###
+
+	###*
+	* @property {String} dataType The data type of the objects that are managed by the grid. 
+	* If a collection is not provided (by the {#collection} property), the slickgrid will create a collection 
+	* using the dataType and {#dataStore} properties
+	###
 	dataType: null
+
+	###*
+	* @property {Object} dataStore An implementation of a {DataStore} which is used to populate the collection.
+	###
 	dataStore: null
+	
 	columnsBinding: 'collection.columnsDescriptor'
 
 	defaults:  
@@ -42,6 +82,14 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		else
 			@get('collection').set('pageSize', @get('pageSize'))
 
+	###*
+	* @property {String} [formLayout=form] Defines the layout environment into which the grid is being placed.
+	* Possible values are:
+	* 
+	* - **form**:  the grid is a form field, and should be displayed similar to other fields, with a positioned label.
+	* 
+	* - **wide**:  the grid is not displayed in a form, and will fill the entire width of its container. 
+	###
 	formLayout: (->
 		return (@get('style')==Tent.SlickGrid.STYLES.FORM)
 	).property()

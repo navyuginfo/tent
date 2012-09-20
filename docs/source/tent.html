@@ -509,6 +509,10 @@
 (function() {
 
   Tent.SpanSupport = Ember.Mixin.create({
+<span id='Tent-SpanSupport-property-span'>    /**
+</span>    * @property {Number} span The horizontal span which should be allocated to this widget
+    */
+
     estimateSpan: function() {
       var currentView, span;
       currentView = this;
@@ -1385,6 +1389,13 @@ Ember.TEMPLATES['slick']=Ember.Handlebars.compile(&quot; \n{{#if view.formLayout
 }).call(this);
 
 
+
+<span id='Tent-Data-Collection'>/**
+</span>* @class Tent.Data.Collection
+* An object used to wrap an array of objects, with a facade for paging, sorting and filtering,
+*/
+
+
 (function() {
 Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, {
     content: null,
@@ -1580,7 +1591,16 @@ Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.S
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i &lt; l; i++) { if (i in this &amp;&amp; this[i] === item) return i; } return -1; };
 
   Tent.GridPagingSupport = Ember.Mixin.create({
+<span id='Tent-GridPagingSupport-property-paged'>    /**
+</span>    	* @property {Boolean} [paged=false] A boolean indicating whether paging is to be supported
+    */
+
     paged: false,
+<span id='Tent-GridPagingSupport-property-remotePaging'>    /**
+</span>    	* @property {Boolean} [remotePaging=false] A boolean indicating whether paging, sorting and filtering 
+    	* are performed on the server
+    */
+
     remotePaging: false,
     init: function() {
       return this._super();
@@ -1667,6 +1687,10 @@ Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.S
 
   Tent.GridFilteringSupport = Ember.Mixin.create({
     columnFiltersBinding: 'collection.columnFilters',
+<span id='Tent-GridFilteringSupport-property-useColumnFilters'>    /**
+</span>    	* @property {Boolean} [useColumnFilters=false] Display a freetext filter above each column to act as client-side filters.
+    */
+
     useColumnFilters: false,
     init: function() {
       return this._super();
@@ -1763,6 +1787,28 @@ Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.S
 }).call(this);
 
 
+
+<span id='Tent-SlickGrid'>/**
+</span>* @class Tent.SlickGrid
+* @mixins Tent.FieldSupport
+* @mixins Tent.GridPagingSupport
+* @mixins Tent.GridSortingSupport
+* @mixins Tent.GridFilteringSupport
+* 
+* Usage
+*        {{view Tent.SlickGrid
+                  label=&quot;&quot;
+                  collectionBinding=&quot;&quot;
+                  selectionBinding=&quot;&quot;
+                  paged=true
+                  pageSize=5
+                  remotePaging=false
+                  multiSelect=false
+                  useColumnFilters=false
+              }}
+*/
+
+
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i &lt; l; i++) { if (i in this &amp;&amp; this[i] === item) return i; } return -1; };
 Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Tent.GridSortingSupport, Tent.GridFilteringSupport, {
@@ -1772,8 +1818,27 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
     height: '200px',
     rowSelection: null,
     grid: null,
+<span id='Tent-SlickGrid-property-multiselect'>    /**
+</span>    	* @property {Boolean} [multiselect=false] A boolean property to determine whether multiple items can be selected
+    */
+
     multiSelect: false,
+<span id='Tent-SlickGrid-property-collection'>    /**
+</span>    	* @property {Tent.Data.Collection} collection A collection which provides access to the list data. If a collection is not
+    	* provided, the grid will create one on initialization.
+    */
+
+<span id='Tent-SlickGrid-property-dataType'>    /**
+</span>    	* @property {String} dataType The data type of the objects that are managed by the grid. 
+    	* If a collection is not provided (by the {#collection} property), the slickgrid will create a collection 
+    	* using the dataType and {#dataStore} properties
+    */
+
     dataType: null,
+<span id='Tent-SlickGrid-property-dataStore'>    /**
+</span>    	* @property {Object} dataStore An implementation of a {DataStore} which is used to populate the collection.
+    */
+
     dataStore: null,
     columnsBinding: 'collection.columnsDescriptor',
     defaults: {
@@ -1805,6 +1870,15 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
         return this.get('collection').set('pageSize', this.get('pageSize'));
       }
     },
+<span id='Tent-SlickGrid-property-formLayout'>    /**
+</span>    	* @property {String} [formLayout=form] Defines the layout environment into which the grid is being placed.
+    	* Possible values are:
+    	* 
+    	* - **form**:  the grid is a form field, and should be displayed similar to other fields, with a positioned label.
+    	* 
+    	* - **wide**:  the grid is not displayed in a form, and will fill the entire width of its container.
+    */
+
     formLayout: (function() {
       return this.get('style') === Tent.SlickGrid.STYLES.FORM;
     }).property(),
@@ -2245,10 +2319,26 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
 }).call(this);
 
 
+
+<span id='Tent-Panel'>/**
+</span>* @class Tent.Panel
+* A container for content which can specify a span and a title.
+* Usage 
+* 		{{#view Tent.Panel span=&quot;10&quot; title=&quot;&quot;}}
+*			...
+*		{{/view}}
+*/
+
+
 (function() {
 Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
-    layout: Ember.Handlebars.compile('{{#if view.name}}&lt;h3&gt;{{view.name}}&lt;/h3&gt;{{/if}}{{yield}}'),
-    classNameBindings: ['spanClass']
+    layout: Ember.Handlebars.compile('{{#if view.name}}&lt;h3&gt;{{loc view.name}}&lt;/h3&gt;{{/if}}{{yield}}'),
+    classNameBindings: ['spanClass'],
+    nameBinding: 'title'
+<span id='Tent-Panel-property-title'>    /**
+</span>    * @property {String} title The title to display at the top of the panel.
+    */
+
   });
 
   Tent.Form = Tent.Panel.extend({
@@ -2314,7 +2404,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
 
     list: null,
 <span id='Tent-Select-property-selection'>    /**
-</span>    * @property {Object} selection A property to which the selected item from the field is bound
+</span>    * @property {Object} selection A property to which the selected item(s) from the field is bound
     */
 
     selection: null,
@@ -2588,14 +2678,35 @@ jQuery = window.jQuery;
 }).call(this);
 
 
+
+<span id='Tent-ProgressBar'>/**
+</span>* @class Tent.ProgressBar
+* 
+* Usage
+* 		{{view Tent.ProgressBar isStriped=true progress=&quot;50&quot; isAnimated=true}}
+*/
+
+
 (function() {
 
   Tent.ProgressBar = Ember.View.extend({
     classNames: ['tent-progress-bar', 'progress'],
     classNameBindings: ['isStriped:progress-striped', 'isAnimated:active'],
     template: Ember.Handlebars.compile('&lt;div class=&quot;bar&quot; {{bindAttr style=&quot;view.style&quot;}}&gt;&lt;/div&gt;'),
+<span id='Tent-ProgressBar-property-isAnimated'>    /**
+</span>    * @property {Boolean} isAnimated Boolean to indicate if the bar should be rendered with a progress animation.
+    */
+
     isAnimated: false,
+<span id='Tent-ProgressBar-property-isStriped'>    /**
+</span>    * @property {Boolean} isStriped Boolean to indicate if the bar should be rendered with stripes
+    */
+
     isStriped: false,
+<span id='Tent-ProgressBar-property-progress'>    /**
+</span>    * @property {Number} progress The progress to be displayed, as a percentage between 0 and 100
+    */
+
     progress: 0,
     style: Ember.computed(function() {
       return &quot;width:&quot; + this.get('progress') + &quot;%;&quot;;

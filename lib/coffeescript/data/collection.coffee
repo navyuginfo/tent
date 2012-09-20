@@ -1,3 +1,9 @@
+
+###*
+* @class Tent.Data.Collection
+* An object used to wrap an array of objects, with a facade for paging, sorting and filtering, 
+###
+
 require './pager'
 require './sorter'
 require './filter'
