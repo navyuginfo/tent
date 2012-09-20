@@ -509,10 +509,6 @@
 (function() {
 
   Tent.SpanSupport = Ember.Mixin.create({
-<span id='Tent-SpanSupport-property-span'>    /**
-</span>    * @property {Number} span The horizontal span which should be allocated to this widget
-    */
-
     estimateSpan: function() {
       var currentView, span;
       currentView = this;
@@ -1062,7 +1058,9 @@ Tent.NumericTextField = Tent.TextField.extend({
 <span id='Tent-AmountField'>/**
 </span>* @class Tent.AmountField
 * @extends Tent.TextField
-* Usage
+* 
+* ##Usage
+*
 *       {{view Tent.AmountField valueBinding=&quot;&quot; 
           label=&quot;&quot; 
           currency=&quot;&quot; 
@@ -1795,7 +1793,23 @@ Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.S
 * @mixins Tent.GridSortingSupport
 * @mixins Tent.GridFilteringSupport
 * 
-* Usage
+* An advanced grid widget with support for paging, sorting, filtering, column-reordering, column resizing and infinite paging. 
+* 
+* ##Usage
+*
+* The data to be displayed in the grid is maintained in a {@link Tent.Data.Collection} object. The collection will provide the grid
+* with column and paging information, and act as a facade for paging, sorting and filtering the data.
+* You may provide a collection to the grid explicitly using the {@link #collection} property, or allow the grid to create
+* a collection by providing it with {@link #dataStore} and {@link #dataType} properties.
+* 
+* You may determine whether the collection is paged through the {@link #paged} property, and you may optionally provide a 
+* {@link #pageSize}. By default, the grid will perform paging on the data that it is initially provided with.
+* If {@link #remotePaging} is set to true, only the first page will be given to the grid initially, and further paging
+* will fetch pages from the server.
+* 
+* The object(s) selected from the grid will be stored in the property defined by {#selection}.
+* Multiple items can be selected by turning {@link #multiSelect} on.
+* 
 *        {{view Tent.SlickGrid
                   label=&quot;&quot;
                   collectionBinding=&quot;&quot;
@@ -1818,8 +1832,8 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
     height: '200px',
     rowSelection: null,
     grid: null,
-<span id='Tent-SlickGrid-property-multiselect'>    /**
-</span>    	* @property {Boolean} [multiselect=false] A boolean property to determine whether multiple items can be selected
+<span id='Tent-SlickGrid-property-multiSelect'>    /**
+</span>    	* @property {Boolean} [multiSelect=false] A boolean property to determine whether multiple items can be selected
     */
 
     multiSelect: false,
@@ -2326,7 +2340,7 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
 * Usage 
 * 		{{#view Tent.Panel span=&quot;10&quot; title=&quot;&quot;}}
 *			...
-*		{{/view}}
+*		  {{/view}}
 */
 
 
@@ -2334,11 +2348,16 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
 Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     layout: Ember.Handlebars.compile('{{#if view.name}}&lt;h3&gt;{{loc view.name}}&lt;/h3&gt;{{/if}}{{yield}}'),
     classNameBindings: ['spanClass'],
-    nameBinding: 'title'
+    nameBinding: 'title',
+<span id='Tent-Panel-property-span'>    /**
+</span>    * @property {Number} span The horizontal span which should be allocated to this widget
+    */
+
 <span id='Tent-Panel-property-title'>    /**
 </span>    * @property {String} title The title to display at the top of the panel.
     */
 
+    title: &quot;&quot;
   });
 
   Tent.Form = Tent.Panel.extend({
@@ -2569,6 +2588,9 @@ Tent.CheckboxGroup = Ember.View.extend({
 <span id='Tent-EmailField'>/**
 </span>* @class Tent.EmailField
 * @extends Tent.TextField
+* A text field which allows an email address to be entered. An error message will be displayed if the user enters
+* a badly-formed email.
+*  
 * Usage
 *       {{view Tent.EmailField 
 			label=&quot;&quot; 
@@ -2629,6 +2651,16 @@ Tent.EmailTextField = Tent.TextField.extend({
 
 Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;modal-header\&quot;&gt;\n  &lt;a href=\&quot;#\&quot; class=\&quot;close\&quot; click=\&quot;close\&quot;&gt;x&lt;/a&gt;\n  {{view Tent.ModalHeader}}\n&lt;/div&gt;\n&lt;div class=\&quot;modal-body\&quot;&gt;\n  {{view Tent.ModalBody}}\n&lt;/div&gt;\n&lt;div class=\&quot;modal-footer\&quot;&gt;\n  {{#if view.secondary}}&lt;a href=\&quot;#\&quot; class=\&quot;btn btn-secondary\&quot; click=\&quot;secondary\&quot;&gt;{{loc view.secondary}}&lt;/a&gt;{{/if}}\n  {{#if view.primary}}&lt;a href=\&quot;#\&quot; class=\&quot;btn btn-primary\&quot; click=\&quot;primary\&quot;&gt;{{loc view.primary}}&lt;/a&gt;{{/if}}\n&lt;/div&gt;&quot;);
 
+
+<span id='Tent-ModalPane'>/**
+</span>* @class Tent.ModalPane
+* A modal popup panel which displays a header and text with buttons available for progressing or cancelling the message  
+*
+* Usage
+*       {{view Tent.ModalPane text=&quot;_modalText&quot; header=&quot;_modalHeader&quot; primary=&quot;_ok&quot; secondary=&quot;_cancel&quot;}}
+*/
+
+
 (function() {
   var jQuery, modalPaneBackdrop;
 jQuery = window.jQuery;
@@ -2638,10 +2670,30 @@ jQuery = window.jQuery;
   Tent.ModalPane = Ember.View.extend({
     templateName: 'modal_pane',
     classNames: ['modal'],
+<span id='Tent-ModalPane-property-header'>    /**
+</span>    * @property {String} header The heading to display on the popup
+    */
+
     header: null,
+<span id='Tent-ModalPane-property-text'>    /**
+</span>    * @property {String} text The text to display within the popup
+    */
+
     text: null,
+<span id='Tent-ModalPane-property-primary'>    /**
+</span>    * @property {String} primary The label for the primary button in the popup
+    */
+
     primary: null,
+<span id='Tent-ModalPane-property-secondary'>    /**
+</span>    * @property {String} secondary The label for the secondary button in the popup
+    */
+
     secondary: null,
+<span id='Tent-ModalPane-property-showBackdrop'>    /**
+</span>    * @property {Boolean} showBackdrop A boolean to determine whether to hide the background page with a visual mask.
+    */
+
     showBackdrop: true,
     click: function(event) {
       var target, targetClick;
@@ -2658,7 +2710,9 @@ jQuery = window.jQuery;
       }
     },
     willDestroyElement: function() {
-      return this._backdrop.remove();
+      if (this.showBackdrop) {
+        return this._backdrop.remove();
+      }
     },
     _appendBackdrop: function() {
       return this._backdrop = jQuery(modalPaneBackdrop).appendTo(this.$().parent());
@@ -2718,12 +2772,40 @@ jQuery = window.jQuery;
 
 Ember.TEMPLATES['button']=Ember.Handlebars.compile(&quot;&lt;div \t{{bindAttr class=\&quot;view.classes\&quot; disabled=\&quot;view.isDisabled\&quot;}} \n\t\t{{action triggerAction target=\&quot;view\&quot;}}\n\t\t{{bindAttr data-toggle=\&quot;view.dataToggle\&quot;}}&gt;\n  {{loc view.label}}\n  {{#if view.hasOptions}}\n  \t &lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n  {{/if}}\n&lt;/div&gt;\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\&quot;view._options\&quot; tagName=\&quot;ul\&quot; classNames=\&quot;dropdown-menu\&quot; itemViewClass=\&quot;Tent.ButtonOptions\&quot;}}\n{{/if}}&quot;);
 
+
+<span id='Tent-Button'>/**
+</span>* @class Tent.Button
+*
+* ##Usage
+* 
+*       {{view Tent.Button label=&quot;_buttonClickMe&quot; type=&quot;primary&quot; action=&quot;clickEvent&quot; target=&quot;Pad&quot;}}
+*/
+
+
 (function() {
 Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     templateName: 'button',
     label: 'Button',
+<span id='Tent-Button-property-type'>    /**
+</span>    * @property {String} type The type of button.
+    * Valid types are:
+    *
+    * - primary: Provides extra visual weight and identifies the primary action in a set of buttons
+    * - info: Used as an alternative to the default styles
+    * - success: Indicates a successful or positive action
+    * - warning: Indicates caution should be taken with this action
+    * - danger: Indicates a dangerous or potentially negative action
+    * - inverse: Alternate dark gray button, not tied to a semantic action or use
+    * - link: Deemphasize a button by making it look like a link while maintaining button behavior
+    *
+    */
+
     type: null,
     isDisabled: false,
+<span id='Tent-Button-property-action'>    /**
+</span>    * @property {String} action The action to be invoked on the target when the button is clicked
+    */
+
     action: null,
     classNameBindings: ['tent-button', 'hasOptions:tent-button-group button-group'],
     optionLabelPath: 'label',
@@ -2819,22 +2901,24 @@ Ember.TEMPLATES['accordion_group']=Ember.Handlebars.compile(&quot;&lt;div class=
 
 <span id='Tent-Accordion'>/**
 </span>* @class Tent.Accordion
-* Usage
+* 
+* ##Usage
+*
 *   {{#view Tent.Accordion}}
-	      {{#view Tent.AccordionGroup title=&quot;Title1&quot;}}
-	        {{view Tent.Button label=&quot;Button with options only&quot; type=&quot;info&quot; optionsBinding=&quot;Pad.btnOptions&quot;}}
-	      {{/view}}
-	      {{#view Tent.AccordionGroup title=&quot;Title2&quot;}}
-	          {{view Tent.TextField valueBinding=&quot;Pad.appName&quot; label=&quot;Killer Input&quot;}}
-	          {{view Tent.Checkbox label=&quot;Self Destruct now&quot; checkedBinding=&quot;Pad.privacyPolicy&quot;}}
-	      {{/view}}
-	      {{#view Tent.AccordionGroup title=&quot;Title3&quot;}}
-	          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-	      {{/view}}
-	      {{#view Tent.AccordionGroup title=&quot;Title4&quot;}}
-	          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-	      {{/view}}
-	    {{/view}}
+*	      {{#view Tent.AccordionGroup title=&quot;Title1&quot;}}
+*	        {{view Tent.Button label=&quot;Button with options only&quot; type=&quot;info&quot; optionsBinding=&quot;Pad.btnOptions&quot;}}
+*	      {{/view}}
+*	      {{#view Tent.AccordionGroup title=&quot;Title2&quot;}}
+*	          {{view Tent.TextField valueBinding=&quot;Pad.appName&quot; label=&quot;Killer Input&quot;}}
+*	          {{view Tent.Checkbox label=&quot;Self Destruct now&quot; checkedBinding=&quot;Pad.privacyPolicy&quot;}}
+*	      {{/view}}
+*	      {{#view Tent.AccordionGroup title=&quot;Title3&quot;}}
+*	          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+*	      {{/view}}
+*	      {{#view Tent.AccordionGroup title=&quot;Title4&quot;}}
+*	          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+*	      {{/view}}
+*	    {{/view}}
 */
 
 
@@ -2842,6 +2926,17 @@ Ember.TEMPLATES['accordion_group']=Ember.Handlebars.compile(&quot;&lt;div class=
 Tent.Accordion = Ember.View.extend({
     classNames: ['accordion']
   });
+
+<span id='Tent-AccordionGroup'>  /**
+</span>  * @class Tent.AccordionGroup
+  * 
+  * ##Usage
+  * 		{{#view Tent.AccordionGroup title=&quot;_Title1&quot;}}
+  *	        ...
+  *	  	  {{/view}}
+  *
+  */
+
 
   Tent.AccordionGroup = Ember.View.extend({
     classNames: ['accordion-group'],

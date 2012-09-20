@@ -6,7 +6,9 @@
 ###*
 * @class Tent.AmountField
 * @extends Tent.TextField
-* Usage
+* 
+* ##Usage
+*
 *       {{view Tent.AmountField valueBinding="" 
           label="" 
           currency="" 

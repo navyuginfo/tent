@@ -5,7 +5,23 @@
 * @mixins Tent.GridSortingSupport
 * @mixins Tent.GridFilteringSupport
 * 
-* Usage
+* An advanced grid widget with support for paging, sorting, filtering, column-reordering, column resizing and infinite paging. 
+* 
+* ##Usage
+*
+* The data to be displayed in the grid is maintained in a {@link Tent.Data.Collection} object. The collection will provide the grid
+* with column and paging information, and act as a facade for paging, sorting and filtering the data.
+* You may provide a collection to the grid explicitly using the {@link #collection} property, or allow the grid to create
+* a collection by providing it with {@link #dataStore} and {@link #dataType} properties.
+* 
+* You may determine whether the collection is paged through the {@link #paged} property, and you may optionally provide a 
+* {@link #pageSize}. By default, the grid will perform paging on the data that it is initially provided with.
+* If {@link #remotePaging} is set to true, only the first page will be given to the grid initially, and further paging
+* will fetch pages from the server.
+* 
+* The object(s) selected from the grid will be stored in the property defined by {#selection}.
+* Multiple items can be selected by turning {@link #multiSelect} on.
+* 
 *        {{view Tent.SlickGrid
                   label=""
                   collectionBinding=""
@@ -37,7 +53,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	grid: null
 
 	###*
-	* @property {Boolean} [multiselect=false] A boolean property to determine whether multiple items can be selected
+	* @property {Boolean} [multiSelect=false] A boolean property to determine whether multiple items can be selected
 	###
 	multiSelect: false
 
@@ -57,7 +73,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	* @property {Object} dataStore An implementation of a {DataStore} which is used to populate the collection.
 	###
 	dataStore: null
-	
+
 	columnsBinding: 'collection.columnsDescriptor'
 
 	defaults:  
