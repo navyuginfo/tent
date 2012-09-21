@@ -215,7 +215,7 @@
               {{view Tent.CollectionFilter 
                   filterTemplate="task_collection_filter" 
                   collectionBinding="Pad.remoteCollection"}}
-                  
+
 
               {{view Tent.SlickGrid
                   label="Tasks"
@@ -291,7 +291,21 @@
             {{view Tent.Button label="_buttonToggle" type="primary" dataToggle="button"}}
             <p id="click-label"></p>
         
-            <p id="click-label"></p>
+
+            <h5>Modal Dialog</h5>
+
+            {{#view Tent.ModalPane   
+                text="_modalText" 
+                header="_modalHeader" 
+                primary="_ok" 
+                secondary="_cancel"
+                buttonClass=""
+                type="primary"
+            }}
+              <h5>Some more content</h5>
+            {{/view}}
+
+
           {{/view}}
         {{/view}}
           
@@ -813,9 +827,7 @@
       </div>
     {{/view}} 
 
-    <!--   
-    {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
-    -->   
+  
 
     </script>
       </row>

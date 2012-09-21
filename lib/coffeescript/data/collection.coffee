@@ -32,23 +32,6 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType').cacheable()
 
-	availableFilters: (->
-		[
-			{
-				name: "task1"
-				label: "Task 1"
-				description: "..."
-				values: {id: "51", title: "Task 1"}
-			},
-			{
-				name: "task2"
-				label: "Task 2"
-				description: "..."
-				values: {id: "52", title: "Task 2"}
-			}
-		]
-
-	).property()
 
 	init: ->
 		@_super()

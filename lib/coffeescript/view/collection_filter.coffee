@@ -10,8 +10,12 @@ Tent.CollectionFilter = Ember.View.extend
 
 	init: ->
 		@_super()
-		@set('currentFilter', Tent.FilterDefinition.create())
-		console.log (@get('currentFilter').get('values'))
+		@set('currentFilter', {
+			name: "temporary"
+			label: "temporary"
+			description: "temporary"
+			values: {id: "51",title: ""}
+		})
 	
 	filter: ->
 		@get('collection').filter(@get('currentFilter'))
@@ -19,11 +23,12 @@ Tent.CollectionFilter = Ember.View.extend
 	selectedFilterDidChange: (->
 		if @get('selectedFilter')?
 			#@set('currentFilter.values', $.extend({}, @get('selectedFilter.values')))
-			@set('currentFilter.values', Ember.copy(@get('selectedFilter.values'), true))
+			@set('currentFilter', Ember.copy(@get('selectedFilter'), true))
 
 	).observes('selectedFilter')
 
-
+	saveFilter: ->
+		@get('collection').saveFilter(@get('currentFilter'))
 
 
 Tent.FilterDefinition = Ember.Object.extend

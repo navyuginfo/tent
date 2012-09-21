@@ -2,17 +2,21 @@ Tent.Data.Filter = Ember.Mixin.create
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
-
-	selectedFilterDidChange: (->
-		# update the columnFilters
-		console.log('Changed selected filter')
-		if @get('selectedFilter')?
-			columnFilters = @get('columnFilters')
-
-			for filter in @get('selectedFilter').values
-				columnFilters[filter.field] = filter.value
-			@set('columnFilters', columnFilters)
-	).observes('selectedFilterxxx')
+		@set('availableFilters', Ember.ArrayProxy.create
+			content: [
+				{
+					name: "task1"
+					label: "Task 1"
+					description: "Select the first task"
+					values: {id: "51", title: "Task 1"}
+				},
+				{
+					name: "task2"
+					label: "Task 2"
+					description: "Select all tasks 50-59"
+					values: {id: "5"}
+				}
+			])
 
 	filter: (selectedFilter) ->
 		if selectedFilter?
@@ -25,3 +29,12 @@ Tent.Data.Filter = Ember.Mixin.create
 
 	getFilteringInfo: ->
 		@get('selectedFilter')
+
+	saveFilter: (filterDef) -> 
+		# TODO : check that filter is not duplicated
+		# TODO : store filter in datastore
+		@get('availableFilters').get('content').push(filterDef)
+		#@get('availableFilters').notifyPropertyChange('content')
+
+
+	 

@@ -1,6 +1,8 @@
 <div 	{{bindAttr class="view.classes" disabled="view.isDisabled"}} 
 		{{action triggerAction target="view"}}
-		{{bindAttr data-toggle="view.dataToggle"}}>
+		{{bindAttr data-toggle="view.dataToggle"}}
+		role="button"
+		>
   {{loc view.label}}
   {{#if view.hasOptions}}
   	 <span class="caret"></span>

@@ -2,6 +2,12 @@
 
 {{view Ember.View templateName="task_collection_filter" collectionBinding="view.collection"}}
 
+<ul>
+{{#each item in view.collection.availableFilters }}
+	<li>{{item.label}}-</li>
+{{/each}}
+</ul>
+
 <div class="filter-panel">
 	{{view Tent.Select 
 		label="_CurrentFilter" 
@@ -13,7 +19,9 @@
 
 	<p>Filter Label: {{view.currentFilter.label}}</p>
 	<p>Filter Description: {{view.currentFilter.description}}</p>
-
+	{{view Tent.Button label="_saveFilter" type="primary" action="saveFilter" targetBinding="view"}}
+	<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+	{{view Tent.ModalPane id="myModal" text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}	
 <div>
 
-<h4>ID in Selected Filter = {{view.selectedFilter.values.id}}</h4>
+{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}
