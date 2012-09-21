@@ -43,7 +43,7 @@ require '../template/modal_pane'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
-
+  classNames: ['tent-widget', 'control-group']
   ###*
   * @property {String} label The label for the launch button
   ###
@@ -89,18 +89,18 @@ Tent.ModalPane = Ember.View.extend
   ###*
   * @property {String} secondaryAction The method to execute when the secondary button is clicked
   ###
-  secondaryAction:null
+  secondaryAction: "hide"
 
   ###*
   * @property {String} secondaryTarget The target providing the action to call when the primary button is clicked
   ###
-  secondaryTarget:null
+  secondaryTarget: "parentView"
 
 
   click: (event)->
     target = event.target
     if $(target).hasClass('close-dialog')
-      @.$('.modal').modal('hide')
+      @hide()
 
     #targetClick = target.getAttribute('click')
     #(@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
@@ -108,6 +108,8 @@ Tent.ModalPane = Ember.View.extend
   launch: ->
      @.$('.modal').modal(@get('options'))
 
+  hide: ->
+    @.$('.modal').modal('hide')    
 
 
 Tent.ModalHeader = Ember.View.extend

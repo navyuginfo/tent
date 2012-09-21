@@ -1,41 +1,39 @@
-<h5>Collection Filter</h5>
 
-{{view Ember.View templateName="task_collection_filter" collectionBinding="view.collection"}}
+{{view Ember.View templateNameBinding="view.filterTemplate" collectionBinding="view.collection"}}
 
-<ul>
-{{#each item in view.collection.availableFilters }}
-	<li>{{item.label}}-</li>
-{{/each}}
-</ul>
+<div class="row tent form-inline">
+	{{#view Tent.Form formStyle="inline" span="10"}}
+	{{/view}}
+</div>
+<div class="row tent form-inline">
+	{{#view Tent.Form formStyle="inline" span="10"}}
 
-<div class="filter-panel">
-	{{view Tent.Select 
-		label="_CurrentFilter" 
-		listBinding="view.availableFilters" 
-		selectionBinding="view.selectedFilter" 
-		optionLabelPath="content.label" 
-		optionValuePath="content.name"
-	}}
+		{{view Tent.Select span="4"
+			label="_CurrentFilter" 
+			listBinding="view.parentView.availableFilters" 
+			selectionBinding="view.parentView.selectedFilter" 
+			optionLabelPath="content.label" 
+			optionValuePath="content.name"
+		}}
 
-	<p>Filter Label: {{view.currentFilter.label}}</p>
-	<p>Filter Description: {{view.currentFilter.description}}</p>
-	
-
-    {{#view Tent.ModalPane 
-    	label="_saveFilter"
-        header="_saveFilter" 
-        primaryLabel="_save" 
-        secondaryLabel="_cancel"
-        type="primary"
-        primaryAction="saveFilter"
-        primaryTargetBinding="view"
-    }}
-    	{{#view Tent.Form}}
-      		{{view Tent.TextField valueBinding="view.currentFilter.label" label="_label"}}
-      		{{view Tent.TextField valueBinding="view.currentFilter.description" label="_description"}}
+	    {{#view Tent.ModalPane 
+	    	label="_saveFilter"
+	        header="_saveFilter" 
+	        primaryLabel="_save" 
+	        secondaryLabel="_cancel"
+	        type="primary"
+	        primaryAction="saveFilter"
+	        primaryTargetBinding="view.parentView"
+	    	}}
+    	
+      		{{view Tent.TextField valueBinding="view.parentView.parentView.currentFilter.label" label="_label"}}
+      		{{view Tent.TextField valueBinding="view.parentView.parentView.currentFilter.description" label="_description"}}
       	{{/view}}
+    
+      	{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view.parentView"}}
     {{/view}}
 
-<div>
+    
 
-{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}
+</div>
+
