@@ -19,9 +19,23 @@
 
 	<p>Filter Label: {{view.currentFilter.label}}</p>
 	<p>Filter Description: {{view.currentFilter.description}}</p>
-	{{view Tent.Button label="_saveFilter" type="primary" action="saveFilter" targetBinding="view"}}
-	<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
-	{{view Tent.ModalPane id="myModal" text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}	
+	
+
+    {{#view Tent.ModalPane 
+    	label="_saveFilter"
+        header="_saveFilter" 
+        primaryLabel="_save" 
+        secondaryLabel="_cancel"
+        type="primary"
+        primaryAction="saveFilter"
+        primaryTargetBinding="view"
+    }}
+    	{{#view Tent.Form}}
+      		{{view Tent.TextField valueBinding="view.currentFilter.label" label="_label"}}
+      		{{view Tent.TextField valueBinding="view.currentFilter.description" label="_description"}}
+      	{{/view}}
+    {{/view}}
+
 <div>
 
 {{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}

@@ -7,12 +7,18 @@
 * @class Tent.ModalPane
 * Display a model popup panel.
 * 
-* A button will be displayed to allow the popup to be launched. You provide a {#label}
-* and optionally a {#type} for the button.
-* Text to go into the header of the popup is provided using the {#header} property.
-* The body of the popup may be provided either by the {#text} property, or by nesting 
+* A button will be displayed to allow the popup to be launched. You provide a {@link #label}
+* and optionally a {@link #type} for the button.
+*
+* Text to go into the header of the popup is provided using the {@link #header} property.
+*
+* The body of the popup may be provided either by the {@link #text} property, or by nesting 
 * content within the view (using {{#view}} rather than {{view}}).
-* Labels for the button in the popup are provided by the {#primary} and {#secondary} properties.
+*
+* Labels for the button in the popup are provided by the {@link #primaryLabel} and {@link #secondaryLabel} properties.
+*
+* The primary button action is configured using the {@link #primaryAction} and {@link #primaryTarget} property pair.
+* Similarly use {@link #secondaryAction} and {@link #secondaryTarget} for the secondary button.
 *
 * ##Usage
 *
@@ -23,6 +29,10 @@
                 secondary="_cancel"
                 buttonClass=""
                 type="primary"
+                primaryAction="modalSubmit"
+                primaryTargetBinding="Pad"
+                secondaryAction="modalCancel"
+                secondaryTarget="Pad"
             }}
               <h5>Some more content</h5>
         {{/view}}
@@ -57,14 +67,35 @@ Tent.ModalPane = Ember.View.extend
   type: "primary" # button type
 
   ###*
-  * @property {String} primary The label for the primary button
+  * @property {String} primaryLabel The label for the primary button
   ###
-  primary:null
+  primaryLabel:null
 
   ###*
-  * @property {String} secondary The label for the secondary button
+  * @property {String} secondaryLabel The label for the secondary button
   ###
-  secondary:null
+  secondaryLabel:null
+
+  ###*
+  * @property {String} primaryAction The method to execute when the primary button is clicked
+  ###
+  primaryAction:null
+
+  ###*
+  * @property {String} primaryTarget The target providing the action to call when the primary button is clicked
+  ###
+  primaryTarget:null
+
+  ###*
+  * @property {String} secondaryAction The method to execute when the secondary button is clicked
+  ###
+  secondaryAction:null
+
+  ###*
+  * @property {String} secondaryTarget The target providing the action to call when the primary button is clicked
+  ###
+  secondaryTarget:null
+
 
   click: (event)->
     target = event.target
@@ -76,8 +107,6 @@ Tent.ModalPane = Ember.View.extend
 
   launch: ->
      @.$('.modal').modal(@get('options'))
-
-
 
 
 

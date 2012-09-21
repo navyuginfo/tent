@@ -2,6 +2,16 @@
 # Copyright PrimeRevenue, Inc. 2012
 # All rights reserved.
 #
+
+###*
+* @class Tent.Button
+*
+* ##Usage
+* 
+*
+
+###
+
 require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
