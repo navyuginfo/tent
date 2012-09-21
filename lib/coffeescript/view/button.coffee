@@ -5,13 +5,14 @@
 require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
-
+  
   templateName: 'button'
   label: 'Button'
   type: null
   isDisabled: false
   action: null
-  classNameBindings:['tent-button','hasOptions:tent-button-group button-group']
+  classNames: ['tent-button']
+  classNameBindings:['type', 'hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'
   optionActionPath: 'action'
@@ -41,6 +42,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")
     classes = classes.concat(" dropdown-toggle") if @get("hasOptions")
     classes = classes.concat(" disabled") if @get("isDisabled")
+    classes = classes.concat(" " + @get('buttonClass')) if @get('buttonClass')? 
     return classes
   ).property('type','hasOptions')   
 

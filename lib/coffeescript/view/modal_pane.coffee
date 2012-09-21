@@ -30,8 +30,6 @@
 ###
 require '../template/modal_pane'
 
-jQuery = window.jQuery
-modalPaneBackdrop = '<div class="modal-backdrop"></div>'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
@@ -68,24 +66,19 @@ Tent.ModalPane = Ember.View.extend
   ###
   secondary:null
 
-  showBackdrop:false
-
   click: (event)->
     target = event.target
+    if $(target).hasClass('close-dialog')
+      @.$('.modal').modal('hide')
+
     #targetClick = target.getAttribute('click')
     #(@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
 
   launch: ->
      @.$('.modal').modal(@get('options'))
 
-  didInsertElement: -> 
-    #@_appendBackdrop() if @showBackdrop   
 
-  willDestroyElement: ->
-    #@_backdrop.remove()   
 
-  _appendBackdrop: ->
-    #@_backdrop = jQuery(modalPaneBackdrop).appendTo(@$().parent())  
 
 
 Tent.ModalHeader = Ember.View.extend

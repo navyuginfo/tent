@@ -12,7 +12,11 @@
 	  {{yield}}
 	</div>
 	<div class="modal-footer">
-	  {{#if view.secondary}}<a href="#" class="btn btn-secondary" data-dismiss="modal" click="secondary">{{loc view.secondary}}</a>{{/if}}
-	  {{#if view.primary}}<a href="#" class="btn btn-primary" data-dismiss="modal" click="primary">{{loc view.primary}}</a>{{/if}}
+	  {{#if view.secondary}}
+	  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondary" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary"}}
+	  {{/if}}
+	  {{#if view.primary}}
+	  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.primary" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary"}}
+	  {{/if}}
 	</div>
 </div>
