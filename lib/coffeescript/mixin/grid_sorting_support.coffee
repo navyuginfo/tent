@@ -1,3 +1,8 @@
+###*
+ * @class Tent.GridSortingSupport
+ * Some docs here...
+###
+
 Tent.GridSortingSupport = Ember.Mixin.create
 
 	init: ->

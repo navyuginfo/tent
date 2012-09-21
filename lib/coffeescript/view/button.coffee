@@ -2,14 +2,41 @@
 # Copyright PrimeRevenue, Inc. 2012
 # All rights reserved.
 #
+
+###*
+* @class Tent.Button
+*
+* ##Usage
+* 
+*       {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad"}}
+###
+
 require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
-
   templateName: 'button'
   label: 'Button'
+
+  ###*
+  * @property {String} type The type of button.
+  * Valid types are:
+  *
+  * - **primary**: Provides extra visual weight and identifies the primary action in a set of buttons
+  * - **info**: Used as an alternative to the default styles
+  * - **success**: Indicates a successful or positive action
+  * - **warning**: Indicates caution should be taken with this action
+  * - **danger**: Indicates a dangerous or potentially negative action
+  * - **inverse**: Alternate dark gray button, not tied to a semantic action or use
+  * - **link**: Deemphasize a button by making it look like a link while maintaining button behavior
+  *
+  ###
   type: null
+
   isDisabled: false
+  
+  ###*
+  * @property {String} action The action to be invoked on the target when the button is clicked
+  ###
   action: null
   classNameBindings:['tent-button','hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'

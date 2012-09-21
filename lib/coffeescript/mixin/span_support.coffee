@@ -3,6 +3,11 @@
 # All rights reserved.
 #
 
+###*
+ * @class Tent.SpanSupport
+ * Some docs here...
+###
+
 Tent.SpanSupport = Ember.Mixin.create
   estimateSpan: ->
     currentView = this

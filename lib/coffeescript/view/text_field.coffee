@@ -3,6 +3,21 @@
 # All rights reserved.
 #
 
+###*
+ * @class Tent.TextField
+ * @mixins Tent.FormattingSupport
+ * @mixins Tent.FieldSupport
+ * @mixins Tent.TooltipSupport
+ * Usage 
+ *       {{view Tent.TextField 
+          valueBinding="Pad.appName" 
+          label="Focused input" 
+          placeholder="Type here.." 
+          tooltip="Provide some information here" 
+         }}
+ * 
+###
+
 require '../mixin/field_support'
 require '../mixin/formatting_support'
 require '../mixin/tooltip_support'
@@ -14,12 +29,8 @@ require '../template/text_field'
 
 Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, 
 	templateName: 'text_field'
-	textDisplay: false
-	classNames: ['tent-text-field', 'control-group']
 
-	isTextDisplay: (->
-		@get('textDisplay') or (not @get('isEditable'))
-	).property('textDisplay', 'isEditable')
+	classNames: ['tent-text-field', 'control-group']
 	
 	forId: (->
 		@get('inputIdentifier')

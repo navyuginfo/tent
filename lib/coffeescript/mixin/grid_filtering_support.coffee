@@ -1,6 +1,14 @@
+###*
+ * @class Tent.GridFilteringSupport
+ * Some docs here...
+###
+
 Tent.GridFilteringSupport = Ember.Mixin.create
 	columnFiltersBinding: 'collection.columnFilters'
 	
+	###*
+	* @property {Boolean} [useColumnFilters=false] Display a freetext filter above each column to act as client-side filters. 
+	###
 	useColumnFilters: false
 
 	init: ->

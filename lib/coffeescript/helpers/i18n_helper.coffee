@@ -1,3 +1,19 @@
+###*
+* `loc` will translate a string key using the bundle for the current locale
+*		
+*		{{loc string}}
+*
+* You may optionally pass in an **args** property, which is a space-delimited list of
+* values which will be interpolated into the translated key string 
+*
+*    	{{loc string args='view.firstName view.lastName'}}
+*
+* @class Handlebars.helpers.loc
+* @param {String} key
+* @param {}
+* @returns {String} translated string
+###
+
 getPath = Ember.Handlebars.getPath
 normalizePath = Ember.Handlebars.normalizePath
 

@@ -3,6 +3,19 @@
 # All rights reserved.
 #
 
+###*
+* @class Tent.EmailField
+* @extends Tent.TextField
+* A text field which allows an email address to be entered. An error message will be displayed if the user enters
+* a badly-formed email.
+*  
+* Usage
+*       {{view Tent.EmailField 
+			label="" 
+			valueBinding="" 
+         }}
+###
+
 require '../mixin/field_support'
 require '../template/text_field'
 

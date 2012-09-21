@@ -3,6 +3,22 @@
 # All rights reserved.
 #
 
+###*
+* @class Tent.Select
+* @mixins Tent.FieldSupport
+* @mixins Tent.TooltipSupport
+*
+* Usage
+*        {{view Tent.Select 
+            listBinding="" 
+            selectionBinding="" 
+            label="" 
+            optionLabelPath="" 
+            optionValuePath="" 
+            multiple=true 
+          }}
+###
+
 require '../template/select'
 require '../template/radio_group'
 require '../mixin/tooltip_support'
@@ -13,6 +29,35 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
   contentBinding: 'selection'
+
+  ###*
+  * @property {Array} list An array of objects to be presented as the dropdown options. Each item of
+  * the array should be a hash of two values, representing the text to display, and the value of that option
+  ###
+  list: null
+
+  ###*
+  * @property {Object} selection A property to which the selected item(s) from the field is bound
+  ###
+  selection: null
+
+  ###*
+  * @property {String} optionLabelPath The name of the property of the list which is to 
+  * be used as the label for the option
+  ###
+  optionLabelPath: null
+
+  ###*
+  * @property {String} optionValuePath The name of the property of the list which is to 
+  * be used as the value for the option
+  ###
+  optionValuePath: null
+
+  ###*
+  * @property {Boolean} [multiple=false] A boolean property indicating whether multiple values may be selected.
+  ###
+  multiple: false
+
   
   forId: (->
     @get('inputIdentifier')
@@ -31,10 +76,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     else
       @get('value')
   ).property('value', 'selection')
-
-  isTextDisplay: (->
-    @get('textDisplay') or (not @get('isEditable'))
-  ).property('textDisplay', 'isEditable')
 
   selectionDidChange: (->
     @set('content', @get('selection'))

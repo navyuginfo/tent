@@ -1,3 +1,8 @@
+###*
+ * @class Tent.ReadonlySupport
+ * Some docs here...
+###
+
 Tent.ReadonlySupport = Ember.Mixin.create
 	attributeBindings: ['readOnly:readonly']
 	readOnly: (->
