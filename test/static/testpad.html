@@ -109,22 +109,7 @@
           {{/view}}
 
           {{#view Tent.Form name="Fields" id="form-section"}}
-            <div class="row">
-              {{#view Tent.Panel span="7"}}          
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="_required" checkedBinding="Pad.isRequired"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="_readonly" checkedBinding="Pad.isReadOnly"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="_disabled" checkedBinding="Pad.isDisabled"}}
-                {{/view}}
-                {{#view Tent.Panel span="2"}}
-                  {{view Tent.Checkbox label="_textDisplay" checkedBinding="Pad.textDisplay"}}
-                {{/view}}
-              {{/view}}
-            </div>
+            
             {{view Tent.TextField 
               valueBinding="Pad.appName" 
               label="_focussedInput" 
