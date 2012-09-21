@@ -1,4 +1,3 @@
-
 ((loader) -> 
 
 	loader.require('coffeescript/app')
@@ -9,7 +8,7 @@
 	loader.require('coffeescript/models/task_model')
 
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
-	# Ensure the Rest adapter is working correctly 
+	# Ensure the Rest adapter is working correctly
 	Pad.pagingAdapter.simulateRemoteResponse = false;
 	Pad.store = DS.Store.create({
 		revision: 4,
@@ -141,25 +140,27 @@
 	]
 
 	Pad.groupTarget = Ember.Object.create({
-		addEvent: -> 
+		addEvent: ->
 			alert("action add clicked");
 			return false
 		,
-		editEvent: -> 
+		editEvent: ->
 			alert("action edit clicked");
 			return false
 		,
 		deleteEvent: ->
 			alert("action delete clicked");
 			return false
-	}) 
+	})
+
+	Pad.uploadSuccessFunction = (result, textStatus, jqXHR) ->
+	  alert(textStatus)
 
 	Pad.reopen(
-		ready: -> 
+		ready: ->
 			this._super();
 			console.log('initializing ...');
 		 
 	)
 
 )(minispade)
-

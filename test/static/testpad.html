@@ -159,8 +159,6 @@
             
           {{/view}}
 
-          
-
         {{/view}}
 
         {{#view Tent.Panel span="3"}} 
@@ -376,7 +374,8 @@
           {{/view}}
         {{/view}}
 
-
+        <h3>File Upload</h3>
+        {{view Tent.FileUpload dataUrl="/fileupload" uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
 
         {{#view Tent.Panel span="10" id="layout-section"}}
         <br/><br/>
@@ -832,15 +831,12 @@
                     </div>
 
         {{/view}}
-
-      
       </div>
     {{/view}} 
 
     <!--   
     {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
     -->   
-
     </script>
       </row>
     </container>
