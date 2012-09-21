@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+      body { 
+        margin: 0;
+        font-size: 12px;
+        font-family: sans-serif;
+      }
+      
+      .row, .col { overflow: hidden; position: absolute; }
+      .row { left: 0; right: 0; }
+      .col { top: 0; bottom: 0; }
+      .scroll-x { overflow-x: auto; }
+      .scroll-y { overflow-y: auto; }
+
+      .menu.row { height: 50px; top: 0; background-color: #333; color: white;}
+      .title.row { height: 50px; top: 50px; background-color: white;}
+      .body.row { top: 100px; bottom: 40px; background-color: blue;}
+      .footer.row { height: 40px; bottom: 0; background-color: red;}
+
+      .master.col { width: 250px; background-color: white;}
+      .right.col { left: 250px; right: 0; background-color: pink;}
+      .items {top: 50px; bottom: 0px;}
+      .item {
+        padding: 20px;
+        background-color: #ddd;
+        margin: 3px;
+      }
+
+    </style>
+  
+  </head>
+  
+  <body>
+    
+    <div class="menu row">
+        <h5>Menus</h5>
+    </div>
+    <div class="title row">
+        <h4>Create Offer</h4>
+    </div>
+ 
+    <div class="body row">
+
+      <div class="master col">
+        <div class="menu row">
+          <div class="master-actions"><h3>Programs</h3></div>
+        </div>
+        <div class="items row scroll-y">
+             <div class="item">Item </div>
+             <div class="item">Item </div>  
+             <div class="item">Item </div>   
+             <div class="item">Item </div>
+             <div class="item">Item </div>
+             <div class="item">Item </div>
+             <div class="item">Item </div>
+             <div class="item">Item </div>
+             <div class="item">Item </div>  
+             <div class="item">Item </div>   
+             <div class="item">Item </div>
+        </div>
+      </div>
+
+      <div class="right col">
+          Right col here
+      </div>
+    </div>
+ 
+    <div class="footer row">
+        My footer
+    </div>
+
+
+   
+  </body>
+</html>

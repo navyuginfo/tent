@@ -76,7 +76,9 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     'requiredAsBoolean:required',
     'isHidden:hidden',
     'isViewOnly:view-only',
-    'hasErrors:error']
+    'hasErrors:error',
+    'spanClass'
+  ]
   
   ###*
   * @property {Boolean} [isEditable=true] A boolean value indicating whether the field is editable
@@ -123,7 +125,7 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     @estimateFormStyle()
   	
   estimateFormStyle: ->
-  	form.set('formStyle', if @get('widthExpectation') > form.$().width() then 'vertical' else 'horizontal') if (form = @get('form'))
+  	#form.set('formStyle', if @get('widthExpectation') > form.$().width() then 'vertical' else 'horizontal') if (form = @get('form'))
 
   unEditableClass: (-> 'uneditable-input' unless @get('isEditable')).property('isEditable')
 
