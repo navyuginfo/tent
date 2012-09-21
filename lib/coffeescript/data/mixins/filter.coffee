@@ -14,9 +14,9 @@ Tent.Data.Filter = Ember.Mixin.create
 			@set('columnFilters', columnFilters)
 	).observes('selectedFilterxxx')
 
-	filter: (seletedFilter) ->
-		if seletedFilter?
-			@set('seletedFilter', seletedFilter)
+	filter: (selectedFilter) ->
+		if selectedFilter?
+			@set('selectedFilter', selectedFilter)
 		@update(@REQUEST_TYPE.FILTER)
 
 	# Called by UI button to trigger filtering

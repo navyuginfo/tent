@@ -8,8 +8,12 @@
 		listBinding="view.availableFilters" 
 		selectionBinding="view.selectedFilter" 
 		optionLabelPath="content.label" 
-		optionValuePath="content.name" 
+		optionValuePath="content.name"
 	}}
+
+	<p>Filter Label: {{view.currentFilter.label}}</p>
+	<p>Filter Description: {{view.currentFilter.description}}</p>
+
 <div>
 
-<h4>ID in Parent = {{view.selectedFilter.values.id}}</h4>
+<h4>ID in Selected Filter = {{view.selectedFilter.values.id}}</h4>

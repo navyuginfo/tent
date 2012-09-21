@@ -35,10 +35,16 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	availableFilters: (->
 		[
 			{
-				name: "outstanding"
-				label: "Outstanding"
-				description: "Outstanding invoices..."
+				name: "task1"
+				label: "Task 1"
+				description: "..."
 				values: {id: "51", title: "Task 1"}
+			},
+			{
+				name: "task2"
+				label: "Task 2"
+				description: "..."
+				values: {id: "52", title: "Task 2"}
 			}
 		]
 
