@@ -21,7 +21,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   type: null
   isDisabled: false
   action: null
-  classNames: ['tent-button']
+  classNames: ['tent-button', 'tent-widget', 'control-group']
   classNameBindings:['type', 'hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'
@@ -67,7 +67,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     'success',
     'warning',
     'danger',
-    'inverse'
+    'inverse',
+    'link'
     ]
 
   optionList: (->
