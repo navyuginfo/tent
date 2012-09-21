@@ -5,6 +5,14 @@
 
 ###*
 * @class Tent.ModalPane
+* Display a model popup panel.
+* 
+* A button will be displayed to allow the popup to be launched. You provide a {#label}
+* and optionally a {#type} for the button.
+* Text to go into the header of the popup is provided using the {#header} property.
+* The body of the popup may be provided either by the {#text} property, or by nesting 
+* content within the view (using {{#view}} rather than {{view}}).
+* Labels for the button in the popup are provided by the {#primary} and {#secondary} properties.
 *
 * ##Usage
 *
@@ -27,6 +35,10 @@ modalPaneBackdrop = '<div class="modal-backdrop"></div>'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
+
+  ###*
+  * @property {String} label The label for the launch button
+  ###
   label:"_submit"
 
   ###*
