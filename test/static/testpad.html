@@ -374,9 +374,6 @@
           {{/view}}
         {{/view}}
 
-        <h3>File Upload</h3>
-        {{view Tent.FileUpload dataUrl="/fileupload" uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
-
         {{#view Tent.Panel span="10" id="layout-section"}}
         <br/><br/>
                 <h2>Layouts</h2>
@@ -830,6 +827,11 @@
                       </div>
                     </div>
 
+                    <h3>File Upload</h3>
+                      {{view Tent.FileUpload dataUrl="/fileupload"
+                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
+
+        
         {{/view}}
       </div>
     {{/view}} 
