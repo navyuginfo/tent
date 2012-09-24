@@ -15,6 +15,7 @@
     <script src="javascript/accounting.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
+    <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
     <style>
       /* Needed to allow the sidebar to push content to the right */
       [class*="span"] {
@@ -158,8 +159,6 @@
 
             
           {{/view}}
-
-          
 
         {{/view}}
 
@@ -375,8 +374,6 @@
 
           {{/view}}
         {{/view}}
-
-
 
         {{#view Tent.Panel span="10" id="layout-section"}}
         <br/><br/>
@@ -831,16 +828,18 @@
                       </div>
                     </div>
 
-        {{/view}}
+                    <h3>File Upload</h3>
+                      {{view Tent.FileUpload dataUrl="/fileupload"
+                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
 
-      
+        
+        {{/view}}
       </div>
     {{/view}} 
 
     <!--   
     {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
     -->   
-
     </script>
       </row>
     </container>
