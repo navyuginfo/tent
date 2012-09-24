@@ -1,5 +1,4 @@
 require '../template/file_upload'
-require 'blueimp-jquery-fileupload'
 
 Tent.FileUpload = Ember.View.extend
   templateName: 'file_upload'
