@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .rowspan-container {
+        width: 400px;
+        height: 300px; 
+        position: relative;
+        background-color: tan;
+        padding: 10px;
+      }
+
+      .item {
+        height:10%;
+        float: left;
+        padding: 5px;
+      }
+      
+      .even {background-color: #ccc;}
+      .odd {background-color: #eee;}
+      .red { background-color: red;}
+      .green{ background-color: green;}
+      .purple{ background-color: purple;}
+      .gold{ background-color: gold;}
+      .yellow{ background-color: yellow;}
+      
+
+      .rspan1 {height: 10%; overflow-y:auto; min-height:30px;}
+      .rspan2 {height: 20%; overflow-y:auto;}
+      .rspan3 {height: 30%; overflow-y:auto;}
+      .rspan4 {height: 40%; overflow-y:auto;}
+      .rspan5 {height: 50%; overflow-y:auto;}
+      .rspan6 {height: 60%; overflow-y:auto;}
+      .rspan7 {height: 70%; overflow-y:auto;}
+      .rspan8 {height: 80%; overflow-y:auto;}
+      .rspan9 {height: 90%; overflow-y:auto;}
+      .rspan10 {height: 100%; overflow-y:auto;}
+      
+      .span1 {width: 10%;}
+      .span2 {width: 20%;}
+      .span3 {width: 30%;}
+      .span4 {width: 40%;}
+      .span5 {width: 50%;}
+      .span6 {width: 60%;}
+      .span7 {width: 70%;}
+      .span8 {width: 80%;}
+      .span9 {width: 90%;}
+      .span10 {width: 100%;}
+
+
+/*  working */
+
+      .panel {
+
+      }
+
+      .panel .top {
+        width: 100%;
+        top: 0px;
+        position: absolute;
+        
+        height: 50px;
+      }
+
+      .panel .bottom {
+        width: 100%;    
+        position: absolute;
+        bottom: 0px;
+        
+        height: 40px;
+      }
+
+      .panel .middle {
+        overflow-y: auto; 
+        position: absolute;
+        width: 100%;
+        
+        top: 50px;
+        bottom: 40px;
+      }
+
+    </style>
+  
+  </head>
+  
+  <body>
+    <div class="rowspan-container">
+
+      <div class="panel">
+        <div class="top  red">Top</div>
+        <div class="middle  purple scroll-y">Middle 
+          <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+        </div>
+        <div class="bottom  green">Bottom</div>
+
+
+      </div>
+
+
+    </div>
+
+   
+  </body>
+</html>

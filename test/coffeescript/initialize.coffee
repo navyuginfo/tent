@@ -16,6 +16,8 @@
 		adapter: Pad.pagingAdapter
 	});
 
+	Tent.DateField.reopen buttonImage: "stylesheet/images/cale"
+
 	Tent.I18n.loadTranslations(Tent.translations)
 
 	Pad.dataStore = Pad.DataStore.create()
