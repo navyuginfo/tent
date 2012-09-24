@@ -153,5 +153,58 @@ a[rel=tooltip] {
 }
 
 
+/*  Flexible Layout Panels */
+  .container-fluid, .row-fluid {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+  }
+
+  .rspan1 {height: 10%; overflow-y:auto; min-height:30px;}
+  .rspan2 {height: 20%; overflow-y:auto;}
+  .rspan3 {height: 30%; overflow-y:auto;}
+  .rspan4 {height: 40%; overflow-y:auto;}
+  .rspan5 {height: 50%; overflow-y:auto;}
+  .rspan6 {height: 60%; overflow-y:auto;}
+  .rspan7 {height: 70%; overflow-y:auto;}
+  .rspan8 {height: 80%; overflow-y:auto;}
+  .rspan9 {height: 90%; overflow-y:auto;}
+  .rspan10 {height: 100%; overflow-y:auto;}
+
+.panel {
+	float: left;
+	position: relative;
+	margin-left: 0px;
+	box-sizing: border-box;
+
+	.top {
+		top: 0px;
+		position: absolute;
+		margin-left: 0px;
+		width: 100%;
+		height: 30px;
+		min-height: 30px;
+	}
+
+	.bottom {
+		position: absolute;
+		bottom: 0px;
+		margin-left: 0px;
+		width: 100%;
+		height: 30px;
+		min-height: 30px;
+	}
+	
+	.middle {
+		overflow-y: auto; 
+		position: absolute;
+		margin-left: 0px; 
+		width: 100%;
+	}
+}
+
+
 
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
+
+    <!-- Begin playing, "The March of the Dependencies!" -->
+    <script src="javascript/minispade.js" type="text/javascript"></script> 
+    <script src="javascript/jquery.js" type="text/javascript"></script>
+    <script src="javascript/handlebars.js" type="text/javascript"></script>
+    <script src="javascript/ember.js" type="text/javascript"></script>
+    <script src="javascript/ember-data.js" type="text/javascript"></script>
+    <script src="javascript/bootstrap.js" type="text/javascript"></script>
+    <script src="javascript/jquery-ui.js" type="text/javascript"></script>
+    <script src="javascript/slick-grid.js" type="text/javascript"></script>
+    <script src="javascript/jqGrid.js" type="text/javascript"></script>
+    <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/tent.js" type="text/javascript"></script>
+    <script src="javascript/tent-tests.js" type="text/javascript"></script>
+    <style>
+
+
+    </style>
+  </head>
+  <body data-spy="scroll" >
+     
+    <script type="text/javascript">
+      $(document).ready(function() {
+        minispade.require('tent');
+        minispade.require('coffeescript/initialize');
+      });
+    </script>
+
+    <script type="text/x-handlebars">
+
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        {{#view Tent.LPane span="12" rspan="10"}}
+          {{#view Tent.LTop class="something"}} Menu {{/view}}
+          {{#view Tent.LMiddle}}
+              {{#view Tent.LPane span="12" rspan="10"}}
+                  {{#view Tent.LTop}}Title {{/view}}
+                  {{#view Tent.LMiddle}}
+                          {{#view Tent.LPane span="4" rspan="10"}}
+                            {{#view Tent.LTop}}Top{{/view}}
+                              {{#view Tent.LMiddle}}Middle 
+                                          <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+                              {{/view}}
+                            {{#view Tent.LBottom}}Bottom{{/view}}
+                          {{/view}}
+                           
+                          {{#view Tent.LPane span="8" rspan="5"}}
+                            {{#view Tent.LMiddle}}upper Middle 
+                                          <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+                            {{/view}}
+                          {{/view}}
+
+                          {{#view Tent.LPane span="8" rspan="5"}}
+                            {{#view Tent.LMiddle}}lower Middle 
+                                          <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+                            {{/view}}
+                          {{/view}}
+                  {{/view}}
+              {{/view}}
+          {{/view}}
+          {{#view Tent.LBottom}}Footer{{/view}}
+        {{/view}}
+   
+        </div>
+      </div> 
+    </script>  
+  </body>
+</html>

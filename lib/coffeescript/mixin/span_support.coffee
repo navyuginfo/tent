@@ -19,3 +19,13 @@ Tent.SpanSupport = Ember.Mixin.create
     12
 
   spanClass: (-> 'span' + @get('span') if @get('span')).property('span')
+
+  rspanClass: (-> 'rspan' + @get('rspan') if @get('rspan')).property('rspan')
+
+  ###*
+  * @property {Number} span The horizontal span which should be allocated to this widget
+  ###
+
+  ###*
+  * @property {Number} rspan The vertical span which should be allocated to this widget
+  ###
