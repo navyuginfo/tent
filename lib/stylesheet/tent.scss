@@ -162,24 +162,24 @@ a[rel=tooltip] {
     right: 0px;
   }
 
-  .rspan1 {height: 10%; overflow-y:auto; min-height:30px;}
-  .rspan2 {height: 20%; overflow-y:auto;}
-  .rspan3 {height: 30%; overflow-y:auto;}
-  .rspan4 {height: 40%; overflow-y:auto;}
-  .rspan5 {height: 50%; overflow-y:auto;}
-  .rspan6 {height: 60%; overflow-y:auto;}
-  .rspan7 {height: 70%; overflow-y:auto;}
-  .rspan8 {height: 80%; overflow-y:auto;}
-  .rspan9 {height: 90%; overflow-y:auto;}
-  .rspan10 {height: 100%; overflow-y:auto;}
+  .vspan1 {height: 10%; overflow-y:auto; min-height:30px;}
+  .vspan2 {height: 20%; overflow-y:auto;}
+  .vspan3 {height: 30%; overflow-y:auto;}
+  .vspan4 {height: 40%; overflow-y:auto;}
+  .vspan5 {height: 50%; overflow-y:auto;}
+  .vspan6 {height: 60%; overflow-y:auto;}
+  .vspan7 {height: 70%; overflow-y:auto;}
+  .vspan8 {height: 80%; overflow-y:auto;}
+  .vspan9 {height: 90%; overflow-y:auto;}
+  .vspan10 {height: 100%; overflow-y:auto;}
 
-.panel {
+.tent-section {
 	float: left;
 	position: relative;
 	margin-left: 0px;
 	box-sizing: border-box;
 
-	.top {
+	header {
 		top: 0px;
 		position: absolute;
 		margin-left: 0px;
@@ -188,7 +188,7 @@ a[rel=tooltip] {
 		min-height: 30px;
 	}
 
-	.bottom {
+	footer {
 		position: absolute;
 		bottom: 0px;
 		margin-left: 0px;
@@ -197,7 +197,7 @@ a[rel=tooltip] {
 		min-height: 30px;
 	}
 	
-	.middle {
+	.content {
 		overflow-y: auto; 
 		position: absolute;
 		margin-left: 0px; 

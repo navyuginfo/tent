@@ -35,35 +35,35 @@
 
     <div class="container-fluid flex-container">
       <div class="row-fluid flex-container">
-        {{#view Tent.LPane span="12" rspan="10"}}
-          {{#view Tent.LTop class="something"}} Menu {{/view}}
-          {{#view Tent.LMiddle}}
-              {{#view Tent.LPane span="12" rspan="10"}}
-                  {{#view Tent.LTop}}Title {{/view}}
-                  {{#view Tent.LMiddle}}
-                          {{#view Tent.LPane span="4" rspan="10"}}
-                            {{#view Tent.LTop}}Top{{/view}}
-                              {{#view Tent.LMiddle}}Middle 
+        {{#view Tent.Section span="12" vspan="10"}}
+          {{#view Tent.Header class="something"}} Menu {{/view}}
+          {{#view Tent.Content}}
+              {{#view Tent.Section span="12" vspan="10"}}
+                  {{#view Tent.Header}}Title {{/view}}
+                  {{#view Tent.Content}}
+                          {{#view Tent.Section span="4" vspan="10"}}
+                            {{#view Tent.Header}}Top{{/view}}
+                              {{#view Tent.Content}}Middle 
                                           <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
                               {{/view}}
-                            {{#view Tent.LBottom}}Bottom{{/view}}
+                            {{#view Tent.Footer}}Bottom{{/view}}
                           {{/view}}
                            
-                          {{#view Tent.LPane span="8" rspan="5"}}
-                            {{#view Tent.LMiddle}}upper Middle 
+                          {{#view Tent.Section span="8" vspan="5"}}
+                            {{#view Tent.Content}}upper Middle 
                                           <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
                             {{/view}}
                           {{/view}}
 
-                          {{#view Tent.LPane span="8" rspan="5"}}
-                            {{#view Tent.LMiddle}}lower Middle 
+                          {{#view Tent.Section span="8" vspan="5"}}
+                            {{#view Tent.Content}}lower Middle 
                                           <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
                             {{/view}}
                           {{/view}}
                   {{/view}}
               {{/view}}
           {{/view}}
-          {{#view Tent.LBottom}}Footer{{/view}}
+          {{#view Tent.Footer}}Footer{{/view}}
         {{/view}}
    
         </div>
