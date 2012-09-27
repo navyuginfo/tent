@@ -1,5 +1,6 @@
 Tent.Breadcrumb = Ember.View.extend
 	router: null
+	homeState: 'home'
 	classNames: ['tent-breadcrumb']
 	template: Ember.Handlebars.compile('{{#collection tagName="ul" contentBinding="view.content"}}
 				<button class="btn btn-link" {{bindAttr data-state="view.content.name"}}>{{loc view.content.title}} <i class="icon-chevron-right"></i></button>
@@ -32,4 +33,5 @@ Tent.Breadcrumb = Ember.View.extend
 	click: (e)->
 		state = $(e.target).attr("data-state");
 		if state?
+			@get('router').transitionTo(@get('homeState'))
 			@get('router').transitionTo(state)
