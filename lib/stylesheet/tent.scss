@@ -152,34 +152,92 @@ a[rel=tooltip] {
 	}
 }
 
+ 
+/*  Flexible Layout Panels */
+  .flex-container {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+  }
+
+  .vspan1 {height: 10%; overflow-y:auto; min-height:30px;}
+  .vspan2 {height: 20%; overflow-y:auto;}
+  .vspan3 {height: 30%; overflow-y:auto;}
+  .vspan4 {height: 40%; overflow-y:auto;}
+  .vspan5 {height: 50%; overflow-y:auto;}
+  .vspan6 {height: 60%; overflow-y:auto;}
+  .vspan7 {height: 70%; overflow-y:auto;}
+  .vspan8 {height: 80%; overflow-y:auto;}
+  .vspan9 {height: 90%; overflow-y:auto;}
+  .vspan10 {height: 100%; overflow-y:auto;}
+
+.tent-section {
+	* {
+		/* Check this for performance */
+		box-sizing: border-box;
+	}
+
+	float: left;
+	position: relative;
+	margin-left: 0px;
+	box-sizing: border-box;
+
+	header {
+		top: 0px;
+		position: absolute;
+		margin-left: 0px;
+		padding-left: 6px;
+		width: 100%;
+		height: 50px;
+		min-height: 30px;
+	}
+
+	footer {
+		position: absolute;
+		bottom: 0px;
+		margin-left: 0px;
+		width: 100%;
+		height: 30px;
+		min-height: 30px;
+	}
+	
+	.content {
+		overflow-y: auto; 
+		position: absolute;
+		margin-left: 0px; 
+		width: 100%;
+	}
+}
 
 /* Breadcrumb */
 
 
 .tent-breadcrumb {
-  ul {
-    list-style: none;
-    li {
-      display: inline;
-      .btn-link{
-        color: #333;
-        padding: 4px 1px;
-      }
-      &:last-child {
-        i {
-          display: none;
-        }
-        button {
-          font-weight: bold;
-          text-decoration: none;
-          cursor: auto;
-          &:hover {
-            text-decoration: none;
-          }
-        }
-      }
+	ul {
+    	list-style: none;
+	    li {
+	      	display: inline;
+	      	.btn-link {
+	        	color: #333;
+	        	padding: 4px 1px;
+	    	}
+	    	&:last-child {
+	        	i {
+	          		display: none;
+	        	}
+	        	button {
+	          		font-weight: bold;
+	        		text-decoration: none;
+	        		cursor: auto;
+	         		&:hover {
+	            		text-decoration: none;
+	          		}
+	        	}
+	      	}
+    	}
     }
-  }
 }
 
 
