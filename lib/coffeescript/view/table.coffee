@@ -9,9 +9,11 @@ require '../template/table'
 require '../template/table_row'
 
 Tent.Table = Ember.View.extend
-  classNames: ['table', 'table-bordered', 'table-condensed']
+  classNames: ['table','table-condensed']
+  classNameBindings: ['isBordered:table-bordered']
   tagName: 'table'
   templateName: 'table'
+  isBordered: true;
   _columnHeaders: (->
     @get('headers').split(',') if @get('headers')?
   ).property('headers')
