@@ -51,9 +51,10 @@
   <body data-spy="scroll" >
      
     <script type="text/javascript">
-      $(document).ready(function() {
         minispade.require('tent');
         minispade.require('coffeescript/initialize');
+      $(document).ready(function() {
+       
         
         $('body').on('click', '.nav-list a', function(){
           console.log('clicked')
@@ -100,6 +101,8 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
+
+          {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
             {{view Tent.Checkbox label="_required" checkedBinding="Pad.isRequired"}}
