@@ -152,7 +152,7 @@ a[rel=tooltip] {
 	}
 }
 
-
+ 
 /*  Flexible Layout Panels */
   .flex-container {
     position: absolute;
@@ -209,6 +209,35 @@ a[rel=tooltip] {
 		margin-left: 0px; 
 		width: 100%;
 	}
+}
+
+/* Breadcrumb */
+
+
+.tent-breadcrumb {
+	ul {
+    	list-style: none;
+	    li {
+	      	display: inline;
+	      	.btn-link {
+	        	color: #333;
+	        	padding: 4px 1px;
+	    	}
+	    	&:last-child {
+	        	i {
+	          		display: none;
+	        	}
+	        	button {
+	          		font-weight: bold;
+	        		text-decoration: none;
+	        		cursor: auto;
+	         		&:hover {
+	            		text-decoration: none;
+	          		}
+	        	}
+	      	}
+    	}
+    }
 }
 
 
