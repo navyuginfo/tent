@@ -16,7 +16,8 @@ Tent.I18n = Ember.Namespace.create
 	* @param {Object} translations A map of key:value pairs defining the translations to be used
 	###
 	loadTranslations: (translations)->
-		@set('language', translations)
+		if translations?
+			@set('language', translations)
 
 	translate: (code) ->
 		#Stubbed

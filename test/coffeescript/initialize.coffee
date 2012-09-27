@@ -1,11 +1,15 @@
 ((loader) -> 
 
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/router')
+	loader.require('coffeescript/controllers/application_controller')
 	loader.require('coffeescript/i18n/translations')
 	loader.require('coffeescript/store/datastore')
 
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
+
+	Pad.initialize()
 
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
 	# Ensure the Rest adapter is working correctly
