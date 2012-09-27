@@ -73,10 +73,10 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 		section = @.$().parent('section')
 		header = section.children('header')
 		footer = section.children('footer')
-		headerOffset = if header.length > 0 then header.css('height') else "0px"
-		@.$().css('top', headerOffset)
-		footerOffset = if footer.length > 0 then footer.css('height') else "0px"
-		@.$().css('bottom', footerOffset)
+		headerOffset = if header.length > 0 then header.outerHeight(true) else 0
+		@.$().css('top', headerOffset + "px")
+		footerOffset = if footer.length > 0 then footer.outerHeight(true) else 0
+		@.$().css('bottom', footerOffset + "px")
 
 ###*
 * @class Tent.Footer
