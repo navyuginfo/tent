@@ -33,5 +33,4 @@ Tent.Breadcrumb = Ember.View.extend
 	click: (e)->
 		state = $(e.target).attr("data-state");
 		if state?
-			@get('router').transitionTo(@get('homeState'))
 			@get('router').transitionTo(state)
