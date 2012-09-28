@@ -9,4 +9,5 @@
 ###
 
 Ember.Handlebars.registerHelper 'formatDate', (context, options) ->
-	return Tent.Formatting.date.format(Ember.get(context), options.hash.format)
+	date = Tent.Handlebars.getPath(context, options)
+	return Tent.Formatting.date.format(date, options.hash.format)
