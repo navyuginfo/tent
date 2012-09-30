@@ -13,6 +13,16 @@ Tent.SelectableArrayProxy = Ember.ArrayProxy.extend
     @set '_selectedIndex', -1
     @set '_selection', null
 
+  clearSelection: ->
+    @set('selected', null)
+
+  selectAll: ->
+    if @get('isMultipleSelectionAllowed')
+      @beginPropertyChanges()
+      @clearSelection()
+      @get('content').forEach (element) =>
+        @set('selected', element)
+      @endPropertyChanges()
   
   selected: ((key, value) ->
     if value != `undefined`

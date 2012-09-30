@@ -13,14 +13,19 @@ Tent.Table = Ember.View.extend
   classNameBindings: ['isBordered:table-bordered']
   tagName: 'table'
   templateName: 'table'
-  isBordered: true;
+  isBordered: true
+  allSelected: false
+
   _columnHeaders: (->
     @get('headers').split(',') if @get('headers')?
   ).property('headers')
+
   visibleHeaders: (-> @get('_columnHeaders')).property('_columnHeaders')
+
   _columns: (->
     @get('columns').split(',') if @get('columns')?
     ).property('columns')
+
   visibleColumns: (-> @get('_columns')).property('_columns')
 
   init: ->
@@ -31,15 +36,25 @@ Tent.Table = Ember.View.extend
       @createListProxy()
   
   createListProxy: ->
-    @set('_list', Tent.SelectableArrayProxy.create({content: @get('list')}))
+    @set '_list', Tent.SelectableArrayProxy.create
+      content: @get('list')
+      selected: @get('selection')
     @get('_list').set('isMultipleSelectionAllowed', @get('multiselection'))
 
   isRowSelected: (row) ->
-      if (selElements = @get('_list').get('selected')) isnt null
-        #for the time when page first renders or when nothing is selected
-        selElements.contains(row.get('content'))
-      else
+    if (selElements = @get('_list').get('selected')) isnt null
+      #for the time when page first renders or when nothing is selected
+      rowContent = row.get('content')
+      return true if selElements.contains(rowContent)
+      selElements.some (element) ->
+        return true if element == rowContent
+
+        elementId = Ember.get(element, 'id')
+        rowId = Ember.get(rowContent, 'id')
+        return elementId == rowId if elementId? && rowId?
         false
+    else
+      false
 
   ##
   # method to populate the new list of items or push a single item
@@ -57,7 +72,13 @@ Tent.Table = Ember.View.extend
       if not @get('_list')? 
         @createListProxy()
       @get('_list').set('selected', selection)
-     
+
+  selectAll: (->
+    if @get('allSelected')
+      @get('_list').selectAll()
+    else
+      @get('_list').clearSelection()
+  ).observes('allSelected')
 
   updateContent: ( ->
     @get('_list').set('content',@get('list'))
