@@ -122,7 +122,7 @@ Compass.configuration do |c|
   c.http_generated_images_path = '/public/images'
 end
 
-load_gem_assets('public', 'bootstrap-sass')
+load_gem_assets('public')
 
 output "public"
 
@@ -192,8 +192,7 @@ input "lib" do
   end
 
   match /^stylesheet\/tent.scss/ do
-    sass additional_load_paths: 'lib/stylesheet/',
-      load_paths: GemHelpers.sass_load_paths('bootstrap-sass')
+    sass additional_load_paths: 'lib/stylesheet/'
     if ENV['RACK_ENV'] == 'production'
       yui_css
     end
