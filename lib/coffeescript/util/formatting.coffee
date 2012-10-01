@@ -37,6 +37,9 @@ Tent.Formatting.amount =
 	settingsFilter: (rawSettings) ->
 		rawSettings
 
+	cssClass: ->
+		"amount"
+
 Tent.Formatting.date = Ember.Object.create
 	options: 
 		dateFormat: "mm/dd/yy"
@@ -50,6 +53,8 @@ Tent.Formatting.date = Ember.Object.create
 	unformat: (value, dateFormat) ->
 		$.datepicker.parseDate(dateFormat or @getFormat(), value)
 
+	cssClass: ->
+		"date"
 
 Tent.Formatting.number = Ember.Object.create
 	isValidNumber: (value)->
@@ -70,3 +75,6 @@ Tent.Formatting.number = Ember.Object.create
 			return null
 		else 
 			value
+
+	cssClass: ->
+		"amount"
