@@ -6,7 +6,8 @@
 Tent.AlertMessage = Ember.View.extend
   tagName: 'div'
   classNames: ['alert']
-  template: Ember.Handlebars.compile '<a href="#" class="close" close="close">x</a>{{loc view.text}}'
+  title: null;
+  template: Ember.Handlebars.compile '<a href="#" class="close" close="close">x</a>{{#if view.title}}<span class="title">{{loc view.title}}</span>{{/if}}{{loc view.text}}'
 
 # type --- error/success/info/block  
   init: ->
