@@ -11,4 +11,4 @@
 
 Ember.Handlebars.registerHelper 'formatAmount', (property, options) ->
 	amount = Tent.Handlebars.getPath(property, options)
-	return Tent.Formatting.amount.format(amount)
+	return Tent.Formatting.amount.format(amount, options.hash)

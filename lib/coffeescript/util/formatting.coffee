@@ -15,16 +15,27 @@ accounting.settings =
 Tent.Formatting = {} unless Tent.Formatting?
 
 Tent.Formatting.amount = 
-	format: (amount) ->
+	format: (amount, settings) ->
 		if amount? and amount != ""
-			accounting.formatNumber(amount)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.formatNumber(amount, settings) 
+			else 
+				accounting.formatNumber(amount)
 		else
 			""
-	unformat: (amount) ->
+	unformat: (amount, settings) ->
 		if amount? and amount !=""
-			accounting.unformat(amount)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.unformat(amount, settings)
+			else
+				accounting.unformat(amount)
 		else 
 			null
+
+	settingsFilter: (rawSettings) ->
+		rawSettings
 
 Tent.Formatting.date = Ember.Object.create
 	options: 

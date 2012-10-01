@@ -14,7 +14,6 @@ Tent.Table = Ember.View.extend
   tagName: 'table'
   templateName: 'table'
   isBordered: true
-  allSelected: false
 
   _columnHeaders: (->
     @get('headers').split(',') if @get('headers')?
@@ -34,7 +33,7 @@ Tent.Table = Ember.View.extend
     @set('isEditable', true) if @get('isEditable') == undefined
     if not @get('_list')? 
       @createListProxy()
-  
+
   createListProxy: ->
     @set '_list', Tent.SelectableArrayProxy.create
       content: @get('list')
@@ -105,7 +104,14 @@ Tent.TableRow = Ember.View.extend
     if @get('parentTable').get('isEditable')
       # checks the radioButtons/checkboxes in case of defaultselection
       @checkSelection()
-  
+
+  format: (columnName, columnValue) ->
+    if (formatterProvider = @get('parentTable.formatter'))?
+      tableContent = @get('parentTable.list')
+      formatter = formatterProvider(tableContent, columnName)
+      return formatter.format(columnValue) if formatter?
+    columnValue
+
   isSelected: (-> 
     @get('parentTable').isRowSelected(this)
   ).property('parentTable.selection')
@@ -127,12 +133,18 @@ Tent.TableRow = Ember.View.extend
 Tent.TableCell = Ember.View.extend
   tagName: 'td'
   classNameBindings: ['isRadio:tent-width-small']
-  defaultTemplate: (->
-    Ember.Handlebars.compile('{{view.row.'+ @get('content') + '}}')
-  ).property('row', 'content')
+  
+  defaultTemplate: Ember.Handlebars.compile('{{view.formattedColumnValue}}')
+  
   row: (->
-    @get('parentView').get('parentView').get('content')
+    @get('parentView').get('parentView')
   ).property('parentView')
+
+  formattedColumnValue: (->
+    columnName = @get('content')
+    columnValue = @get('row.content.' + columnName)
+    @get('row').format(columnName, columnValue)
+  ).property('row', 'content')
 
 Tent.TableHeader = Ember.View.extend
   tagName: 'th'
