@@ -56,11 +56,17 @@ test 'Test for disabled', ->
   
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.AmountField required=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.AmountField required=true  hasErrors=true hasHelpBlock=true}}'
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
 
+  viewId = view.$('input').parents('.tent-text-field:first').attr('id')
+  equal view.$('input[aria-describedby]').length, 1, 'described-by'
+  equal view.$('input').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
+  equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
+  equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
+  
 test 'Ensure formatting help is displayed', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" 

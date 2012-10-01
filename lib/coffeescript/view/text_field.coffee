@@ -29,12 +29,7 @@ require '../template/text_field'
 
 Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, 
 	templateName: 'text_field'
-
 	classNames: ['tent-text-field', 'control-group']
-	
-	forId: (->
-		@get('inputIdentifier')
-	).property('inputIdentifier')
 
 	didInsertElement: ->
 		@_super(arguments)

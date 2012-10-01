@@ -8,18 +8,15 @@
         <span class="add-on">{{loc view.prefix}}</span>
       {{/if}} 
       {{view Tent.TextFieldInput 
-        
         valueBinding="view.formattedValue" 
         placeholderBinding="view.placeholder"
       }}
       {{#if view.hasHelpBlock}}
-        <span class="help-block">{{loc view.helpBlock}}</span>
+        <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
       {{/if}}
     {{/if}}
     {{#if view.hasErrors}}
-      {{#each error in view.validationErrors}}
-        <span class="help-inline">{{loc error}}</span>
-      {{/each}}
+      <span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
     {{/if}}  
   </div>
   {{#if view.tooltip}}
