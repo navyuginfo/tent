@@ -15,6 +15,16 @@ Tent.ValidationSupport = Ember.Mixin.create
     @flushValidationErrors()
     true
 
+  errorsDidChange: (->
+    console.log('validation errors did change')
+    
+  ).property('validationErrors.@each')
+
+  updateErrorPanel: (->
+    console.log('do the update')
+    Tent.errorPanel.addErrorsFromView(@)
+  ).observes('errorsDidChange')
+
   hasErrors: (->
     #(!@validate() if @validate?) || false
     return not @get('isValid')
@@ -33,7 +43,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     
   addValidationError: (error) ->
     # Do we need more than one error?
-    @get('validationErrors').push(error)
+    @get('validationErrors').pushObject(error)
 
 
  
