@@ -21,8 +21,13 @@ Tent.ValidationSupport = Ember.Mixin.create
   ).property('validationErrors.@each')
 
   updateErrorPanel: (->
-    console.log('do the update')
-    Tent.errorPanel.addErrorsFromView(@)
+    message = Tent.Message.create
+      messages: $.merge([], @get('validationErrors'))
+      type: Tent.Message.ERROR_TYPE
+      sourceId: @get('elementId')
+      label: @get('label')
+
+    $.publish("/message", [message]);
   ).observes('errorsDidChange')
 
   hasErrors: (->

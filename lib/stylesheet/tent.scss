@@ -2,6 +2,15 @@
 @import "bootstrap-responsive";
 /*@import "compass";*/
 
+
+/* Mixins */
+// Border Radius
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+          border-radius: $radius;
+}
+
 .tent-widget {
 	.tent-required {
 		color: red;
@@ -246,6 +255,46 @@ a[rel=tooltip] {
     }
 }
 
+/* Messages Panel */
+
+.tent-message-panel {
+	.title {
+		font-weight: bold;
+	}
+	a {
+		font-size: 12px;
+		color: #333;
+	}
+	.caret {
+		margin-left: 5px;
+		vertical-align: middle;
+	}
+
+	.alert-error {
+		padding: 7px;
+		@include border-radius(4px);
+		border: 1px solid #EED3D7;
+	}
+
+	.error-message {
+		cursor: pointer;
+		padding: 4px 50px;
+		font-size: smaller;
+		
+		&:hover {
+			text-decoration: underline;
+		}
+		
+		label {
+			display: inline;
+			font-size: 13px;
+		}
+
+	}
+	.expando {
+		
+	}
+}
 
 
 

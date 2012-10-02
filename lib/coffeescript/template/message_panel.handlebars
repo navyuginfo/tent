@@ -1,0 +1,14 @@
+{{#if view.hasErrors}}
+<div class="alert-error clearfix">
+	<span class="title">{{view.title}}</span>
+	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".expando">
+		<b class="caret"></b></a>
+	<div class="expando collapse">
+		{{#each view.error}}
+			<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+  				<label>{{loc this.label}}</label> : {{this.messages}}
+  			</div> 
+	  	{{/each}}
+	</div>
+</div>
+{{/if}}
