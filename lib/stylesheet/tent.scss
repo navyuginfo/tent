@@ -259,7 +259,7 @@ a[rel=tooltip] {
 
 .tent-message-panel {
 	margin-top: 10px;
-	position: relative;
+	
 
 	.title {
 		font-weight: bold;
@@ -278,6 +278,7 @@ a[rel=tooltip] {
 	}
 
 	.alert-error {
+		position: relative;
 		margin: 10px 0px;
 		padding: 7px;
 		@include border-radius(4px);
@@ -285,6 +286,7 @@ a[rel=tooltip] {
 	}
 
 	.alert-info {
+		position: relative;
 		margin: 10px 0px;
 		padding: 7px;
 		@include border-radius(4px);
@@ -312,7 +314,7 @@ a[rel=tooltip] {
 		font-size: smaller;
 	}
 
-	.expando {
+	.error-expando, .info-expando {
 		min-height: 20px;
 	}
 }
