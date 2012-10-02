@@ -29,14 +29,15 @@
                promptBinding = "view._prompt" 
                valueBinding = "view.value"}} 
       {{/if}}
+      {{#if view.hasHelpBlock}}
+        <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
+      {{/if}}
     {{/if}}
   	{{#if view.tooltip}}
       <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>
     {{/if}}
   	{{#if view.hasErrors}}
-      	{{#each error in view.validationErrors}}
-        		<span class="help-inline">{{error}}</span>
-      	{{/each}}
-    	{{/if}}
+      	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>
+    {{/if}}
   </div>
 </div>
