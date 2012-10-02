@@ -67,7 +67,7 @@ Tent.MessagePanel = Ember.View.extend
 		if wrappingMessage? and wrappingMessage.length > 0
 			#target.hasClass('error-message') 
 			targetId = wrappingMessage.attr('data-target')
-			Ember.View.views[targetId].focus()
+			Ember.View.views[targetId].focus() if Ember.View.views[targetId]?
 			
 
 Tent.Message = Ember.Object.extend

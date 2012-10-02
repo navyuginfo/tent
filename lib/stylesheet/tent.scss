@@ -258,12 +258,19 @@ a[rel=tooltip] {
 /* Messages Panel */
 
 .tent-message-panel {
+	margin-top: 10px;
+	position: relative;
+
 	.title {
 		font-weight: bold;
+		float:left;
 	}
 	a {
 		font-size: 12px;
 		color: #333;
+		top: 6px;
+		position: absolute;
+		right: 10px;
 	}
 	.caret {
 		margin-left: 5px;
@@ -271,14 +278,22 @@ a[rel=tooltip] {
 	}
 
 	.alert-error {
+		margin: 10px 0px;
 		padding: 7px;
 		@include border-radius(4px);
 		border: 1px solid #EED3D7;
 	}
 
+	.alert-info {
+		margin: 10px 0px;
+		padding: 7px;
+		@include border-radius(4px);
+		border: 1px solid #BCE8F1;
+	}
+
 	.error-message {
 		cursor: pointer;
-		padding: 4px 50px;
+		padding: 0px 50px;
 		font-size: smaller;
 		
 		&:hover {
@@ -291,8 +306,14 @@ a[rel=tooltip] {
 		}
 
 	}
+
+	.info-message {
+		padding: 0px 50px;
+		font-size: smaller;
+	}
+
 	.expando {
-		
+		min-height: 20px;
 	}
 }
 

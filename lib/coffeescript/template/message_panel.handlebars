@@ -1,8 +1,6 @@
 {{#if view.hasErrors}}
 <div class="alert-error clearfix">
-	<span class="title">{{view.title}}</span>
-	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".expando">
-		<b class="caret"></b></a>
+	<span class="title">Errors</span>
 	<div class="expando collapse">
 		{{#each view.error}}
 			<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
@@ -10,5 +8,20 @@
   			</div> 
 	  	{{/each}}
 	</div>
+	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".expando">
+		<b class="caret"></b></a>
+</div>
+{{/if}}
+
+{{#if view.hasInfos}}
+<div class="alert-info clearfix">
+	<span class="title">Info</span>
+	<div class="expando collapse">
+		{{#each view.info}}
+			<div class="info-message" {{bindAttr data-target="this.sourceId"}}>{{this.messages}}</div> 
+	  	{{/each}}
+	</div>
+	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".expando">
+		<b class="caret"></b></a>
 </div>
 {{/if}}
