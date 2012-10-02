@@ -1,5 +1,5 @@
 
-Ember.LOG_BINDINGS = true
+#Ember.LOG_BINDINGS = true
 
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
@@ -21,6 +21,7 @@ test 'Basic functionality', ->
 		messages: ['error1', 'error2']
 
 	view.handleNewMessage(null, message)
+
 	equal view.getErrorsForView('id1').length, 2, '2 errors returned'
 
 	message = Tent.Message.create
@@ -36,6 +37,7 @@ test 'Basic functionality', ->
 
 	view.clearInfos()
 	equal view.getInfosForView('id1').length, 0, '0 infos returned'
+
 
 test 'Test auto clearing of errors for source', ->
 	view = Tent.MessagePanel.create()
@@ -76,12 +78,12 @@ test "pub / sub", ->
 
 
 test 'Called by ValidationSupport', ->
-	view2 = Ember.View.create
+	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.MessagePanel labelBinding="label" }}'
 		label: 'FooBar'
 
 	appendView()
-	equal view2.$('.tent-message-panel').length, 1 , 'div exists'
+	equal view.$('.tent-message-panel').length, 1 , 'div exists'
 	
 	errorPanel = Ember.View.views[$('.tent-message-panel').attr('id')]
 

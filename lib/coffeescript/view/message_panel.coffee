@@ -8,7 +8,12 @@ Tent.MessagePanel = Ember.View.extend
 	init: ->
 		@_super()
 		@clearAll()
-		$.subscribe('/message', $.proxy(@handleNewMessage, @))
+		@set('handler', $.proxy(@handleNewMessage, @))
+		$.subscribe('/message', @get('handler') )
+
+	willDestroy: ->
+		$.unsubscribe('/message', @get('handler'))
+		@_super()
 
 	handleNewMessage: (e, msg)->
 		if not msg.type?
@@ -21,7 +26,8 @@ Tent.MessagePanel = Ember.View.extend
 			)
 			if msg.messages.length > 0
 				arrayWithMessageRemoved.pushObject($.extend({}, msg))
-		@set(msg.type,  Ember.ArrayProxy.create({content: $.merge([], arrayWithMessageRemoved)}))
+		newErrors = Ember.ArrayProxy.create({content: $.merge([], arrayWithMessageRemoved)})
+		@set(msg.type, newErrors)
 
 	didInsertElement: ->
 		@$('expando').collapse('hide')
