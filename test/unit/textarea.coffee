@@ -151,10 +151,15 @@ test 'Ensure tooltip gets displayed', ->
 
 test 'Ensure aria attributes are applied ', ->
   view = Ember.View.create
-    template: Ember.Handlebars.compile '{{view Tent.Textarea required=true}}'
+    template: Ember.Handlebars.compile '{{view Tent.Textarea required=true  hasErrors=true hasHelpBlock=true}}'
   appendView()
   equal view.$('textarea[required=required]').length, 1, 'required html5 attribute'
   equal view.$('textarea[aria-required=true]').length, 1, 'Aria-required'
 
+  viewId = view.$('textarea').parents('.tent-textarea:first').attr('id')
+  equal view.$('textarea[aria-describedby]').length, 1, 'described-by'
+  equal view.$('textarea').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
+  equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
+  equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
 
 

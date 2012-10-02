@@ -112,6 +112,13 @@ Tent.TableRow = Ember.View.extend
       return formatter.format(columnValue) if formatter?
     columnValue
 
+  cssClass: (columnName) ->
+    if (formatterProvider = @get('parentTable.formatter'))?
+      tableContent = @get('parentTable.list')
+      formatter = formatterProvider(tableContent, columnName)
+      return formatter.cssClass() if formatter? && formatter.cssClass?
+    ""
+
   isSelected: (-> 
     @get('parentTable').isRowSelected(this)
   ).property('parentTable.selection')
@@ -132,7 +139,7 @@ Tent.TableRow = Ember.View.extend
     
 Tent.TableCell = Ember.View.extend
   tagName: 'td'
-  classNameBindings: ['isRadio:tent-width-small']
+  classNameBindings: ['isRadio:tent-width-small', 'cssClass']
   
   defaultTemplate: Ember.Handlebars.compile('{{view.formattedColumnValue}}')
   
@@ -144,6 +151,12 @@ Tent.TableCell = Ember.View.extend
     columnName = @get('content')
     columnValue = @get('row.content.' + columnName)
     @get('row').format(columnName, columnValue)
+  ).property('row', 'content')
+
+  cssClass: (->
+    columnName = @get('content')
+    row = @get('row')
+    row.cssClass(columnName)
   ).property('row', 'content')
 
 Tent.TableHeader = Ember.View.extend

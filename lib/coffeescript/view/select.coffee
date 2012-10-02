@@ -58,11 +58,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   multiple: false
 
-  
-  forId: (->
-    @get('inputIdentifier')
-  ).property('inputIdentifier')
-
   init: ->
     @_super()
 

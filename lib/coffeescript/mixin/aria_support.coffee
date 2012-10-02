@@ -8,6 +8,7 @@ Tent.AriaSupport = Ember.Mixin.create
 		'ariaRequired:aria-required'
 		'ariaReadOnly:aria-readonly'
 		'ariaDisabled:aria-disabled'
+		'ariaDescribedBy:aria-describedby'
 	]
 	ariaRequired: (->
 		return if @get('parentView.required') then 'true' else 'false'
@@ -20,5 +21,10 @@ Tent.AriaSupport = Ember.Mixin.create
 	ariaDisabled: (->
 		return if @get('parentView.disabled') then 'true' else 'false'
 	).property('parentView.disabled')
+
+	ariaDescribedBy: (->
+		@get('parentView.errorId') + " " + @get('parentView.helpId')
+	).property('parentView.errorId')
+
 
 

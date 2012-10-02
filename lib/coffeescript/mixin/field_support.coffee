@@ -101,6 +101,18 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     @get('textDisplay') or (not @get('isEditable'))
   ).property('textDisplay', 'isEditable')
 
+  forId: (->
+    @get('inputIdentifier')
+  ).property('inputIdentifier')
+
+  errorId: (->
+    @get('elementId') + "_error"
+  ).property('elementId')
+
+  helpId: (->
+    @get('elementId') + "_help"
+  ).property('elementId')
+  
   inputSizeClass: (->
     return Tent.FieldSupport.SIZE_CLASSES[@estimateSpan() - 1]
   ).property()
