@@ -8,11 +8,12 @@
 	  				<label>{{loc this.label}}</label> : {{this.messages}}
 	  			</div> 
 		  	{{/each}}
+		  	{{#if view.hasMoreThanOneError}}
+				<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".error-expando">
+					<b class="caret"></b></a>
+			{{/if}}
 		</div>
-		{{#if view.hasMoreThanOneError}}
-		<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".error-expando">
-			<b class="caret"></b></a>
-		{{/if}}
+		
 	{{else}}
 		<div>
 			{{#each view.error}}

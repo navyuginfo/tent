@@ -277,6 +277,11 @@ a[rel=tooltip] {
 		vertical-align: middle;
 	}
 
+	.in .caret {
+		border-top: 0px;
+		border-bottom: 4px solid black;
+	}
+
 	.alert-error {
 		position: relative;
 		margin: 10px 0px;
@@ -316,6 +321,7 @@ a[rel=tooltip] {
 
 	.error-expando, .info-expando {
 		min-height: 20px;
+		position: static;
 		.in {
 			height: auto;
 		}
