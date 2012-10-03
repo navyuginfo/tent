@@ -1,27 +1,37 @@
 {{#if view.hasErrors}}
 <div class="alert-error clearfix">
 	<span class="title">Errors</span>
-	<div class="error-expando collapse">
-		{{#each view.error}}
-			<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
-  				<label>{{loc this.label}}</label> : {{this.messages}}
-  			</div> 
-	  	{{/each}}
-	</div>
-	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".error-expando">
-		<b class="caret"></b></a>
+	{{#if view.collapsible}}
+		<div {{bindAttr class="view.expandoClass"}}>
+			{{#each view.error}}
+				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+	  				<label>{{loc this.label}}</label> : {{this.messages}}
+	  			</div> 
+		  	{{/each}}
+		</div>
+		{{#if view.hasMoreThanOneError}}
+		<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".error-expando">
+			<b class="caret"></b></a>
+		{{/if}}
+	{{else}}
+		<div>
+			{{#each view.error}}
+				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+	  				<label>{{loc this.label}}</label> : {{this.messages}}
+	  			</div> 
+		  	{{/each}}
+		</div>
+	{{/if}}
 </div>
 {{/if}}
 
 {{#if view.hasInfos}}
 <div class="alert-info clearfix">
 	<span class="title">Info</span>
-	<div class="info-expando collapse">
+	<div class="info-expando">
 		{{#each view.info}}
 			<div class="info-message" {{bindAttr data-target="this.sourceId"}}>{{this.messages}}</div> 
 	  	{{/each}}
 	</div>
-	<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".info-expando">
-		<b class="caret"></b></a>
 </div>
 {{/if}}

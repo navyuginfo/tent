@@ -316,6 +316,9 @@ a[rel=tooltip] {
 
 	.error-expando, .info-expando {
 		min-height: 20px;
+		.in {
+			height: auto;
+		}
 	}
 }
 

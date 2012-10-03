@@ -57,6 +57,48 @@ test 'Test auto clearing of errors for source', ->
 	view.handleNewMessage(null, message)
 	equal view.getErrorsForView('id1').length, 0, 'Errors should have been cleared'
 
+test 'Collapsed property', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.MessagePanel collapsed=false }}'
+		label: 'FooBar'
+
+	appendView()
+	equal view.$('.tent-message-panel').length, 1 , 'div exists'
+	Ember.run ->
+		$.publish('/message', {type:'error', messages:['message1']})
+	equal view.$('.error-expando.in').length, 1, 'in- attribute added'
+
+test 'Collapsible property', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.MessagePanel collapsible=false }}'
+		label: 'FooBar'
+
+	appendView()
+	equal view.$('.tent-message-panel').length, 1 , 'div exists'
+	Ember.run ->
+		$.publish('/message', {type:'error', messages:['message1']})
+	equal view.$('.collapse').length, 0, 'not collapsible'
+
+
+test 'Test for showing dropdown button', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.MessagePanel collapsible=true }}'
+		label: 'FooBar'
+
+	appendView()
+	equal view.$('.tent-message-panel').length, 1 , 'div exists'
+	Ember.run ->
+		$.publish('/message', {type:'error', messages:['message1']})
+	equal view.$('.dropdown-toggle').length, 0, 'no dropdown button shown'
+	Ember.run ->
+		$.publish('/message', {type:'error', messages:['message2'], sourceId: 'id1'})
+	equal view.$('.dropdown-toggle').length, 1, 'dropdown button shown'
+	Ember.run ->
+		$.publish('/message', {type:'error', messages:[], sourceId: 'id1'})
+	equal view.$('.dropdown-toggle').length, 0, 'dropdown button removed'
+
+
+
 test 'Exception thrown when no type specified', ->
 	view = Tent.MessagePanel.create()
 	message = Tent.Message.create()
