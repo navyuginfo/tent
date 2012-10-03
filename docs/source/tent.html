@@ -3499,12 +3499,12 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     classNames: ['tent-message-panel'],
     title: null,
 <span id='Tent-MessagePanel-property-collapsible'>    /**
-</span>     	* @property {Boolean} collapsible A booleand indicating that the panel is collapsible
+</span>     	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
     */
 
     collapsible: true,
 <span id='Tent-MessagePanel-property-collapsed'>    /**
-</span>     	* @property {Boolean} collapsed A booleand indicating that the panel is collapsed by default
+</span>     	* @property {Boolean} collapsed A boolean indicating that the panel is collapsed by default
     */
 
     collapsed: true,
@@ -3802,6 +3802,19 @@ GridController
   });
 
 }).call(this);
+
+
+
+<span id='Handlebars-helpers-formatNumber'>/**
+</span>* `formatNumber` allows you to present a numeric value formatted  
+* according to the current locale
+*		
+*		{{formatNumber number}}
+*
+* @class Handlebars.helpers.formatNumber
+* @param {Number} number
+* @returns {String} HTML string
+*/
 
 
 (function() {
