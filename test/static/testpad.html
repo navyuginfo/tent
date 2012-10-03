@@ -171,6 +171,20 @@
 
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
+
+              <h4>jqGrid</h4>
+
+              {{view Tent.JqGrid
+                  label="Tasks"
+                  collectionBinding="Pad.clientSideCollection"
+                  selectionBinding="Pad.gridSelection"
+                  paged=false
+                  pageSize=5
+                  remotePaging=false
+                  multiSelect=false
+                  useColumnFilters=false
+              }}
+
                 <h4>Table</h4>
                 {{view Tent.Table listBinding="Pad.people" 
                   headers="_hName,_hAge" 
