@@ -34,7 +34,7 @@ Tent.JqGrid = Ember.View.extend
 	colNames: (->
 		names = []
 		for column in @get('columns')
-			names.pushObject(column.name)
+			names.pushObject(Tent.I18n.loc(column.name))
 		names
 	).property('columns')
 
