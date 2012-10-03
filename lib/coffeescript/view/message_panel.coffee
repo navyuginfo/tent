@@ -10,13 +10,47 @@ require '../template/message_panel'
  * be displayed dynamically by the MessagePanel. If there are no errors, the panel will be hidden.
  * Each error message will identify the source of the error, if provided, and can also send focus
  * to the source widget when clicked.
+ *
+ * Error messages can also be displayed by explicitly publishing them, setting type='error'
+ *
+ * 			$.publish('/message', {
+ 					type:'error', 
+ 					messages:['Date format incorrect'], 
+ 					sourceId: 'ember13'
+ 					label: 'Date'
+ 			})
+ *
+ * - **type**: The type of message, can be 'error' or 'info'
+ * - **messages**: An array of messages to display
+ * - **sourceId**: If the message refers to a Tent widget, provide the elementId of the widget
+ * so that focus can be transferred to it when the error is clicked
+ * - **label**: The label to display beside the messages for this source
+ *
+ * Each source will be allocated one line in the MessagePanel. If there are no messages for
+ * a source, it will be removed from the MessagePanel. So in effect, to clear the messages for a source, send an
+ * empty messages array
+ * 			
+ * 			$.publish('/message', {
+ 					type:'error', 
+ 					messages:[], 
+ 					sourceId: 'ember13'
+ 			})
  * 
- * Information messages are displayed as-is.
+ * Information messages are displayed as-is, with no linking to source widgets.
+ *
+ * 			$.publish('/message', {
+ 					type:'info', 
+ 					messages:['Please call this number for assistance..']
+ 			})
+ *
+ * If you wish to display more than one message, use different sourceId's in the published message.
  *
  * The default state of the MessagePanel is collapsed and showing the first message. The panel can 
  * be expanded if there is more than one message. The panel can be permanently expanded by setting the 
  * {@link #collapsible} property to false. The default collapse state can be set with the {@link #collapsed}
  * property.
+ *
+ * 
  *
  * ##Usage
  *         {{view Tent.MessagePanel}}
@@ -26,7 +60,15 @@ Tent.MessagePanel = Ember.View.extend
 	templateName: 'message_panel'
 	classNames: ['tent-message-panel']
 	title: null
+
+	###*
+  	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
+  	###
 	collapsible: true
+
+	###*
+  	* @property {Boolean} collapsed A boolean indicating that the panel is collapsed by default
+  	###
 	collapsed: true
 	init: ->
 		@_super()
