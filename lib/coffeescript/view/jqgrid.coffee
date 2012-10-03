@@ -1,7 +1,7 @@
-
+require '../template/jqgrid'
 
 Tent.JqGrid = Ember.View.extend
-	tagName: 'table'
+	templateName: 'jqgrid'
 	collection: null
 	contentBinding: 'collection.modelData'
 	columnsBinding: 'collection.columnsDescriptor'
@@ -12,16 +12,28 @@ Tent.JqGrid = Ember.View.extend
 			throw new Error("Collection must be provided for Tent.JqGrid")
 
 	didInsertElement: ->
-		@$().jqGrid({
+		tableId = @get('elementId') + '_jqgrid'
+		@$('.grid-table').attr('id', tableId)
+		@$('.gridpager').attr('id', @get('elementId') + '_pager')
+		@$('#' + tableId).jqGrid({
 			datatype: "local",
+			data: @get('gridData'),
 			height: 250,
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
 			multiselect: @get('multiselect'),
 			caption: "Testing jsGrid",
+			autowidth: true,
+			sortable: true, #columns can be dragged
+			forceFit: true, #column widths adapt when one is resized
+			rowNum: 12,
+			rowList:[5,10,20],
+			gridview:true,
+			pager: '#' + @get('elementId') + '_pager',
 			onSelectRow: $.proxy(@didSelectRow, @)
 		})
-		@$().jqGrid('addRowData','id', @get('gridData'))
+		#@$('#' + tableId).jqGrid('addRowData','id', @get('gridData'))
+		#@$('.grid-table').trigger('reloadGrid')
 
 	didSelectRow: (rowId, status, e)->
 		@set('selection', @getItemFromModel(rowId))
