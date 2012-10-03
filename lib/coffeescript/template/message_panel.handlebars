@@ -9,7 +9,7 @@
 	  			</div> 
 		  	{{/each}}
 		  	{{#if view.hasMoreThanOneError}}
-				<a href="#" class="dropdown-toggle pull-right" data-toggle="collapse" data-target=".error-expando">
+				<a href="#" class="dropdown-toggle pull-right close" data-toggle="collapse" data-target=".error-expando">
 					<b class="caret"></b></a>
 			{{/if}}
 		</div>
@@ -28,6 +28,7 @@
 
 {{#if view.hasInfos}}
 <div class="alert-info clearfix">
+	{{view Tent.Button label="x" type="link" action="clearInfos" targetBinding="view" class="close"}}
 	<span class="title">Info</span>
 	<div class="info-expando">
 		{{#each view.info}}

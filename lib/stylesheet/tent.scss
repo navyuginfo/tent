@@ -265,12 +265,20 @@ a[rel=tooltip] {
 		font-weight: bold;
 		float:left;
 	}
-	a {
+	
+	.close {
+		position: static
+	}
+
+	a.close, .close .btn {
 		font-size: 12px;
 		color: #333;
 		top: 6px;
 		position: absolute;
 		right: 10px;
+		padding: 0px;
+		border: 0px;
+		background: transparent;
 	}
 	.caret {
 		margin-left: 5px;
