@@ -177,13 +177,15 @@
               {{view Tent.JqGrid
                   label="Tasks"
                   collectionBinding="Pad.clientSideCollection"
-                  selectionBinding="Pad.gridSelection"
+                  selectionBinding="Pad.jqGridSelection"
                   paged=false
                   pageSize=5
                   remotePaging=false
                   multiSelect=false
                   useColumnFilters=false
               }}
+
+              <p>Selected jqGrid Item : {{Pad.jqGridSelection.title}} </p> 
 
                 <h4>Table</h4>
                 {{view Tent.Table listBinding="Pad.people" 

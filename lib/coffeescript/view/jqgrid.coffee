@@ -17,10 +17,18 @@ Tent.JqGrid = Ember.View.extend
 			height: 250,
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
-			multiselect: true,
-			caption: "Testing jsGrid"
+			multiselect: @get('multiselect'),
+			caption: "Testing jsGrid",
+			onSelectRow: $.proxy(@didSelectRow, @)
 		})
-		@$().jqGrid('addRowData','id', @get('gridData'));
+		@$().jqGrid('addRowData','id', @get('gridData'))
+
+	didSelectRow: (rowId, status, e)->
+		@set('selection', @getItemFromModel(rowId))
+
+	getItemFromModel: (id)->
+		for model in @get('content').toArray()
+			return model if model.get('id') == parseInt(id)
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
