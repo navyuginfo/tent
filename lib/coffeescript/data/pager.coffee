@@ -1,8 +1,8 @@
 
 Tent.Data.Pager = Ember.Mixin.create
 	paged: false
-	pageSize: 10
-	_page: 0
+	pageSize: 12
+	_page: 1
 	_totalRows: 27
 
 	init: ->
@@ -11,7 +11,7 @@ Tent.Data.Pager = Ember.Mixin.create
 
 	currentPage: ((key, value) ->
 		if arguments.length == 1
-			if @isValidPage(@get('_page')) then @get('_page') else 0
+			if @isValidPage(@get('_page')) then @get('_page') else 1
 		else
 			@set('_page', value) unless !@isValidPage(value)
 			@get('_page')

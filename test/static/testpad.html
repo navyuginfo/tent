@@ -179,10 +179,10 @@
 
               {{view Tent.JqGrid
                   label="Tasks"
-                  collectionBinding="Pad.clientSideCollection"
+                  collectionBinding="Pad.jqRemoteCollection"
                   selectionBinding="Pad.jqGridSelection"
                   paged=true
-                  pageSize=5
+                  pageSize=6
                   remotePaging=false
                   multiSelect=true
                   useColumnFilters=false
@@ -230,7 +230,7 @@
                   collectionBinding="Pad.clientSideCollection"
                   selectionBinding="Pad.gridSelection"
                   paged=true
-                  pageSize=5
+                  pageSize=12
                   remotePaging=false
                   multiSelect=false
                   useColumnFilters=true
@@ -252,7 +252,7 @@
                   collectionBinding="Pad.remoteCollection"
                   selectionBinding="Pad.gridRemoteSelection"
                   paged=true
-                  pageSize=5
+                  pageSize=12
                   remotePaging=true
                   multiSelect=false
                   useColumnFilters=false
@@ -270,7 +270,7 @@
                   collectionBinding="Pad.remoteMultiselectCollection"
                   selectionBinding="Pad.gridRemoteSelectionMultiple"
                   paged=true
-                  pageSize=5
+                  pageSize=12
                   remotePaging=true
                   multiSelect=true
                   useColumnFilters=false

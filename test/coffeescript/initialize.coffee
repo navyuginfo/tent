@@ -43,7 +43,7 @@
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
 	Pad.jqGridSelection = []
-	
+
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
 			title: "Task 2",
@@ -72,6 +72,13 @@
 			finish: new Date("01/05/2009"),
 			effortDriven: 1
 	})]
+
+
+	Pad.jqRemoteCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: true
+
 
 	Pad.remoteCollection = Tent.Data.Collection.create
 		store: Pad.dataStore

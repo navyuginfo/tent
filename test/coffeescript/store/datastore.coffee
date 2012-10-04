@@ -47,10 +47,10 @@ Pad.DataStore = Ember.Object.extend
 		if !paging?
 			return modelData
 
-		start = (paging.pageNum) * paging.pageSize
+		start = (paging.pageNum-1) * paging.pageSize
 		if (start > modelData.length) 
 			start = 0
-			paging.pageNum = 0
+			paging.pageNum = 1
 		end = start + paging.pageSize - 1
 		if (end > modelData.length) then end = modelData.length 
 		return modelData[start..end]
