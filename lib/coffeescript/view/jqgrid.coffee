@@ -47,7 +47,7 @@ Tent.JqGrid = Ember.View.extend
 				data = p.data
 				$this = $(this)
 				index = p._index
-				for rowid in index
+				for rowid of index
 					item = data[index[rowid]]
 					if typeof (item.cb) == "boolean" && item.cb
 						$this.jqGrid('setSelection', rowid, false)
