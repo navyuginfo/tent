@@ -42,6 +42,8 @@
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
+	Pad.jqGridSelection = []
+	
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
 			title: "Task 2",
