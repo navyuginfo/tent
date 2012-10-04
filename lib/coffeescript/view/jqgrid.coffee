@@ -3,6 +3,7 @@ require '../template/jqgrid'
 Tent.JqGrid = Ember.View.extend
 	templateName: 'jqgrid'
 	collection: null
+	paged: true
 	pageSize: 12
 	remotePaging: false
 	pagingData: 
@@ -19,7 +20,8 @@ Tent.JqGrid = Ember.View.extend
 		@_super()
 		if not @get('collection')?
 			throw new Error("Collection must be provided for Tent.JqGrid")
-		@get('collection').set('pageSize', @get('pageSize'))
+		if @get('paged')
+			@get('collection').set('pageSize', @get('pageSize'))
 
 	didInsertElement: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -27,19 +29,10 @@ Tent.JqGrid = Ember.View.extend
 		@$('.gridpager').attr('id', @get('elementId') + '_pager')
 		widget = @
 		@$('#' + @get('tableId')).jqGrid({
-			#datatype: "json",
 			datatype: (postdata) ->
 				#	_search: false,	nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
 				widget.get('pagingData').page = postdata.page
 				widget.get('collection').goToPage(postdata.page)
-
-
-				#widget.$('#' + widget.get('tableId')).jqGrid('clearGridData')
-				#widget.$('#' + widget.get('tableId')).setGridParam({lastpage: 3})
-				#widget.$('#' + widget.get('tableId')).jqGrid('addRowData','id',widget.get('gridData'))
-				#widget.$('#' + widget.get('tableId')).setGridParam({data: widget.get('gridData')})
-
-			#data: @get('gridData'),
 			height: 250,
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
@@ -48,20 +41,11 @@ Tent.JqGrid = Ember.View.extend
 			autowidth: true,
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
-			rowNum: 12 if @get('paged'),
+			rowNum: @get('pageSize') if @get('paged'),
 			gridview:true,
 			pager: '#' + @get('elementId') + '_pager' if @get('paged'),
-			onSelectRow: (id, status, e) ->
-				if !widget.get('remotePaging')
-					p = this.p
-					item = p.data[p._index[id]]
-					if typeof item.sel == "undefined"
-						item.sel = true
-					else
-						item.sel = !item.sel
-					
-					widget.didSelectRow(id, p._index[id],  status, e)
-				
+			onSelectRow: (itemId, status, e) ->
+				widget.didSelectRow(itemId, status, e)
 			,
 			loadComplete: () ->
 				widget.highlightRows(@)
@@ -69,24 +53,22 @@ Tent.JqGrid = Ember.View.extend
 		@get('collection').goToPage(1)
 
 	highlightRows: (grid)->
-		p = grid.p
-		data = p.data
-		$this = $(grid)
-		index = p._index
-		for rowid of index
-			item = data[index[rowid]]
-			if typeof (item.sel) == "boolean" && item.sel
-				$this.jqGrid('setSelection', rowid, false)
-
-
-	didSelectRow: (itemId, rownum, status, e)->
-		if status #status indicates whether the row is being selected or unselected
+		for item in @get('selectedIds')
+			$(grid).jqGrid('setSelection', item, false)
+ 
+	didSelectRow: (itemId, status, e)->
+		if !@get('multiSelect')
+			@get('selectedIds').clear()
+			@get('selection').clear()
 			@get('selectedIds').pushObject(itemId)
 			@get('selection').pushObject(@getItemFromModel(itemId))
 		else 
-			@get('selectedIds').removeObject(itemId)
-			@get('selection').removeObject(@getItemFromModel(itemId))
-		
+			if status #status indicates whether the row is being selected or unselected
+				@get('selectedIds').pushObject(itemId)
+				@get('selection').pushObject(@getItemFromModel(itemId))
+			else 
+				@get('selectedIds').removeObject(itemId)
+				@get('selection').removeObject(@getItemFromModel(itemId))
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
@@ -141,7 +123,7 @@ Tent.JqGrid = Ember.View.extend
 		#$.extend(data, @get('pagingData'))
 			
 		@$('#' + @get('tableId'))[0].addJSONData(data)
-		#@highlightRows(@$('#' + @get('tableId')).get(0))
+		@highlightRows(@$('#' + @get('tableId')).get(0))
 	).observes('content')
 
  
