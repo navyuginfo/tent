@@ -47,6 +47,9 @@ Tent.JqGrid = Ember.View.extend
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
+			onSelectAll: (rowIds, status) ->
+				widget.didSelectAll(rowIds, status)
+			,
 			loadComplete: () ->
 				widget.highlightRows(@)
 		})
@@ -55,7 +58,21 @@ Tent.JqGrid = Ember.View.extend
 	highlightRows: (grid)->
 		for item in @get('selectedIds')
 			$(grid).jqGrid('setSelection', item, false)
- 
+
+		if @allRowsAreSelected(grid)
+			grid.setHeadCheckBox(true)
+		else
+			grid.setHeadCheckBox(false)
+
+	allRowsAreSelected: (grid) ->
+		# Check for state of selectAll checkbox
+		selectedIds = @get('selectedIds')
+		allSelected = true
+		for id in $(grid).jqGrid('getDataIDs')
+			if !selectedIds.contains(id)
+				allSelected = false
+		allSelected
+
 	didSelectRow: (itemId, status, e)->
 		if !@get('multiSelect')
 			@get('selectedIds').clear()
@@ -69,6 +86,17 @@ Tent.JqGrid = Ember.View.extend
 			else 
 				@get('selectedIds').removeObject(itemId)
 				@get('selection').removeObject(@getItemFromModel(itemId))
+
+	didSelectAll: (rowIds, status) ->
+		for id in rowIds
+			if status
+				@get('selectedIds').pushObject(id) if !@get('selectedIds').contains(id)
+				modelItem = @getItemFromModel(id)
+				@get('selection').pushObject(modelItem) if !@get('selection').contains(modelItem)
+			else 
+				@get('selectedIds').removeObject(id)
+				@get('selection').removeObject(@getItemFromModel(id))
+
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
