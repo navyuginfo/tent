@@ -14,7 +14,11 @@ Tent.FileUpload = Ember.View.extend
 
   upload: ->
     @get('selectedFiles').forEach (file) =>
-      file.submit().success(@get('uploadSuccessFunction') || ->)
+      file.submit().success( (result, textStatus, jqXHR) =>
+        context = @get('parentView.controller')
+        args = Array.prototype.slice.call(arguments)
+        args.unshift(context) if context
+        (@get('uploadSuccessFunction') || ->).apply(args) )
 
   addFile: (e, data) -> @get('selectedFiles').pushObject(data)
 
