@@ -1,15 +1,30 @@
 require '../template/jqgrid'
 
+###*
+* @class Tent.JqGrid
+* @extends Ember.View
+*
+* ##Usage
+*		{{view Tent.JqGrid
+                  label="Tasks"
+                  collectionBinding="Pad.tasksCollection"
+                  selectionBinding="Pad.selectedTasks"
+                  paged=true
+                  pageSize=6           
+                  multiSelect=true             
+              }}
+*
+*
+###
+
 Tent.JqGrid = Ember.View.extend
 	templateName: 'jqgrid'
 	collection: null
 	paged: true
 	pageSize: 12
-	remotePaging: false
 	pagingData: 
-		records: 27
-		total: 3
 		page: 1 
+	sortingData: {}
 	selectedIds: []
 	contentBinding: 'collection.modelData'
 	columnsBinding: 'collection.columnsDescriptor'
@@ -31,8 +46,19 @@ Tent.JqGrid = Ember.View.extend
 		@$('#' + @get('tableId')).jqGrid({
 			datatype: (postdata) ->
 				#	_search: false,	nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
-				widget.get('pagingData').page = postdata.page
-				widget.get('collection').goToPage(postdata.page)
+				if postdata.sidx!="" and (postdata.sidx != widget.get('sortingData').field or postdata.sord != widget.get('sortingData').asc)
+					widget.get('collection').sort(
+						fields: [
+							sortAsc: postdata.sord=="asc"
+							field: postdata.sidx
+						])
+				else 
+					widget.get('pagingData').page = postdata.page
+					widget.get('collection').goToPage(postdata.page)
+
+				widget.get('sortingData').field = postdata.sidx
+				widget.get('sortingData').asc = postdata.sord
+				
 			height: 250,
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
