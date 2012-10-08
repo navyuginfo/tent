@@ -123,12 +123,15 @@ Tent.JqGrid = Ember.View.extend
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
 			multiselect: @get('multiSelect'),
-			caption: @get('title'),
+			caption: @get('title'), 
 			autowidth: true,
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
+			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
+			cellEdit: true,
+			cellsubmit: 'clientArray',
 			pager: '#' + @get('elementId') + '_pager' if @get('paged'),
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
@@ -138,6 +141,9 @@ Tent.JqGrid = Ember.View.extend
 			,
 			loadComplete: () ->
 				widget.highlightRows(@)
+			,
+			afterSaveCell: (rowId, cellName, value, iRow, iCell) ->
+				widget.saveEditedCell(rowId, cellName, value, iRow, iCell)
 		})
 
 	onPageOrSort: (postdata)->
@@ -212,6 +218,14 @@ Tent.JqGrid = Ember.View.extend
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
 
+	saveEditedCell: (rowId, cellName, value, iRow, iCell) ->
+		# Need to unformat/validate the value before saving 
+		#cell = @getTableDom().getCell(rowId, iCell)
+		formatter = this.getTableDom().getColProp(cellName).formatter
+		if formatter?
+			@getItemFromModel(rowId).set(cellName, Tent.Formatting[formatter].unformat(value))
+
+
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
 		names = []
@@ -228,7 +242,11 @@ Tent.JqGrid = Ember.View.extend
 				name: column.name
 				index: column.name
 				align: column.align
+				editable: column.editable
 				formatter: column.formatter
+				edittype: Tent.JqGrid.editTypes[column.formatter]? 'text'
+				editoptions: Tent.JqGrid.editOptions[column.formatter]? {}
+				editrules: Tent.JqGrid.editRules[column.formatter]? {}
 				width: 50
 			columns.pushObject(item)
 		columns

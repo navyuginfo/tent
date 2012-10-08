@@ -60,6 +60,9 @@ Tent.Formatting.number = Ember.Object.create
 	isValidNumber: (value)->
 		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 
 
+	errorText: ->
+		Tent.I18n.loc 'formatting.number'
+
 	format: (value) ->
 		if (typeof value == 'number') or value == ''
 			value.toString(10)

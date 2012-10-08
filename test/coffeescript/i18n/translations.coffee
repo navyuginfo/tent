@@ -45,4 +45,7 @@ Tent.translations =
 	_hStart: 'Start'
 	_hFinish: 'Finish'
 	_hEffortDriven: 'Effort Driven'
+	formatting: {
+		number: 'Please provide a valid number.'
+	}
 	
