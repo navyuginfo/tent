@@ -40,6 +40,11 @@ Tent.JqGrid = Ember.View.extend
 		if @get('paged')
 			@get('collection').set('pageSize', @get('pageSize'))
 
+		@set('selectedIds', @get('selection').map((item, index)->
+			 	"" + item.get('id')
+			).uniq()
+		)
+
 	didInsertElement: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
 		@$('.grid-table').attr('id', @get('tableId'))
@@ -113,17 +118,27 @@ Tent.JqGrid = Ember.View.extend
 				@get('selection').pushObject(@getItemFromModel(itemId))
 			else 
 				@get('selectedIds').removeObject(itemId)
-				@get('selection').removeObject(@getItemFromModel(itemId))
+				#@get('selection').removeObject(@getItemFromModel(itemId))
+
+				@set('selection', @get('selection').filter((item, index)->
+						item.get('id') != parseInt(itemId)
+					)
+				)
 
 	didSelectAll: (rowIds, status) ->
 		for id in rowIds
 			if status
-				@get('selectedIds').pushObject(id) if !@get('selectedIds').contains(id)
-				modelItem = @getItemFromModel(id)
-				@get('selection').pushObject(modelItem) if !@get('selection').contains(modelItem)
+				if !@get('selectedIds').contains(id)
+					@get('selectedIds').pushObject(id)
+					modelItem = @getItemFromModel(id)
+					@get('selection').pushObject(modelItem) 
 			else 
 				@get('selectedIds').removeObject(id)
-				@get('selection').removeObject(@getItemFromModel(id))
+				#@get('selection').removeObject(@getItemFromModel(id))
+				@set('selection', @get('selection').filter((item, index)->
+						item.get('id') != parseInt(id)
+					)
+				)
 
 
 	getItemFromModel: (id)->
@@ -158,7 +173,7 @@ Tent.JqGrid = Ember.View.extend
 		grid = []
 		for model in models
 			item = {"id" : model.get('id')}
-			if @get('selection').contains(model)
+			if @get('selectedIds').contains(model.get('id'))
 				item.sel = true
 			cell = []
 			for column in @get('colModel')

@@ -43,7 +43,17 @@
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
-	Pad.jqGridSelection = []
+	Pad.jqGridSelection = [
+		Ember.Object.create
+			id: 53,
+			title: "Task 3",
+			amount: 123456.789,
+			duration: "7 days",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+	]
 
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
