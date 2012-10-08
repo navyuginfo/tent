@@ -15,16 +15,30 @@ accounting.settings =
 Tent.Formatting = {} unless Tent.Formatting?
 
 Tent.Formatting.amount = 
-	format: (amount) ->
+	format: (amount, settings) ->
 		if amount? and amount != ""
-			accounting.formatNumber(amount)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.formatNumber(amount, settings) 
+			else 
+				accounting.formatNumber(amount)
 		else
 			""
-	unformat: (amount) ->
+	unformat: (amount, settings) ->
 		if amount? and amount !=""
-			accounting.unformat(amount)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.unformat(amount, settings)
+			else
+				accounting.unformat(amount)
 		else 
 			null
+
+	settingsFilter: (rawSettings) ->
+		rawSettings
+
+	cssClass: ->
+		"amount"
 
 Tent.Formatting.date = Ember.Object.create
 	options: 
@@ -39,6 +53,8 @@ Tent.Formatting.date = Ember.Object.create
 	unformat: (value, dateFormat) ->
 		$.datepicker.parseDate(dateFormat or @getFormat(), value)
 
+	cssClass: ->
+		"date"
 
 Tent.Formatting.number = Ember.Object.create
 	isValidNumber: (value)->
@@ -59,3 +75,6 @@ Tent.Formatting.number = Ember.Object.create
 			return null
 		else 
 			value
+
+	cssClass: ->
+		"amount"

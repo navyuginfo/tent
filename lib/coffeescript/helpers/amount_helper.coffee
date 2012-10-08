@@ -9,5 +9,6 @@
 * @returns {String} HTML string
 ###
 
-Ember.Handlebars.registerHelper 'formatAmount', (context, options) ->
-	return Tent.Formatting.amount.format(Ember.get(context))
+Ember.Handlebars.registerHelper 'formatAmount', (property, options) ->
+	amount = Tent.Handlebars.getPath(property, options)
+	return Tent.Formatting.amount.format(amount, options.hash)

@@ -174,10 +174,15 @@ test 'Ensure aria attributes are applied ', ->
     app: Application
     template: Ember.Handlebars.compile '{{view Tent.Select 
                           listBinding="app.content" 
-                          required=true
+                          required=true  hasErrors=true hasHelpBlock=true
                           }}'
   appendView()
   equal view.$('select[required=required]').length, 1, 'required html attribute'
   equal view.$('select[aria-required=true]').length, 1, 'Aria-required'
 
+  viewId = view.$('select').parents('.tent-select:first').attr('id')
+  equal view.$('select[aria-describedby]').length, 1, 'described-by'
+  equal view.$('select').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
+  equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
+  equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
 

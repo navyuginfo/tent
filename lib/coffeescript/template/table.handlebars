@@ -1,5 +1,13 @@
 <thead>
-	{{#if view.isEditable}} <th></th> {{/if}}
+	{{#if view.isEditable}}
+    {{#if view.multiselection}} 
+      <th>
+        {{view Ember.Checkbox nameBinding="view.elementId" checkedBinding="view.allSelected"}}
+      </th>
+    {{else}}
+      <th></th>
+    {{/if}} 
+  {{/if}}
 	{{collection contentBinding="view.visibleHeaders" itemViewClass="Tent.TableHeader"}}
 </thead>
 {{collection contentBinding="view.list" tagName="tbody" itemViewClass="Tent.TableRow"}}

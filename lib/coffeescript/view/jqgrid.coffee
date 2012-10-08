@@ -19,14 +19,16 @@ require '../template/jqgrid'
 
 Tent.JqGrid = Ember.View.extend
 	templateName: 'jqgrid'
+	classNames: ['tent-jqgrid']
 	collection: null
+	title: null
 	paged: true
 	pageSize: 12
 	pagingData: 
 		page: 1 
 	sortingData: {}
 	selectedIds: []
-	contentBinding: 'collection.modelData'
+	contentBinding: 'collection'
 	columnsBinding: 'collection.columnsDescriptor'
 	totalRowsBinding: 'collection.totalRows'
 	totalPagesBinding: 'collection.totalPages'
@@ -59,11 +61,11 @@ Tent.JqGrid = Ember.View.extend
 				widget.get('sortingData').field = postdata.sidx
 				widget.get('sortingData').asc = postdata.sord
 				
-			height: 250,
+			height: 'auto',
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
 			multiselect: @get('multiSelect'),
-			caption: "Testing jsGrid",
+			caption: @get('title'),
 			autowidth: true,
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
@@ -132,7 +134,7 @@ Tent.JqGrid = Ember.View.extend
 	colNames: (->
 		names = []
 		for column in @get('columns')
-			names.pushObject(Tent.I18n.loc(column.name))
+			names.pushObject(Tent.I18n.loc(column.title))
 		names
 	).property('columns')
 
@@ -141,10 +143,11 @@ Tent.JqGrid = Ember.View.extend
 		columns = []
 		for column in @get('columns')
 			item = 
-				name: column.field
-				index: column.field
-				width: 50
+				name: column.name
+				index: column.name
 				align: column.align
+				formatter: column.formatter
+				width: 50
 			columns.pushObject(item)
 		columns
 	).property('columns')
@@ -178,7 +181,7 @@ Tent.JqGrid = Ember.View.extend
 			
 		@$('#' + @get('tableId'))[0].addJSONData(data)
 		@highlightRows(@$('#' + @get('tableId')).get(0))
-	).observes('content')
+	).observes('content', 'content.isLoaded', 'content.@each')
 
  
 

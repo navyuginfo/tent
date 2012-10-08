@@ -17,26 +17,19 @@ Pad.DataStore = Ember.Object.extend
 	
 	getColumnsForType: ->
 		[
-			{id: "id", name: "_hID", field: "id", sortable: true},
-			{id: "title", name: "_hTitle", field: "title", sortable: true},
-			{id: "duration", name: "_hDuration", field: "duration.test", sortable: true},
-			{id: "%", name: "_hPercentComplete", field: "percentComplete"},
-			{id: "start", name: "_hStart", field: "start", formatter: Tent.Formatters.Date},
-			{id: "finish", name: "_hFinish", field: "finish"},
-			{id: "effort-driven", name: "_hEffortDriven", field: "effortDriven"}
+			{id: "id", name: "id", title: "_hID", field: "id", sortable: true},
+			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true},
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", sortable: true, formatter: "amount",  align: 'right'},
+			{id: "duration", name: "duration", title: "_hDuration",field: "duration", sortable: true, align: 'right'},
+			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete"},
+			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven"},
+			{id: "start", name: "start", title: "_hStart",field: "start", formatter: "date"},
+			{id: "finish", name: "finish", title: "_hFinish",field: "finish"}
+			
 		]
 
 	queryFixtures: (modelData, query) ->
 		data = []
-		###switch query.type
-			when 'paging'
-				# do paging optimizations here
-			when 'sorting'
-				# do sorting optimizations here
-			when 'filtering'
-
-			else
-		###
 		filteredData = @doFilter(modelData, query.filtering)
 		sortedData = @doSort(filteredData, query.sorting)
 		query.paging.totalRows = filteredData.length
