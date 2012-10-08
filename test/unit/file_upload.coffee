@@ -57,3 +57,25 @@ test(
       "data should have been removed from array"
     )
 )
+
+test(
+  'successWrapper should return a function callable with context',
+  ->
+    view = Ember.View.create
+      template: Ember.Handlebars.compile '{{view Tent.FileUpload dataUrl="/fileupload"}}'
+
+    appendView()
+
+    context = {}
+
+    success = (result, textStatus, jqXHR) -> @
+
+    upload = Tent.FileUpload.create()
+
+    upload.set 'uploadSuccessFunction', success
+
+    ok(
+      upload.successWrapper(context)() == context,
+      "data should have been removed from array"
+    )
+)
