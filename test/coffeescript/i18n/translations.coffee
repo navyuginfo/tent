@@ -26,6 +26,7 @@ Tent.translations =
 	_modalHeader: 'My Heading'
 	_ok: 'OK'
 	_cancel: 'Cancel'
+	_close: 'Close'
 	_radio: 'Radio'
 	_georgia: 'Georgia'
 	_arkansas: 'Arkansas'
@@ -47,5 +48,10 @@ Tent.translations =
 	_hEffortDriven: 'Effort Driven'
 	formatting: {
 		number: 'Please provide a valid number.'
+	}
+	jqGrid: {
+		hideShowAlt: 'Hide/Show Columns'
+		hideShowCaption: 'Columns'
+		hideShowTitle: 'Hide/Show Columns'
 	}
 	

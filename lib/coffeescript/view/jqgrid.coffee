@@ -235,11 +235,20 @@ Tent.JqGrid = Ember.View.extend
 		tableDom = this.getTableDom()
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
 		tableDom.jqGrid('navButtonAdd', @getPagerId(), {
-			ShrinkToFit: true,
-			recreateForm: true,
-			updateAfterCheck: true,
+			caption: Tent.I18n.loc("jqGrid.hideShowCaption"),
+			title: Tent.I18n.loc("jqGrid.hideShowAlt"),
+			
 			onClickButton : () ->
-				tableDom.jqGrid('setColumns')
+				tableDom.jqGrid('setColumns',{
+					caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
+					bCancel: Tent.I18n.loc("_close"),
+					ShrinkToFit: true,
+					recreateForm: true,
+					updateAfterCheck: true,
+					colnameview: false,
+					top: 30,
+					width: 300
+				})
 		})	 
 
 	# Adapter to get column names from current datastore columndescriptor version  

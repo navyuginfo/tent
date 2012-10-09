@@ -228,6 +228,37 @@ a[rel=tooltip] {
 	.ui-jqgrid tr.jqgrow td {
 		white-space: normal;
 	}
+	label {
+		display: inline-block;
+		font-size: 13px;
+		margin-left: 10px;
+	}
+
+	table.ColTable {
+		width: 100%;
+		color: white;
+	}
+
+	.ui-widget .ui-widget {
+		font-size: .8em;
+	}
+
+	.ui-jqdialog {
+		background: rgba(19, 36, 43, 0.862745);
+		outline: none;
+		
+		.ui-jqdialog-titlebar {
+			padding: .2em .2em;
+		}
+
+		.DataTD {
+			display: none;
+		}
+	}
+
+	.fm-button {
+		padding: 0 .5em 0 1.5em;
+	}
 }
 
 
