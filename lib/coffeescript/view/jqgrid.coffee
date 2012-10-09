@@ -114,6 +114,9 @@ Tent.JqGrid = Ember.View.extend
 	getTableDom: ->
 		@$('#' + @get('tableId'))
 
+	getPagerId: ->
+		'#' + @get('elementId') + '_pager'
+
 	buildGrid: ->
 		widget = @
 		@getTableDom().jqGrid({
@@ -132,7 +135,8 @@ Tent.JqGrid = Ember.View.extend
 			gridview: true,
 			cellEdit: true,
 			cellsubmit: 'clientArray',
-			pager: '#' + @get('elementId') + '_pager' if @get('paged'),
+			#scroll: true,
+			pager: @getPagerId() if @get('paged'),
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -145,6 +149,8 @@ Tent.JqGrid = Ember.View.extend
 			afterSaveCell: (rowId, cellName, value, iRow, iCell) ->
 				widget.saveEditedCell(rowId, cellName, value, iRow, iCell)
 		})
+
+		@addNavigationBar()
 
 	onPageOrSort: (postdata)->
 		#	postdata is of the form:
@@ -225,6 +231,16 @@ Tent.JqGrid = Ember.View.extend
 		if formatter?
 			@getItemFromModel(rowId).set(cellName, Tent.Formatting[formatter].unformat(value))
 
+	addNavigationBar: ->
+		tableDom = this.getTableDom()
+		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
+		tableDom.jqGrid('navButtonAdd', @getPagerId(), {
+			ShrinkToFit: true,
+			recreateForm: true,
+			updateAfterCheck: true,
+			onClickButton : () ->
+				tableDom.jqGrid('setColumns')
+		})	 
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -248,6 +264,7 @@ Tent.JqGrid = Ember.View.extend
 				editoptions: Tent.JqGrid.editOptions[column.formatter]? {}
 				editrules: Tent.JqGrid.editRules[column.formatter]? {}
 				width: 50
+				hidedlg: true if column.hideable == false
 			columns.pushObject(item)
 		columns
 	).property('columns')

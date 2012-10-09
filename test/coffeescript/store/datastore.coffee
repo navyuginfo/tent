@@ -17,14 +17,14 @@ Pad.DataStore = Ember.Object.extend
 	
 	getColumnsForType: ->
 		[
-			{id: "id", name: "id", title: "_hID", field: "id", sortable: true},
-			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true},
-			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: true, sortable: true, formatter: "amount",  align: 'right' },
+			{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
+			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true, hideable: false},
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: true, hideable: false, sortable: true, formatter: "amount",  align: 'right' },
 			{id: "duration", name: "duration", title: "_hDuration",field: "duration", sortable: true, align: 'right'},
 			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete"},
 			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven"},
 			{id: "start", name: "start", title: "_hStart",field: "start", formatter: "date"},
-			{id: "finish", name: "finish", title: "_hFinish",field: "finish"}
+			{id: "finish", name: "finish", title: "_hFinish",field: "finish", hideable: true}
 			
 		]
 
