@@ -70,6 +70,12 @@ Tent.JqGrid = Ember.View.extend
 	###
 	multiSelect: false
 
+	###*
+	* @property {Boolean} showColumnChooser Display an button at the bottom of the grid which presents
+	* a dialog to show/hide columns.
+	###
+	showColumnChooser: true
+
 	pagingData: 
 		page: 1 
 	sortingData: {}
@@ -234,22 +240,25 @@ Tent.JqGrid = Ember.View.extend
 	addNavigationBar: ->
 		tableDom = this.getTableDom()
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
-		tableDom.jqGrid('navButtonAdd', @getPagerId(), {
-			caption: Tent.I18n.loc("jqGrid.hideShowCaption"),
-			title: Tent.I18n.loc("jqGrid.hideShowAlt"),
-			
-			onClickButton : () ->
-				tableDom.jqGrid('setColumns',{
-					caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
-					bCancel: Tent.I18n.loc("_close"),
-					ShrinkToFit: true,
-					recreateForm: true,
-					updateAfterCheck: true,
-					colnameview: false,
-					top: 30,
-					width: 300
-				})
-		})	 
+
+		if @get('showColumnChooser')
+			tableDom.jqGrid('navButtonAdd', @getPagerId(), {
+				caption: Tent.I18n.loc("jqGrid.hideShowCaption"),
+				title: Tent.I18n.loc("jqGrid.hideShowAlt"),
+				
+				onClickButton : () ->
+					tableDom.jqGrid('setColumns',{
+						caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
+						bCancel: Tent.I18n.loc("_close"),
+						ShrinkToFit: true,
+						recreateForm: true,
+						updateAfterCheck: true,
+						colnameview: false,
+						top: 30,
+						width: 300
+					})
+			})
+		
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
