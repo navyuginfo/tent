@@ -12230,13 +12230,14 @@ $.jgrid.extend({
 					$(":input","#"+dtbl).click(function(e){
 						var cn = this.id.substr(4);
 						if(cn){
+							gridWidth = $t.grid.width;
 							if(this.checked) {
 								$($t).jqGrid("showCol",cn);
 							} else {
 								$($t).jqGrid("hideCol",cn);
 							}
 							if(p.ShrinkToFit===true) {
-								$($t).jqGrid("setGridWidth",$t.grid.width-0.001,true);
+								$($t).jqGrid("setGridWidth",gridWidth-0.001,true);
 							}
 						}
 						return this;

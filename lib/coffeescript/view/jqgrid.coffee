@@ -258,7 +258,6 @@ Tent.JqGrid = Ember.View.extend
 						width: 300
 					})
 			})
-		
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
