@@ -9,7 +9,7 @@ require '../template/jqgrid'
 * 	
 * - columnsDescriptor: an array of descriptor objects defining the columns to be displayed
 * 			e.g. [
-				{id: "id", name: "id", title: "_hID", field: "id", sortable: true},
+				{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
 				{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true},
 				{id: "amount", name: "amount", title: "_hAmount", field: "amount", sortable: true, formatter: "amount",  align: 'right'},
 			]
@@ -72,7 +72,8 @@ Tent.JqGrid = Ember.View.extend
 
 	###*
 	* @property {Boolean} showColumnChooser Display an button at the bottom of the grid which presents
-	* a dialog to show/hide columns.
+	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
+	* in this dialog
 	###
 	showColumnChooser: true
 
@@ -132,7 +133,7 @@ Tent.JqGrid = Ember.View.extend
 			colNames: @get('colNames'),
 			colModel: @get('colModel'),
 			multiselect: @get('multiSelect'),
-			caption: @get('title'), 
+			caption: Tent.I18n.loc(@get('title')) if @get('title')?, 
 			autowidth: true,
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
@@ -242,11 +243,12 @@ Tent.JqGrid = Ember.View.extend
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
 
 		if @get('showColumnChooser')
-			tableDom.jqGrid('navButtonAdd', @getPagerId(), {
-				caption: Tent.I18n.loc("jqGrid.hideShowCaption"),
-				title: Tent.I18n.loc("jqGrid.hideShowAlt"),
-				
-				onClickButton : () ->
+			# Ensure that the caption header is displayed
+			if not @get('title')?
+				tableDom.setCaption('&nbsp;')
+
+			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.hideShowCaption") + '</a>')
+			@$('a.column-chooser').click(() ->
 					tableDom.jqGrid('setColumns',{
 						caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
 						bCancel: Tent.I18n.loc("_close"),
@@ -254,10 +256,10 @@ Tent.JqGrid = Ember.View.extend
 						recreateForm: true,
 						updateAfterCheck: true,
 						colnameview: false,
-						top: 30,
+						top: 60,
 						width: 300
 					})
-			})
+			)
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -281,6 +283,7 @@ Tent.JqGrid = Ember.View.extend
 				editoptions: Tent.JqGrid.editOptions[column.formatter]? {}
 				editrules: Tent.JqGrid.editRules[column.formatter]? {}
 				width: 50
+				position: "right"
 				hidedlg: true if column.hideable == false
 			columns.pushObject(item)
 		columns
