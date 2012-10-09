@@ -17,7 +17,7 @@ Tent.I18n = Ember.Namespace.create
 	###
 	loadTranslations: (translations)->
 		if translations?
-			@set('language', translations)
+			@set('language', $.extend(@get('language'), translations))
 
 	translate: (code) ->
 		#Stubbed
@@ -34,3 +34,11 @@ Tent.I18n = Ember.Namespace.create
 		Ember.String.fmt(string, vars)
 
 Tent.translate = Tent.I18n.translate
+
+Tent.I18n.loadTranslations(
+	jqGrid: {
+		hideShowAlt: 'Hide/Show Columns'
+		hideShowCaption: 'Columns'
+		hideShowTitle: 'Hide/Show Columns'
+	}
+)

@@ -49,9 +49,5 @@ Tent.translations =
 	formatting: {
 		number: 'Please provide a valid number.'
 	}
-	jqGrid: {
-		hideShowAlt: 'Hide/Show Columns'
-		hideShowCaption: 'Columns'
-		hideShowTitle: 'Hide/Show Columns'
-	}
+
 	

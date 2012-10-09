@@ -140,8 +140,9 @@ Tent.JqGrid = Ember.View.extend
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
-			cellEdit: true,
-			cellsubmit: 'clientArray',
+			#cellEdit: true,
+			#cellsubmit: 'clientArray',
+			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
 			onSelectRow: (itemId, status, e) ->
@@ -209,12 +210,31 @@ Tent.JqGrid = Ember.View.extend
 			else 
 				@get('selectedIds').removeObject(itemId)
 				@removeItemFromSelection(itemId)
+
+		@handleEditableRows(itemId, status, e)		
 				
 	removeItemFromSelection: (id)->
 		@set('selection', @get('selection').filter((item, index)->
 				item.get('id') != parseInt(id)
 			)
 		)
+
+	handleEditableRows: (itemId, status, e) ->
+		widget = @
+		if not @get('multiSelect')
+			if itemId != @get('lastSelectedRowId')
+				@getTableDom().jqGrid('restoreRow', @get('lastSelectedRowId'))
+				@getTableDom().jqGrid('editRow', itemId, true)
+				@set('lastSelectedRowId', itemId)
+		else
+			if @get('selectedIds').contains(itemId) 
+				@getTableDom().jqGrid('editRow', itemId, {
+					keys: true
+					aftersavefunc: (rowId, status, options) ->
+						widget.saveEditedRow(rowId, status, options)
+				})
+			else
+				@getTableDom().jqGrid('restoreRow', itemId)
 
 	didSelectAll: (rowIds, status) ->
 		for id in rowIds
@@ -231,15 +251,25 @@ Tent.JqGrid = Ember.View.extend
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
 
+	saveEditedRow: (rowId, status, options)->
+		rowData = @getTableDom().getRowData(rowId)
+		colModel = this.getTableDom().getGridParam('colModel')
+		for col in colModel
+			if col.editable 
+				@saveEditedCell(rowId, col.name, rowData[col.name])
+
+
 	saveEditedCell: (rowId, cellName, value, iRow, iCell) ->
 		# Need to unformat/validate the value before saving 
 		#cell = @getTableDom().getCell(rowId, iCell)
-		formatter = this.getTableDom().getColProp(cellName).formatter
+		formatter = @getTableDom().getColProp(cellName).formatter
 		if formatter?
 			@getItemFromModel(rowId).set(cellName, Tent.Formatting[formatter].unformat(value))
+		else 
+			@getItemFromModel(rowId).set(cellName, value)
 
 	addNavigationBar: ->
-		tableDom = this.getTableDom()
+		tableDom = @getTableDom()
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
 
 		if @get('showColumnChooser')
