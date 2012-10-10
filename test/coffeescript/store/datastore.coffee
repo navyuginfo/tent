@@ -19,13 +19,13 @@ Pad.DataStore = Ember.Object.extend
 		[
 			{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
 			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true, hideable: false},
-			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: true, hideable: false, sortable: true, formatter: "amount",  align: 'right' },
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: false, hideable: false, sortable: true, formatter: "amountEdit",  align: 'right' },
 			{id: "duration", name: "duration", title: "_hDuration",field: "duration", sortable: true, align: 'right'},
 			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete"},
 			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven"},
 			{id: "start", name: "start", title: "_hStart",field: "start", formatter: "date"},
 			{id: "finish", name: "finish", title: "_hFinish",field: "finish", hideable: true}
-			
+			{id: "completed", name: "completed", title: "_hCompleted",field: "completed", hideable: true, formatter: 'checkboxEdit', align: 'center', editable: false}
 		]
 
 	queryFixtures: (modelData, query) ->

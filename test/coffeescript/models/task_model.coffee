@@ -8,16 +8,18 @@ Pad.Models.TaskModel = DS.Model.extend
 	start: DS.attr('date')
 	finish: DS.attr('date')
 	effortdriven: DS.attr('string')
+	completed: DS.attr('boolean')
 
 Pad.Models.TaskModel.FIXTURES = [{
-			id: 51,
-			title: "Task 1",
-			amount: 123456.789,
-			duration: "5 days",
-			percentcomplete: Math.round(Math.random() * 100),
-			start: new Date("01/01/2009"),
-			finish: new Date("01/05/2009"),
+			id: 51
+			title: "Task 1"
+			amount: 123456.789
+			duration: "5 days"
+			percentcomplete: Math.round(Math.random() * 100)
+			start: new Date("01/01/2009")
+			finish: new Date("01/05/2009")
 			effortdriven: 1
+			completed: true
 		},
 		{
 			id: 52,
@@ -28,6 +30,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: true
 		},
 		{
 			id: 53,
@@ -38,6 +41,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 54,
@@ -48,6 +52,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 55,
@@ -58,6 +63,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 56,
@@ -68,6 +74,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 57,
@@ -78,6 +85,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 58,
@@ -88,6 +96,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 59,
@@ -98,6 +107,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 60,
@@ -108,6 +118,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 61,
@@ -118,6 +129,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 62,
@@ -128,6 +140,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 63,
@@ -138,6 +151,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 64,
@@ -148,6 +162,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 65,
@@ -158,6 +173,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 66,
@@ -168,6 +184,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 67,
@@ -178,6 +195,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 68,
@@ -188,6 +206,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 69,
@@ -198,6 +217,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 70,
@@ -208,6 +228,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 71,
@@ -218,6 +239,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 72,
@@ -238,6 +260,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 74,
@@ -248,6 +271,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 75,
@@ -258,6 +282,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 76,
@@ -268,6 +293,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		},
 		{
 			id: 77,
@@ -278,5 +304,6 @@ Pad.Models.TaskModel.FIXTURES = [{
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
 			effortdriven: 1
+			completed: false
 		}
 	]

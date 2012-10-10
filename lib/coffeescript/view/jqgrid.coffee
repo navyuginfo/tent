@@ -154,8 +154,12 @@ Tent.JqGrid = Ember.View.extend
 			loadComplete: () ->
 				widget.highlightRows(@)
 			,
+			afterEditCell: (id,name,val,iRow,iCol) ->
+				console.log 'after cell edit'
+			,
 			afterSaveCell: (rowId, cellName, value, iRow, iCell) ->
-				widget.saveEditedCell(rowId, cellName, value, iRow, iCell)
+				if rowId != ""
+					widget.saveEditedCell(rowId, cellName, value, iRow, iCell)
 		})
 
 		@addNavigationBar()
@@ -187,6 +191,26 @@ Tent.JqGrid = Ember.View.extend
 			grid.setHeadCheckBox(true)
 		else
 			grid.setHeadCheckBox(false)
+
+	###showEditableCells: ->
+		colModel = this.getTableDom().getGridParam('colModel')
+		ids = @getTableDom().getDataIDs()
+		for id, iRow in ids
+			rowData = @getTableDom().getRowData(id)
+			for col, iCol in colModel
+				if col.editable 
+					@getTableDom().jqGrid("editCell",iRow, iCol, true)
+###
+	saveEditableCell: (element)->
+		rowId = $(element).parents('tr:first').attr('id')
+		#formatter = $(element).attr('data-formatter')
+		#value =  $.fn.fmatter[formatter].unformat(null, {}, $(element).parent())
+
+		colModel = this.getTableDom().getGridParam('colModel')
+		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
+
+		cellName = colModel[cellpos].name
+		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
 
 	allRowsAreSelected: (grid) ->
 		# Check for state of selectAll checkbox
@@ -258,13 +282,15 @@ Tent.JqGrid = Ember.View.extend
 			if col.editable 
 				@saveEditedCell(rowId, col.name, rowData[col.name])
 
-
-	saveEditedCell: (rowId, cellName, value, iRow, iCell) ->
+	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
 		# Need to unformat/validate the value before saving 
-		#cell = @getTableDom().getCell(rowId, iCell)
 		formatter = @getTableDom().getColProp(cellName).formatter
-		if formatter?
-			@getItemFromModel(rowId).set(cellName, Tent.Formatting[formatter].unformat(value))
+		#if formatter?
+		if $.fn.fmatter[formatter]?
+			if cell?
+				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
+			else
+				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
 		else 
 			@getItemFromModel(rowId).set(cellName, value)
 
@@ -309,9 +335,9 @@ Tent.JqGrid = Ember.View.extend
 				align: column.align
 				editable: column.editable
 				formatter: column.formatter
-				edittype: Tent.JqGrid.editTypes[column.formatter]? 'text'
-				editoptions: Tent.JqGrid.editOptions[column.formatter]? {}
-				editrules: Tent.JqGrid.editRules[column.formatter]? {}
+				edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
+				editoptions: Tent.JqGrid.editOptions[column.formatter] or {}
+				editrules: Tent.JqGrid.editRules[column.formatter] or {}
 				width: 50
 				position: "right"
 				hidedlg: true if column.hideable == false
