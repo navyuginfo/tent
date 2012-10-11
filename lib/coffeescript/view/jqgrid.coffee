@@ -123,6 +123,9 @@ Tent.JqGrid = Ember.View.extend
 	getPagerId: ->
 		'#' + @get('elementId') + '_pager'
 
+	getColModel: ->
+		this.getTableDom().getGridParam('colModel')
+
 	buildGrid: ->
 		widget = @
 		@getTableDom().jqGrid({
@@ -130,7 +133,7 @@ Tent.JqGrid = Ember.View.extend
 				widget.onPageOrSort(postdata)
 			height: 'auto',
 			colNames: @get('colNames'),
-			colModel: @get('colModel'),
+			colModel: @get('columnModel'),
 			multiselect: @get('multiSelect'),
 			caption: Tent.I18n.loc(@get('title')) if @get('title')?, 
 			autowidth: true,
@@ -184,43 +187,12 @@ Tent.JqGrid = Ember.View.extend
 
 	highlightRows: (grid)->
 		for item in @get('selectedIds')
-			$(grid).jqGrid('setSelection', item, false)
-			$(grid).jqGrid('editRow', item, true)
-
+			@getTableDom().jqGrid('setSelection', item, false)
+			@editRow(item)
 		if @allRowsAreSelected(grid)
 			grid.setHeadCheckBox(true)
 		else
 			grid.setHeadCheckBox(false)
-
-	showEditableCells: ->
-		###colModel = this.getTableDom().getGridParam('colModel')
-		ids = @getTableDom().getDataIDs()
-		for id, iRow in ids
-			rowData = @getTableDom().getRowData(id)
-			for col, iCol in colModel
-				if col.editable 
-					@getTableDom().jqGrid("editCell",iRow, iCol, true)
-		###
-
-
-		#@getTableDom().jqGrid('editRow', itemId, true)
-
-
-	# Called by a cell widget on blur or change
-	saveEditableCell: (element)->
-		rowId = $(element).parents('tr:first').attr('id')
-		#formatter = $(element).attr('data-formatter')
-		#value =  $.fn.fmatter[formatter].unformat(null, {}, $(element).parent())
-
-		colModel = this.getTableDom().getGridParam('colModel')
-		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
-
-		cellName = colModel[cellpos].name
-		formatter = @getTableDom().getColProp(cellName).formatter
-
-		$.fn.fmatter[formatter].formatCell(null, {}, $(element).parents('td')) if $.fn.fmatter[formatter].formatCell?
-		 
-		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
 
 	allRowsAreSelected: (grid) ->
 		# Check for state of selectAll checkbox
@@ -232,80 +204,88 @@ Tent.JqGrid = Ember.View.extend
 		allSelected
 
 	didSelectRow: (itemId, status, e)->
-		if !@get('multiSelect')
-			@get('selectedIds').clear()
-			@get('selection').clear()
-			@get('selectedIds').pushObject(itemId)
-			@get('selection').pushObject(@getItemFromModel(itemId))
+		if not @get('multiSelect')
+			@selectItemSingleSelect(itemId)
 		else 
-			if status #status indicates whether the row is being selected or unselected
-				@get('selectedIds').pushObject(itemId)
-				@get('selection').pushObject(@getItemFromModel(itemId))
-			else 
-				@get('selectedIds').removeObject(itemId)
-				@removeItemFromSelection(itemId)
+			@selectItemMultiSelect(itemId, status)
 
-		@handleEditableRows(itemId, status, e)		
-				
+	selectItemSingleSelect: (itemId) ->
+		@clearSelection()
+		@selectItem(itemId)
+		@showEditableCellsSingleSelect(itemId)
+
+	selectItemMultiSelect: (itemId, status) ->
+		if status #status indicates whether the row is being selected or unselected
+				@selectItem(itemId)
+			else 
+				@deselectItem(itemId)
+		@showEditableCellsMultiSelect(itemId)
+
+	showEditableCellsSingleSelect: (itemId) ->
+		if itemId != @get('lastSelectedRowId')
+			if @get('lastSelectedRowId')?
+				@restoreRow(@get('lastSelectedRowId'))
+			@editRow(itemId)
+			@set('lastSelectedRowId', itemId)
+
+	showEditableCellsMultiSelect: (itemId)->
+		if @get('selectedIds').contains(itemId) 
+			@editRow(itemId)
+		else
+			@restoreRow(itemId)
+
+	didSelectAll: (rowIds, status) ->
+		for id in rowIds
+			if status
+				if !@get('selectedIds').contains(id)
+					@selectItem(itemId)
+					@editRow(id)
+			else 
+				@deselectItem(id)
+				@restoreRow(id)
+
+	clearSelection: ->
+		@get('selectedIds').clear()
+		@get('selection').clear()
+
+	selectItem: (itemId) ->
+		@get('selectedIds').pushObject(itemId)
+		@get('selection').pushObject(@getItemFromModel(itemId))
+
+	deselectItem: (itemId) ->
+		@get('selectedIds').removeObject(itemId)
+		@removeItemFromSelection(itemId)
+
 	removeItemFromSelection: (id)->
 		@set('selection', @get('selection').filter((item, index)->
 				item.get('id') != parseInt(id)
 			)
 		)
 
-	handleEditableRows: (itemId, status, e) ->
-		widget = @
-		if not @get('multiSelect')
-			if itemId != @get('lastSelectedRowId')
-				@getTableDom().jqGrid('restoreRow', @get('lastSelectedRowId'))
-				@getTableDom().jqGrid('editRow', itemId, true)
-				@set('lastSelectedRowId', itemId)
-		else
-			if @get('selectedIds').contains(itemId) 
-				@getTableDom().jqGrid('editRow', itemId, {
-					keys: false
-					aftersavefunc: (rowId, status, options) ->
-						widget.saveEditedRow(rowId, status, options)
-						#widget.getTableDom().jqGrid('editRow', rowId, {
-						#	keys:true
-						#})
-				})
-			else
-				@getTableDom().jqGrid('restoreRow', itemId)
-				widget.saveEditedRow(itemId)
+	# When a row is deselected, revert to the previous value 
+	restoreRow: (rowId) ->
+		@getTableDom().jqGrid('restoreRow', rowId)
+		@saveEditedRow(rowId)
 
-		# Editable cells should become non-editable
-		# onDisable() method should be called
-		#    or clearOnDisable() method ??
-		#rowData = @getTableDom().getRowData(rowId)
-		#colModel = this.getTableDom().getGridParam('colModel')
-		#for col in colModel
-		#	if col.editable 
-
-				#@saveEditedCell(rowId, col.name, rowData[col.name])
-
-
-	didSelectAll: (rowIds, status) ->
-		for id in rowIds
-			if status
-				if !@get('selectedIds').contains(id)
-					@get('selectedIds').pushObject(id)
-					modelItem = @getItemFromModel(id)
-					@get('selection').pushObject(modelItem)
-					@getTableDom().jqGrid('editRow', id, true)
-			else 
-				@get('selectedIds').removeObject(id)
-				@removeItemFromSelection(id)
-				@getTableDom().jqGrid('restoreRow', id)
+	# Make all editable cells editable
+	editRow: (rowId) ->
+		@getTableDom().jqGrid('editRow', rowId, false)
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
 
+	# Called by a cell widget on blur or change
+	saveEditableCell: (element)->
+		rowId = $(element).parents('tr:first').attr('id')
+		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
+		cellName = @getColModel()[cellpos].name
+		formatter = @getTableDom().getColProp(cellName).formatter
+		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
+
 	saveEditedRow: (rowId, status, options)->
 		rowData = @getTableDom().getRowData(rowId)
-		colModel = this.getTableDom().getGridParam('colModel')
-		for col in colModel
+		for col in @getColModel()
 			if col.editable 
 				@saveEditedCell(rowId, col.name, rowData[col.name])
 
@@ -353,7 +333,7 @@ Tent.JqGrid = Ember.View.extend
 	).property('columns')
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
-	colModel: (->
+	columnModel: (->
 		columns = []
 		for column in @get('columns')
 			item = 
@@ -381,7 +361,7 @@ Tent.JqGrid = Ember.View.extend
 			if @get('selectedIds').contains(model.get('id'))
 				item.sel = true
 			cell = []
-			for column in @get('colModel')
+			for column in @get('columnModel')
 				#item[column.name] = model.get(column.name)
 				cell.push(model.get(column.name))
 			item.cell = cell

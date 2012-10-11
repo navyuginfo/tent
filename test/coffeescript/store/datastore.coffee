@@ -19,7 +19,7 @@ Pad.DataStore = Ember.Object.extend
 		[
 			{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
 			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true, hideable: false},
-			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: true, hideable: false, sortable: true, formatter: "amountEdit", align: 'right' },
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", editable: true, hideable: false, sortable: true, formatter: "amount", align: 'right' },
 			{id: "duration", name: "duration", title: "_hDuration",field: "duration", sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
 			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete"},
 			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven"},
