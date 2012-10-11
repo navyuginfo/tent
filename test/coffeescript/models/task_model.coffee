@@ -14,7 +14,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 51
 			title: "Task 1"
 			amount: 123456.789
-			duration: "5 days"
+			duration: "5"
 			percentcomplete: Math.round(Math.random() * 100)
 			start: new Date("01/01/2009")
 			finish: new Date("01/05/2009")
@@ -25,7 +25,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 52,
 			title: "Task 2",
 			amount: 123456.789,
-			duration: "6 days",
+			duration: "6",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -36,7 +36,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 53,
 			title: "Task 3",
 			amount: 123456.789,
-			duration: "7 days",
+			duration: "7",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -47,7 +47,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 54,
 			title: "Task 4",
 			amount: 123456.789,
-			duration: "14 days",
+			duration: "14",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -58,7 +58,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 55,
 			title: "Task 5",
 			amount: 123456.789,
-			duration: "27 days",
+			duration: "27",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -69,7 +69,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 56,
 			title: "Task 6",
 			amount: 123456.789,
-			duration: "2 days",
+			duration: "2",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -80,7 +80,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 57,
 			title: "XTask 7",
 			amount: 123456.789,
-			duration: "75 days",
+			duration: "75",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
@@ -91,7 +91,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			id: 58,
 			title: "YTask 8",
 			amount: 123456.789,
-			duration: "7 days",
+			duration: "7",
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),

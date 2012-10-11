@@ -1,14 +1,25 @@
-# Amount Formatter
+# Amount Edit Formatter
 jQuery.extend $.fn.fmatter, 
-	amountEdit: (cval, opts) ->
-		cval = Tent.Formatting.amount.format(cval)
-		'<input type="text" value="'+ cval+'" data-formatter="amountEdit" onblur="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)"/>'
+	amountEdit: (cellvalue, opts) ->
+		#cval = Tent.Formatting.amount.format(cval)
+		#'<input type="text" value="'+ cval+'" data-formatter="amountEdit" onblur="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)"/>'
+		Tent.Formatting.amount.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.amountEdit,
 	unformat: (cellvalue, options, cell) ->
-		$('input', cell).attr('value')
+		#cellvalue = $('input', cell).attr('value')
+		#Tent.Formatting.amount.unformat(cellvalue) or ""
+		if not cellvalue
+			cellvalue = $('input', cell).attr('value')
+		Tent.Formatting.amount.unformat(cellvalue) or ""
 
+jQuery.extend $.fn.fmatter.amountEdit,
+	formatCell: (cellvalue, options, cell) ->
+		input = $('input', cell)
+		cellvalue = input.attr('value')
+		input.val(Tent.Formatting.amount.format(cellvalue) or "")
 
+# Amount Formatter
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, options, rowdata) ->
 		Tent.Formatting.amount.format(cellvalue)
@@ -27,9 +38,8 @@ jQuery.extend $.fn.fmatter.date,
 	unformat: (cellvalue, options) ->
 		Tent.Formatting.date.unformat(cellvalue)
 
-#jQuery.extend $.fn.fmatter, 
-#	checkbox: (cellvalue, options, rowdata) ->
-#		Tent.Formatting.date.format(cellvalue)
+
+#	checkboxEdit Formatter
 
 jQuery.extend $.fn.fmatter, 
 	checkboxEdit: (cval, opts) ->
@@ -43,11 +53,36 @@ jQuery.extend $.fn.fmatter,
 		cval=cval+""
 		cval=cval.toLowerCase()
 		bchk = if cval.search(/(false|0|no|off)/i) < 0 then " checked='checked' " else ""
-		'<input type="checkbox" ' + bchk  + ' value="'+ cval+'" offval="no" data-formatter="checkboxEdit" onchange="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)" tabindex="0"/>'
+		'<input type="checkbox" ' + bchk  + ' value="'+ cval+'" offval="no" data-formatter="checkboxEdit" onchange="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)"/>'
 
 jQuery.extend $.fn.fmatter.checkboxEdit,
 	unformat: (cellvalue, options, cell) ->
 		$('input', cell).is(':checked')
+
+ 
+
+# Select Edit formatter
+jQuery.extend $.fn.fmatter, 
+	selectEdit: (cval, opts) ->
+ 		options = opts.colModel.editoptions.value
+ 		if options?
+ 			el = '<select data-formatter="selectEdit" onchange="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)" >'
+ 			for val, text of options
+ 				selected = if val==cval then 'selected="selected"' else ""
+	 			el += "<option value=\"#{val}\" #{selected}>" + text 
+	 		el += '</select>'
+	 	el
+
+jQuery.extend $.fn.fmatter.selectEdit,
+	unformat: (cellvalue, options, cell) ->
+		$('select', cell).val()
+
+
+
+
+
+
+
 
 # Validators for cell editing
 Tent.JqGrid.Validators = Ember.Object.create
@@ -61,11 +96,22 @@ Tent.JqGrid.Validators = Ember.Object.create
 
 Tent.JqGrid.editTypes =
 	'amount': 'text'
+	'select': 'select'
 	'checkbox': 'checkbox'
 
 Tent.JqGrid.editOptions =
-	'amount': {}
+	'amountEdit': {
+		dataEvents: [
+			{ 
+				type: 'blur', 
+				fn: (e) -> 
+					#key = e.charCode || e.keyCode
+					#if (key == 13) #enter
+					Ember.View.views[$(this).parents('.tent-jqgrid').attr('id')].saveEditableCell(this)
+			}
+		]
+	}
 	'checkbox': {value:"True:False", disabled: false}
 
 Tent.JqGrid.editRules =
-	'amount': {custom: true, custom_func: Tent.JqGrid.Validators.amount} 
+	'amountEdit': {custom: true, custom_func: Tent.JqGrid.Validators.amount} 

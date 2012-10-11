@@ -88,7 +88,6 @@ Tent.JqGrid = Ember.View.extend
 	* By default this will be retrieved from the collection
 	###
 	columnsBinding: 'collection.columnsDescriptor'
-
 	totalRowsBinding: 'collection.totalRows'
 	totalPagesBinding: 'collection.totalPages'
 
@@ -186,21 +185,28 @@ Tent.JqGrid = Ember.View.extend
 	highlightRows: (grid)->
 		for item in @get('selectedIds')
 			$(grid).jqGrid('setSelection', item, false)
+			$(grid).jqGrid('editRow', item, true)
 
 		if @allRowsAreSelected(grid)
 			grid.setHeadCheckBox(true)
 		else
 			grid.setHeadCheckBox(false)
 
-	###showEditableCells: ->
-		colModel = this.getTableDom().getGridParam('colModel')
+	showEditableCells: ->
+		###colModel = this.getTableDom().getGridParam('colModel')
 		ids = @getTableDom().getDataIDs()
 		for id, iRow in ids
 			rowData = @getTableDom().getRowData(id)
 			for col, iCol in colModel
 				if col.editable 
 					@getTableDom().jqGrid("editCell",iRow, iCol, true)
-###
+		###
+
+
+		#@getTableDom().jqGrid('editRow', itemId, true)
+
+
+	# Called by a cell widget on blur or change
 	saveEditableCell: (element)->
 		rowId = $(element).parents('tr:first').attr('id')
 		#formatter = $(element).attr('data-formatter')
@@ -210,6 +216,10 @@ Tent.JqGrid = Ember.View.extend
 		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
 
 		cellName = colModel[cellpos].name
+		formatter = @getTableDom().getColProp(cellName).formatter
+
+		$.fn.fmatter[formatter].formatCell(null, {}, $(element).parents('td')) if $.fn.fmatter[formatter].formatCell?
+		 
 		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
 
 	allRowsAreSelected: (grid) ->
@@ -253,12 +263,27 @@ Tent.JqGrid = Ember.View.extend
 		else
 			if @get('selectedIds').contains(itemId) 
 				@getTableDom().jqGrid('editRow', itemId, {
-					keys: true
+					keys: false
 					aftersavefunc: (rowId, status, options) ->
 						widget.saveEditedRow(rowId, status, options)
+						#widget.getTableDom().jqGrid('editRow', rowId, {
+						#	keys:true
+						#})
 				})
 			else
 				@getTableDom().jqGrid('restoreRow', itemId)
+				widget.saveEditedRow(itemId)
+
+		# Editable cells should become non-editable
+		# onDisable() method should be called
+		#    or clearOnDisable() method ??
+		#rowData = @getTableDom().getRowData(rowId)
+		#colModel = this.getTableDom().getGridParam('colModel')
+		#for col in colModel
+		#	if col.editable 
+
+				#@saveEditedCell(rowId, col.name, rowData[col.name])
+
 
 	didSelectAll: (rowIds, status) ->
 		for id in rowIds
@@ -266,10 +291,12 @@ Tent.JqGrid = Ember.View.extend
 				if !@get('selectedIds').contains(id)
 					@get('selectedIds').pushObject(id)
 					modelItem = @getItemFromModel(id)
-					@get('selection').pushObject(modelItem) 
+					@get('selection').pushObject(modelItem)
+					@getTableDom().jqGrid('editRow', id, true)
 			else 
 				@get('selectedIds').removeObject(id)
 				@removeItemFromSelection(id)
+				@getTableDom().jqGrid('restoreRow', id)
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
@@ -336,7 +363,7 @@ Tent.JqGrid = Ember.View.extend
 				editable: column.editable
 				formatter: column.formatter
 				edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
-				editoptions: Tent.JqGrid.editOptions[column.formatter] or {}
+				editoptions: Tent.JqGrid.editOptions[column.formatter] or column.editoptions
 				editrules: Tent.JqGrid.editRules[column.formatter] or {}
 				width: 50
 				position: "right"
@@ -372,6 +399,7 @@ Tent.JqGrid = Ember.View.extend
 			page: @get('pagingData').page
 		@getTableDom()[0].addJSONData(data)
 		@highlightRows(@getTableDom().get(0))
+		#@showEditableCells()
 	).observes('content', 'content.isLoaded', 'content.@each')
 
  
