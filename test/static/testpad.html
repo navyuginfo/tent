@@ -179,18 +179,25 @@
 
               <h4>jqGrid</h4>
 
+               
               {{view Tent.JqGrid
                   label="Tasks"
                   collectionBinding="Pad.jqRemoteCollection"
                   contentBinding= "Pad.jqRemoteCollection.modelData"
                   selectionBinding="Pad.jqGridSelection"
+                  fixedHeader=false
+                  height= "auto"
                   paged=true
                   pageSize=6
                   remotePaging=false
                   multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
+                  onEditRowBinding="Pad.jqOnEditRow"
+                  onRestoreRowBinding="Pad.jqOnRestoreRow"
+                  onSaveCellBinding="Pad.jqOnSaveCell"
               }}
+              
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}

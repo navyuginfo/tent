@@ -16,7 +16,7 @@ Tent.Formatting = {} unless Tent.Formatting?
 
 Tent.Formatting.amount = 
 	format: (amount, settings) ->
-		if amount? and amount != ""
+		if amount?
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
 				accounting.formatNumber(amount, settings) 
@@ -25,7 +25,7 @@ Tent.Formatting.amount =
 		else
 			""
 	unformat: (amount, settings) ->
-		if amount? and amount !=""
+		if amount?
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
 				accounting.unformat(amount, settings)

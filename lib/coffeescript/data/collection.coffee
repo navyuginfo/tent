@@ -29,7 +29,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 		for model in @get('modelData')
 			item = {"id" : model.get('id')}
 			for column in @get('columnsDescriptor')
-				item[column.field] = model.get(column.field)
+				item[column.field] = model.get(column.field) if column.field
 			grid.push(item)
 		return grid
 	).property('modelData')

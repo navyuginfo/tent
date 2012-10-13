@@ -44,6 +44,7 @@ require '../template/jqgrid'
 Tent.JqGrid = Ember.View.extend
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
+	classNameBindings: ['fixedHeader']
 	
 	###*
 	* @property {Object} collection The collection object providing the API to the data source
@@ -71,11 +72,50 @@ Tent.JqGrid = Ember.View.extend
 	multiSelect: false
 
 	###*
-	* @property {Boolean} showColumnChooser Display an button at the bottom of the grid which presents
+	* @property {Boolean} fixedHeader Boolean indicating that the header remains in view when the content is scrolled.
+	###
+	fixedHeader: false
+
+	###*
+	* @property {Boolean} showColumnChooser Display a button at the bottom of the grid which presents
 	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
 	* in this dialog
 	###
 	showColumnChooser: true
+
+	###*
+	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
+	* The context of the function is this JqGrid View, and it will accept the following parameters:
+	* 
+	* -rowId: the id of the selected row
+	* -grid: the jqGrid
+	*  
+	###
+	onEditRow: null
+
+	###*
+	* @property {Function} onRestoreRow A callback function which will be called when editing of a row is cancelled,
+	* and the original values restored to the cells. 
+	* The context of the function is this JqGrid View, and it will accept the following parameters:
+	* 
+	* -rowId: the id of the selected row
+	* -grid: the jqGrid
+	*  
+	###
+	onRestoreRow: null
+
+	###*
+	* @property {Function} onSaveCell A callback function which will be called when an editable cell is saved. (This 
+	* usually occurs on change or blur) 
+	* The context of the function is this JqGrid View, and it will accept the following parameters:
+	* 
+	* -rowId: the id of the selected row
+	* -grid: the jqGrid
+	* -cellName: the name of the edited cell
+	* -iCell: the position of the edited cell
+	*
+	###
+	onSaveCell: null
 
 	pagingData: 
 		page: 1 
@@ -101,12 +141,26 @@ Tent.JqGrid = Ember.View.extend
 
 		@setupInitialSelection()
 
-	setupInitialSelection: ->
+	setupInitialSelection: (->
 		if @get('selection')?
-			@set('selectedIds', @get('selection').map((item, index)->
-				 	"" + item.get('id')
-				).uniq()
-			)
+			sel = []
+
+			for item in @get('selection')
+				id = "" + item.get('id')
+				sel.pushObject(id)
+				if not @get('selectedIds').contains(id)
+					@highlightRow(id)
+			@set('selectedIds', sel.uniq())
+
+			#@set('selectedIds', @get('selection').map((item, index)->
+			#	 	"" + item.get('id')
+			#	).uniq()
+			#)
+
+		if @getTableDom()
+			@setSelectAllCheckbox(@getTableDom().get(0))
+	).observes('selection')
+
 	didInsertElement: ->
 		@setupDomIDs()
 		@buildGrid()
@@ -131,7 +185,7 @@ Tent.JqGrid = Ember.View.extend
 		@getTableDom().jqGrid({
 			datatype: (postdata) ->
 				widget.onPageOrSort(postdata)
-			height: 'auto',
+			height: @get('height') or 'auto',
 			colNames: @get('colNames'),
 			colModel: @get('columnModel'),
 			multiselect: @get('multiSelect'),
@@ -139,6 +193,7 @@ Tent.JqGrid = Ember.View.extend
 			autowidth: true,
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
+			shrinkToFit: true,
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
@@ -155,13 +210,9 @@ Tent.JqGrid = Ember.View.extend
 			,
 			loadComplete: () ->
 				widget.highlightRows(@)
-			,
-			afterEditCell: (id,name,val,iRow,iCol) ->
-				console.log 'after cell edit'
-			,
-			afterSaveCell: (rowId, cellName, value, iRow, iCell) ->
-				if rowId != ""
-					widget.saveEditedCell(rowId, cellName, value, iRow, iCell)
+			#,
+			#jqGridInlineEditRow: (rowId, o) ->
+			#	console.log 'edit..'
 		})
 
 		@addNavigationBar()
@@ -186,9 +237,17 @@ Tent.JqGrid = Ember.View.extend
 		postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
 
 	highlightRows: (grid)->
-		for item in @get('selectedIds')
+		if @getTableDom()?
+			for item in @get('selectedIds')
+				@highlightRow(item)
+			@setSelectAllCheckbox(grid)
+
+	highlightRow: (item)->
+		if @getTableDom()?
 			@getTableDom().jqGrid('setSelection', item, false)
 			@editRow(item)
+
+	setSelectAllCheckbox: (grid) ->
 		if @allRowsAreSelected(grid)
 			grid.setHeadCheckBox(true)
 		else
@@ -238,7 +297,7 @@ Tent.JqGrid = Ember.View.extend
 		for id in rowIds
 			if status
 				if !@get('selectedIds').contains(id)
-					@selectItem(itemId)
+					@selectItem(id)
 					@editRow(id)
 			else 
 				@deselectItem(id)
@@ -266,10 +325,16 @@ Tent.JqGrid = Ember.View.extend
 	restoreRow: (rowId) ->
 		@getTableDom().jqGrid('restoreRow', rowId)
 		@saveEditedRow(rowId)
+		@get('onRestoreRow').call(@, rowId, @getTableDom())
 
 	# Make all editable cells editable
 	editRow: (rowId) ->
-		@getTableDom().jqGrid('editRow', rowId, false)
+		@getTableDom().jqGrid('editRow', rowId, false,  @onEditFunc())
+
+	onEditFunc: (rowId) ->
+		widget = @
+		(rowId) ->
+			widget.get('onEditRow').call(widget, rowId, widget.getTableDom())
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
@@ -280,13 +345,13 @@ Tent.JqGrid = Ember.View.extend
 		rowId = $(element).parents('tr:first').attr('id')
 		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
 		cellName = @getColModel()[cellpos].name
-		formatter = @getTableDom().getColProp(cellName).formatter
 		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
+		@onSaveCell.call(@, rowId, @getTableDom(), cellName, cellpos)
 
 	saveEditedRow: (rowId, status, options)->
 		rowData = @getTableDom().getRowData(rowId)
 		for col in @getColModel()
-			if col.editable 
+			if col.editable
 				@saveEditedCell(rowId, col.name, rowData[col.name])
 
 	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
@@ -300,6 +365,15 @@ Tent.JqGrid = Ember.View.extend
 				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
 		else 
 			@getItemFromModel(rowId).set(cellName, value)
+		#@getTableDom().triggerHandler()
+
+	markErrorCell: (rowId, iCell) ->
+		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
+		cell.addClass('error')
+
+	unmarkErrorCell: (rowId, iCell) ->
+		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
+		cell.removeClass('error')
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
@@ -343,9 +417,9 @@ Tent.JqGrid = Ember.View.extend
 				editable: column.editable
 				formatter: column.formatter
 				edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
-				editoptions: Tent.JqGrid.editOptions[column.formatter] or column.editoptions
-				editrules: Tent.JqGrid.editRules[column.formatter] or {}
-				width: 50
+				editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
+				editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
+				width: column.width or 20
 				position: "right"
 				hidedlg: true if column.hideable == false
 			columns.pushObject(item)

@@ -2,7 +2,7 @@
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, opts, cell) ->
 		if not cellvalue
-			cellvalue = $('input', cell).attr('value')
+			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.amount.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.amount,

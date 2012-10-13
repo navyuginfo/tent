@@ -55,6 +55,19 @@
 			effortdriven: 1
 	]
 
+	Pad.jqOnEditRow = (rowId, grid) ->
+		console.log 'pad  onedit'
+		initialValue = grid.getCell(rowId, 'amount')
+		calcCell = grid.find('#'+rowId + '_calc')
+		calcCell.val(initialValue)
+		@saveEditedRow(rowId)
+
+	Pad.jqOnRestoreRow = (rowId, grid) ->
+		console.log "restoring row ["+rowId+"]"
+		
+	Pad.jqOnSaveCell = (rowId, grid, cellName, iCell) ->
+		console.log "Cell ["+cellName+"] was saved"
+
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
 			title: "Task 2",

@@ -55,7 +55,7 @@
 
     loadTranslations: function(translations) {
       if (translations != null) {
-        return this.set('language', translations);
+        return this.set('language', $.extend(this.get('language'), translations));
       }
     },
     translate: function(code) {
@@ -78,6 +78,14 @@
   });
 
   Tent.translate = Tent.I18n.translate;
+
+  Tent.I18n.loadTranslations({
+    jqGrid: {
+      hideShowAlt: 'Hide/Show Columns',
+      hideShowCaption: 'Columns',
+      hideShowTitle: 'Hide/Show Columns'
+    }
+  });
 
 }).call(this);
 
@@ -396,6 +404,9 @@
   Tent.Formatting.number = Ember.Object.create({
     isValidNumber: function(value) {
       return (value !== '') &amp;&amp; !(isNaN(value) || isNaN(parseFloat(value)));
+    },
+    errorText: function() {
+      return Tent.I18n.loc('formatting.number');
     },
     format: function(value) {
       if ((typeof value === 'number') || value === '') {
@@ -2345,7 +2356,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   * 	
   * - columnsDescriptor: an array of descriptor objects defining the columns to be displayed
   * 			e.g. [
-  				{id: &quot;id&quot;, name: &quot;id&quot;, title: &quot;_hID&quot;, field: &quot;id&quot;, sortable: true},
+  				{id: &quot;id&quot;, name: &quot;id&quot;, title: &quot;_hID&quot;, field: &quot;id&quot;, sortable: true, hideable: false},
   				{id: &quot;title&quot;, name: &quot;title&quot;, title: &quot;_hTitle&quot;, field: &quot;title&quot;, sortable: true},
   				{id: &quot;amount&quot;, name: &quot;amount&quot;, title: &quot;_hAmount&quot;, field: &quot;amount&quot;, sortable: true, formatter: &quot;amount&quot;,  align: 'right'},
   			]
@@ -2406,6 +2417,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     */
 
     multiSelect: false,
+<span id='Tent-JqGrid-property-showColumnChooser'>    /**
+</span>    	* @property {Boolean} showColumnChooser Display an button at the bottom of the grid which presents
+    	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
+    	* in this dialog
+    */
+
+    showColumnChooser: true,
     pagingData: {
       page: 1
     },
@@ -2428,6 +2446,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       if (this.get('paged')) {
         this.get('collection').set('pageSize', this.get('pageSize'));
       }
+      return this.setupInitialSelection();
+    },
+    setupInitialSelection: function() {
       if (this.get('selection') != null) {
         return this.set('selectedIds', this.get('selection').map(function(item, index) {
           return &quot;&quot; + item.get('id');
@@ -2435,40 +2456,44 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       }
     },
     didInsertElement: function() {
-      var widget;
+      this.setupDomIDs();
+      this.buildGrid();
+      return this.get('collection').goToPage(1);
+    },
+    setupDomIDs: function() {
       this.set('tableId', this.get('elementId') + '_jqgrid');
       this.$('.grid-table').attr('id', this.get('tableId'));
-      this.$('.gridpager').attr('id', this.get('elementId') + '_pager');
+      return this.$('.gridpager').attr('id', this.get('elementId') + '_pager');
+    },
+    getTableDom: function() {
+      return this.$('#' + this.get('tableId'));
+    },
+    getPagerId: function() {
+      return '#' + this.get('elementId') + '_pager';
+    },
+    getColModel: function() {
+      return this.getTableDom().getGridParam('colModel');
+    },
+    buildGrid: function() {
+      var widget;
       widget = this;
       this.getTableDom().jqGrid({
         datatype: function(postdata) {
-          if (postdata.sidx !== &quot;&quot; &amp;&amp; (postdata.sidx !== widget.get('sortingData').field || postdata.sord !== widget.get('sortingData').asc)) {
-            widget.get('collection').sort({
-              fields: [
-                {
-                  sortAsc: postdata.sord === &quot;asc&quot;,
-                  field: postdata.sidx
-                }
-              ]
-            });
-          } else {
-            widget.get('pagingData').page = postdata.page;
-            widget.get('collection').goToPage(postdata.page);
-          }
-          widget.get('sortingData').field = postdata.sidx;
-          return widget.get('sortingData').asc = postdata.sord;
+          return widget.onPageOrSort(postdata);
         },
         height: 'auto',
         colNames: this.get('colNames'),
-        colModel: this.get('colModel'),
+        colModel: this.get('columnModel'),
         multiselect: this.get('multiSelect'),
-        caption: this.get('title'),
+        caption: this.get('title') != null ? Tent.I18n.loc(this.get('title')) : void 0,
         autowidth: true,
         sortable: true,
         forceFit: true,
+        viewrecords: true,
         rowNum: this.get('paged') ? this.get('pageSize') : void 0,
         gridview: true,
-        pager: this.get('paged') ? '#' + this.get('elementId') + '_pager' : void 0,
+        editurl: 'clientArray',
+        pager: this.get('paged') ? this.getPagerId() : void 0,
         onSelectRow: function(itemId, status, e) {
           return widget.didSelectRow(itemId, status, e);
         },
@@ -2477,19 +2502,45 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         },
         loadComplete: function() {
           return widget.highlightRows(this);
+        },
+        afterEditCell: function(id, name, val, iRow, iCol) {
+          return console.log('after cell edit');
+        },
+        afterSaveCell: function(rowId, cellName, value, iRow, iCell) {
+          if (rowId !== &quot;&quot;) {
+            return widget.saveEditedCell(rowId, cellName, value, iRow, iCell);
+          }
         }
       });
-      return this.get('collection').goToPage(1);
+      return this.addNavigationBar();
     },
-    getTableDom: function() {
-      return this.$('#' + this.get('tableId'));
+    onPageOrSort: function(postdata) {
+      if (this.shouldSort(postdata)) {
+        this.get('collection').sort({
+          fields: [
+            {
+              sortAsc: postdata.sord === &quot;asc&quot;,
+              field: postdata.sidx
+            }
+          ]
+        });
+      } else {
+        this.get('pagingData').page = postdata.page;
+        this.get('collection').goToPage(postdata.page);
+      }
+      this.get('sortingData').field = postdata.sidx;
+      return this.get('sortingData').asc = postdata.sord;
+    },
+    shouldSort: function(postdata) {
+      return postdata.sidx !== &quot;&quot; &amp;&amp; (postdata.sidx !== this.get('sortingData').field || postdata.sord !== this.get('sortingData').asc);
     },
     highlightRows: function(grid) {
       var item, _i, _len, _ref;
       _ref = this.get('selectedIds');
       for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
         item = _ref[_i];
-        $(grid).jqGrid('setSelection', item, false);
+        this.getTableDom().jqGrid('setSelection', item, false);
+        this.editRow(item);
       }
       if (this.allRowsAreSelected(grid)) {
         return grid.setHeadCheckBox(true);
@@ -2512,43 +2563,82 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     },
     didSelectRow: function(itemId, status, e) {
       if (!this.get('multiSelect')) {
-        this.get('selectedIds').clear();
-        this.get('selection').clear();
-        this.get('selectedIds').pushObject(itemId);
-        return this.get('selection').pushObject(this.getItemFromModel(itemId));
+        return this.selectItemSingleSelect(itemId);
       } else {
-        if (status) {
-          this.get('selectedIds').pushObject(itemId);
-          return this.get('selection').pushObject(this.getItemFromModel(itemId));
-        } else {
-          this.get('selectedIds').removeObject(itemId);
-          return this.set('selection', this.get('selection').filter(function(item, index) {
-            return item.get('id') !== parseInt(itemId);
-          }));
+        return this.selectItemMultiSelect(itemId, status);
+      }
+    },
+    selectItemSingleSelect: function(itemId) {
+      this.clearSelection();
+      this.selectItem(itemId);
+      return this.showEditableCellsSingleSelect(itemId);
+    },
+    selectItemMultiSelect: function(itemId, status) {
+      if (status) {
+        this.selectItem(itemId);
+      } else {
+        this.deselectItem(itemId);
+      }
+      return this.showEditableCellsMultiSelect(itemId);
+    },
+    showEditableCellsSingleSelect: function(itemId) {
+      if (itemId !== this.get('lastSelectedRowId')) {
+        if (this.get('lastSelectedRowId') != null) {
+          this.restoreRow(this.get('lastSelectedRowId'));
         }
+        this.editRow(itemId);
+        return this.set('lastSelectedRowId', itemId);
+      }
+    },
+    showEditableCellsMultiSelect: function(itemId) {
+      if (this.get('selectedIds').contains(itemId)) {
+        return this.editRow(itemId);
+      } else {
+        return this.restoreRow(itemId);
       }
     },
     didSelectAll: function(rowIds, status) {
-      var id, modelItem, _i, _len, _results;
+      var id, _i, _len, _results;
       _results = [];
       for (_i = 0, _len = rowIds.length; _i &lt; _len; _i++) {
         id = rowIds[_i];
         if (status) {
           if (!this.get('selectedIds').contains(id)) {
-            this.get('selectedIds').pushObject(id);
-            modelItem = this.getItemFromModel(id);
-            _results.push(this.get('selection').pushObject(modelItem));
+            this.selectItem(itemId);
+            _results.push(this.editRow(id));
           } else {
             _results.push(void 0);
           }
         } else {
-          this.get('selectedIds').removeObject(id);
-          _results.push(this.set('selection', this.get('selection').filter(function(item, index) {
-            return item.get('id') !== parseInt(id);
-          })));
+          this.deselectItem(id);
+          _results.push(this.restoreRow(id));
         }
       }
       return _results;
+    },
+    clearSelection: function() {
+      this.get('selectedIds').clear();
+      return this.get('selection').clear();
+    },
+    selectItem: function(itemId) {
+      this.get('selectedIds').pushObject(itemId);
+      return this.get('selection').pushObject(this.getItemFromModel(itemId));
+    },
+    deselectItem: function(itemId) {
+      this.get('selectedIds').removeObject(itemId);
+      return this.removeItemFromSelection(itemId);
+    },
+    removeItemFromSelection: function(id) {
+      return this.set('selection', this.get('selection').filter(function(item, index) {
+        return item.get('id') !== parseInt(id);
+      }));
+    },
+    restoreRow: function(rowId) {
+      this.getTableDom().jqGrid('restoreRow', rowId);
+      return this.saveEditedRow(rowId);
+    },
+    editRow: function(rowId) {
+      return this.getTableDom().jqGrid('editRow', rowId, false);
     },
     getItemFromModel: function(id) {
       var model, _i, _len, _ref;
@@ -2558,6 +2648,71 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         if (model.get('id') === parseInt(id)) {
           return model;
         }
+      }
+    },
+    saveEditableCell: function(element) {
+      var cellName, cellpos, formatter, rowId;
+      rowId = $(element).parents('tr:first').attr('id');
+      cellpos = $(element).parents('tr').children().index($(element).parents('td'));
+      cellName = this.getColModel()[cellpos].name;
+      formatter = this.getTableDom().getColProp(cellName).formatter;
+      return this.saveEditedCell(rowId, cellName, null, null, null, $(element).parent());
+    },
+    saveEditedRow: function(rowId, status, options) {
+      var col, rowData, _i, _len, _ref, _results;
+      rowData = this.getTableDom().getRowData(rowId);
+      _ref = this.getColModel();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        col = _ref[_i];
+        if (col.editable) {
+          _results.push(this.saveEditedCell(rowId, col.name, rowData[col.name]));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    },
+    saveEditedCell: function(rowId, cellName, value, iRow, iCell, cell) {
+      var formatter;
+      formatter = this.getTableDom().getColProp(cellName).formatter;
+      if ($.fn.fmatter[formatter] != null) {
+        if (cell != null) {
+          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell));
+        } else {
+          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value));
+        }
+      } else {
+        return this.getItemFromModel(rowId).set(cellName, value);
+      }
+    },
+    addNavigationBar: function() {
+      var tableDom;
+      tableDom = this.getTableDom();
+      tableDom.jqGrid('navGrid', this.getPagerId(), {
+        add: false,
+        edit: false,
+        del: false,
+        search: false,
+        refresh: false
+      });
+      if (this.get('showColumnChooser')) {
+        if (!(this.get('title') != null)) {
+          tableDom.setCaption('&amp;nbsp;');
+        }
+        this.$(&quot;.ui-jqgrid-titlebar&quot;).append('&lt;a class=&quot;column-chooser&quot;&gt;&lt;span class=&quot;ui-icon ui-icon-newwin&quot;&gt;&lt;/span&gt;' + Tent.I18n.loc(&quot;jqGrid.hideShowCaption&quot;) + '&lt;/a&gt;');
+        return this.$('a.column-chooser').click(function() {
+          return tableDom.jqGrid('setColumns', {
+            caption: Tent.I18n.loc(&quot;jqGrid.hideShowTitle&quot;),
+            bCancel: Tent.I18n.loc(&quot;_close&quot;),
+            ShrinkToFit: true,
+            recreateForm: true,
+            updateAfterCheck: true,
+            colnameview: false,
+            top: 60,
+            width: 300
+          });
+        });
       }
     },
     colNames: (function() {
@@ -2570,7 +2725,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       }
       return names;
     }).property('columns'),
-    colModel: (function() {
+    columnModel: (function() {
       var column, columns, item, _i, _len, _ref;
       columns = [];
       _ref = this.get('columns');
@@ -2580,8 +2735,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           name: column.name,
           index: column.name,
           align: column.align,
+          editable: column.editable,
           formatter: column.formatter,
-          width: 50
+          edittype: Tent.JqGrid.editTypes[column.formatter] || 'text',
+          editoptions: Tent.JqGrid.editOptions[column.formatter] || column.editoptions,
+          editrules: Tent.JqGrid.editRules[column.formatter] || {},
+          width: 50,
+          position: &quot;right&quot;,
+          hidedlg: column.hideable === false ? true : void 0
         };
         columns.pushObject(item);
       }
@@ -2600,7 +2761,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           item.sel = true;
         }
         cell = [];
-        _ref = this.get('colModel');
+        _ref = this.get('columnModel');
         for (_j = 0, _len1 = _ref.length; _j &lt; _len1; _j++) {
           column = _ref[_j];
           cell.push(model.get(column.name));
@@ -2630,16 +2791,42 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 (function() {
 
   jQuery.extend($.fn.fmatter, {
-    amount: function(cellvalue, options, rowdata) {
+    amount: function(cellvalue, opts, cell) {
+      if (!cellvalue) {
+        cellvalue = $('input', cell).attr('value');
+      }
       return Tent.Formatting.amount.format(cellvalue);
     }
   });
 
   jQuery.extend($.fn.fmatter.amount, {
-    unformat: function(cellvalue, options) {
-      return Tent.Formatting.amount.unFormat(cellvalue);
+    unformat: function(cellvalue, options, cell) {
+      if (!cellvalue) {
+        cellvalue = $('input', cell).attr('value');
+      }
+      return Tent.Formatting.amount.unformat(cellvalue) || &quot;&quot;;
     }
   });
+
+  jQuery.extend($.fn.fmatter.amount, {
+    formatCell: function(cellvalue, options, cell) {
+      var input;
+      input = $('input', cell);
+      cellvalue = input.attr('value');
+      return input.val(Tent.Formatting.amount.format(cellvalue) || &quot;&quot;);
+    }
+  });
+
+  /* Amount Formatter
+  jQuery.extend $.fn.fmatter, 
+  	amount: (cellvalue, options, rowdata) -&gt;
+  		Tent.Formatting.amount.format(cellvalue)
+  
+  jQuery.extend $.fn.fmatter.amount,
+  	unformat: (cellvalue, options) -&gt;
+  		Tent.Formatting.amount.unformat(cellvalue) or &quot;&quot;
+  */
+
 
   jQuery.extend($.fn.fmatter, {
     date: function(cellvalue, options, rowdata) {
@@ -2649,9 +2836,98 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter.date, {
     unformat: function(cellvalue, options) {
-      return Tent.Formatting.date.unFormat(cellvalue);
+      return Tent.Formatting.date.unformat(cellvalue);
     }
   });
+
+  jQuery.extend($.fn.fmatter, {
+    checkboxEdit: function(cval, opts) {
+      var bchk, op;
+      op = $.extend({}, opts.checkbox);
+      if (opts.colModel !== void 0 &amp;&amp; !$.fmatter.isUndefined(opts.colModel.formatoptions)) {
+        op = $.extend({}, op, opts.colModel.formatoptions);
+      }
+      if ($.fmatter.isEmpty(cval) || $.fmatter.isUndefined(cval)) {
+        cval = $.fn.fmatter.defaultFormat(cval, op);
+      }
+      cval = cval + &quot;&quot;;
+      cval = cval.toLowerCase();
+      bchk = cval.search(/(false|0|no|off)/i) &lt; 0 ? &quot; checked='checked' &quot; : &quot;&quot;;
+      return '&lt;input type=&quot;checkbox&quot; ' + bchk + ' value=&quot;' + cval + '&quot; offval=&quot;no&quot; data-formatter=&quot;checkboxEdit&quot; onchange=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)&quot;/&gt;';
+    }
+  });
+
+  jQuery.extend($.fn.fmatter.checkboxEdit, {
+    unformat: function(cellvalue, options, cell) {
+      return $('input', cell).is(':checked');
+    }
+  });
+
+  jQuery.extend($.fn.fmatter, {
+    selectEdit: function(cval, opts) {
+      var el, options, selected, text, val;
+      options = opts.colModel.editoptions.value;
+      if (options != null) {
+        el = '&lt;select data-formatter=&quot;selectEdit&quot; onchange=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].saveEditableCell(this)&quot; &gt;';
+        for (val in options) {
+          text = options[val];
+          selected = val === cval ? 'selected=&quot;selected&quot;' : &quot;&quot;;
+          el += (&quot;&lt;option value=\&quot;&quot; + val + &quot;\&quot; &quot; + selected + &quot;&gt;&quot;) + text;
+        }
+        el += '&lt;/select&gt;';
+      }
+      return el;
+    }
+  });
+
+  jQuery.extend($.fn.fmatter.selectEdit, {
+    unformat: function(cellvalue, options, cell) {
+      return $('select', cell).val();
+    }
+  });
+
+  Tent.JqGrid.Validators = Ember.Object.create({
+    amount: function(value, colname) {
+      var unformatted;
+      unformatted = Tent.Formatting.amount.unformat(value);
+      if (unformatted === 0 &amp;&amp; value !== 0) {
+        return [false, Tent.Formatting.number.errorText()];
+      } else {
+        return [true];
+      }
+    }
+  });
+
+  Tent.JqGrid.editTypes = {
+    'amount': 'text',
+    'select': 'select',
+    'checkbox': 'checkbox'
+  };
+
+  Tent.JqGrid.editOptions = {
+    'amount': {
+      dataEvents: [
+        {
+          type: 'blur',
+          fn: function(e) {
+            Ember.View.views[$(this).parents('.tent-jqgrid').attr('id')].saveEditableCell(this);
+            return $(this).val(Tent.Formatting.amount.format($(this).val()));
+          }
+        }
+      ]
+    },
+    'checkbox': {
+      value: &quot;True:False&quot;,
+      disabled: false
+    }
+  };
+
+  Tent.JqGrid.editRules = {
+    'amountEdit': {
+      custom: true,
+      custom_func: Tent.JqGrid.Validators.amount
+    }
+  };
 
 }).call(this);
 
