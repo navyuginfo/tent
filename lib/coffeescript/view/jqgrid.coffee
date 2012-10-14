@@ -426,6 +426,7 @@ Tent.JqGrid = Ember.View.extend
 				editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
 				width: column.width or 20
 				position: "right"
+				hidden: column.hidden
 				hidedlg: true if column.hideable == false
 			columns.pushObject(item)
 		columns

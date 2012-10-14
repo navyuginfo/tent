@@ -22,7 +22,7 @@ Pad.DataStore = Ember.Object.extend
 
 	getColumnsForType: ->
 		[
-			{id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: false},
+			{id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true},
 			{id: "title", name: "title", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
 			{id: "amount", name: "amount", title: "_hAmount", field: "amount", width:5, editable: true, hideable: false, sortable: true, formatter: "amount", align: 'right' },
 			{id: "calc", name: "calc", title: "calc", width:5, editable: true, formatter: "amount", align: 'right', editoptions:{dataInit: @calc} },
