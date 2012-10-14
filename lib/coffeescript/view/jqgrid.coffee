@@ -183,6 +183,7 @@ Tent.JqGrid = Ember.View.extend
 	buildGrid: ->
 		widget = @
 		@getTableDom().jqGrid({
+			parentView: widget
 			datatype: (postdata) ->
 				widget.onPageOrSort(postdata)
 			height: @get('height') or 'auto',
@@ -416,6 +417,7 @@ Tent.JqGrid = Ember.View.extend
 				align: column.align
 				editable: column.editable
 				formatter: column.formatter
+				formatoptions: column.formatoptions
 				edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
 				editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
 				editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
@@ -456,7 +458,7 @@ Tent.JqGrid = Ember.View.extend
 		#@showEditableCells()
 	).observes('content', 'content.isLoaded', 'content.@each')
 
- 
+
 
 
 		

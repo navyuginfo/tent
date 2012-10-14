@@ -276,6 +276,10 @@ a[rel=tooltip] {
 	}
 
 	.grid-table {
+		a, a:hover {
+			text-decoration: underline;
+			cursor: pointer;
+		}
 		select {
 			width: 100%;
 			height: 100%;

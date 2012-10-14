@@ -28,6 +28,29 @@ jQuery.extend $.fn.fmatter.date,
 		Tent.Formatting.date.unformat(cellvalue)
 
 
+# Link Formatter
+
+jQuery.extend $.fn.fmatter,
+	action: (cellvalue, options, rowdata) ->
+		parentView = this.p.parentView
+		#parentView.get('controller.namespace').router.send(options.colModel.formatoptions.action))
+      	
+		view = Ember.View.create
+			template: Ember.Handlebars.compile '<a {{action '+options.colModel.formatoptions.action+' content}}>'+cellvalue+'</a>'
+			parentView: parentView 
+			#sendAction: (a) ->
+			#	alert('here it is - formatter ['+@get('action')+']')
+			#	false
+		c = Ember.Object.create
+			content: parentView.getItemFromModel(options.rowId)
+		view[options.colModel.formatoptions.action] = ->
+			console.log 'action target not implemented'
+			false
+		view.set('_context', c)
+		view.createElement()
+		view.$().html()
+
+
 #	checkboxEdit Formatter
 jQuery.extend $.fn.fmatter, 
 	checkboxEdit: (cval, opts) ->
