@@ -376,6 +376,9 @@ Tent.JqGrid = Ember.View.extend
 		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
 		cell.removeClass('error')
 
+	sendAction: (action, element, rowId)->
+		@get('parentView.controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+
 	addNavigationBar: ->
 		tableDom = @getTableDom()
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
