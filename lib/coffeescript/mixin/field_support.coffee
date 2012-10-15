@@ -128,6 +128,9 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
       Ember.View.views[@$().closest('form').attr('id')]
   ).property()
   
+  focus: ->
+    $('#' + @get('inputIdentifier')).focus()
+
   resize: ->
   	@_super()
   	@estimateFormStyle()

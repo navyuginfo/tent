@@ -55,7 +55,11 @@
 
     loadTranslations: function(translations) {
       if (translations != null) {
+<<<<<<< HEAD
         return this.set('language', $.extend(this.get('language'), translations));
+=======
+        return this.set('language', translations);
+>>>>>>> master
       }
     },
     translate: function(code) {
@@ -194,7 +198,7 @@
 
   Tent.messages.REQUIRED_ERROR = 'Required field';
 
-  Tent.messages.NUMERIC_ERROR = &quot;Numeric field&quot;;
+  Tent.messages.NUMERIC_ERROR = &quot;Numeric field required&quot;;
 
   Tent.messages.AMOUNT_ERROR = &quot;Money field error&quot;;
 
@@ -531,6 +535,19 @@
       this.flushValidationErrors();
       return true;
     },
+    errorsDidChange: (function() {
+      return console.log('validation errors did change');
+    }).property('validationErrors.@each'),
+    updateErrorPanel: (function() {
+      var message;
+      message = Tent.Message.create({
+        messages: $.merge([], this.get('validationErrors')),
+        type: Tent.Message.ERROR_TYPE,
+        sourceId: this.get('elementId'),
+        label: this.get('label')
+      });
+      return $.publish(&quot;/message&quot;, [message]);
+    }).observes('errorsDidChange'),
     hasErrors: (function() {
       return !this.get('isValid');
     }).property('isValid'),
@@ -549,7 +566,7 @@
       return this.set('validationErrors', []);
     },
     addValidationError: function(error) {
-      return this.get('validationErrors').push(error);
+      return this.get('validationErrors').pushObject(error);
     }
   });
 
@@ -701,6 +718,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
         return Ember.View.views[this.$().closest('form').attr('id')];
       }
     }).property(),
+    focus: function() {
+      return $('#' + this.get('inputIdentifier')).focus();
+    },
     resize: function() {
       this._super();
       return this.estimateFormStyle();
@@ -800,7 +820,11 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 (function() {
 
   Tent.AriaSupport = Ember.Mixin.create({
+<<<<<<< HEAD
     attributeBindings: ['ariaRequired:aria-required', 'ariaReadOnly:aria-readonly', 'ariaDisabled:aria-disabled', 'ariaDescribedBy:aria-describedby'],
+=======
+    attributeBindings: ['ariaRequired:aria-required', 'ariaReadOnly:aria-readonly', 'ariaDisabled:aria-disabled', 'ariaDescribedBy:aria-describedby', 'ariaInvalid:aria-invalid'],
+>>>>>>> master
     ariaRequired: (function() {
       if (this.get('parentView.required')) {
         return 'true';
@@ -824,7 +848,18 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     }).property('parentView.disabled'),
     ariaDescribedBy: (function() {
       return this.get('parentView.errorId') + &quot; &quot; + this.get('parentView.helpId');
+<<<<<<< HEAD
     }).property('parentView.errorId')
+=======
+    }).property('parentView.errorId'),
+    ariaInvalid: (function() {
+      if (this.get('parentView.hasErrors')) {
+        return 'true';
+      } else {
+        return 'false';
+      }
+    }).property('parentView.hasErrors')
+>>>>>>> master
   });
 
 }).call(this);
@@ -4009,6 +4044,199 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
+<<<<<<< HEAD
+=======
+Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasErrors}}\n&lt;div class=\&quot;alert-error clearfix\&quot;&gt;\n\t&lt;span class=\&quot;title\&quot;&gt;Errors&lt;/span&gt;\n\t{{#if view.collapsible}}\n\t\t&lt;div {{bindAttr class=\&quot;view.expandoClass\&quot;}}&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : {{this.messages}}\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t&lt;a href=\&quot;#\&quot; class=\&quot;dropdown-toggle pull-right close\&quot; data-toggle=\&quot;collapse\&quot; data-target=\&quot;.error-expando\&quot;&gt;\n\t\t\t\t\t&lt;b class=\&quot;caret\&quot;&gt;&lt;/b&gt;&lt;/a&gt;\n\t\t\t{{/if}}\n\t\t&lt;/div&gt;\n\t\t\n\t{{else}}\n\t\t&lt;div&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : {{this.messages}}\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t&lt;/div&gt;\n\t{{/if}}\n&lt;/div&gt;\n{{/if}}\n\n{{#if view.hasInfos}}\n&lt;div class=\&quot;alert-info clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearInfos\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;span class=\&quot;title\&quot;&gt;Info&lt;/span&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.info}}\n\t\t\t&lt;div class=\&quot;info-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/div&gt;\n{{/if}}&quot;);
+
+(function() {
+<span id='Tent-MessagePanel'>/**
+</span>   * @class Tent.MessagePanel
+   * @extends Ember.View
+   *
+   * A panel for displaying error and information messages for the application.
+   *
+   * All Tent widgets will publish messages when they are in an error state and these will
+   * be displayed dynamically by the MessagePanel. If there are no errors, the panel will be hidden.
+   * Each error message will identify the source of the error, if provided, and can also send focus
+   * to the source widget when clicked.
+   *
+   * Error messages can also be displayed by explicitly publishing them, setting type='error'
+   *
+   * 			$.publish('/message', {
+   					type:'error', 
+   					messages:['Date format incorrect'], 
+   					sourceId: 'ember13'
+   					label: 'Date'
+   			})
+   *
+   * - **type**: The type of message, can be 'error' or 'info'
+   * - **messages**: An array of messages to display
+   * - **sourceId**: If the message refers to a Tent widget, provide the elementId of the widget
+   * so that focus can be transferred to it when the error is clicked
+   * - **label**: The label to display beside the messages for this source
+   *
+   * Each source will be allocated one line in the MessagePanel. If there are no messages for
+   * a source, it will be removed from the MessagePanel. So in effect, to clear the messages for a source, send an
+   * empty messages array
+   * 			
+   * 			$.publish('/message', {
+   					type:'error', 
+   					messages:[], 
+   					sourceId: 'ember13'
+   			})
+   * 
+   * Information messages are displayed as-is, with no linking to source widgets.
+   *
+   * 			$.publish('/message', {
+   					type:'info', 
+   					messages:['Please call this number for assistance..']
+   			})
+   *
+   * If you wish to display more than one message, use different sourceId's in the published message.
+   *
+   * The default state of the MessagePanel is collapsed and showing the first message. The panel can 
+   * be expanded if there is more than one message. The panel can be permanently expanded by setting the 
+   * {@link #collapsible} property to false. The default collapse state can be set with the {@link #collapsed}
+   * property.
+   *
+   * 
+   *
+   * ##Usage
+   *         {{view Tent.MessagePanel}}
+   *
+  */
+
+
+  Tent.MessagePanel = Ember.View.extend({
+    templateName: 'message_panel',
+    classNames: ['tent-message-panel'],
+    title: null,
+<span id='Tent-MessagePanel-property-collapsible'>    /**
+</span>     	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
+    */
+
+    collapsible: true,
+<span id='Tent-MessagePanel-property-collapsed'>    /**
+</span>     	* @property {Boolean} collapsed A boolean indicating that the panel is collapsed by default
+    */
+
+    collapsed: true,
+    init: function() {
+      this._super();
+      this.clearAll();
+      this.set('handler', $.proxy(this.handleNewMessage, this));
+      return $.subscribe('/message', this.get('handler'));
+    },
+    willDestroy: function() {
+      $.unsubscribe('/message', this.get('handler'));
+      return this._super();
+    },
+    handleNewMessage: function(e, msg) {
+      var arrayWithMessageRemoved, errs, newErrors;
+      if (!(msg.type != null)) {
+        throw new Error('Message must have a type');
+      }
+      errs = msg.messages;
+      arrayWithMessageRemoved = [];
+      if (msg.messages != null) {
+        arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
+          return item.sourceId !== msg.sourceId;
+        });
+        if (msg.messages.length &gt; 0) {
+          arrayWithMessageRemoved.pushObject($.extend({}, msg));
+        }
+      }
+      newErrors = Ember.ArrayProxy.create({
+        content: $.merge([], arrayWithMessageRemoved)
+      });
+      return this.set(msg.type, newErrors);
+    },
+    expandoClass: (function() {
+      if (this.get('collapsed')) {
+        return &quot;error-expando collapse&quot;;
+      } else {
+        return &quot;error-expando collapse in&quot;;
+      }
+    }).property('collapsed'),
+<span id='Tent-MessagePanel-method-getErrorsForView'>    /**
+</span>    	 * return the error messages
+    */
+
+    getErrorsForView: function(viewId) {
+      var error, errors, _i, _len, _ref;
+      errors = [];
+      _ref = this.get('error').get('content');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        error = _ref[_i];
+        if (error.sourceId === viewId) {
+          $.merge(errors, error.messages);
+        }
+      }
+      return errors.uniq();
+    },
+    getInfosForView: function(viewId) {
+      var info, infos, _i, _len, _ref;
+      infos = [];
+      _ref = this.get('info').get('content');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        info = _ref[_i];
+        if (info.sourceId === viewId) {
+          $.merge(infos, info.messages);
+        }
+      }
+      return infos.uniq();
+    },
+    hasErrors: (function() {
+      return this.get('error').toArray().length &gt; 0;
+    }).property('error'),
+    hasInfos: (function() {
+      return this.get('info').toArray().length &gt; 0;
+    }).property('info'),
+    hasMoreThanOneError: (function() {
+      return this.get('error').toArray().length &gt; 1;
+    }).property('error'),
+    clearAll: function() {
+      this.clearErrors();
+      return this.clearInfos();
+    },
+    clearErrors: function() {
+      return this.set('error', Ember.ArrayProxy.create({
+        content: []
+      }));
+    },
+    clearInfos: function() {
+      return this.set('info', Ember.ArrayProxy.create({
+        content: []
+      }));
+    },
+    click: function(e) {
+      var target, targetId, wrappingMessage;
+      target = $(e.target);
+      wrappingMessage = target.closest('.error-message', this.$());
+      if ((wrappingMessage != null) &amp;&amp; wrappingMessage.length &gt; 0) {
+        targetId = wrappingMessage.attr('data-target');
+        if (Ember.View.views[targetId] != null) {
+          return Ember.View.views[targetId].focus();
+        }
+      }
+    }
+  });
+
+  Tent.Message = Ember.Object.extend({
+    messages: null,
+    params: null,
+    type: null,
+    sourceId: null
+  });
+
+  Tent.Message.ERROR_TYPE = 'error';
+
+  Tent.Message.INFO_TYPE = 'info';
+
+}).call(this);
+
+
+>>>>>>> master
 (function() {
 }).call(this);
 
@@ -4188,6 +4416,19 @@ GridController
   });
 
 }).call(this);
+
+
+
+<span id='Handlebars-helpers-formatNumber'>/**
+</span>* `formatNumber` allows you to present a numeric value formatted  
+* according to the current locale
+*		
+*		{{formatNumber number}}
+*
+* @class Handlebars.helpers.formatNumber
+* @param {Number} number
+* @returns {String} HTML string
+*/
 
 
 (function() {

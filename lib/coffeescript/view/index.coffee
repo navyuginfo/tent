@@ -30,4 +30,5 @@ require './date_field'
 require './textarea'
 require './breadcrumbs'
 require './file_upload'
+require './message_panel'
 

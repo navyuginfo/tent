@@ -2,6 +2,15 @@
 @import "bootstrap-responsive";
 /*@import "compass";*/
 
+
+/* Mixins */
+// Border Radius
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+          border-radius: $radius;
+}
+
 .tent-widget {
 	.tent-required {
 		color: red;
@@ -354,6 +363,86 @@ a[rel=tooltip] {
     }
 }
 
+/* Messages Panel */
+
+.tent-message-panel {
+	margin-top: 10px;
+	
+
+	.title {
+		font-weight: bold;
+		float:left;
+	}
+	
+	.close {
+		position: static
+	}
+
+	a.close, .close .btn {
+		font-size: 12px;
+		color: #333;
+		top: 6px;
+		position: absolute;
+		right: 10px;
+		padding: 0px;
+		border: 0px;
+		background: transparent;
+	}
+	.caret {
+		margin-left: 5px;
+		vertical-align: middle;
+	}
+
+	.in .caret {
+		border-top: 0px;
+		border-bottom: 4px solid black;
+	}
+
+	.alert-error {
+		position: relative;
+		margin: 10px 0px;
+		padding: 7px;
+		@include border-radius(4px);
+		border: 1px solid #EED3D7;
+	}
+
+	.alert-info {
+		position: relative;
+		margin: 10px 0px;
+		padding: 7px;
+		@include border-radius(4px);
+		border: 1px solid #BCE8F1;
+	}
+
+	.error-message {
+		cursor: pointer;
+		padding: 0px 50px;
+		font-size: smaller;
+		
+		&:hover {
+			text-decoration: underline;
+		}
+		
+		label {
+			display: inline;
+			font-size: 13px;
+		}
+
+	}
+
+	.info-message {
+		padding: 0px 50px;
+		font-size: smaller;
+	}
+
+	.error-expando, .info-expando {
+		min-height: 20px;
+		position: static;
+		.in {
+			height: auto;
+		}
+	}
+}
 
 
 

@@ -17,6 +17,7 @@
     <script src="javascript/slick-grid.js" type="text/javascript"></script>
     <script src="javascript/jqGrid.js" type="text/javascript"></script>
     <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/pubsub.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
     <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
@@ -67,7 +68,13 @@
           $(this).parent('li').addClass('active');
         })
 
-
+        setTimeout(function() {
+              $.publish('/message', {type:'info', messages:['message 1'], sourceId: '12'});
+              $.publish('/message', {type:'info', messages:['message 2'], sourceId: '12'});
+              $.publish('/message', {type:'error', messages:['Error 1'], sourceId: '1', label: 'Widget1'});
+              $.publish('/message', {type:'error', messages:['Error 2'], sourceId: '2'})
+              $.publish('/message', {type:'error', messages:['Error 3'], sourceId: '3'})
+          }, 3000);
 
       });
     </script>
@@ -77,6 +84,7 @@
     <script type="text/x-handlebars">
 
       {{#view Tent.Panel span="2" id="sidebar"}}
+
         <ul class="nav nav-list affix sidenav">
           <li class="active">
             <a href="#form-section"><i class="icon-chevron-right"></i> Form Fields</a>
@@ -106,7 +114,7 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
-
+          {{view Tent.MessagePanel collapsible=true collapsed=true}}
           {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
@@ -320,6 +328,11 @@
             <h5>Date</h5>
             Original date = <b>{{Pad.date}}</b>
             Formatted date = <b>{{formatDate Pad.date}}</b>
+
+            <h5>Time</h5>
+            Original time = <b>{{Pad.date}}</b>
+            Formatted time = <b>{{formatDate Pad.date format="hh:ss"}}</b>
+            
 
             <h5>Number</h5>
             Original number = <b>{{Pad.numeric}}</b>

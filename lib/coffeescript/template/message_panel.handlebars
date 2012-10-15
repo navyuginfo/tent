@@ -1,0 +1,39 @@
+{{#if view.hasErrors}}
+<div class="alert-error clearfix">
+	<span class="title">Errors</span>
+	{{#if view.collapsible}}
+		<div {{bindAttr class="view.expandoClass"}}>
+			{{#each view.error}}
+				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+	  				<label>{{loc this.label}}</label> : {{this.messages}}
+	  			</div> 
+		  	{{/each}}
+		  	{{#if view.hasMoreThanOneError}}
+				<a href="#" class="dropdown-toggle pull-right close" data-toggle="collapse" data-target=".error-expando">
+					<b class="caret"></b></a>
+			{{/if}}
+		</div>
+		
+	{{else}}
+		<div>
+			{{#each view.error}}
+				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+	  				<label>{{loc this.label}}</label> : {{this.messages}}
+	  			</div> 
+		  	{{/each}}
+		</div>
+	{{/if}}
+</div>
+{{/if}}
+
+{{#if view.hasInfos}}
+<div class="alert-info clearfix">
+	{{view Tent.Button label="x" type="link" action="clearInfos" targetBinding="view" class="close"}}
+	<span class="title">Info</span>
+	<div class="info-expando">
+		{{#each view.info}}
+			<div class="info-message" {{bindAttr data-target="this.sourceId"}}>{{this.messages}}</div> 
+	  	{{/each}}
+	</div>
+</div>
+{{/if}}
