@@ -17,6 +17,7 @@ $.jgrid.extend({
 			afterShowForm: null,
 			afterSubmitForm: null,
 			closeOnEscape : true,
+			showCancel: true,
 			ShrinkToFit : false,
 			jqModal : false,
 			saveicon: [true,"left","ui-icon-disk"],
@@ -55,7 +56,7 @@ $.jgrid.extend({
 				}
 				formdata += "</tbody></table></div>"
 				var bS  = !p.updateAfterCheck ? "<a href='javascript:void(0)' id='dData' class='fm-button ui-state-default ui-corner-all'>"+p.bSubmit+"</a>" : "",
-				bC  ="<a href='javascript:void(0)' id='eData' class='fm-button ui-state-default ui-corner-all'>"+p.bCancel+"</a>";
+				bC  = p.showCancel ? "<a href='javascript:void(0)' id='eData' class='fm-button ui-state-default ui-corner-all'>"+p.bCancel+"</a>" : "";
 				formdata += "<table border='0' class='EditTable' id='"+dtbl+"_2'><tbody><tr style='display:block;height:3px;'><td></td></tr><tr><td class='DataTD ui-widget-content'></td></tr><tr><td class='ColButton EditButton'>"+bS+"&#160;"+bC+"</td></tr></tbody></table>";
 				p.gbox = "#gbox_"+gID;
 				$.jgrid.createModal(IDs,formdata,p,"#gview_"+$t.p.id,$("#gview_"+$t.p.id)[0]);

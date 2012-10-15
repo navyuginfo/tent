@@ -326,7 +326,7 @@ Tent.JqGrid = Ember.View.extend
 	restoreRow: (rowId) ->
 		@getTableDom().jqGrid('restoreRow', rowId)
 		@saveEditedRow(rowId)
-		@get('onRestoreRow').call(@, rowId, @getTableDom())
+		@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
 
 	# Make all editable cells editable
 	editRow: (rowId) ->
@@ -335,7 +335,7 @@ Tent.JqGrid = Ember.View.extend
 	onEditFunc: (rowId) ->
 		widget = @
 		(rowId) ->
-			widget.get('onEditRow').call(widget, rowId, widget.getTableDom())
+			widget.get('onEditRow').call(widget, rowId, widget.getTableDom()) if widget.get('onEditRow')?
 
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
@@ -347,7 +347,7 @@ Tent.JqGrid = Ember.View.extend
 		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
 		cellName = @getColModel()[cellpos].name
 		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
-		@onSaveCell.call(@, rowId, @getTableDom(), cellName, cellpos)
+		@onSaveCell.call(@, rowId, @getTableDom(), cellName, cellpos) if @onSaveCell?
 
 	saveEditedRow: (rowId, status, options)->
 		rowData = @getTableDom().getRowData(rowId)
@@ -392,7 +392,7 @@ Tent.JqGrid = Ember.View.extend
 			@$('a.column-chooser').click(() ->
 					tableDom.jqGrid('setColumns',{
 						caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
-						bCancel: Tent.I18n.loc("_close"),
+						showCancel: false,
 						ShrinkToFit: true,
 						recreateForm: true,
 						updateAfterCheck: true,
