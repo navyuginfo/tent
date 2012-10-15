@@ -84,6 +84,18 @@ Tent.JqGrid = Ember.View.extend
 	showColumnChooser: true
 
 	###*
+	* @property {Boolean} showExportJSONButton Display a button in the header which allows the table data to 
+	* be exported in JSON format.
+	###
+	showExportJSONButton: true
+
+	###*
+	* @property {Boolean} showExportXMLButton Display a button in the header which allows the table data to 
+	* be exported in XML format.
+	###
+	showExportXMLButton: true
+
+	###*
 	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
 	* The context of the function is this JqGrid View, and it will accept the following parameters:
 	* 
@@ -383,6 +395,25 @@ Tent.JqGrid = Ember.View.extend
 		tableDom = @getTableDom()
 		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
 
+		if @get('showExportJSONButton')
+			@$(".ui-jqgrid-titlebar").append('<a class="export-json"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.export.json") + '</a>')
+			@$('a.export-json').click ->
+				ret = xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
+				console.log ret
+				if navigator.appName != 'Microsoft Internet Explorer'
+					window.open('data:text/csv;charset=utf-8,' + escape(ret))
+					#window.location.href='data:text/csv;charset=utf-8,' + escape(ret)
+				else
+					popup = window.open('', 'csv', '')
+					popup.document.body.innerHTML = '<pre>' + ret + '</pre>'
+
+		if @get('showExportXMLButton')
+			@$(".ui-jqgrid-titlebar").append('<a class="export-xml"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.export.xml") + '</a>')
+			@$('a.export-xml').click ->
+				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				console.log ret
+
+				
 		if @get('showColumnChooser')
 			# Ensure that the caption header is displayed
 			if not @get('title')?
@@ -401,6 +432,27 @@ Tent.JqGrid = Ember.View.extend
 						width: 300
 					})
 			)
+
+	exportCSV: (data, keys)->
+		convertToCSV = (data, keys) ->
+			orderedData = [];
+			for temp in data
+			#for (var i = 0, iLen = data.length; i < iLen; i++) {
+			#	temp = data[i];
+				for item, j in temp
+				#for (var j = 0, jLen = temp.length; j < jLen; j++) {
+					if !orderedData[j]
+						orderedData.push([item]);
+					else 
+						orderedData[j].push(item);
+			return keys.join(',') + '\r\n' + orderedData.join('\r\n')
+
+		str = convertToCSV(data, keys)
+		if navigator.appName != 'Microsoft Internet Explorer'
+			window.open('data:text/csv;charset=utf-8,' + escape(str))
+		else
+			popup = window.open('', 'csv', '')
+			popup.document.body.innerHTML = '<pre>' + str + '</pre>'
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -447,7 +499,7 @@ Tent.JqGrid = Ember.View.extend
 			item.cell = cell
 			grid.push(item)
 		return grid
-	).property('content')
+	).property('content', 'content.isLoaded')
 
 	gridDataDidChange: (->
 		# remove existing grid data

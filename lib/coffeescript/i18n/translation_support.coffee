@@ -40,5 +40,9 @@ Tent.I18n.loadTranslations(
 		hideShowAlt: 'Hide/Show Columns'
 		hideShowCaption: 'Columns'
 		hideShowTitle: 'Hide/Show Columns'
+		export: {
+			xml: 'XML'
+			json: 'JSON'
+		}
 	}
 )
