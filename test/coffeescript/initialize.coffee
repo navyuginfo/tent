@@ -43,6 +43,31 @@
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
+	Pad.jqGridSelection = [
+		Ember.Object.create
+			id: 53,
+			title: "Task 3",
+			amount: 123456.789,
+			duration: "7 days",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+	]
+
+	Pad.jqOnEditRow = (rowId, grid) ->
+		console.log 'pad  onedit'
+		initialValue = grid.getCell(rowId, 'amount')
+		calcCell = grid.find('#'+rowId + '_calc')
+		calcCell.val(initialValue)
+		@saveEditedRow(rowId)
+
+	Pad.jqOnRestoreRow = (rowId, grid) ->
+		console.log "restoring row ["+rowId+"]"
+		
+	Pad.jqOnSaveCell = (rowId, grid, cellName, iCell) ->
+		console.log "Cell ["+cellName+"] was saved"
+
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
 			title: "Task 2",
@@ -71,6 +96,13 @@
 			finish: new Date("01/05/2009"),
 			effortDriven: 1
 	})]
+
+
+	Pad.jqRemoteCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: true
+
 
 	Pad.remoteCollection = Tent.Data.Collection.create
 		store: Pad.dataStore

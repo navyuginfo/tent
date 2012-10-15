@@ -17,7 +17,7 @@ test 'Get paging info', ->
 
 	info = dataView.getPagingInfo()
 	equal info.pageSize, 5, "pagesize"
-	equal info.pageNum, 0, "pagenum"
+	equal info.pageNum, 1, "pagenum"
 	equal info.totalRows, 9, "totalrows"
 	equal info.totalPages, 2, "total pages"
 

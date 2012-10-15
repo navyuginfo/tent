@@ -4,6 +4,7 @@ Pad.Router = Ember.Router.extend
 
   root: Ember.Route.create
     title: 'root'
+         
     index: Ember.Route.create
       route: '/'
       title: 'index'

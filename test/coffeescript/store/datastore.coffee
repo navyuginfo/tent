@@ -15,28 +15,28 @@ Pad.DataStore = Ember.Object.extend
 			pagingInfo: paging
 			modelData: modelData
 	
+	calc: (elem) ->
+		#id = $(elem).attr('id')
+		#rowId = id.slice(0, id.indexOf('_'))
+		#$(elem).val($(this).getCell(rowId,3))
+
 	getColumnsForType: ->
 		[
-			{id: "id", name: "_hID", field: "id", sortable: true},
-			{id: "title", name: "_hTitle", field: "title", sortable: true},
-			{id: "duration", name: "_hDuration", field: "duration.test", sortable: true},
-			{id: "%", name: "_hPercentComplete", field: "percentComplete"},
-			{id: "start", name: "_hStart", field: "start", formatter: Tent.Formatters.Date},
-			{id: "finish", name: "_hFinish", field: "finish"},
-			{id: "effort-driven", name: "_hEffortDriven", field: "effortDriven"}
+			{id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true},
+			{id: "title", name: "title", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", width:5, editable: true, hideable: false, sortable: true, formatter: "amount", align: 'right' },
+			{id: "calc", name: "calc", title: "calc", width:5, editable: true, formatter: "amount", align: 'right', editoptions:{dataInit: @calc} },
+
+			{id: "duration", name: "duration", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
+			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete", width:10},
+			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven", width:10},
+			{id: "start", name: "start", title: "_hStart",field: "start", width:10, formatter: "date"},
+			{id: "finish", name: "finish", title: "_hFinish",field: "finish", width:10, hideable: true}
+			{id: "completed", name: "completed", title: "_hCompleted",field: "completed", width:30, hideable: true, formatter: 'checkboxEdit', align: 'center', editable: false}
 		]
 
 	queryFixtures: (modelData, query) ->
 		data = []
-		###switch query.type
-			when 'paging'
-				# do paging optimizations here
-			when 'sorting'
-				# do sorting optimizations here
-			when 'filtering'
-
-			else
-		###
 		filteredData = @doFilter(modelData, query.filtering)
 		sortedData = @doSort(filteredData, query.sorting)
 		query.paging.totalRows = filteredData.length
@@ -47,10 +47,10 @@ Pad.DataStore = Ember.Object.extend
 		if !paging?
 			return modelData
 
-		start = (paging.pageNum) * paging.pageSize
+		start = (paging.pageNum-1) * paging.pageSize
 		if (start > modelData.length) 
 			start = 0
-			paging.pageNum = 0
+			paging.pageNum = 1
 		end = start + paging.pageSize - 1
 		if (end > modelData.length) then end = modelData.length 
 		return modelData[start..end]

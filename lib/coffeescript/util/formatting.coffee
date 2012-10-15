@@ -16,7 +16,7 @@ Tent.Formatting = {} unless Tent.Formatting?
 
 Tent.Formatting.amount = 
 	format: (amount, settings) ->
-		if amount? and amount != ""
+		if amount?
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
 				accounting.formatNumber(amount, settings) 
@@ -25,7 +25,7 @@ Tent.Formatting.amount =
 		else
 			""
 	unformat: (amount, settings) ->
-		if amount? and amount !=""
+		if amount?
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
 				accounting.unformat(amount, settings)
@@ -59,6 +59,9 @@ Tent.Formatting.date = Ember.Object.create
 Tent.Formatting.number = Ember.Object.create
 	isValidNumber: (value)->
 		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 
+
+	errorText: ->
+		Tent.I18n.loc 'formatting.number'
 
 	format: (value) ->
 		if (typeof value == 'number') or value == ''
