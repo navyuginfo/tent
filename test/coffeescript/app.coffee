@@ -1,3 +1,4 @@
+
 ## Application bootstrapper
 Ember.LOG_BINDINGS = true;
 

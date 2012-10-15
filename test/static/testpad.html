@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+    
     <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" />
 
     <!-- Begin playing, "The March of the Dependencies!" -->
     <script src="javascript/minispade.js" type="text/javascript"></script> 
@@ -12,9 +15,12 @@
     <script src="javascript/bootstrap.js" type="text/javascript"></script>
     <script src="javascript/jquery-ui.js" type="text/javascript"></script>
     <script src="javascript/slick-grid.js" type="text/javascript"></script>
+    <script src="javascript/jqGrid.js" type="text/javascript"></script>
     <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/pubsub.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
+    <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
     <style>
       /* Needed to allow the sidebar to push content to the right */
       [class*="span"] {
@@ -51,9 +57,10 @@
   <body data-spy="scroll" >
      
     <script type="text/javascript">
-      $(document).ready(function() {
         minispade.require('tent');
         minispade.require('coffeescript/initialize');
+      $(document).ready(function() {
+       
         
         $('body').on('click', '.nav-list a', function(){
           console.log('clicked')
@@ -61,7 +68,13 @@
           $(this).parent('li').addClass('active');
         })
 
-
+        setTimeout(function() {
+              $.publish('/message', {type:'info', messages:['message 1'], sourceId: '12'});
+              $.publish('/message', {type:'info', messages:['message 2'], sourceId: '12'});
+              $.publish('/message', {type:'error', messages:['Error 1'], sourceId: '1', label: 'Widget1'});
+              $.publish('/message', {type:'error', messages:['Error 2'], sourceId: '2'})
+              $.publish('/message', {type:'error', messages:['Error 3'], sourceId: '3'})
+          }, 3000);
 
       });
     </script>
@@ -71,6 +84,7 @@
     <script type="text/x-handlebars">
 
       {{#view Tent.Panel span="2" id="sidebar"}}
+
         <ul class="nav nav-list affix sidenav">
           <li class="active">
             <a href="#form-section"><i class="icon-chevron-right"></i> Form Fields</a>
@@ -100,6 +114,8 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
+          {{view Tent.MessagePanel collapsible=true collapsed=true}}
+          {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
             {{view Tent.Checkbox label="_required" checkedBinding="Pad.isRequired"}}
@@ -109,11 +125,17 @@
           {{/view}}
 
           {{#view Tent.Form name="Fields" id="form-section"}}
-            {{view Tent.TextField valueBinding="Pad.appName" label="_focussedInput" placeholder="_typeHere" tooltip="_provide_some_info" 
+            
+            {{view Tent.TextField 
+              valueBinding="Pad.appName" 
+              label="_focussedInput" 
+              placeholder="_typeHere" 
+              tooltip="_provide_some_info" 
               requiredBinding="Pad.isRequired" 
               readOnlyBinding="Pad.isReadOnly" 
               disabledBinding="Pad.isDisabled"
               textDisplayBinding="Pad.textDisplay"}}
+
             {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
             {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
         
@@ -137,8 +159,6 @@
 
             
           {{/view}}
-
-          
 
         {{/view}}
 
@@ -164,12 +184,40 @@
 
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
+
+              <h4>jqGrid</h4>
+
+               
+              {{view Tent.JqGrid
+                  label="Tasks"
+                  collectionBinding="Pad.jqRemoteCollection"
+                  contentBinding= "Pad.jqRemoteCollection.modelData"
+                  selectionBinding="Pad.jqGridSelection"
+                  fixedHeader=false
+                  height= "auto"
+                  paged=true
+                  pageSize=6
+                  remotePaging=false
+                  multiSelect=true
+                  useColumnFilters=false
+                  showColumnChooser=true
+                  onEditRowBinding="Pad.jqOnEditRow"
+                  onRestoreRowBinding="Pad.jqOnRestoreRow"
+                  onSaveCellBinding="Pad.jqOnSaveCell"
+              }}
+              
+
+              <p>Selected jqGrid Items : </p> 
+                {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
+
                 <h4>Table</h4>
                 {{view Tent.Table listBinding="Pad.people" 
                   headers="_hName,_hAge" 
                   columnsBinding="Pad.columns" 
                   selectionBinding="Pad.selectedPerson" 
-                  isEditable=true}}
+                  isEditable=true
+                  isBordered=false
+                }}
 
               <p>Selected Person is 
                   {{#each person in Pad.selectedPerson}}
@@ -191,72 +239,8 @@
                 {{/each}}
               </p>
 
+ 
 
-
-              <h4>SlickGrid</h4>
-              <br/>
-              <h5>Client-side Paging, Sorting, Filtering</h5>
-              {{view Tent.SlickGrid
-                  label="Tasks"
-                  collectionBinding="Pad.clientSideCollection"
-                  selectionBinding="Pad.gridSelection"
-                  paged=true
-                  pageSize=5
-                  remotePaging=false
-                  multiSelect=false
-                  useColumnFilters=true
-              }}
-              <p>Selected SlickGrid Item : {{Pad.gridSelection.title}} </p> 
-
-
-
-              <h5>Remote Paging, Sorting, Filtering</h5>
-
-              {{view Tent.CollectionFilter 
-                  filterTemplate="task_collection_filter" 
-                  collectionBinding="Pad.remoteCollection"}}
-
-
-              {{view Tent.SlickGrid
-                  label="Tasks"
-                  collectionBinding="Pad.remoteCollection"
-                  selectionBinding="Pad.gridRemoteSelection"
-                  paged=true
-                  pageSize=5
-                  remotePaging=true
-                  multiSelect=false
-                  useColumnFilters=false
-              }}
-
-              <p> Column Filters :  {{Pad.collection.columnFilters.title}} </p>
-              <p>Selected SlickGrid Item : {{Pad.gridRemoteSelection.title}} </p>        
-              
-              
-
-              {{view Tent.SlickGrid
-                  label="Tasks"
-                  collectionBinding="Pad.remoteMultiselectCollection"
-                  gridContentBinding="Pad.remoteMultiselectCollection.content"
-                  selectionBinding="Pad.gridRemoteSelectionMultiple"
-                  paged=true
-                  pageSize=5
-                  remotePaging=true
-                  multiSelect=true
-                  useColumnFilters=false
-              }}
-
-
-               <h4>No Paging</h4>
-              {{view Tent.SlickGrid
-                  label="Tasks"
-                  collectionBinding="Pad.remoteMultiselectCollection"
-                  selectionBinding="Pad.gridRemoteSelectionMultiple"
-                  paged=false
-                  multiSelect=false
-                  useColumnFilters=false
-                  enableColumnReorder=false
-                  width="200px"
-              }}
           {{/view}}  
         {{/view}}
 
@@ -264,7 +248,7 @@
           {{#view Tent.Form name="Other Widgets" id="other-section"}}
             <h5>Other Widgets</h5>
 
-            {{view Tent.AlertMessage text="_headsUp" type="info"}}
+            {{view Tent.AlertMessage text="_headsUp" type="info" title="Page Info"}}
             {{view Tent.AlertMessage text="_wellDone" type="success"}}
             {{view Tent.AlertMessage text="_submitAgain" type="error"}}
             {{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
@@ -292,25 +276,7 @@
             {{view Tent.Button label="_buttonToggle" type="primary" dataToggle="button"}}
             <p id="click-label"></p>
         
-
-            <h5>Modal Dialog</h5>
-
-            {{#view Tent.ModalPane
-                label="_clickMe"
-                text="_modalText" 
-                header="_modalHeader" 
-                primaryLabel="_ok" 
-                secondaryLabel="_cancel"
-                type="primary"
-                primaryAction="modalSubmit"
-                primaryTargetBinding="Pad"
-                secondaryAction="modalCancel"
-                secondaryTarget="Pad"
-            }}
-              <h5>Some more content</h5>
-            {{/view}}
-
-
+            <p id="click-label"></p>
           {{/view}}
         {{/view}}
           
@@ -363,15 +329,18 @@
             Original date = <b>{{Pad.date}}</b>
             Formatted date = <b>{{formatDate Pad.date}}</b>
 
-            <h5>Date</h5>
+            <h5>Time</h5>
+            Original time = <b>{{Pad.date}}</b>
+            Formatted time = <b>{{formatDate Pad.date format="hh:ss"}}</b>
+            
+
+            <h5>Number</h5>
             Original number = <b>{{Pad.numeric}}</b>
             Formatted number = <b>{{formatNumber Pad.numeric}}</b>
             
 
           {{/view}}
         {{/view}}
-
-
 
         {{#view Tent.Panel span="10" id="layout-section"}}
         <br/><br/>
@@ -826,14 +795,18 @@
                       </div>
                     </div>
 
-        {{/view}}
+                    <h3>File Upload</h3>
+                      {{view Tent.FileUpload dataUrl="/fileupload"
+                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
 
-      
+        
+        {{/view}}
       </div>
     {{/view}} 
 
-  
-
+     
+    {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
+     
     </script>
       </row>
     </container>

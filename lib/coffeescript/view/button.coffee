@@ -8,21 +8,37 @@
 *
 * ##Usage
 * 
-*
-
+*       {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad"}}
 ###
 
 require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
-  
   templateName: 'button'
   label: 'Button'
+
+  ###*
+  * @property {String} type The type of button.
+  * Valid types are:
+  *
+  * - **primary**: Provides extra visual weight and identifies the primary action in a set of buttons
+  * - **info**: Used as an alternative to the default styles
+  * - **success**: Indicates a successful or positive action
+  * - **warning**: Indicates caution should be taken with this action
+  * - **danger**: Indicates a dangerous or potentially negative action
+  * - **inverse**: Alternate dark gray button, not tied to a semantic action or use
+  * - **link**: Deemphasize a button by making it look like a link while maintaining button behavior
+  *
+  ###
   type: null
+
   isDisabled: false
+  
+  ###*
+  * @property {String} action The action to be invoked on the target when the button is clicked
+  ###
   action: null
-  classNames: ['tent-button', 'tent-widget', 'control-group']
-  classNameBindings:['type', 'hasOptions:tent-button-group button-group']
+  classNameBindings:['tent-button','hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'
   optionActionPath: 'action'
@@ -52,7 +68,6 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")
     classes = classes.concat(" dropdown-toggle") if @get("hasOptions")
     classes = classes.concat(" disabled") if @get("isDisabled")
-    classes = classes.concat(" " + @get('buttonClass')) if @get('buttonClass')? 
     return classes
   ).property('type','hasOptions')   
 
@@ -67,8 +82,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     'success',
     'warning',
     'danger',
-    'inverse',
-    'link'
+    'inverse'
     ]
 
   optionList: (->

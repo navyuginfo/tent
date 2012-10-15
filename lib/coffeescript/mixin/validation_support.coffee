@@ -3,12 +3,32 @@
 # All rights reserved.
 #
 
+###*
+ * @class Tent.ValidationSupport
+ * Some docs here...
+###
+
 Tent.ValidationSupport = Ember.Mixin.create  
   isValid: true
   
   validate: ->
     @flushValidationErrors()
     true
+
+  errorsDidChange: (->
+    console.log('validation errors did change')
+    
+  ).property('validationErrors.@each')
+
+  updateErrorPanel: (->
+    message = Tent.Message.create
+      messages: $.merge([], @get('validationErrors'))
+      type: Tent.Message.ERROR_TYPE
+      sourceId: @get('elementId')
+      label: @get('label')
+
+    $.publish("/message", [message]);
+  ).observes('errorsDidChange')
 
   hasErrors: (->
     #(!@validate() if @validate?) || false
@@ -28,7 +48,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     
   addValidationError: (error) ->
     # Do we need more than one error?
-    @get('validationErrors').push(error)
+    @get('validationErrors').pushObject(error)
 
 
  

@@ -1,7 +1,8 @@
-
 ((loader) -> 
 
 	loader.require('coffeescript/app')
+	loader.require('coffeescript/router')
+	loader.require('coffeescript/controllers/application_controller')
 	loader.require('coffeescript/i18n/translations')
 	loader.require('coffeescript/store/datastore')
 
@@ -9,8 +10,10 @@
 	loader.require('coffeescript/models/task_model')
 	loader.require('template/task_collection_filter')
 
+	Pad.initialize()
+
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
-	# Ensure the Rest adapter is working correctly 
+	# Ensure the Rest adapter is working correctly
 	Pad.pagingAdapter.simulateRemoteResponse = false;
 	Pad.store = DS.Store.create({
 		revision: 4,
@@ -46,6 +49,31 @@
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
+	Pad.jqGridSelection = [
+		Ember.Object.create
+			id: 53,
+			title: "Task 3",
+			amount: 123456.789,
+			duration: "7 days",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+	]
+
+	Pad.jqOnEditRow = (rowId, grid) ->
+		console.log 'pad  onedit'
+		initialValue = grid.getCell(rowId, 'amount')
+		calcCell = grid.find('#'+rowId + '_calc')
+		calcCell.val(initialValue)
+		@saveEditedRow(rowId)
+
+	Pad.jqOnRestoreRow = (rowId, grid) ->
+		console.log "restoring row ["+rowId+"]"
+		
+	Pad.jqOnSaveCell = (rowId, grid, cellName, iCell) ->
+		console.log "Cell ["+cellName+"] was saved"
+
 	Pad.gridSelection = Ember.Object.create({
 			id: 52,
 			title: "Task 2",
@@ -74,6 +102,13 @@
 			finish: new Date("01/05/2009"),
 			effortDriven: 1
 	})]
+
+
+	Pad.jqRemoteCollection = Tent.Data.Collection.create
+		store: Pad.dataStore
+		dataType: Pad.Models.TaskModel
+		paged: true
+
 
 	Pad.remoteCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
@@ -147,25 +182,27 @@
 	]
 
 	Pad.groupTarget = Ember.Object.create({
-		addEvent: -> 
+		addEvent: ->
 			alert("action add clicked");
 			return false
 		,
-		editEvent: -> 
+		editEvent: ->
 			alert("action edit clicked");
 			return false
 		,
 		deleteEvent: ->
 			alert("action delete clicked");
 			return false
-	}) 
+	})
+
+	Pad.uploadSuccessFunction = (result, textStatus, jqXHR) ->
+	  alert(textStatus)
 
 	Pad.reopen(
-		ready: -> 
+		ready: ->
 			this._super();
 			console.log('initializing ...');
 		 
 	)
 
 )(minispade)
-

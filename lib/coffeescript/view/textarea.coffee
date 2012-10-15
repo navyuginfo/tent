@@ -1,3 +1,18 @@
+###*
+* @class Tent.Textarea
+* @mixins Tent.FormattingSupport
+* @mixins Tent.FieldSupport
+* @mixins Tent.TooltipSupport
+* @mixins Tent.AriaSupport
+* @mixins Tent.Html5Support
+* @mixins Tent.ReadonlySupport
+* @mixins Tent.DisabledSupport
+* Usage
+*      {{view Tent.Textarea label="" valueBinding="" }}
+* @property {String} label
+* @property {Boolean} readonly 
+###
+
 require '../template/textarea'
 require '../mixin/readonly_support'
 

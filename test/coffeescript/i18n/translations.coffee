@@ -26,6 +26,7 @@ Tent.translations =
 	_modalHeader: 'My Heading'
 	_ok: 'OK'
 	_cancel: 'Cancel'
+	_close: 'Close'
 	_radio: 'Radio'
 	_georgia: 'Georgia'
 	_arkansas: 'Arkansas'
@@ -45,4 +46,8 @@ Tent.translations =
 	_hStart: 'Start'
 	_hFinish: 'Finish'
 	_hEffortDriven: 'Effort Driven'
+	formatting: {
+		number: 'Please provide a valid number.'
+	}
+
 	

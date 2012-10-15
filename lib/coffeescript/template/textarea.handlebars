@@ -14,6 +14,9 @@
           rowsBinding="view.rows"
           colsBinding="view.cols"
       }}
+      {{#if view.hasHelpBlock}}
+        <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
+      {{/if}}
     {{/if}}
     {{#if view.tooltip}}
       <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>
@@ -22,9 +25,7 @@
       <span class="help-block">{{loc view.helpBlock}}</span>
     {{/if}}
     {{#if view.hasErrors}}
-      {{#each error in view.validationErrors}}
-        <span class="help-inline">{{error}}</span>
-      {{/each}}
+      <span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>
     {{/if}}  
   </div>
 

@@ -3,6 +3,23 @@
 # All rights reserved.
 #
 
+###*
+* @class Tent.AmountField
+* @extends Tent.TextField
+* 
+* ##Usage
+*
+*       {{view Tent.AmountField valueBinding="" 
+          label="" 
+          currency="" 
+          required=false
+          readOnly=false
+          disabled=false 
+          textDisplayBinding=false
+          tooltip=""
+        }}
+###
+
 require '../mixin/field_support'
 require '../template/text_field'
 

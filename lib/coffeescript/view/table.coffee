@@ -9,16 +9,22 @@ require '../template/table'
 require '../template/table_row'
 
 Tent.Table = Ember.View.extend
-  classNames: ['table', 'table-bordered', 'table-condensed']
+  classNames: ['table','table-condensed']
+  classNameBindings: ['isBordered:table-bordered']
   tagName: 'table'
   templateName: 'table'
+  isBordered: true
+
   _columnHeaders: (->
     @get('headers').split(',') if @get('headers')?
   ).property('headers')
+
   visibleHeaders: (-> @get('_columnHeaders')).property('_columnHeaders')
+
   _columns: (->
     @get('columns').split(',') if @get('columns')?
     ).property('columns')
+
   visibleColumns: (-> @get('_columns')).property('_columns')
 
   init: ->
@@ -27,17 +33,26 @@ Tent.Table = Ember.View.extend
     @set('isEditable', true) if @get('isEditable') == undefined
     if not @get('_list')? 
       @createListProxy()
-  
+
   createListProxy: ->
-    @set('_list', Tent.SelectableArrayProxy.create({content: @get('list')}))
-    @get('_list').set('isMultipleSelectionAllowed', @get('multiselection'))
+    @set '_list', Tent.SelectableArrayProxy.create
+      content: @get('list')
+    @get('_list').set('isMultipleSelectionAllowed', @get('multiselection') || @get('context.multiselection'))
 
   isRowSelected: (row) ->
-      if (selElements = @get('_list').get('selected')) isnt null
-        #for the time when page first renders or when nothing is selected
-        selElements.contains(row.get('content'))
-      else
+    if (selElements = @get('_list').get('selected')) isnt null
+      #for the time when page first renders or when nothing is selected
+      rowContent = row.get('content')
+      return true if selElements.contains(rowContent)
+      selElements.some (element) ->
+        return true if element == rowContent
+
+        elementId = Ember.get(element, 'id')
+        rowId = Ember.get(rowContent, 'id')
+        return elementId == rowId if elementId? && rowId?
         false
+    else
+      false
 
   ##
   # method to populate the new list of items or push a single item
@@ -55,7 +70,13 @@ Tent.Table = Ember.View.extend
       if not @get('_list')? 
         @createListProxy()
       @get('_list').set('selected', selection)
-     
+
+  selectAll: (->
+    if @get('allSelected')
+      @get('_list').selectAll()
+    else
+      @get('_list').clearSelection()
+  ).observes('allSelected')
 
   updateContent: ( ->
     @get('_list').set('content',@get('list'))
@@ -83,7 +104,21 @@ Tent.TableRow = Ember.View.extend
     if @get('parentTable').get('isEditable')
       # checks the radioButtons/checkboxes in case of defaultselection
       @checkSelection()
-  
+
+  format: (columnName, columnValue) ->
+    if (formatterProvider = @get('parentTable.formatter'))?
+      tableContent = @get('parentTable.list')
+      formatter = formatterProvider(tableContent, columnName)
+      return formatter.format(columnValue) if formatter?
+    columnValue
+
+  cssClass: (columnName) ->
+    if (formatterProvider = @get('parentTable.formatter'))?
+      tableContent = @get('parentTable.list')
+      formatter = formatterProvider(tableContent, columnName)
+      return formatter.cssClass() if formatter? && formatter.cssClass?
+    ""
+
   isSelected: (-> 
     @get('parentTable').isRowSelected(this)
   ).property('parentTable.selection')
@@ -104,13 +139,25 @@ Tent.TableRow = Ember.View.extend
     
 Tent.TableCell = Ember.View.extend
   tagName: 'td'
-  classNameBindings: ['isRadio:tent-width-small']
-  defaultTemplate: (->
-    Ember.Handlebars.compile('{{view.row.'+ @get('content') + '}}')
-  ).property('row', 'content')
+  classNameBindings: ['isRadio:tent-width-small', 'cssClass']
+  
+  defaultTemplate: Ember.Handlebars.compile('{{view.formattedColumnValue}}')
+  
   row: (->
-    @get('parentView').get('parentView').get('content')
+    @get('parentView').get('parentView')
   ).property('parentView')
+
+  formattedColumnValue: (->
+    columnName = @get('content')
+    columnValue = @get('row.content.' + columnName)
+    @get('row').format(columnName, columnValue)
+  ).property('row', 'content')
+
+  cssClass: (->
+    columnName = @get('content')
+    row = @get('row')
+    row.cssClass(columnName)
+  ).property('row', 'content')
 
 Tent.TableHeader = Ember.View.extend
   tagName: 'th'
