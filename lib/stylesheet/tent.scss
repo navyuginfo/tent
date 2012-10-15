@@ -241,7 +241,7 @@ a[rel=tooltip] {
 		}
 	}
 
-	.column-chooser, .export-json, .export-xml {
+	.column-chooser, .export {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -329,6 +329,32 @@ a[rel=tooltip] {
 			width: 100%;
 			top: 50px;
 			bottom: 0px;
+		}
+	}
+
+	.ui-widget-header .export {
+		a.btn {
+			background: none;
+			font-size: 11px;
+			font-family: inherit;
+			padding: 0px 9px;
+			text-shadow: none;
+
+			.caret {
+				border-top-color: white;
+				border-bottom-color: white;
+			}
+			&:hover {
+				color: white;
+			}
+		}
+
+		.dropdown-menu {
+			min-width: 70px;
+			li > a {
+				color: #333;
+				font-size: 11px;
+			}
 		}
 	}
 
