@@ -5,59 +5,111 @@
 
 ###*
 * @class Tent.ModalPane
-* A modal popup panel which displays a header and text with buttons available for progressing or cancelling the message  
+* Display a model popup panel.
+* 
+* A button will be displayed to allow the popup to be launched. You provide a {@link #label}
+* and optionally a {@link #type} for the button.
 *
-* Usage
-*       {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
+* Text to go into the header of the popup is provided using the {@link #header} property.
+*
+* The body of the popup may be provided either by the {@link #text} property, or by nesting 
+* content within the view (using {{#view}} rather than {{view}}).
+*
+* Labels for the button in the popup are provided by the {@link #primaryLabel} and {@link #secondaryLabel} properties.
+*
+* The primary button action is configured using the {@link #primaryAction} and {@link #primaryTarget} property pair.
+* Similarly use {@link #secondaryAction} and {@link #secondaryTarget} for the secondary button.
+*
+* ##Usage
+*
+*       {{#view Tent.ModalPane   
+                text="_modalText" 
+                header="_modalHeader" 
+                primary="_ok" 
+                secondary="_cancel"
+                buttonClass=""
+                type="primary"
+                primaryAction="modalSubmit"
+                primaryTargetBinding="Pad"
+                secondaryAction="modalCancel"
+                secondaryTarget="Pad"
+            }}
+              <h5>Some more content</h5>
+        {{/view}}
+*
 ###
-
 require '../template/modal_pane'
 
-jQuery = window.jQuery
-modalPaneBackdrop = '<div class="modal-backdrop"></div>'
 
 Tent.ModalPane = Ember.View.extend
-  templateName: 'modal_pane'
-  classNames: ['modal']
+  layoutName: 'modal_pane'
+  classNames: ['tent-widget', 'control-group']
+  ###*
+  * @property {String} label The label for the launch button
+  ###
+  label:"_submit"
 
   ###*
-  * @property {String} header The heading to display on the popup
+  * @property {String} header The text to display in the header section of the modal dialog
   ###
   header:null
 
   ###*
-  * @property {String} text The text to display within the popup
-  ###
+  * @property {String} text The text to display in the body section.
+  * The dialog will also display any nested content in the body section, so in that case the 
+  * text property would be optional
+  ###  
   text:null
 
   ###*
-  * @property {String} primary The label for the primary button in the popup
+  * @property {String} type The type of button used to launch the dialog. See {@link Tent.Button}
   ###
-  primary:null
+  type: "primary" # button type
 
   ###*
-  * @property {String} secondary The label for the secondary button in the popup
+  * @property {String} primaryLabel The label for the primary button
   ###
-  secondary:null
+  primaryLabel:null
 
   ###*
-  * @property {Boolean} showBackdrop A boolean to determine whether to hide the background page with a visual mask. 
+  * @property {String} secondaryLabel The label for the secondary button
   ###
-  showBackdrop:true
+  secondaryLabel:null
+
+  ###*
+  * @property {String} primaryAction The method to execute when the primary button is clicked
+  ###
+  primaryAction:null
+
+  ###*
+  * @property {String} primaryTarget The target providing the action to call when the primary button is clicked
+  ###
+  primaryTarget:null
+ 
+  ###*
+  * @property {String} secondaryAction The method to execute when the secondary button is clicked
+  ###
+  secondaryAction: "hide"
+
+  ###*
+  * @property {String} secondaryTarget The target providing the action to call when the primary button is clicked
+  ###
+  secondaryTarget: "parentView"
+
 
   click: (event)->
     target = event.target
-    targetClick = target.getAttribute('click')
-    (@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
+    if $(target).hasClass('close-dialog')
+      @hide()
 
-  didInsertElement: -> 
-    @_appendBackdrop() if @showBackdrop   
+    #targetClick = target.getAttribute('click')
+    #(@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
 
-  willDestroyElement: ->
-    @_backdrop.remove() if @showBackdrop 
+  launch: ->
+     @.$('.modal').modal(@get('options'))
 
-  _appendBackdrop: ->
-    @_backdrop = jQuery(modalPaneBackdrop).appendTo(@$().parent())  
+  hide: ->
+    @.$('.modal').modal('hide')    
 
 
 Tent.ModalHeader = Ember.View.extend

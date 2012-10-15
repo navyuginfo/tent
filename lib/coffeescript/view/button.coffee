@@ -30,7 +30,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * - **link**: Deemphasize a button by making it look like a link while maintaining button behavior
   *
   ###
-  type: null
+  type: 'primary'
 
   isDisabled: false
   
