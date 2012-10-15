@@ -165,6 +165,7 @@ Tent.JqGrid = Ember.View.extend
 		@setupDomIDs()
 		@buildGrid()
 		@get('collection').goToPage(1)
+		@gridDataDidChange()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
