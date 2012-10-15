@@ -43,6 +43,7 @@ Tent.I18n.loadTranslations(
 		export: {
 			xml: 'XML'
 			json: 'JSON'
+			csv: 'CSV'
 		}
 	}
 )

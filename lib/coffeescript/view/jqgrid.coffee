@@ -391,43 +391,10 @@ Tent.JqGrid = Ember.View.extend
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
-		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:true,refresh:false})
-
-		#tableDom.jqGrid('navGrid','#.gridpager',{add:true,edit:false,del:false,search:true,refresh:true});
-		tableDom.jqGrid('navButtonAdd', @getPagerId(),{
-			caption: "Columns",
-			title: "Reorder Columns",
-			onClickButton : ->
-		})
-
-		if @get('showExportButton')
-			button = """
-				<div class="btn-group export">
-					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-					Export
-					<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a class="export-json">JSON</a></li>
-						<li><a class="export-xml">XML</a></li>
-						<li><a class="export-csv">CSV</a></li>
-					</ul>
-				</div>
-			"""
-			@$(".ui-jqgrid-titlebar").append(button)
-
-			@$('a.export-json').click =>
-				ret = xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
-				this.clientDownload(ret)
-		 
-			@$('a.export-xml').click =>
-				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-				this.clientDownload(ret)
-
-			@$('a.export-csv').click =>
-				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-				this.clientDownload(ret)
-
+		@renderColumnChooser(tableDom)
+		@renderExportButton(tableDom)
+		
+	renderColumnChooser: (tableDom)->
 		if @get('showColumnChooser')
 			# Ensure that the caption header is displayed
 			if not @get('title')?
@@ -447,6 +414,40 @@ Tent.JqGrid = Ember.View.extend
 				})
 			)
 
+	renderExportButton: (tableDom)->
+		if @get('showExportButton') 
+			# Ensure that the caption header is displayed
+			if not @get('title')?
+				tableDom.setCaption('&nbsp;')
+
+			button = """
+				<div class="btn-group export">
+					<a class="" data-toggle="dropdown" href="#">
+					Export
+					<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
+						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
+						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
+					</ul>
+				</div>
+			"""
+			@$(".ui-jqgrid-titlebar").append(button)
+
+			@$('a.export-json').click =>
+				ret = xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
+				@clientDownload(ret)
+		 
+			@$('a.export-xml').click =>
+				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				@clientDownload(ret)
+
+			@$('a.export-csv').click =>
+				ret = @exportCSV(tableDom.getRowData(), @getColModel())
+				@clientDownload(ret)
+
+
 	clientDownload: (file) ->
 		# Allow the client to save the generated file.
 		# For no just print to a window
@@ -457,25 +458,23 @@ Tent.JqGrid = Ember.View.extend
 			popup.document.body.innerHTML = '<pre>' + file + '</pre>'
 
 	exportCSV: (data, keys)->
-		convertToCSV = (data, keys) ->
-			orderedData = [];
-			for temp in data
-			#for (var i = 0, iLen = data.length; i < iLen; i++) {
-			#	temp = data[i];
-				for item, j in temp
-				#for (var j = 0, jLen = temp.length; j < jLen; j++) {
-					if !orderedData[j]
-						orderedData.push([item]);
-					else 
-						orderedData[j].push(item);
-			return keys.join(',') + '\r\n' + orderedData.join('\r\n')
 
-		str = convertToCSV(data, keys)
-		if navigator.appName != 'Microsoft Internet Explorer'
-			window.open('data:text/csv;charset=utf-8,' + escape(str))
-		else
-			popup = window.open('', 'csv', '')
-			popup.document.body.innerHTML = '<pre>' + str + '</pre>'
+		orderedData = [];
+		for obj in data
+		#for (var i = 0, iLen = data.length; i < iLen; i++) {
+		#	temp = data[i];
+			arr = []
+			for key, value of obj
+				arr.push(value)
+			orderedData.push(arr);
+
+		if @get('multiSelect')
+			keys = keys[1..]
+
+		str = ""
+		str += obj.name + ',' for obj in keys
+		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
+	
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
