@@ -16,53 +16,53 @@ require '../template/collection_filter'
 ###
 
 Tent.CollectionFilter = Ember.View.extend
-	###*
-	* @property {Tent.Collection} collection The collection which is to be filtered
-	###
-	collection: null
+  ###*
+  * @property {Tent.Collection} collection The collection which is to be filtered
+  ###
+  collection: null
 
-	###*
-	* @property {Template} filterTemplate The name of a template which is used to display the filter fields.
-	*
-	* The filterTemplate should reference the filter fields using the path **view.filter**
-	* 
-	* e.g.
-	* 				{{view Tent.TextField valueBinding="view.filter.id" label="ID"}}
-	*				{{view Tent.TextField valueBinding="view.filter.title" label="Title"}}
-	*				{{view Tent.DateField valueBinding="view.filter.start" label="Start"}}
-	###
-	filterTemplate: null
+  ###*
+  * @property {Template} filterTemplate The name of a template which is used to display the filter fields.
+  *
+  * The filterTemplate should reference the filter fields using the path **view.filter**
+  * 
+  * e.g.
+  *         {{view Tent.TextField valueBinding="view.filter.id" label="ID"}}
+  *       {{view Tent.TextField valueBinding="view.filter.title" label="Title"}}
+  *       {{view Tent.DateField valueBinding="view.filter.start" label="Start"}}
+  ###
+  filterTemplate: null
 
-	templateName: 'collection_filter'
-	classNames: ['tent-filter']
-	availableFiltersBinding: 'collection.availableFilters'
-	#selectedFilterBinding: 'collection.selectedFilter'
+  templateName: 'collection_filter'
+  classNames: ['tent-filter']
+  availableFiltersBinding: 'collection.availableFilters'
+  #selectedFilterBinding: 'collection.selectedFilter'
 
-	init: ->
-		@_super()
-		@set('currentFilter', {
-			name: "temporary"
-			label: "temporary"
-			description: "temporary"
-			values: {id: "51",title: ""}
-		})
-	
-	filter: ->
-		@get('collection').filter(@get('currentFilter'))
+  init: ->
+    @_super()
+    @set('currentFilter', {
+      name: "temporary"
+      label: "temporary"
+      description: "temporary"
+      values: {id: "51",title: ""}
+    })
+  
+  filter: ->
+    @get('collection').filter(@get('currentFilter'))
 
-	selectedFilterDidChange: (->
-		if @get('selectedFilter')?
-			#@set('currentFilter.values', $.extend({}, @get('selectedFilter.values')))
-			@set('currentFilter', Ember.copy(@get('selectedFilter'), true))
+  selectedFilterDidChange: (->
+    if @get('selectedFilter')?
+      #@set('currentFilter.values', $.extend({}, @get('selectedFilter.values')))
+      @set('currentFilter', Ember.copy(@get('selectedFilter'), true))
 
-	).observes('selectedFilter')
+  ).observes('selectedFilter')
 
-	saveFilter: ->
-		@get('collection').saveFilter(@get('currentFilter'))
+  saveFilter: ->
+    @get('collection').saveFilter(@get('currentFilter'))
 
 
 Tent.FilterDefinition = Ember.Object.extend
-	name: ""
-	label: ""
-	description: ""
-	values: {id: "51",title: ""}
+  name: ""
+  label: ""
+  description: ""
+  values: {id: "51",title: ""}

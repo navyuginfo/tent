@@ -448,7 +448,7 @@ Tent.JqGrid = Ember.View.extend
 			item.cell = cell
 			grid.push(item)
 		return grid
-	).property('content')
+	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
 		# remove existing grid data
