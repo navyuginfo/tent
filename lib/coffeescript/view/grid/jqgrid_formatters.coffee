@@ -28,7 +28,7 @@ jQuery.extend $.fn.fmatter.date,
 		Tent.Formatting.date.unformat(cellvalue)
 
 
-# Link Formatter
+ 
 
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->

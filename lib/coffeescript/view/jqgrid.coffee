@@ -377,6 +377,9 @@ Tent.JqGrid = Ember.View.extend
 		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
 		cell.removeClass('error')
 
+	###*
+	* @method sendAction send and action to the router. This is called from the 'action' formatter
+	###
 	sendAction: (action, element, rowId)->
 		@get('parentView.controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
 
