@@ -227,6 +227,7 @@ Tent.JqGrid = Ember.View.extend
 		})
 
 		@addNavigationBar()
+		@gridDataDidChange()
 
 	onPageOrSort: (postdata)->
 		#	postdata is of the form:
@@ -387,7 +388,11 @@ Tent.JqGrid = Ember.View.extend
 		cell.removeClass('error')
 
 	sendAction: (action, element, rowId)->
-		@get('parentView.controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+		view = @
+		while not view.get('controller') and view.get('parentView')?
+			view = view.get('parentView')
+		if view.get('controller')?
+			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
