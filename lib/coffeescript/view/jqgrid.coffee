@@ -77,11 +77,17 @@ Tent.JqGrid = Ember.View.extend
 	fixedHeader: false
 
 	###*
-	* @property {Boolean} showColumnChooser Display a button at the bottom of the grid which presents
+	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
 	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
 	* in this dialog
 	###
 	showColumnChooser: true
+
+	###*
+	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
+	* a dialog to maximize the grid view.
+	###
+	showMaximizeButton: true
 
 	###*
 	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
@@ -196,6 +202,7 @@ Tent.JqGrid = Ember.View.extend
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
+			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
@@ -407,10 +414,11 @@ Tent.JqGrid = Ember.View.extend
 					})
 			)
 
-		@$(".ui-jqgrid-titlebar").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
-		@$('a.maximize').click(() ->
-			widget.toggleFullScreen(@)
-		)
+		if @get('showMaximizeButton')
+			@$(".ui-jqgrid-titlebar").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
+			@$('a.maximize').click(() ->
+				widget.toggleFullScreen(@)
+			)
 
 
 	toggleFullScreen: (a)->
@@ -418,30 +426,14 @@ Tent.JqGrid = Ember.View.extend
 			@$().removeClass('maximized')
 			$('span', a).removeClass('ui-icon-arrow-1-se')
 			$('span', a).addClass('ui-icon-arrow-4-diag')
-			@set('fullScreen', false)
-			@getTableDom().setGridHeight('100%')
+			@set('fullScreen', false)			 
 			@getTableDom().setGridWidth(@$().width())
-
-			###
-			@$('.ui-jqgrid-pager').css({'position': 'static'})
-			@$('.ui-jqgrid, .ui-jqgrid-view, .ui-jqgrid-bdiv, .ui-jqgrid-hdiv, .ui-jqgrid-btable, .ui-jqgrid-htable, .ui-jqgrid-hbox, .ui-jqgrid-pager').width('auto')
-			@$('.ui-jqgrid, .ui-jqgrid-view').height('auto')
-			###
 		else 
 			@$().addClass('maximized')
 			$('span', a).removeClass('ui-icon-arrow-4-diag')
 			$('span', a).addClass('ui-icon-arrow-1-se')
 			@set('fullScreen', true)
-			@getTableDom().setGridHeight(@$().height())
 			@getTableDom().setGridWidth(@$().width())
-
-			###@getTableDom().setGridHeight('100%')
-			@getTableDom().setGridWidth('100%')
-
-			@$('.ui-jqgrid, .ui-jqgrid-view, .ui-jqgrid-bdiv, .ui-jqgrid-hdiv, .ui-jqgrid-btable, .ui-jqgrid-htable, .ui-jqgrid-hbox, .ui-jqgrid-pager').width('100%')
-			@$('.ui-jqgrid, .ui-jqgrid-view').height('100%')
-			@$('.ui-jqgrid-pager').css({'position': 'absolute', 'bottom': '0px'})
-			###
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
