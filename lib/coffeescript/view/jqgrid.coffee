@@ -172,6 +172,7 @@ Tent.JqGrid = Ember.View.extend
 		@buildGrid()
 		@get('collection').goToPage(1)
 		@gridDataDidChange()
+		@columnsDidChange()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -410,7 +411,10 @@ Tent.JqGrid = Ember.View.extend
 						updateAfterCheck: true,
 						colnameview: false,
 						top: 60,
-						width: 300
+						width: 300,
+						afterSubmitForm: (itemId, status, e) ->
+							widget.columnsDidChange()
+						,
 					})
 			)
 
@@ -420,6 +424,9 @@ Tent.JqGrid = Ember.View.extend
 				widget.toggleFullScreen(@)
 			)
 
+	columnsDidChange: ->
+		if (@get('fixedHeader'))
+			@adjustHeightForFixedHeader()
 
 	toggleFullScreen: (a)->
 		if @get('fullScreen')
@@ -434,6 +441,11 @@ Tent.JqGrid = Ember.View.extend
 			$('span', a).addClass('ui-icon-arrow-1-se')
 			@set('fullScreen', true)
 			@getTableDom().setGridWidth(@$().width())
+
+	adjustHeightForFixedHeader: () ->
+		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
+		@$('.ui-jqgrid-bdiv').css('top', top)
+
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->

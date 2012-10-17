@@ -104,6 +104,8 @@ $.jgrid.extend({
 								$($t).jqGrid("setGridWidth",gridWidth-0.001,true);
 							}
 						}
+						/* PR: call afterSubmitForm */
+						if (onAfterSubmit) { p.afterSubmitForm($("#"+dtbl)); }
 						return this;
 					});
 				}
