@@ -84,6 +84,13 @@ Tent.JqGrid = Ember.View.extend
 	showColumnChooser: true
 
 	###*
+	* @property {Boolean} showExportButton Display a button in the header which allows the table data to 
+	* be exported a selected format.
+	###
+	showExportButton: true
+
+
+	###*
 	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
 	* The context of the function is this JqGrid View, and it will accept the following parameters:
 	* 
@@ -152,11 +159,6 @@ Tent.JqGrid = Ember.View.extend
 					@highlightRow(id)
 			@set('selectedIds', sel.uniq())
 
-			#@set('selectedIds', @get('selection').map((item, index)->
-			#	 	"" + item.get('id')
-			#	).uniq()
-			#)
-
 		if @getTableDom()
 			@setSelectAllCheckbox(@getTableDom().get(0))
 	).observes('selection')
@@ -174,6 +176,9 @@ Tent.JqGrid = Ember.View.extend
 
 	getTableDom: ->
 		@$('#' + @get('tableId'))
+
+	getTopPagerId: ->
+		'#' + @get('tableId') + '_toppager_left'
 
 	getPagerId: ->
 		'#' + @get('elementId') + '_pager'
@@ -199,11 +204,16 @@ Tent.JqGrid = Ember.View.extend
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
+			toppager:false,
+			cloneToTop:false,
 			#cellEdit: true,
 			#cellsubmit: 'clientArray',
 			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
+			#pgbuttons:false, 
+			#recordtext:'', 
+			#pgtext:''
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -218,6 +228,7 @@ Tent.JqGrid = Ember.View.extend
 		})
 
 		@addNavigationBar()
+		@gridDataDidChange()
 
 	onPageOrSort: (postdata)->
 		#	postdata is of the form:
@@ -378,12 +389,18 @@ Tent.JqGrid = Ember.View.extend
 		cell.removeClass('error')
 
 	sendAction: (action, element, rowId)->
-		@get('parentView.controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+		view = @
+		while not view.get('controller') and view.get('parentView')?
+			view = view.get('parentView')
+		if view.get('controller')?
+			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
-		tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
-
+		@renderColumnChooser(tableDom)
+		@renderExportButton(tableDom)
+		
+	renderColumnChooser: (tableDom)->
 		if @get('showColumnChooser')
 			# Ensure that the caption header is displayed
 			if not @get('title')?
@@ -391,17 +408,79 @@ Tent.JqGrid = Ember.View.extend
 
 			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.hideShowCaption") + '</a>')
 			@$('a.column-chooser').click(() ->
-					tableDom.jqGrid('setColumns',{
-						caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
-						showCancel: false,
-						ShrinkToFit: true,
-						recreateForm: true,
-						updateAfterCheck: true,
-						colnameview: false,
-						top: 60,
-						width: 300
-					})
+				tableDom.jqGrid('setColumns',{
+					caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
+					showCancel: false,
+					ShrinkToFit: true,
+					recreateForm: true,
+					updateAfterCheck: true,
+					colnameview: false,
+					top: 60,
+					width: 300
+				})
 			)
+
+	renderExportButton: (tableDom)->
+		if @get('showExportButton') 
+			# Ensure that the caption header is displayed
+			if not @get('title')?
+				tableDom.setCaption('&nbsp;')
+
+			button = """
+				<div class="btn-group export">
+					<a class="" data-toggle="dropdown" href="#">
+					Export
+					<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
+						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
+						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
+					</ul>
+				</div>
+			"""
+			@$(".ui-jqgrid-titlebar").append(button)
+
+			@$('a.export-json').click =>
+				ret = xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
+				@clientDownload(ret)
+		 
+			@$('a.export-xml').click =>
+				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				@clientDownload(ret)
+
+			@$('a.export-csv').click =>
+				ret = @exportCSV(tableDom.getRowData(), @getColModel())
+				@clientDownload(ret)
+
+
+	clientDownload: (file) ->
+		# Allow the client to save the generated file.
+		# For no just print to a window
+		if navigator.appName != 'Microsoft Internet Explorer'
+			window.open('data:text/csv;charset=utf-8,' + escape(file))
+		else
+			popup = window.open('', 'csv', '')
+			popup.document.body.innerHTML = '<pre>' + file + '</pre>'
+
+	exportCSV: (data, keys)->
+
+		orderedData = [];
+		for obj in data
+		#for (var i = 0, iLen = data.length; i < iLen; i++) {
+		#	temp = data[i];
+			arr = []
+			for key, value of obj
+				arr.push(value)
+			orderedData.push(arr);
+
+		if @get('multiSelect')
+			keys = keys[1..]
+
+		str = ""
+		str += obj.name + ',' for obj in keys
+		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
+	
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -448,7 +527,7 @@ Tent.JqGrid = Ember.View.extend
 			item.cell = cell
 			grid.push(item)
 		return grid
-	).property('content')
+	).property('content', 'content.isLoaded')
 
 	gridDataDidChange: (->
 		# remove existing grid data

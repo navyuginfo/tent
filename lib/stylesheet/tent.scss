@@ -241,7 +241,7 @@ a[rel=tooltip] {
 		}
 	}
 
-	.column-chooser {
+	.column-chooser, .export {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -329,6 +329,30 @@ a[rel=tooltip] {
 			width: 100%;
 			top: 50px;
 			bottom: 0px;
+		}
+	}
+
+	.ui-widget-header .export {
+		a {
+			font-size: 11px;
+			outline: 0px;
+
+			.caret {
+				vertical-align: middle;
+				border-top-color: white;
+				border-bottom-color: white;
+			}
+		}
+
+		.dropdown-menu {
+			min-width: 70px;
+			li > a {
+				color: #333;
+				font-size: 11px;
+				&:hover {
+					color: white;
+				}
+			}
 		}
 	}
 
