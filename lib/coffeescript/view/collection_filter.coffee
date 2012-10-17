@@ -59,6 +59,7 @@ Tent.CollectionFilter = Ember.View.extend
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
+    @set('selectedFilter', @get('currentFilter'))
     return true
 
 

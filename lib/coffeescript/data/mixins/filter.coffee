@@ -2,7 +2,7 @@ Tent.Data.Filter = Ember.Mixin.create
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
-		@set('availableFilters', 
+		@set('filters', 
 			[
 				{
 					name: "task1"
@@ -17,6 +17,10 @@ Tent.Data.Filter = Ember.Mixin.create
 					values: {id: "5"}
 				}
 			])
+
+	availableFilters: (->
+		return @get('filters')
+	).property('filters', 'filters.@each')
 
 	filter: (selectedFilter) ->
 		if selectedFilter?
@@ -33,7 +37,7 @@ Tent.Data.Filter = Ember.Mixin.create
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
-		@get('availableFilters').push(filterDef)
+		@get('filters').pushObject(filterDef)
 		#@get('availableFilters').notifyPropertyChange('content')
 
 
