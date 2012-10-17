@@ -1,12 +1,13 @@
 
+require './mixins/pager'
+require './mixins/sorter'
+require './mixins/filter'
+
 ###*
 * @class Tent.Data.Collection
 * An object used to wrap an array of objects, with a facade for paging, sorting and filtering, 
 ###
 
-require './pager'
-require './sorter'
-require './filter'
 
 Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter,
 	content: null
@@ -37,6 +38,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType').cacheable()
+
 
 	init: ->
 		@_super()

@@ -114,7 +114,8 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   ).property('elementId')
   
   inputSizeClass: (->
-    return Tent.FieldSupport.SIZE_CLASSES[@estimateSpan() - 1]
+    #return Tent.FieldSupport.SIZE_CLASSES[@estimateSpan() - 1]
+    'input-medium'
   ).property()
 
   widthExpectation: (->

@@ -186,15 +186,22 @@
           {{#view Tent.Form name="Tables and Grids" id="table-section"}}
 
               <h4>jqGrid</h4>
-
                
+              <h5>Remote Paging, Sorting, Filtering</h5>
+
+              {{view Tent.CollectionFilter 
+                  filterTemplate="task_collection_filter" 
+                  collectionBinding="Pad.jqRemoteCollection"}}
+
+
+
               {{view Tent.JqGrid
                   label="Tasks"
                   collectionBinding="Pad.jqRemoteCollection"
                   contentBinding= "Pad.jqRemoteCollection.modelData"
                   selectionBinding="Pad.jqGridSelection"
                   fixedHeader=false
-                  height= "auto"
+                  showMaximizeButton=true
                   paged=true
                   pageSize=6
                   remotePaging=false
@@ -239,8 +246,10 @@
                 {{/each}}
               </p>
 
- 
+              
+              
 
+               
           {{/view}}  
         {{/view}}
 

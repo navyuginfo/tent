@@ -28,7 +28,7 @@ require './accordion'
 require './tabs'
 require './date_field'
 require './textarea'
+require './collection_filter'
 require './breadcrumbs'
 require './file_upload'
 require './message_panel'
-

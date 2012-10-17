@@ -152,6 +152,25 @@ a[rel=tooltip] {
 }
 
 
+/*  Modal Dialog */
+
+.modal {
+	.tent-button .btn-secondary {
+		float: left;
+	}
+}
+
+/* List Filters */
+
+.tent-filter {
+	background-color: bisque;
+	padding: 10px;
+	border: 1px solid burleyWood;
+	border-radius: 4px;
+	margin-bottom: 5px;
+}
+
+
 /*  Layout Styles */
 
 .scrollable {
@@ -230,8 +249,19 @@ a[rel=tooltip] {
 /* jqGrid */
 
 .tent-jqgrid {
+
 	table {
 		font-size: 12px;
+	}
+
+	&.maximized {
+		position: fixed;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		z-index: 2000;
+		background: white;
 	}
 
 	.ui-jqgrid tr.jqgrow td {
@@ -241,6 +271,16 @@ a[rel=tooltip] {
 		}
 	}
 
+	/* Ensure that headers wrap */
+	.ui-jqgrid .ui-jqgrid-htable th div {
+		height: auto;
+	}
+
+	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+		white-space: normal;
+	}
+	/****/
+
 	.column-chooser, .export {
 		float: right;
 		margin-right: 30px;
@@ -249,6 +289,11 @@ a[rel=tooltip] {
 			float: left;
 			margin: 2px 2px;
 		}
+	}
+
+	.maximize {
+		float: left;
+		cursor: pointer;
 	}
 	
 	.ui-widget .ui-widget {
@@ -313,8 +358,6 @@ a[rel=tooltip] {
 			position: absolute;
 			margin-left: 0px;
 			width: 100%;
-			height: 30px;
-			min-height: 30px;
 		}
 
 		.ui-jqgrid-hdiv {

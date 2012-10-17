@@ -14,6 +14,7 @@
 require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
+  classNames: ['tent-button']
   templateName: 'button'
   label: 'Button'
 
@@ -30,7 +31,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * - **link**: Deemphasize a button by making it look like a link while maintaining button behavior
   *
   ###
-  type: null
+  type: 'primary'
 
   isDisabled: false
   
@@ -38,7 +39,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * @property {String} action The action to be invoked on the target when the button is clicked
   ###
   action: null
-  classNameBindings:['tent-button','hasOptions:tent-button-group button-group']
+  classNameBindings:['hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'
   optionActionPath: 'action'
@@ -78,6 +79,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   BUTTON_CLASSES: [
     'primary',
+    'secondary',
     'info', 
     'success',
     'warning',

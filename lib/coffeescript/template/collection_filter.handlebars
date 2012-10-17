@@ -1,0 +1,35 @@
+
+{{view Ember.View 
+	templateNameBinding="view.filterTemplate" 
+	collectionBinding="view.collection"
+	filterBinding="view.currentFilter"
+}}
+
+<div class="form-inline">
+
+		{{view Tent.Select span="4"
+			label="_CurrentFilter" 
+			listBinding="view.availableFilters" 
+			selectionBinding="view.selectedFilter" 
+			optionLabelPath="content.label" 
+			optionValuePath="content.name"
+		}}
+
+	    {{#view Tent.ModalPane 
+	    	label="_saveFilter"
+	        header="_saveFilter" 
+	        primaryLabel="_save" 
+	        secondaryLabel="_cancel"
+	        type="link"
+	        primaryAction="saveFilter"
+	        primaryTargetBinding="view"
+	    	}}
+    	
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="_label" required=true}}
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="_description"}}
+      	{{/view}}
+    
+      	{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}
+
+</div>
+

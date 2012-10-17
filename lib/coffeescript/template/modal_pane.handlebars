@@ -1,11 +1,25 @@
-<div class="modal-header">
-  <a href="#" class="close" click="close">x</a>
-  {{view Tent.ModalHeader}}
-</div>
-<div class="modal-body">
-  {{view Tent.ModalBody}}
-</div>
-<div class="modal-footer">
-  {{#if view.secondary}}<a href="#" class="btn btn-secondary" click="secondary">{{loc view.secondary}}</a>{{/if}}
-  {{#if view.primary}}<a href="#" class="btn btn-primary" click="primary">{{loc view.primary}}</a>{{/if}}
-</div>
+
+	{{view Tent.Button class="launch" labelBinding="view.label" aria-haspopup="true" action="launch" targetBinding="view" typeBinding="view.type"}}
+
+	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		  {{view Tent.ModalHeader}}
+		</div>
+		<div class="modal-body">
+		  {{#if view.text}}
+		  	{{view Tent.ModalBody}}
+		  {{/if}}
+		  {{yield}}
+		</div>
+		<div class="modal-footer">
+			<div class="btn-toolbar">
+			  {{#if view.secondaryLabel}}
+			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary"}}
+			  {{/if}}
+			  {{#if view.primaryLabel}}
+			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary"}}
+			  {{/if}}
+			</div>
+		</div>
+	</div>

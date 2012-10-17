@@ -75,6 +75,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 	dataStore: null
 
 	columnsBinding: 'collection.columnsDescriptor'
+	gridContentBinding: 'collection.content'
 
 	defaults:  
 		enableCellNavigation: true
@@ -122,10 +123,10 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 			@setDataViewItems()
 			@get('grid').invalidate()
 			if @get('remotePaging')
-				@get('grid').setData(@get('collection.content'))
+				@get('grid').setData(@get('gridContent'))
 				@get('dataView').listDataDidChange()
 			@get('grid').render()
-	).observes 'collection.content'
+	).observes 'gridContent'
 
 	_rowSelectionDidChange: (->
 		# Allow the controller field to observe any selection changes
@@ -191,7 +192,7 @@ Tent.SlickGrid = Ember.View.extend Tent.FieldSupport, Tent.GridPagingSupport, Te
 		return @get('grid')
 
 	setDataViewItems: (items)->
-		dataItems = if items? then items else @get('collection.content')
+		dataItems = if items? then items else @get('gridContent')
 		if dataItems?
 			@get('dataView').beginUpdate();
 			@get('dataView').setItems(dataItems);
@@ -288,10 +289,11 @@ Tent.SingleSelectGrid = Ember.Object.extend
 			@get('parent.grid').setSelectedRows(selectedRows)
 		else 
 			selectedIds = []
-			selectedIds.push(@get('parent.selection').get('id'))
-			@get('parent.dataView').selectedRowIdsAllPages = selectedIds
-			@get('parent.dataView').selectedRowIds = selectedIds
-			@get('parent.dataView').highlightSelectedRowsOnGrid()
+			if @get('parent.selection')?
+				selectedIds.push(@get('parent.selection').get('id'))
+				@get('parent.dataView').selectedRowIdsAllPages = selectedIds
+				@get('parent.dataView').selectedRowIds = selectedIds
+				@get('parent.dataView').highlightSelectedRowsOnGrid()
 	).observes('parent.selection')
 
 

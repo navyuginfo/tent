@@ -77,18 +77,23 @@ Tent.JqGrid = Ember.View.extend
 	fixedHeader: false
 
 	###*
-	* @property {Boolean} showColumnChooser Display a button at the bottom of the grid which presents
+	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
 	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
 	* in this dialog
 	###
 	showColumnChooser: true
 
 	###*
+	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
+	* a dialog to maximize the grid view.
+	###
+	showMaximizeButton: true
+
+	###*
 	* @property {Boolean} showExportButton Display a button in the header which allows the table data to 
 	* be exported a selected format.
 	###
 	showExportButton: true
-
 
 	###*
 	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
@@ -123,7 +128,7 @@ Tent.JqGrid = Ember.View.extend
 	*
 	###
 	onSaveCell: null
-
+	fullScreen: false
 	pagingData: 
 		page: 1 
 	sortingData: {}
@@ -168,6 +173,7 @@ Tent.JqGrid = Ember.View.extend
 		@buildGrid()
 		@get('collection').goToPage(1)
 		@gridDataDidChange()
+		@columnsDidChange()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -201,6 +207,7 @@ Tent.JqGrid = Ember.View.extend
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
+			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
 			gridview: true,
@@ -388,6 +395,9 @@ Tent.JqGrid = Ember.View.extend
 		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
 		cell.removeClass('error')
 
+	###*
+	* @method sendAction send and action to the router. This is called from the 'action' formatter
+	###
 	sendAction: (action, element, rowId)->
 		view = @
 		while not view.get('controller') and view.get('parentView')?
@@ -397,10 +407,15 @@ Tent.JqGrid = Ember.View.extend
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
+		widget = @
+		#tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
+
 		@renderColumnChooser(tableDom)
 		@renderExportButton(tableDom)
+		@renderMaximizeButton()
 		
 	renderColumnChooser: (tableDom)->
+		widget =  @
 		if @get('showColumnChooser')
 			# Ensure that the caption header is displayed
 			if not @get('title')?
@@ -416,9 +431,21 @@ Tent.JqGrid = Ember.View.extend
 					updateAfterCheck: true,
 					colnameview: false,
 					top: 60,
-					width: 300
+					width: 300,
+					afterSubmitForm: (itemId, status, e) ->
+						widget.columnsDidChange()
+					,
 				})
 			)
+
+	columnsDidChange: ->
+		if (@get('fixedHeader'))
+			@adjustHeightForFixedHeader()
+
+	adjustHeightForFixedHeader: () ->
+		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
+		@$('.ui-jqgrid-bdiv').css('top', top)
+
 
 	renderExportButton: (tableDom)->
 		if @get('showExportButton') 
@@ -480,7 +507,28 @@ Tent.JqGrid = Ember.View.extend
 		str = ""
 		str += obj.name + ',' for obj in keys
 		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
-	
+
+	renderMaximizeButton: ->
+		widget = @
+		if @get('showMaximizeButton')
+			@$(".ui-jqgrid-titlebar").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
+			@$('a.maximize').click(() ->
+				widget.toggleFullScreen(@)
+			)
+
+	toggleFullScreen: (a)->
+		if @get('fullScreen')
+			@$().removeClass('maximized')
+			$('span', a).removeClass('ui-icon-arrow-1-se')
+			$('span', a).addClass('ui-icon-arrow-4-diag')
+			@set('fullScreen', false)			 
+			@getTableDom().setGridWidth(@$().width())
+		else 
+			@$().addClass('maximized')
+			$('span', a).removeClass('ui-icon-arrow-4-diag')
+			$('span', a).addClass('ui-icon-arrow-1-se')
+			@set('fullScreen', true)
+			@getTableDom().setGridWidth(@$().width())
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -527,7 +575,7 @@ Tent.JqGrid = Ember.View.extend
 			item.cell = cell
 			grid.push(item)
 		return grid
-	).property('content', 'content.isLoaded')
+	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
 		# remove existing grid data

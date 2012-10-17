@@ -8,6 +8,7 @@
 
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
+	loader.require('template/task_collection_filter')
 
 	Pad.initialize()
 
@@ -39,6 +40,11 @@
 	Pad.isDisabled = false
 	Pad.textDisplay = false
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
+
+	Pad.modalSubmit = ->
+		console.log("Submit button clicked")
+	Pad.modalCancel = ->
+		console.log("Cancel button clicked")
 
 	#Pad.gridSelection = Ember.Object.create({id: 52,title: "Task 2"})
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
