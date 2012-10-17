@@ -1,0 +1,3 @@
+$.jgrid.extend({
+	xmlJsonClass: xmlJsonClass
+});

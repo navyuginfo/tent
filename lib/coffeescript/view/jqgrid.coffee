@@ -442,11 +442,11 @@ Tent.JqGrid = Ember.View.extend
 			@$(".ui-jqgrid-titlebar").append(button)
 
 			@$('a.export-json').click =>
-				ret = xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
+				ret = $.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
 				@clientDownload(ret)
 		 
 			@$('a.export-xml').click =>
-				ret = "<root>"+xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				ret = "<root>" + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
