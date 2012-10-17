@@ -34,7 +34,7 @@ Tent.CollectionFilter = Ember.View.extend
   filterTemplate: null
 
   templateName: 'collection_filter'
-  classNames: ['tent-filter']
+  classNames: ['tent-filter', 'clearfix']
   availableFiltersBinding: 'collection.availableFilters'
   #selectedFilterBinding: 'collection.selectedFilter'
 

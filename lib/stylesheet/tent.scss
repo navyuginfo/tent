@@ -155,7 +155,7 @@ a[rel=tooltip] {
 /*  Modal Dialog */
 
 .modal {
-	.tent-button.secondary {
+	.tent-button .btn-secondary {
 		float: left;
 	}
 }
@@ -165,7 +165,7 @@ a[rel=tooltip] {
 .tent-filter {
 	background-color: bisque;
 	padding: 10px;
-	border: 1px solid burlyWood;
+	border: 1px solid burleyWood;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
@@ -249,8 +249,19 @@ a[rel=tooltip] {
 /* jqGrid */
 
 .tent-jqgrid {
+	-webkit-transition: all 1s ease;
+
 	table {
 		font-size: 12px;
+	}
+
+	&.maximized {
+		position: fixed;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		z-index: 2000;
 	}
 
 	.ui-jqgrid tr.jqgrow td {
@@ -259,6 +270,16 @@ a[rel=tooltip] {
 			background-color: rgba(255, 0, 0, 0.22)!important;
 		}
 	}
+
+	/* Ensure that headers wrap */
+	.ui-jqgrid .ui-jqgrid-htable th div {
+		height: auto;
+	}
+
+	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+		white-space: normal;
+	}
+	/****/
 
 	.column-chooser {
 		float: right;

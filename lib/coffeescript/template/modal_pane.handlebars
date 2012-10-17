@@ -13,11 +13,13 @@
 		  {{yield}}
 		</div>
 		<div class="modal-footer">
-		  {{#if view.secondaryLabel}}
-		  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary"}}
-		  {{/if}}
-		  {{#if view.primaryLabel}}
-		  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary"}}
-		  {{/if}}
+			<div class="btn-toolbar">
+			  {{#if view.secondaryLabel}}
+			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary"}}
+			  {{/if}}
+			  {{#if view.primaryLabel}}
+			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary"}}
+			  {{/if}}
+			</div>
 		</div>
 	</div>

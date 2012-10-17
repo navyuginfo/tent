@@ -2,8 +2,8 @@ Tent.Data.Filter = Ember.Mixin.create
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
-		@set('availableFilters', Ember.ArrayProxy.create
-			content: [
+		@set('availableFilters', 
+			[
 				{
 					name: "task1"
 					label: "Task 1"
@@ -33,7 +33,7 @@ Tent.Data.Filter = Ember.Mixin.create
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
-		@get('availableFilters').get('content').push(filterDef)
+		@get('availableFilters').push(filterDef)
 		#@get('availableFilters').notifyPropertyChange('content')
 
 

@@ -24,15 +24,15 @@
 *
 *       {{#view Tent.ModalPane   
                 text="_modalText" 
-                header="_modalHeader" 
-                primary="_ok" 
-                secondary="_cancel"
                 buttonClass=""
                 type="primary"
+                header="_modalHeader" 
+                primaryLabel="_ok" 
+                secondaryLabel="_cancel"
                 primaryAction="modalSubmit"
                 primaryTargetBinding="Pad"
                 secondaryAction="modalCancel"
-                secondaryTarget="Pad"
+                secondaryTargetBinding="Pad"
             }}
               <h5>Some more content</h5>
         {{/view}}
