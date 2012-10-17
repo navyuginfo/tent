@@ -41,10 +41,10 @@ Tent.CollectionFilter = Ember.View.extend
   init: ->
     @_super()
     @set('currentFilter', {
-      name: "temporary"
-      label: "temporary"
-      description: "temporary"
-      values: {id: "51",title: ""}
+      name: ""
+      label: ""
+      description: ""
+      values: {}
     })
   
   filter: ->
@@ -59,6 +59,7 @@ Tent.CollectionFilter = Ember.View.extend
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
+    return true
 
 
 Tent.FilterDefinition = Ember.Object.extend
