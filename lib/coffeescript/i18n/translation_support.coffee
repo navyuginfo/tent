@@ -55,5 +55,9 @@ Tent.I18n.loadTranslations(
 		cancel: 'Cancel'
 		label: 'Label'
 		description: 'Description'
+		beginsWith: 'begins with'
+		contains: 'contains'
+		equal: 'equal'
+		nEqual: 'not equal' 
 	}
 )

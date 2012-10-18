@@ -163,12 +163,37 @@ a[rel=tooltip] {
 /* List Filters */
 
 .tent-filter {
-	background-color: bisque;
 	padding: 10px;
-	border: 1px solid burleyWood;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
+
+
+.tent-widget {
+	/* embed : embed a widget within another. We expect it to be inlined*/
+	&.embed {
+		display: inline;
+		.controls {
+			display: inline;
+		}
+	}
+
+	/* no-label: Remove the label and the left margin from the control */
+	&.no-label {
+		label {
+			display: none;
+		}
+		.controls {
+			margin-left: 0px;
+		}
+	}
+}
+
+
+
+
+
+
 
 
 /*  Layout Styles */

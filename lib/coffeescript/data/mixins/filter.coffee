@@ -8,13 +8,13 @@ Tent.Data.Filter = Ember.Mixin.create
 					name: "task1"
 					label: "Task 1"
 					description: "Select the first task"
-					values: {id: "51", title: "Task 1"}
+					values: {id: {op: "equal", data: "51"}, title: {op: "equal", data: "Task 1"}}
 				},
 				{
 					name: "task2"
 					label: "Task 2"
 					description: "Select all tasks 50-59"
-					values: {id: "5"}
+					values: {id: {op: "equal", data: "5"}}
 				}
 			])
 

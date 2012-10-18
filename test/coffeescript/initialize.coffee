@@ -39,6 +39,7 @@
 	Pad.isReadOnly = false
 	Pad.isDisabled = false
 	Pad.textDisplay = false
+	Pad.isFilter = false
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
 
 	Pad.modalSubmit = ->
