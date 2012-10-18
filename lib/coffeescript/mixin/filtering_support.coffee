@@ -4,12 +4,17 @@ Tent.FilteringSupport = Ember.Mixin.create
 		Ember.Object.create({label: "filter.beginsWith", operator: "begin"}),
 		Ember.Object.create({label: "filter.contains", operator: "contain"}),
 		Ember.Object.create({label: "filter.equal", operator: "equal"}),
-		Ember.Object.create({label: "filter.nEqual", operator: "nequal"}),
+		Ember.Object.create({label: "filter.nEqual", operator: "nequal"})
 	]
 
 	init: ->
 		@_super(arguments)
+		
 		#@set('selectedOperator', @get('filterValue.op'))
+
+	didInsertElement: ->
+		if @get('filter')
+			@get('filter.values')[@get('id')] = {}
 
 	###selectedOperator: (->
 		if @get('filterValue')
@@ -31,12 +36,11 @@ Tent.FilteringSupport = Ember.Mixin.create
 			else 
 				@set('value', null) 
 	).observes('filterValue')
-
-	valueDidChange: (->
-		if @get('isFilter')
-			@set('filterValue',[@get('value')]) 
-	).observes('value')
 	###
+	filterDidChange: (->
+		console.log 'filter changed'
+	).observes('filter')
+	
 
 
 

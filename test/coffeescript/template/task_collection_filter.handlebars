@@ -2,12 +2,18 @@
 {{view Tent.TextField label="ID" isFilter=true 
 	valueBinding="view.filter.values.id.data" 
 	filterOpBinding="view.filter.values.id.op"
+	filterBinding="view.filter"
+	field="id"
 }}
 {{view Tent.TextField label="Title" isFilter=true 
 	valueBinding="view.filter.values.title.data"
 	filterOpBinding="view.filter.values.title.op"
+	filterBinding="view.filter"
+	field="title"
 }}
 {{view Tent.DateField label="Start" isFilter=true 
 	valueBinding="view.filter.values.start.data"
 	filterOpBinding="view.filter.values.start.op"
+	filterBinding="view.filter"
+	field="start"
 }}
