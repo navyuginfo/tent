@@ -535,7 +535,8 @@ Tent.JqGrid = Ember.View.extend
 			@resizeToContainer()
 
 	resizeToContainer: ->
-		@getTableDom().setGridWidth(@$().width())
+		if @$()?
+			@getTableDom().setGridWidth(@$().width())
 
 
 	# Adapter to get column names from current datastore columndescriptor version  
