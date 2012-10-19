@@ -34,13 +34,14 @@ Tent.Left = Ember.View.extend Tent.SpanSupport,
 	classNameBindings: ['spanClass']
 	classNames: ['left-panel']
 	collapsed: false
-	layout: Ember.Handlebars.compile '{{yield}}<div class="drag-bar"></div>'
+	layout: Ember.Handlebars.compile '<div class="drag-bar"></div><div class="panel-content">{{yield}}</div>'
 
 	didInsertElement: ->
 		if Modernizr.csstransitions
 			widget = @
 			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
 				widget.set('collapsed', widget.$('').hasClass('collapsed'))
+				$.publish("/ui/refresh", ['resize'])
 			)
 
 	click: (e)->
@@ -48,6 +49,7 @@ Tent.Left = Ember.View.extend Tent.SpanSupport,
 			@$('').toggleClass('collapsed')
 			if not Modernizr.csstransitions
 				@set('collapsed', @$('').hasClass('collapsed'))
+				$.publish("/ui/refresh", ['resize'])
 		
 ###*	
 * @class Tent.Center
@@ -102,19 +104,22 @@ Tent.Right = Ember.View.extend Tent.SpanSupport,
 	classNameBindings: ['spanClass']
 	classNames: ['right-panel']
 	collapsed: false
-	layout: Ember.Handlebars.compile '<div class="drag-bar"></div>{{yield}}'
+	layout: Ember.Handlebars.compile '<div class="drag-bar"></div><div class="panel-content">{{yield}}</div>'
 
 	didInsertElement: ->
 		if Modernizr.csstransitions
 			widget = @
 			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
 				widget.set('collapsed', widget.$('').hasClass('collapsed'))
+				$.publish("/ui/refresh", ['resize'])
 			)
 
 	click: (e)->
 		if $(e.target).hasClass('drag-bar')
 			@$('').toggleClass('collapsed')
+			$.publish("/ui/refresh", ['resize'])
 			if not Modernizr.csstransitions
 				@set('collapsed', @$('').hasClass('collapsed'))
+				$.publish("/ui/refresh", ['resize'])
 			
 
