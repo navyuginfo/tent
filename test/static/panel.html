@@ -21,6 +21,14 @@
         padding: 10px;
       }
 
+      .panel-container {
+        width: 800px;
+        height: 300px; 
+        position: relative;
+        background-color: tan;
+        padding: 10px;
+      }
+
       .item {
         height:10%;
         float: left;
@@ -90,6 +98,31 @@
         bottom: 40px;
       }
 
+      .left-panel {
+        width: 100px;
+        position: absolute;
+        height: 100%;
+      }
+
+      .right-panel {
+        width: 100px;
+        position: absolute;
+        height: 100%;
+        right: 0px;
+      }
+
+      .center-panel {
+        position: absolute;
+        height: 100%;
+        left: 100px;
+        right: 100px;
+        overflow-x: auto;
+      }
+
+      .center-panel div {
+        display: inline;
+      }
+
     </style>
   
   </head>
@@ -100,10 +133,9 @@
       <div class="panel">
         <div class="top  red">Top</div>
         <div class="middle  purple scroll-y">Middle 
-          <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+          <div>lorem ipsum</div><div>lorem ipsum</div> <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div> <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div> <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
         </div>
         <div class="bottom  green">Bottom</div>
-
 
       </div>
 
@@ -111,5 +143,14 @@
     </div>
 
    
+    <div class="panel-container">
+      <div class="left-panel  red">Left</div>
+      <div class="center-panel purple">Center 
+            enter lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
+      </div>
+      <div class="right-panel green">Right</div>
+    </div>
+
+
   </body>
 </html>

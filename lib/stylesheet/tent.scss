@@ -165,7 +165,6 @@ a[rel=tooltip] {
 .tent-filter {
 	background-color: bisque;
 	padding: 10px;
-	border: 1px solid burleyWood;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
@@ -242,6 +241,49 @@ a[rel=tooltip] {
 		position: absolute;
 		margin-left: 0px; 
 		width: 100%;
+	}
+}
+
+.tent-hsection {
+	position: relative;
+
+	.left-panel {
+		position: absolute;
+		height: 100%;
+		.drag-bar {
+			right: 0px;
+		}
+		&.collapsed {
+			width: 10px;
+			overflow: hidden;
+		}
+		-webkit-transition: all .2s ease;
+	}
+	.center-panel {
+		position: absolute;
+		height: 100%;
+	}
+	.right-panel {
+		position: absolute;
+		height: 100%;
+		right: 0px;
+		overflow-x: hidden;
+		&.collapsed {
+			width: 10px;
+			overflow: hidden;
+		}
+		-webkit-transition: all .2s ease;
+		.drag-bar {
+			left: 0px;
+		}
+	}
+	.drag-bar {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;	
+		cursor: pointer;
+		width: 10px;
+		background-color: #666;
 	}
 }
 
