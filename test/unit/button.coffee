@@ -110,8 +110,8 @@ test "buton is disabled when isDisabled property is set to true",->
   element= view.$('.btn')
   ok element
   classes = $(element).attr('class')
-  ok classes.indexOf("btn") isnt -1
-  equal classes.indexOf("disabled"), 4, "disabled class applied"
+  ok $(element).hasClass('btn'), "btn class applied"
+  ok $(element).hasClass('disabled'), "disabled class applied"
   equal $(element).attr('disabled'), 'disabled', 'disabled attribute applied'
 
 #Case 6: When label and isDisabled both properties is set
@@ -123,9 +123,9 @@ test "Ensure no failures when label and isDisabled both are set",->
   element= view.$('.btn')
   ok element
   classes = $(element).attr('class')
-  ok classes.indexOf("btn") isnt -1
-  equal classes.indexOf("btn-success"), 4, "disabled class applied"
-  equal classes.indexOf("disabled"), 16, "disabled class applied"
+  ok $(element).hasClass('btn'), "btn class applied"
+  ok $(element).hasClass('btn-success'), "btn-success class applied"
+  ok $(element).hasClass('disabled'), "disabled class applied"
   equal $(element).attr('disabled'), 'disabled', 'Disabled attribute applied'
 
 #Case 7: When event name is set to some controller

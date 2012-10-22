@@ -1,3 +1,4 @@
+require '../../mixin/collapsible_support'
 
 ###*
 * @class Tent.Section
@@ -64,18 +65,9 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 * header and put the main body in the {@link Tent.Content} widget
 ###
 
-Tent.Header = Ember.View.extend Tent.SpanSupport,
+Tent.Header = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'header'
-	classNameBindings: ['spanClass', 'collapsible']
-
-	###*
-	* @property {Boolean} collapsible A boolean which determines whether the header is collapsible.
-	* If set to true, then a {@link #title} should be provided so that there is a meaningful header 
-	* area when collapsed.
-	###
-	collapsible: false
-
-	collapsed: false
+	classNameBindings: ['spanClass']
 
 	###*
 	* @property {String} title The title to be displayed in the header.
@@ -88,18 +80,18 @@ Tent.Header = Ember.View.extend Tent.SpanSupport,
 	formattedTitle: (->
 		#Refactor this. Couldn't get <h2> as a parameter into a template
 		switch @get('hLevel')
-			when "1" then '<h1 class="clickarea">{{loc view.title}}</h1>'
-			when "2" then '<h2 class="clickarea">{{loc view.title}}</h2>'
-			when "3" then '<h3 class="clickarea">{{loc view.title}}</h3>'
-			when "4" then '<h4 class="clickarea">{{loc view.title}}</h4>'
-			when "5" then '<h5 class="clickarea">{{loc view.title}}</h5>'
-			else '<h2 class="clickarea">{{loc view.title}}</h2>'
+			when "1" then '<h1>{{loc view.title}}</h1>'
+			when "2" then '<h2>{{loc view.title}}</h2>'
+			when "3" then '<h3>{{loc view.title}}</h3>'
+			when "4" then '<h4>{{loc view.title}}</h4>'
+			when "5" then '<h5>{{loc view.title}}</h5>'
+			else '<h2>{{loc view.title}}</h2>'
 	).property('title')
 	
 	layout: (->
 		if @get('collapsible')
 			if @get('title')
-				Ember.Handlebars.compile('<div class="header">' + @get('formattedTitle') + '<b class="caret"/></div>{{yield}}')
+				Ember.Handlebars.compile('<div class="header">' + @get('formattedTitle') + '<b class="caret clickarea"/></div>{{yield}}')
 			else 
 				Ember.Handlebars.compile('<div class="header">You must provide a title for a collapsed header</div>')
 		else
@@ -108,22 +100,6 @@ Tent.Header = Ember.View.extend Tent.SpanSupport,
 			else 
 				Ember.Handlebars.compile('<div class="header">{{yield}}</div>')
 	).property('formattedTitle')
-
-	didInsertElement: ->
-		if @get('collapsible') and Modernizr.csstransitions
-			widget = @
-			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
-				widget.set('collapsed', widget.$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
-			)
-
-	click: (e)->
-		if $(e.target).hasClass('caret')
-			if @get('collapsible')
-				@$('').toggleClass('collapsed')
-				if not Modernizr.csstransitions
-					@set('collapsed', @$('').hasClass('collapsed'))
-					$.publish("/ui/refresh", ['resize'])
 
 
 ###*
@@ -143,19 +119,16 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 	layout: Ember.Handlebars.compile '{{yield}}'
 
 	didInsertElement: ->
+		@set('section', @.$().parent('section'))
+		@set('header', @get('section').children('header'))
+		@set('headerView', Ember.View.views[@get('header').attr('id')])
 		@resize()
-		section = @.$().parent('section')
-		header = section.children('header')
-		@set('headerView', Ember.View.views[header.attr('id')])
 
 	resize: ->
-		section = @.$().parent('section')
-		header = section.children('header')
-		footer = section.children('footer')
-		@set('headerView', Ember.View.views[header.attr('id')])
-		headerOffset = if header.length > 0 then header.outerHeight(true) else 0
+		@set('footer', @get('section').children('footer'))
+		headerOffset = if @get('header').length > 0 then @get('header').outerHeight(true) else 0
 		@.$().css('top', headerOffset + "px")
-		footerOffset = if footer.length > 0 then footer.outerHeight(true) else 0
+		footerOffset = if @get('footer').length > 0 then @get('footer').outerHeight(true) else 0
 		@.$().css('bottom', footerOffset + "px")
 
 	headerDidCollapse: (->

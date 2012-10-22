@@ -1,4 +1,4 @@
-
+require '../../mixin/collapsible_support'
 
 ###*
 * @class Tent.HSection
@@ -31,29 +31,18 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 *		{{#view Tent.Left span="5" class=""}}
 *		{{/view}}
 *
+* This container should be used as part of a {@link Tent.HSection}
+* Left will appear on the left-hand side of a Tent.HSection and is collapsible.
+*
 ###
 
-Tent.Left = Ember.View.extend Tent.SpanSupport,
+Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'section'
 	classNameBindings: ['spanClass']
 	classNames: ['left-panel']
-	collapsed: false
-	layout: Ember.Handlebars.compile '<div class="drag-bar"></div><div class="panel-content">{{yield}}</div>'
+	collapsible: true
+	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"></div><div class="panel-content">{{yield}}</div>'
 
-	didInsertElement: ->
-		if Modernizr.csstransitions
-			widget = @
-			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
-				widget.set('collapsed', widget.$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
-			)
-
-	click: (e)->
-		if $(e.target).hasClass('drag-bar')
-			@$('').toggleClass('collapsed')
-			if not Modernizr.csstransitions
-				@set('collapsed', @$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
 		
 ###*	
 * @class Tent.Center
@@ -63,6 +52,8 @@ Tent.Left = Ember.View.extend Tent.SpanSupport,
 *		{{#view Tent.Center}}
 *		{{/view}}
 *
+* This container should be used as part of a {@link Tent.HSection}
+* Center will appear in the center of a Tent.HSection and will expand to fill the space available.
 ###
 
 Tent.Center = Ember.View.extend Tent.SpanSupport,
@@ -101,29 +92,17 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 *		{{#view Tent.Right span="5"}}
 *		{{/view}}
 *
+* This container should be used as part of a {@link Tent.HSection}
+* Right will appear on the right-hand side of a Tent.HSection and is collapsible.
 ###
 
-Tent.Right = Ember.View.extend Tent.SpanSupport,
+Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'section' 
 	classNameBindings: ['spanClass']
 	classNames: ['right-panel']
+	collapsible: true
 	collapsed: false
-	layout: Ember.Handlebars.compile '<div class="drag-bar"></div><div class="panel-content">{{yield}}</div>'
+	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"></div><div class="panel-content">{{yield}}</div>'
 
-	didInsertElement: ->
-		if Modernizr.csstransitions
-			widget = @
-			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
-				widget.set('collapsed', widget.$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
-			)
-
-	click: (e)->
-		if $(e.target).hasClass('drag-bar')
-			@$('').toggleClass('collapsed')
-			$.publish("/ui/refresh", ['resize'])
-			if not Modernizr.csstransitions
-				@set('collapsed', @$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
 			
 
