@@ -144,6 +144,7 @@ Tent.JqGrid = Ember.View.extend
 	totalPagesBinding: 'collection.totalPages'
 
 	init: ->
+		widget = @
 		@_super()
 		if not @get('collection')?
 			throw new Error("Collection must be provided for Tent.JqGrid")
@@ -152,6 +153,9 @@ Tent.JqGrid = Ember.View.extend
 			@get('collection').set('pageSize', @get('pageSize'))
 
 		@setupInitialSelection()
+		$.subscribe("/ui/refresh", ->
+			widget.resizeToContainer()
+		)
 
 	setupInitialSelection: (->
 		if @get('selection')?
@@ -522,14 +526,19 @@ Tent.JqGrid = Ember.View.extend
 			@$().removeClass('maximized')
 			$('span', a).removeClass('ui-icon-arrow-1-se')
 			$('span', a).addClass('ui-icon-arrow-4-diag')
-			@set('fullScreen', false)			 
-			@getTableDom().setGridWidth(@$().width())
+			@set('fullScreen', false)
+			@resizeToContainer() 
 		else 
 			@$().addClass('maximized')
 			$('span', a).removeClass('ui-icon-arrow-4-diag')
 			$('span', a).addClass('ui-icon-arrow-1-se')
 			@set('fullScreen', true)
+			@resizeToContainer()
+
+	resizeToContainer: ->
+		if @$()?
 			@getTableDom().setGridWidth(@$().width())
+
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
