@@ -17,6 +17,7 @@
       {{view Tent.TextFieldInput 
         valueBinding="view.formattedValue" 
         placeholderBinding="view.placeholder"
+        classBinding="view.controlClass"
       }}
       {{#if view.hasHelpBlock}}
         <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
