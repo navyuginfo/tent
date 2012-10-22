@@ -189,11 +189,6 @@ a[rel=tooltip] {
 
 
 
-
-
-
-
-
 /*  Layout Styles */
 
 .scrollable {
@@ -241,14 +236,42 @@ a[rel=tooltip] {
 	margin-left: 0px;
 	box-sizing: border-box;
 
+	h1,h2,h3,h4,h5{
+		display: inline-block;
+		margin: 4px;
+	}
+
 	header {
 		top: 0px;
 		position: absolute;
 		margin-left: 0px;
-		padding-left: 6px;
+		padding-left: 0px;
 		width: 100%;
 		height: 50px;
 		min-height: 30px;
+		overflow-y: hidden;
+		z-index: 1000;
+		&.collapsible.collapsed {
+			height: 20px;
+			.caret{
+				border-top: 4px solid black;
+				border-bottom: none;
+			}
+		}
+		&.collapsible {
+			.caret {
+				float: right;
+				border-top: none;
+				border-bottom: 4px solid black;
+				border-top: none;
+				margin-top: 10px;
+				margin-right: 10px;
+				cursor: pointer;
+			}
+			 
+		}
+		-webkit-transition: all .3s ease;
+		
 	}
 
 	footer {
@@ -262,7 +285,7 @@ a[rel=tooltip] {
 	
 	.content {
 		overflow-y: auto; 
-		 
+		-webkit-transition: all 0s ease;
 		position: absolute;
 		margin-left: 0px; 
 		width: 100%;
