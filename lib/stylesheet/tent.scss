@@ -165,7 +165,6 @@ a[rel=tooltip] {
 .tent-filter {
 	background-color: bisque;
 	padding: 10px;
-	border: 1px solid burleyWood;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
@@ -239,9 +238,81 @@ a[rel=tooltip] {
 	
 	.content {
 		overflow-y: auto; 
+		 
 		position: absolute;
 		margin-left: 0px; 
 		width: 100%;
+	}
+}
+
+.tent-hsection {
+	position: relative;
+	margin-left: 0px;
+
+	.left-panel {
+		position: absolute;
+		height: 100%;
+		z-index: 1000;
+		.panel-content {
+			height: 100%;
+			-webkit-transition: all .3s ease;
+			padding-right: 10px;
+			section {
+				overflow: hidden;
+			}
+		}
+		.drag-bar {
+			right: 0px;
+		}
+		&.collapsed {
+			width: 10px;			
+			.panel-content {
+				opacity: 0;
+			}
+			overflow: hidden;
+		}
+		-webkit-transition: all .3s ease;
+	}
+	.center-panel {
+		position: absolute;
+		height: 100%;
+	}
+	.right-panel {
+		position: absolute;
+		height: 100%;
+		right: 0px;
+		overflow-x: hidden;
+		margin-left: 0px;
+		.panel-content {
+			height: 100%;
+			padding-left: 10px;
+			-webkit-transition: all .3s ease;
+		}
+		.drag-bar {
+			left: 0px;
+		}
+		&.collapsed {
+			width: 10px;
+			.panel-content {
+				opacity: 0;
+			}
+			overflow: hidden;
+		}
+		-webkit-transition: all .3s ease;
+	}
+	.drag-bar {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;	
+		cursor: pointer;
+		width: 10px;
+		background-color: #ddd;
+		border-right: 1px solid #CCC;
+		border-left: 1px solid #CCC;
+		z-index: 1000;
+		&:hover {
+			background-color: #d6d6d6;
+		}
 	}
 }
 
