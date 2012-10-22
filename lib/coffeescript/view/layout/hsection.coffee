@@ -8,8 +8,11 @@
 *		{{#view Tent.HSection vspan="12"}}
 *		{{/view}}
 *
-* A Section typically will contain three subsections {@link Tent.Left}, {@link Tent.Center} and
+* A HSection typically will contain three subsections {@link Tent.Left}, {@link Tent.Center} and
 * {@link Tent.Right}.
+* 
+* The main benefit to a HSection is that the Left and Right panels can be expanded and contracted, with
+* the center panel adapting to fill the available space.
 *   
 ###
 
@@ -18,6 +21,7 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 	classNameBindings: ['spanClass', 'vspanClass', 'hClass']
 	classNames: ['tent-hsection']
 	layout: Ember.Handlebars.compile("{{yield}}")
+	
 
 ###*
 * @class Tent.Left

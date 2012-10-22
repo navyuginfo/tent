@@ -1,5 +1,4 @@
 
-
 ###*
 * @class Tent.Section
 *
@@ -20,8 +19,18 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 	tagName: 'section'
 	classNameBindings: ['spanClass', 'vspanClass', 'hClass']
 	classNames: ['tent-section']
+	
+	###*
+	* @property {String} title The title to display in the header. If title is provided, a header section will
+	* be generated automatically.
+	###
 	title: null
+	
+	###*
+	* @property {String} hLevel The header size to use if a title property is provided. e.g. '1', '2' etc
+	###
 	hLevel: '2'
+	
 	hClass: (->
 		"hlevel" + @get('hLevel')
 	).property('hLevel')
@@ -47,13 +56,33 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 *		{{#view Tent.Header span="5" class="program-header"}}
 *		{{/view}}
 *
+* A Header panel will typically be used within a {@link Tent.Section}. 
+*
+* The Header may consist of a single header area, populated with a title or other nested content, or it 
+* can contain a header area (displaying a title) with a further section beneath. This arrangement is usually
+* used to provide an expanding/contracting header. If expand/contract is not required, it is standard to use a simple
+* header and put the main body in the {@link Tent.Content} widget
 ###
 
 Tent.Header = Ember.View.extend Tent.SpanSupport,
 	tagName: 'header'
 	classNameBindings: ['spanClass', 'collapsible']
+
+	###*
+	* @property {Boolean} collapsible A boolean which determines whether the header is collapsible.
+	* If set to true, then a {@link #title} should be provided so that there is a meaningful header 
+	* area when collapsed.
+	###
 	collapsible: false
+
 	collapsed: false
+
+	###*
+	* @property {String} title The title to be displayed in the header.
+	* You may provide a title explicitly using the title property. You may also nest content
+	* in the Header view and that will appear below the title header.
+	* If nested content is provided, but no title provided, the nested content will appear in the header section
+	###
 	title: null
 
 	formattedTitle: (->
@@ -104,7 +133,8 @@ Tent.Header = Ember.View.extend Tent.SpanSupport,
 *
 *		{{#view Tent.Content span="5"}}
 *		{{/view}}
-*
+* A Content panel will typically be used within a {@link Tent.Section}. The panel height will change to
+* fill the available space within the Section
 ###
 
 Tent.Content = Ember.View.extend Tent.SpanSupport,
@@ -139,6 +169,8 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 *
 *		{{#view Tent.Footer span="5"}}
 *		{{/view}}
+*
+* A Footer panel will typically be used within a {@link Tent.Section}. 
 *
 ###
 
