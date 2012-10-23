@@ -17,6 +17,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   classNames: ['tent-button']
   templateName: 'button'
   label: 'Button'
+  validate: false
+  messagePanel: null
 
   ###*
   * @property {String} type The type of button.
@@ -59,6 +61,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).property('target', 'content', 'context')
 
   triggerAction: ->
+    if @get('validate')
+      @doValidation()
     if !@isDisabled 
       if !@get('hasOptions')
         @_super() 
@@ -92,7 +96,37 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     options = content.get('options') if options == `undefined` and (content = @get('content')) isnt `undefined`
     options
   ).property('options','content').volatile()
+
+  doValidation: ->
+    if not @get('messagePanel')?
+      @setupMessageBind()
+    
+    form = @findParentForm()
+    if form?
+      for view in form.get('childViews')
+        console.log "child"
+        view.validate() if typeof view.validate == 'function'
+        #remember to recurse...
+
+  findParentForm: ->
+    $form = @$().parents('.tent-form:first')
+    Ember.View.views[$form.attr('id')] if $form.length > 0
+
+  setupMessageBind: ->
+    mp = @getMessagePanel()
+    if (mp)?
+      @set('messagePanel', mp)
+
+  getMessagePanel: ->
+    mp = $('.tent-message-panel')
+    if mp.length > 0
+      return view = Ember.View.views[mp.attr('id')]
   
+  observeErrors: (->
+    mp = @get('messagePanel')
+    if mp?
+      @set('isDisabled', mp.get('hasErrors'))
+  ).observes('messagePanel', 'messagePanel.hasErrors')
 
 Tent.ButtonOptions = Ember.View.extend Ember.TargetActionSupport,
   template: Ember.Handlebars.compile '<a href="#">{{view.label}}</a>'

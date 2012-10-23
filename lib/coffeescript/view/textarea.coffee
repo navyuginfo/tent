@@ -23,6 +23,10 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 		@get('formattedValue')
 	).property('formattedValue')
 
+	didInsertElement:->
+		@_super()
+		@set('inputIdentifier', @$('textarea').attr('id'))
+
 	change: ->
 		@_super(arguments)
 		@set('isValid', @validate())

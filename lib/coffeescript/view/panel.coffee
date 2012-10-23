@@ -31,6 +31,7 @@ Tent.Form = Tent.Panel.extend
   tagName: 'form'
   staticClasses: ''
   classNameBindings: ['spanClass', 'staticClasses', 'formClass']
+  classNames: ['tent-form']
   formStyle: 'horizontal'
   formClass: (-> 'form-' + @get('formStyle')).property('formStyle')
 

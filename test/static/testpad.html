@@ -70,11 +70,11 @@
         })
 
         setTimeout(function() {
-              $.publish('/message', {type:'info', messages:['message 1'], sourceId: '12'});
+              /*$.publish('/message', {type:'info', messages:['message 1'], sourceId: '12'});
               $.publish('/message', {type:'info', messages:['message 2'], sourceId: '12'});
               $.publish('/message', {type:'error', messages:['Error 1'], sourceId: '1', label: 'Widget1'});
               $.publish('/message', {type:'error', messages:['Error 2'], sourceId: '2'})
-              $.publish('/message', {type:'error', messages:['Error 3'], sourceId: '3'})
+              $.publish('/message', {type:'error', messages:['Error 3'], sourceId: '3'})*/
           }, 3000);
 
       });
@@ -157,6 +157,8 @@
 
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"
             }}
+
+            {{view Tent.Button label="Submit" validate="true"}}
 
             
           {{/view}}

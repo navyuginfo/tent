@@ -31,11 +31,11 @@
 	Pad.appName = "Tent Editable"
 	Pad.editableName = "Tent Uneditable"
 	Pad.email = "test@test.com"
-	Pad.numeric = 123.456
+	Pad.numeric = "qwe"
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
 	Pad.amount = '1234567.67'
-	Pad.isMandatory = false
+	Pad.isRequired = true
 	Pad.isReadOnly = false
 	Pad.isDisabled = false
 	Pad.textDisplay = false
