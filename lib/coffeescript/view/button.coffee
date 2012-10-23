@@ -16,8 +16,11 @@ require '../template/button'
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   classNames: ['tent-button']
   templateName: 'button'
+
+  ###*
+  * @property {String} label The label for the button
+  ###
   label: 'Button'
-  validate: false
   messagePanel: null
 
   ###*
@@ -41,6 +44,18 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * @property {String} action The action to be invoked on the target when the button is clicked
   ###
   action: null
+
+  ###*  
+  * @property {Object} target The target which hosts the action function.
+  ###
+  target: null
+
+  ###*
+  * @property {Boolean} validate If validate is set to true, all fields on the current form
+  * need to be valid before the action will be executed. The Button will execute a form validation
+  * if it has not happened already.
+  ###
+  validate: false
   classNameBindings:['hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'

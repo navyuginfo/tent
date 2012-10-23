@@ -13,6 +13,7 @@ Tent.ValidationSupport = Ember.Mixin.create
   
   validate: ->
     @flushValidationErrors()
+    @set('isValid', true)
     true
 
   errorsDidChange: (->
