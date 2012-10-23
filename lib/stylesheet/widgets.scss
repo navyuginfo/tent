@@ -1,0 +1,14 @@
+.tent-widget {
+	.tent-required {
+		color: red;
+		vertical-align: top;
+		padding-left: 5px;
+		width: 4px;
+		display: inline-block;
+	} 
+	&.required {
+		.tent-required:before {
+			content: '*';
+		}
+	}
+}

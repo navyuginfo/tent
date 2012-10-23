@@ -211,7 +211,7 @@ Tent.JqGrid = Ember.View.extend
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
-			viewsortcols: [true,'vertical',true],
+			viewsortcols: [false,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),

@@ -1,0 +1,27 @@
+/* Bootstrap Modifications */
+
+.form-inline .control-group {
+	display: inline-block;
+}
+
+.input-append, .input-prepend {
+	font-size: inherit;
+}
+
+.input-prepend {
+	display: inline-block;
+}
+
+.help-block {
+	font-style: italic;
+}
+
+.help-inline {
+	display: block!important;
+} 
+
+.help-inline {
+	padding-left: 0px;
+	font-style: italic;
+	font-size: 13px;
+}

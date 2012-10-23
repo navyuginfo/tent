@@ -207,8 +207,8 @@ input "lib" do
   end
 
   match /^stylesheet\/tent.scss/ do
-    sass additional_load_paths: 'lib/stylesheet/',
-      load_paths: GemHelpers.sass_load_paths('bootstrap-sass')
+    #sass additional_load_paths: 'lib/stylesheet/', load_paths: GemHelpers.sass_load_paths('bootstrap-sass')
+    sass
     if ENV['RACK_ENV'] == 'production'
       yui_css
     end
