@@ -1,16 +1,17 @@
 # Amount Edit Formatter
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, opts, cell) ->
-		if not cellvalue
+		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.amount.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
-		if not cellvalue
+		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.amount.unformat(cellvalue) or ""
 
+# Format the value of a Dom element
 jQuery.extend $.fn.fmatter.amount,
 	formatCell: (cellvalue, options, cell) ->
 		input = $('input', cell)
