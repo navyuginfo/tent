@@ -11,6 +11,7 @@ jQuery.extend $.fn.fmatter.amount,
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.amount.unformat(cellvalue) or ""
 
+# Format the value of a Dom element
 jQuery.extend $.fn.fmatter.amount,
 	formatCell: (cellvalue, options, cell) ->
 		input = $('input', cell)
