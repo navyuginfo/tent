@@ -1,4 +1,4 @@
-
+@import "compass";
 @import "mixins";
 @import "bootstrap_mods";
 @import "widgets";
@@ -18,8 +18,8 @@
   position: relative; 
 }
 
-.tent-selected{
-  background-color: #CCC;
+.tent-selected {
+	background-color: #CCC;
 }
 
 .radio-group {
