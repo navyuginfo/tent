@@ -60,5 +60,17 @@ test 'Retrieve column model', ->
 	equal gridData[0].cell[1], 't1', 'Row data: Title is added to the cell'
 	equal gridData[0].cell[2], 23.4, 'Row data: Amount is added to the cell'
 
-test 'Grid data did change', ->
-	
+test 'Validate on Selection', ->
+	mockCollection = Ember.Object.create()
+	selection = [Ember.Object.create(id: 51,title: 't1'),Ember.Object.create(id: 52,title: 't2')]
+
+	grid = Tent.JqGrid.create
+		collection: mockCollection
+
+	didValidate = false
+	grid.validate = ->
+		didValidate = true
+
+	grid.set('selection', selection)
+	ok didValidate, 'Should have validated'
+

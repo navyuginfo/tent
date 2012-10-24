@@ -56,6 +56,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * if it has not happened already.
   ###
   validate: false
+  
   classNameBindings:['hasOptions:tent-button-group button-group']
   optionLabelPath: 'label'
   optionTargetPath: 'target'
@@ -112,16 +113,19 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     options
   ).property('options','content').volatile()
 
+  # Cause validation to be triggered on widgets in the current form
   doValidation: ->
     if not @get('messagePanel')?
       @setupMessageBind()
     
     form = @findParentForm()
     if form?
-      for view in form.get('childViews')
-        console.log "child"
+      @validateChildViews(form)
+
+  validateChildViews: (parentView)->
+    for view in parentView.get('childViews')
         view.validate() if typeof view.validate == 'function'
-        #remember to recurse...
+        @validateChildViews(view)
 
   findParentForm: ->
     $form = @$().parents('.tent-form:first')
@@ -134,14 +138,14 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   getMessagePanel: ->
     mp = $('.tent-message-panel')
-    if mp.length > 0
-      return view = Ember.View.views[mp.attr('id')]
+    return view = Ember.View.views[mp.attr('id')] if mp.length > 0
   
-  observeErrors: (->
+  disableButtonIfErrorsExist: (->
     mp = @get('messagePanel')
     if mp?
       @set('isDisabled', mp.get('hasErrors'))
   ).observes('messagePanel', 'messagePanel.hasErrors')
+
 
 Tent.ButtonOptions = Ember.View.extend Ember.TargetActionSupport,
   template: Ember.Handlebars.compile '<a href="#">{{view.label}}</a>'

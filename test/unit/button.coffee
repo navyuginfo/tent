@@ -6,6 +6,7 @@
 view = null
 dispatcher = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
+
 setup = ->
   @TemplateTests = Ember.Namespace.create()
   @TemplateTests.testObject = Em.Object.create(
@@ -47,7 +48,7 @@ teardown = ->
     view.destroy() if view
     dispatcher.destroy()
 
-module "Button Widget", setup, teardown
+module "Tent.Button", setup, teardown
 
 #Test case scenarios for simple button functionality
 
@@ -110,8 +111,8 @@ test "buton is disabled when isDisabled property is set to true",->
   element= view.$('.btn')
   ok element
   classes = $(element).attr('class')
-  ok classes.indexOf("btn") isnt -1
-  equal classes.indexOf("disabled"), 4, "disabled class applied"
+  ok $(element).hasClass('btn'), "btn class applied"
+  ok $(element).hasClass('disabled'), "disabled class applied"
   equal $(element).attr('disabled'), 'disabled', 'disabled attribute applied'
 
 #Case 6: When label and isDisabled both properties is set
@@ -123,9 +124,9 @@ test "Ensure no failures when label and isDisabled both are set",->
   element= view.$('.btn')
   ok element
   classes = $(element).attr('class')
-  ok classes.indexOf("btn") isnt -1
-  equal classes.indexOf("btn-success"), 4, "disabled class applied"
-  equal classes.indexOf("disabled"), 16, "disabled class applied"
+  ok $(element).hasClass('btn'), "btn class applied"
+  ok $(element).hasClass('btn-success'), "btn-success class applied"
+  ok $(element).hasClass('disabled'), "disabled class applied"
   equal $(element).attr('disabled'), 'disabled', 'Disabled attribute applied'
 
 #Case 7: When event name is set to some controller
