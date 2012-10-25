@@ -1,6 +1,6 @@
 {{#if view.hasErrors}}
-<div class="alert-error clearfix">
-	<span class="title">Errors</span>
+<section class="alert-error clearfix">
+	<h5>Errors</h5>
 	{{#if view.collapsible}}
 		<div {{bindAttr class="view.expandoClass"}}>
 			{{#each view.error}}
@@ -23,17 +23,17 @@
 		  	{{/each}}
 		</div>
 	{{/if}}
-</div>
+</section>
 {{/if}}
 
 {{#if view.hasInfos}}
-<div class="alert-info clearfix">
+<section class="alert-info clearfix">
 	{{view Tent.Button label="x" type="link" action="clearInfos" targetBinding="view" class="close"}}
-	<span class="title">Info</span>
+	<h5>Info</h5>
 	<div class="info-expando">
 		{{#each view.info}}
 			<div class="info-message" {{bindAttr data-target="this.sourceId"}}>{{this.messages}}</div> 
 	  	{{/each}}
 	</div>
-</div>
+</section>
 {{/if}}

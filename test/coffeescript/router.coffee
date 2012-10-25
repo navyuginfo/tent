@@ -13,5 +13,10 @@ Pad.Router = Ember.Router.extend
     home: Ember.Route.create
       route: '/home'
       title: 'state.home'
+      redirectsTo: 'content'
+
+    content: Ember.Route.create
+      route: '/content'
+      title: 'state.content'
        
    

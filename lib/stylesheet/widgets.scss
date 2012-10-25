@@ -1,6 +1,28 @@
+$error-color: red;
+$error-background-color: rgba(255, 0, 0, 0.22);
+$required-icon-color: red;
+
 .tent-widget {
+	/* embed : embed a widget within another. We expect it to be inlined */
+	&.embed {
+		display: inline;
+		.controls {
+			display: inline;
+		}
+	}
+
+	/* no-label: Remove the label and the left margin from the control */
+	&.no-label {
+		label {
+			display: none;
+		}
+		.controls {
+			margin-left: 0px;
+		}
+	}
+
 	.tent-required {
-		color: red;
+		color: $required-icon-color;
 		vertical-align: top;
 		padding-left: 5px;
 		width: 4px;
@@ -10,5 +32,15 @@
 		.tent-required:before {
 			content: '*';
 		}
+	}
+}
+
+/*  Buttons */
+
+.inactive-button {  /* extension class */
+	text-decoration: none;
+	cursor: auto;
+	&:hover {
+		text-decoration: none;
 	}
 }

@@ -1,3 +1,7 @@
+$error-background-color: rgba(255, 0, 0, 0.22);
+
+
+
 /* Slickgrid Overrides */
 
 .slickgrid {
@@ -19,7 +23,7 @@
 	}
 
 	.grid-header {
-		box-sizing: border-box; 
+		@include box-sizing(border-box);
 		color: #333;
 		padding: 3px;
 
@@ -60,19 +64,13 @@
 	}
 
 	&.maximized {
-		position: fixed;
-		top: 0px;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		z-index: 2000;
-		background: white;
+		@include maximized();
 	}
 
 	.ui-jqgrid tr.jqgrow td {
 		white-space: normal;
 		&.error {
-			background-color: rgba(255, 0, 0, 0.22)!important;
+			background-color: $error-background-color!important;
 		}
 	}
 
@@ -204,4 +202,10 @@
 		}
 	}
 
+}
+
+
+/* Selected row in a Tent.Table */
+.tent-selected {
+	background-color: #CCC;
 }

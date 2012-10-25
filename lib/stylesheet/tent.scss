@@ -6,20 +6,26 @@
 @import "layout";
 
 
+$error-color: red;
+$error-background-color: rgba(255, 0, 0, 0.22);
+$breadcrumb-color: #333;
+
+
 /* Tent-Specific */
 
-.grid-header, 
-.pager *
-{
-	box-sizing: border-box; 
+
+/* Typography */
+
+
+/* Headers */
+
+
+.grid-header, .pager *{
+	@include box-sizing(border-box);
 }
 
-.tent-button-group{
-  position: relative; 
-}
-
-.tent-selected {
-	background-color: #CCC;
+.tent-button-group {
+  	position: relative; 
 }
 
 .radio-group {
@@ -31,7 +37,7 @@
 }
 
 .tent-width-small{
-  width: 20px;
+  	width: 20px;
 }
 
 a[rel=tooltip] {
@@ -48,8 +54,6 @@ a[rel=tooltip] {
 	margin-top: 5px;
 	display: inline-block;
 }
-
-
 
 
 /*  Modal Dialog */
@@ -69,27 +73,6 @@ a[rel=tooltip] {
 }
 
 
-.tent-widget {
-	/* embed : embed a widget within another. We expect it to be inlined*/
-	&.embed {
-		display: inline;
-		.controls {
-			display: inline;
-		}
-	}
-
-	/* no-label: Remove the label and the left margin from the control */
-	&.no-label {
-		label {
-			display: none;
-		}
-		.controls {
-			margin-left: 0px;
-		}
-	}
-}
-
-
 /* Breadcrumb */
 
 .tent-breadcrumb {
@@ -98,7 +81,7 @@ a[rel=tooltip] {
 	    li {
 	      	display: inline;
 	      	.btn-link {
-	        	color: #333;
+	        	color: $breadcrumb-color;
 	        	padding: 4px 1px;
 	    	}
 	    	&:last-child {
@@ -106,12 +89,8 @@ a[rel=tooltip] {
 	          		display: none;
 	        	}
 	        	button {
+	        		@extend .inactive-button;
 	          		font-weight: bold;
-	        		text-decoration: none;
-	        		cursor: auto;
-	         		&:hover {
-	            		text-decoration: none;
-	          		}
 	        	}
 	      	}
     	}
@@ -122,11 +101,10 @@ a[rel=tooltip] {
 
 .tent-message-panel {
 	margin-top: 10px;
-	
 
-	.title {
-		font-weight: bold;
-		float:left;
+	h5 {
+		float: left;
+		margin: 0px;
 	}
 	
 	.close {
@@ -134,8 +112,6 @@ a[rel=tooltip] {
 	}
 
 	a.close, .close .btn {
-		font-size: 12px;
-		color: #333;
 		top: 6px;
 		position: absolute;
 		right: 10px;
@@ -153,7 +129,7 @@ a[rel=tooltip] {
 		border-bottom: 4px solid black;
 	}
 
-	.alert-error {
+	.alert {
 		position: relative;
 		margin: 10px 0px;
 		padding: 7px;
@@ -161,18 +137,19 @@ a[rel=tooltip] {
 		border: 1px solid #EED3D7;
 	}
 
+	.alert-error {
+		@extend .alert;
+		border: 1px solid #EED3D7;
+	}
+
 	.alert-info {
-		position: relative;
-		margin: 10px 0px;
-		padding: 7px;
-		@include border-radius(4px);
+		@extend .alert;
 		border: 1px solid #BCE8F1;
 	}
 
 	.error-message {
 		cursor: pointer;
 		padding: 0px 50px;
-		font-size: smaller;
 		
 		&:hover {
 			text-decoration: underline;
@@ -180,14 +157,11 @@ a[rel=tooltip] {
 		
 		label {
 			display: inline;
-			font-size: 13px;
 		}
-
 	}
 
 	.info-message {
 		padding: 0px 50px;
-		font-size: smaller;
 	}
 
 	.error-expando, .info-expando {
