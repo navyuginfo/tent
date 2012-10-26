@@ -9,7 +9,7 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 #
 # This module specifically tests UI Widgets part of the tent library.
 #
-module "Tent.ModalPane - Basic Widgets", ->
+module "Tent.ModalPane", ->
     @TemplateTests = Ember.Namespace.create()
   , ->
     if view
@@ -38,3 +38,34 @@ test 'Ensure ModalPane renders ', ->
 
   ok view.$(".modal-footer .btn-primary").length > 0, 'footer rendered primary'
   ok view.$(".modal-footer .btn-secondary").length > 0, 'footer rendered primary'
+
+
+test 'Ensure close button defaults to secondary action', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane textBinding="text" headerBinding="header" 
+    primaryLabelBinding="primary" secondaryLabelBinding="secondary" secondaryAction="saction"}}'
+    text: 'Do you want to perform this action!!!'
+    header: 'My Heading'
+    primary: 'OK'
+    secondary: 'Cancel'
+
+  appendView()
+  modalView = Ember.View.views[view.$('.modal').parent('.tent-widget').attr('id')]
+  equal modalView.get('closeAction'), "saction", "Action has been transferred."
+   
+
+test 'Ensure cancel action is triggered on hide', ->
+  didHide = false
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane secondaryLabelBinding="secondary" secondaryAction="hide" secondaryTargetBinding="view"}}'
+    text: 'Do you want to perform this action!!!'
+    header: 'My Heading'
+    primary: 'OK'
+    secondary: 'Cancel'
+    hide: ->
+      didHide = true
+
+  appendView()
+  view.$(".modal").trigger('hidden')
+  
+  ok didHide, 'hide action was called'
