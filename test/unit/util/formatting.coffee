@@ -15,7 +15,7 @@ test 'Amount formatting', ->
 	equal formatter.format("123456.344"), '123,456.34', 'string'
 	equal formatter.format(null), '', 'null'
 	equal formatter.format(undefined), '', 'undefined'
-	equal formatter.format(""), '', 'empty string'
+	equal formatter.format(""), '0.00', 'empty string'
 
 test 'Amount unformatting', ->
 	formatter = Tent.Formatting.amount
@@ -27,7 +27,7 @@ test 'Amount unformatting', ->
 	equal formatter.unformat(123456.344), 123456.344, 'number'
 	equal formatter.unformat(null), null, 'null'
 	equal formatter.unformat(undefined), null, 'undefined'
-	equal formatter.unformat(""), null, 'empty string'
+	equal formatter.unformat(""), 0, 'empty string'
 
 test 'Number formatting', ->
 	formatter = Tent.Formatting.number

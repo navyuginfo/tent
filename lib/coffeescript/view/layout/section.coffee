@@ -1,4 +1,4 @@
-
+require '../../mixin/collapsible_support'
 
 ###*
 * @class Tent.Section
@@ -20,8 +20,18 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 	tagName: 'section'
 	classNameBindings: ['spanClass', 'vspanClass', 'hClass']
 	classNames: ['tent-section']
+	
+	###*
+	* @property {String} title The title to display in the header. If title is provided, a header section will
+	* be generated automatically.
+	###
 	title: null
+	
+	###*
+	* @property {String} hLevel The header size to use if a title property is provided. e.g. '1', '2' etc
+	###
 	hLevel: '2'
+	
 	hClass: (->
 		"hlevel" + @get('hLevel')
 	).property('hLevel')
@@ -47,12 +57,50 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 *		{{#view Tent.Header span="5" class="program-header"}}
 *		{{/view}}
 *
+* A Header panel will typically be used within a {@link Tent.Section}. 
+*
+* The Header may consist of a single header area, populated with a title or other nested content, or it 
+* can contain a header area (displaying a title) with a further section beneath. This arrangement is usually
+* used to provide an expanding/contracting header. If expand/contract is not required, it is standard to use a simple
+* header and put the main body in the {@link Tent.Content} widget
 ###
 
-Tent.Header = Ember.View.extend Tent.SpanSupport,
+Tent.Header = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'header'
 	classNameBindings: ['spanClass']
-	layout: Ember.Handlebars.compile '{{yield}}'
+
+	###*
+	* @property {String} title The title to be displayed in the header.
+	* You may provide a title explicitly using the title property. You may also nest content
+	* in the Header view and that will appear below the title header.
+	* If nested content is provided, but no title provided, the nested content will appear in the header section
+	###
+	title: null
+
+	formattedTitle: (->
+		#Refactor this. Couldn't get <h2> as a parameter into a template
+		switch @get('hLevel')
+			when "1" then '<h1>{{loc view.title}}</h1>'
+			when "2" then '<h2>{{loc view.title}}</h2>'
+			when "3" then '<h3>{{loc view.title}}</h3>'
+			when "4" then '<h4>{{loc view.title}}</h4>'
+			when "5" then '<h5>{{loc view.title}}</h5>'
+			else '<h2>{{loc view.title}}</h2>'
+	).property('title')
+	
+	layout: (->
+		if @get('collapsible')
+			if @get('title')
+				Ember.Handlebars.compile('<div class="header">' + @get('formattedTitle') + '<b class="caret clickarea"/></div>{{yield}}')
+			else 
+				Ember.Handlebars.compile('<div class="header">You must provide a title for a collapsed header</div>')
+		else
+			if @get('title')
+				Ember.Handlebars.compile('<div class="header">' + @get('formattedTitle') + '</div>{{yield}}')
+			else 
+				Ember.Handlebars.compile('<div class="header">{{yield}}</div>')
+	).property('formattedTitle')
+
 
 ###*
 * @class Tent.Content
@@ -61,7 +109,8 @@ Tent.Header = Ember.View.extend Tent.SpanSupport,
 *
 *		{{#view Tent.Content span="5"}}
 *		{{/view}}
-*
+* A Content panel will typically be used within a {@link Tent.Section}. The panel height will change to
+* fill the available space within the Section
 ###
 
 Tent.Content = Ember.View.extend Tent.SpanSupport,
@@ -70,13 +119,21 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 	layout: Ember.Handlebars.compile '{{yield}}'
 
 	didInsertElement: ->
-		section = @.$().parent('section')
-		header = section.children('header')
-		footer = section.children('footer')
-		headerOffset = if header.length > 0 then header.outerHeight(true) else 0
+		@set('section', @.$().parent('section'))
+		@set('header', @get('section').children('header'))
+		@set('headerView', Ember.View.views[@get('header').attr('id')])
+		@resize()
+
+	resize: ->
+		@set('footer', @get('section').children('footer'))
+		headerOffset = if @get('header').length > 0 then @get('header').outerHeight(true) else 0
 		@.$().css('top', headerOffset + "px")
-		footerOffset = if footer.length > 0 then footer.outerHeight(true) else 0
+		footerOffset = if @get('footer').length > 0 then @get('footer').outerHeight(true) else 0
 		@.$().css('bottom', footerOffset + "px")
+
+	headerDidCollapse: (->
+		@resize()
+	).observes('headerView.collapsed')
 
 ###*
 * @class Tent.Footer
@@ -85,6 +142,8 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 *
 *		{{#view Tent.Footer span="5"}}
 *		{{/view}}
+*
+* A Footer panel will typically be used within a {@link Tent.Section}. 
 *
 ###
 

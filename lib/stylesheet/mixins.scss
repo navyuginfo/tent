@@ -1,0 +1,50 @@
+/* Mixins */
+// Border Radius
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+          border-radius: $radius;
+}
+
+/* Used for section panels which are given a css height. */
+@mixin fixed-height ($height){
+	position: absolute;
+	height: $height;
+	margin-left: 0px;
+	padding-left: 0px;
+	width: 100%;
+	overflow-y: hidden;
+	z-index: 1000;
+}
+
+/* 
+	Used for section panels which are given a css width. 
+	Width is normally provided separately as a grid style (e.g. 'span3')
+*/
+@mixin fixed-width {
+	position: absolute;
+	height: 100%;
+	z-index: 1000;
+	overflow-x: hidden;
+	-webkit-transition: all .3s ease;
+}
+
+/* Styles applied to collapse a panel */
+@mixin collapsed {
+	width: 10px;			
+	.panel-content {
+		opacity: 0;
+	}
+	overflow: hidden;
+}
+
+/* Draw the element full-screen */
+@mixin maximized {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	z-index: 2000;
+	background: white;
+}

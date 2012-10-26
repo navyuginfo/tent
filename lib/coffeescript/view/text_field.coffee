@@ -21,15 +21,20 @@
 require '../mixin/field_support'
 require '../mixin/formatting_support'
 require '../mixin/tooltip_support'
+require '../mixin/filtering_support'
 require '../mixin/aria_support'
 require '../mixin/readonly_support'
 require '../mixin/disabled_support'
 require '../mixin/html5_support'
 require '../template/text_field'
 
-Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, 
+Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport,
 	templateName: 'text_field'
 	classNames: ['tent-text-field', 'control-group']
+
+	###*
+	* @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
+	###
 
 	didInsertElement: ->
 		@_super(arguments)

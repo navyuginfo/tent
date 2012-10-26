@@ -22,7 +22,11 @@ jQuery.extend $.fn.fmatter.amount,
 # Date Formatter
 jQuery.extend $.fn.fmatter, 
 	date: (cellvalue, options, rowdata) ->
-		Tent.Formatting.date.format(cellvalue)
+		if options.colModel.formatoptions
+			return Tent.Formatting.date.format(cellvalue, options.colModel.formatoptions.dateFormat)
+		else
+			return Tent.Formatting.date.format(cellvalue)
+
 
 jQuery.extend $.fn.fmatter.date,
 	unformat: (cellvalue, options) ->

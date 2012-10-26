@@ -46,7 +46,7 @@ test 'Retrieve column model', ->
 	grid = Tent.JqGrid.create
 		collection: mockCollection
 
-	colModel = grid.get('colModel')
+	colModel = grid.get('columnModel')
 	equal colModel.length, 3, 'Should be 3 columns'
 	equal colModel[0].name, "id", 'name field'
 	equal colModel[0].index, "id", 'index field'
@@ -60,5 +60,5 @@ test 'Retrieve column model', ->
 	equal gridData[0].cell[1], 't1', 'Row data: Title is added to the cell'
 	equal gridData[0].cell[2], 23.4, 'Row data: Amount is added to the cell'
 
-test 'Grid data did change', ->
+ 
 	

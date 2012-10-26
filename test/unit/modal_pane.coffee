@@ -20,7 +20,7 @@ module "Tent.ModalPane - Basic Widgets", ->
 test 'Ensure ModalPane renders ', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.ModalPane textBinding="text" headerBinding="header" 
-    primaryBinding="primary" secondaryBinding="secondary"}}'
+    primaryLabelBinding="primary" secondaryLabelBinding="secondary"}}'
     text: 'Do you want to perform this action!!!'
     header: 'My Heading'
     primary: 'OK'
@@ -35,5 +35,6 @@ test 'Ensure ModalPane renders ', ->
 
   ok view.$("div.modal-header:contains('"+view.get('header')+"')").length > 0 , 'header rendered' 
   equal view.$('.modal-body').text().trim(), view.get('text'), 'body is rendered' 
-  ok view.$("div.modal-footer:contains('"+view.get('primary')+"')").length > 0 , 'footer rendered primary'
-  ok view.$("div.modal-footer:contains('"+view.get('secondary')+"')").length > 0 , 'footer rendered secondary'   
+
+  ok view.$(".modal-footer .btn-primary").length > 0, 'footer rendered primary'
+  ok view.$(".modal-footer .btn-secondary").length > 0, 'footer rendered primary'

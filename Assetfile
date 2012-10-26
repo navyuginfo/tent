@@ -48,7 +48,9 @@ module GemHelpers
 
   def self.sass_load_paths(*gems)
     gems.collect {|gem| "#{gem_path(gem)}/vendor/assets/stylesheets"}
+    gems.collect {|gem| "#{gem_path(gem)}/frameworks/compass/stylesheets"}
   end
+
 end
 
 def load_gem_assets(output_dir, *gems)
@@ -207,8 +209,8 @@ input "lib" do
   end
 
   match /^stylesheet\/tent.scss/ do
-    sass additional_load_paths: 'lib/stylesheet/',
-      load_paths: GemHelpers.sass_load_paths('bootstrap-sass')
+    sass additional_load_paths: 'lib/stylesheet/', load_paths: GemHelpers.sass_load_paths('bootstrap-sass', 'compass')
+    #sass
     if ENV['RACK_ENV'] == 'production'
       yui_css
     end

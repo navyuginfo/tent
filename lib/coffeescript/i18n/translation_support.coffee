@@ -46,4 +46,18 @@ Tent.I18n.loadTranslations(
 			csv: 'CSV'
 		}
 	}
+	filter: {
+		availableFilters: 'Available Filters'
+		selectedFilter: 'Selected Filter'
+		currentFilter: 'Current Filter'
+		saveFilter: 'Save Filter'
+		save: 'Save'
+		cancel: 'Cancel'
+		label: 'Label'
+		description: 'Description'
+		beginsWith: 'begins with'
+		contains: 'contains'
+		equal: 'equal'
+		nEqual: 'not equal' 
+	}
 )
