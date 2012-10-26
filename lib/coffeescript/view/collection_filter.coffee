@@ -27,7 +27,7 @@ Tent.CollectionFilter = Ember.View.extend
   * The filterTemplate should reference the filter fields using the path **view.filter**
   * 
   * e.g.
-  *         {{view Tent.TextField valueBinding="view.filter.id" label="ID"}}
+  *       {{view Tent.TextField valueBinding="view.filter.id" label="ID"}}
   *       {{view Tent.TextField valueBinding="view.filter.title" label="Title"}}
   *       {{view Tent.DateField valueBinding="view.filter.start" label="Start"}}
   ###
@@ -41,10 +41,10 @@ Tent.CollectionFilter = Ember.View.extend
   init: ->
     @_super()
     @set('currentFilter', {
-      name: "temporary"
-      label: "temporary"
-      description: "temporary"
-      values: {id: "51",title: ""}
+      name: ""
+      label: ""
+      description: ""
+      values: {id:{}}
     })
   
   filter: ->
@@ -59,7 +59,12 @@ Tent.CollectionFilter = Ember.View.extend
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
+    @set('selectedFilter', @get('currentFilter'))
+    return true
 
+  currentFilterDidChange: (->
+    console.log @get('currentFilter.values.id.data')
+  ).observes('currentFilter', 'currentFilter.@each')
 
 Tent.FilterDefinition = Ember.Object.extend
   name: ""

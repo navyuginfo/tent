@@ -1,0 +1,156 @@
+/*  Layout Styles */
+
+$drag-bar-color: #ddd;
+$drag-bar-hover-color: #d6d6d6;
+
+
+.scrollable {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	height: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	&.right {
+		right: 0px;
+	}
+}
+
+ 
+/*  Flexible Layout Panels */
+  .flex-container {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+  }
+
+  .vspan1 {height: 10%; overflow-y:auto; min-height:30px;}
+  .vspan2 {height: 20%; overflow-y:auto;}
+  .vspan3 {height: 30%; overflow-y:auto;}
+  .vspan4 {height: 40%; overflow-y:auto;}
+  .vspan5 {height: 50%; overflow-y:auto;}
+  .vspan6 {height: 60%; overflow-y:auto;}
+  .vspan7 {height: 70%; overflow-y:auto;}
+  .vspan8 {height: 80%; overflow-y:auto;}
+  .vspan9 {height: 90%; overflow-y:auto;}
+  .vspan10 {height: 100%; overflow-y:auto;}
+
+
+.tent-section {
+	* {
+		/* Check this for performance */
+		@include box-sizing(border-box);
+	}
+
+	float: left;
+	position: relative;
+	margin-left: 0px;
+
+	h1,h2,h3,h4,h5,h6 {
+		display: inline-block;
+		margin: 4px;
+	}
+
+	header {
+		@include fixed-height(50px);
+		top: 0px;
+
+		&.collapsible.collapsed {
+			height: 20px;
+			.caret{
+				border-top: 4px solid black;
+				border-bottom: none;
+			}
+		}
+		&.collapsible {
+			.caret {
+				float: right;
+				border-top: none;
+				border-bottom: 4px solid black;
+				border-top: none;
+				margin-top: 10px;
+				margin-right: 10px;
+				cursor: pointer;
+			}
+			 
+		}
+		@include transition(all 0.3s ease);
+	}
+
+	footer {
+		@include fixed-height(30px);
+		bottom: 0px;
+		min-height: 30px;
+	}
+	
+	.content {
+		overflow-y: auto; 
+		@include transition(all 0s ease);
+		position: absolute;
+		margin-left: 0px; 
+		width: 100%;
+	}
+}
+
+
+.tent-hsection {
+	position: relative;
+	margin-left: 0px;
+
+	.left-panel {
+		@include fixed-width();
+
+		.panel-content {
+			height: 100%;
+			@include transition(all .3s ease);
+			padding-right: 10px;
+			section {
+				overflow: hidden;
+			}
+		}
+		.drag-bar {
+			right: 0px;
+		}
+		&.collapsed {
+			@include collapsed();
+		}
+	}
+	.center-panel {
+		position: absolute;
+		height: 100%;
+	}
+	.right-panel {
+		@include fixed-width();
+		right: 0px;
+		margin-left: 0px;
+		.panel-content {
+			height: 100%;
+			padding-left: 10px;
+			@include transition(all .3s ease);
+		}
+		.drag-bar {
+			left: 0px;
+		}
+		&.collapsed {
+			@include collapsed();
+		}
+	}
+
+	.drag-bar {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;	
+		cursor: pointer;
+		width: 10px;
+		background-color: $drag-bar-color;
+		border-right: 1px solid #CCC;
+		border-left: 1px solid #CCC;
+		z-index: 1000;
+		&:hover {
+			background-color: $drag-bar-hover-color;
+		}
+	}
+}

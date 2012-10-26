@@ -1,75 +1,31 @@
-@import "bootstrap";
-@import "bootstrap-responsive";
-/*@import "compass";*/
+@import "compass";
+@import "mixins";
+@import "bootstrap_mods";
+@import "widgets";
+@import "grids";  
+@import "layout";
 
 
-/* Mixins */
-// Border Radius
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-          border-radius: $radius;
-}
+$error-color: red;
+$error-background-color: rgba(255, 0, 0, 0.22);
+$breadcrumb-color: #333;
 
-.tent-widget {
-	.tent-required {
-		color: red;
-		vertical-align: top;
-		padding-left: 5px;
-		width: 4px;
-		display: inline-block;
-	} 
-	&.required {
-		.tent-required:before {
-			content: '*';
-		}
-	}
-}
-
-/* Bootstrap Modifications */
-
-.form-inline .control-group {
-	display: inline-block;
-}
-
-.input-append, .input-prepend {
-	font-size: inherit;
-}
-
-.input-prepend {
-	display: inline-block;
-}
-
-.help-block {
-	font-style: italic;
-}
-
-.form-horizontal {
-	.help-inline {
-		display: block;
-	}
-}
-
-.help-inline {
-	padding-left: 0px;
-	font-style: italic;
-	font-size: 13px;
-}
 
 /* Tent-Specific */
 
-.grid-header, 
-.pager *
-{
-	box-sizing: border-box; 
+
+/* Typography */
+
+
+/* Headers */
+
+
+.grid-header, .pager *{
+	@include box-sizing(border-box);
 }
 
-.tent-button-group{
-  position: relative; 
-}
-
-.tent-selected{
-  background-color: #CCC;
+.tent-button-group {
+  	position: relative; 
 }
 
 .radio-group {
@@ -81,7 +37,7 @@
 }
 
 .tent-width-small{
-  width: 20px;
+  	width: 20px;
 }
 
 a[rel=tooltip] {
@@ -100,58 +56,6 @@ a[rel=tooltip] {
 }
 
 
-
-/* Slickgrid Overrides */
-
-.slickgrid {
-
-	.grid {
-		border-left: 1px solid #aaa;
-		border-right: 1px solid #aaa;
-	}
-
-	.slick-row {
-		&:hover {
-			background: #D7E0FC;
-		}
-	}
-	.slick-cell {
-		&.selected {
-			background-color: #ccc;
-		}
-	}
-
-	.grid-header {
-		box-sizing: border-box; 
-		color: #333;
-		padding: 3px;
-
-		label {
-			display: inline;
-			margin-bottom: 0px;
-		}
-		.button-bar {
-			float: right;
-			.ui-icon {
-				float: right;
-			}
-		}
-	}
-
-	.slick-pager {
-		border: 1px solid #aaa;
-	}
-
-	.slick-headerrow {
-		input, select {
-			height: 8px;
-			width: 5em;
-			font-size: 0.8em;
-		}
-	}
-}
-
-
 /*  Modal Dialog */
 
 .modal {
@@ -163,13 +67,13 @@ a[rel=tooltip] {
 /* List Filters */
 
 .tent-filter {
-	background-color: bisque;
 	padding: 10px;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
 
 
+<<<<<<< HEAD
 /*  Layout Styles */
 
 .scrollable {
@@ -481,6 +385,8 @@ a[rel=tooltip] {
 }
 
 
+=======
+>>>>>>> master
 /* Breadcrumb */
 
 .tent-breadcrumb {
@@ -489,7 +395,7 @@ a[rel=tooltip] {
 	    li {
 	      	display: inline;
 	      	.btn-link {
-	        	color: #333;
+	        	color: $breadcrumb-color;
 	        	padding: 4px 1px;
 	    	}
 	    	&:last-child {
@@ -497,12 +403,8 @@ a[rel=tooltip] {
 	          		display: none;
 	        	}
 	        	button {
+	        		@extend .inactive-button;
 	          		font-weight: bold;
-	        		text-decoration: none;
-	        		cursor: auto;
-	         		&:hover {
-	            		text-decoration: none;
-	          		}
 	        	}
 	      	}
     	}
@@ -513,11 +415,10 @@ a[rel=tooltip] {
 
 .tent-message-panel {
 	margin-top: 10px;
-	
 
-	.title {
-		font-weight: bold;
-		float:left;
+	h5 {
+		float: left;
+		margin: 0px;
 	}
 	
 	.close {
@@ -525,8 +426,6 @@ a[rel=tooltip] {
 	}
 
 	a.close, .close .btn {
-		font-size: 12px;
-		color: #333;
 		top: 6px;
 		position: absolute;
 		right: 10px;
@@ -544,7 +443,7 @@ a[rel=tooltip] {
 		border-bottom: 4px solid black;
 	}
 
-	.alert-error {
+	.alert {
 		position: relative;
 		margin: 10px 0px;
 		padding: 7px;
@@ -552,18 +451,19 @@ a[rel=tooltip] {
 		border: 1px solid #EED3D7;
 	}
 
+	.alert-error {
+		@extend .alert;
+		border: 1px solid #EED3D7;
+	}
+
 	.alert-info {
-		position: relative;
-		margin: 10px 0px;
-		padding: 7px;
-		@include border-radius(4px);
+		@extend .alert;
 		border: 1px solid #BCE8F1;
 	}
 
 	.error-message {
 		cursor: pointer;
 		padding: 0px 50px;
-		font-size: smaller;
 		
 		&:hover {
 			text-decoration: underline;
@@ -571,14 +471,11 @@ a[rel=tooltip] {
 		
 		label {
 			display: inline;
-			font-size: 13px;
 		}
-
 	}
 
 	.info-message {
 		padding: 0px 50px;
-		font-size: smaller;
 	}
 
 	.error-expando, .info-expando {

@@ -1,14 +1,16 @@
 
+
 {{view Ember.View 
 	templateNameBinding="view.filterTemplate" 
 	collectionBinding="view.collection"
 	filterBinding="view.currentFilter"
 }}
 
+
 <div class="form-inline">
 
 		{{view Tent.Select span="4"
-			label="_CurrentFilter" 
+			label="filter.currentFilter" 
 			listBinding="view.availableFilters" 
 			selectionBinding="view.selectedFilter" 
 			optionLabelPath="content.label" 
@@ -16,17 +18,17 @@
 		}}
 
 	    {{#view Tent.ModalPane 
-	    	label="_saveFilter"
-	        header="_saveFilter" 
-	        primaryLabel="_save" 
-	        secondaryLabel="_cancel"
+	    	label="filter.saveFilter"
+	        header="filter.saveFilter" 
+	        primaryLabel="filter.save" 
+	        secondaryLabel="filter.cancel"
 	        type="link"
 	        primaryAction="saveFilter"
 	        primaryTargetBinding="view"
 	    	}}
     	
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="_label" required=true}}
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="_description"}}
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="filter.label" required=true}}
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="filter.description"}}
       	{{/view}}
     
       	{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}

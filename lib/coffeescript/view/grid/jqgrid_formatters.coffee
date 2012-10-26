@@ -1,16 +1,17 @@
 # Amount Edit Formatter
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, opts, cell) ->
-		if not cellvalue?
+		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.amount.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
-		if not cellvalue
+		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.amount.unformat(cellvalue) or ""
 
+# Format the value of a Dom element
 jQuery.extend $.fn.fmatter.amount,
 	formatCell: (cellvalue, options, cell) ->
 		input = $('input', cell)
@@ -21,7 +22,11 @@ jQuery.extend $.fn.fmatter.amount,
 # Date Formatter
 jQuery.extend $.fn.fmatter, 
 	date: (cellvalue, options, rowdata) ->
-		Tent.Formatting.date.format(cellvalue)
+		if options.colModel.formatoptions
+			return Tent.Formatting.date.format(cellvalue, options.colModel.formatoptions.dateFormat)
+		else
+			return Tent.Formatting.date.format(cellvalue)
+
 
 jQuery.extend $.fn.fmatter.date,
 	unformat: (cellvalue, options) ->

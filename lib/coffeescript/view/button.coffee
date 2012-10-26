@@ -15,6 +15,7 @@ require '../template/button'
 
 Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   classNames: ['tent-button']
+  classNameBindings:['hasOptions:tent-button-group button-group']
   templateName: 'button'
 
   ###*
@@ -56,8 +57,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * if it has not happened already.
   ###
   validate: false
-  
-  classNameBindings:['hasOptions:tent-button-group button-group']
+
   optionLabelPath: 'label'
   optionTargetPath: 'target'
   optionActionPath: 'action'
