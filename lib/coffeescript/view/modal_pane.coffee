@@ -33,6 +33,8 @@
                 primaryTargetBinding="Pad"
                 secondaryAction="modalCancel"
                 secondaryTargetBinding="Pad"
+                closeAction="clearUp"
+                closeTargetBinding="controller"
             }}
               <h5>Some more content</h5>
         {{/view}}
@@ -47,7 +49,7 @@ Tent.ModalPane = Ember.View.extend
   ###*
   * @property {String} label The label for the launch button
   ###
-  label:"_submit"
+  label:null
 
   ###*
   * @property {String} header The text to display in the header section of the modal dialog
@@ -96,14 +98,30 @@ Tent.ModalPane = Ember.View.extend
   ###
   secondaryTarget: "parentView"
 
+  secondaryIcon: null
+  primaryIcon: null
+
+  closeAction: null
+  closeTarget: null
+
+  init: ->
+    @_super(arguments)
+    if not @get('closeAction')?
+      @set('closeAction', @get('secondaryAction'))
+    if not @get('closeTarget')?
+      @set('closeTarget', @get('secondaryTarget'))
+
+  didInsertElement: ->
+    if not @get('label')?
+      @launch()
+
+  willDestroyElement: ->
+    @hide()
 
   click: (event)->
     target = event.target
     if $(target).hasClass('close-dialog')
       @hide()
-
-    #targetClick = target.getAttribute('click')
-    #(@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
 
   launch: ->
      @.$('.modal').modal(@get('options'))

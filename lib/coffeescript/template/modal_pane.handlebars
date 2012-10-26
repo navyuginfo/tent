@@ -1,10 +1,13 @@
 
-	{{view Tent.Button class="launch" labelBinding="view.label" aria-haspopup="true" action="launch" targetBinding="view" typeBinding="view.type"}}
+	{{#if view.label}}
+		{{view Tent.Button class="launch" labelBinding="view.label" aria-haspopup="true" action="launch" targetBinding="view" typeBinding="view.type"}}
+	{{/if}}
 
 	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-header">
-		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		  {{view Tent.ModalHeader}}
+			{{view Tent.Button buttonClass="close-dialog close" label="&times;" actionBinding="view.closeAction" targetBinding="view.closeTarget" type="link"}}
+
+		  	{{view Tent.ModalHeader}}
 		</div>
 		<div class="modal-body">
 		  {{#if view.text}}
@@ -14,11 +17,12 @@
 		</div>
 		<div class="modal-footer">
 			<div class="btn-toolbar">
+
 			  {{#if view.secondaryLabel}}
-			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary"}}
+			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary" iconClassBinding="view.secondaryIcon"}}
 			  {{/if}}
 			  {{#if view.primaryLabel}}
-			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary"}}
+			  	{{view Tent.Button buttonClass="" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary" iconClassBinding="view.primaryIcon"}}
 			  {{/if}}
 			</div>
 		</div>
