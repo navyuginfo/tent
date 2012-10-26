@@ -115,6 +115,17 @@ Tent.ModalPane = Ember.View.extend
     if not @get('label')?
       @launch()
 
+    @$(".modal").on('hidden', => 
+      @triggerCancelAction()
+    )
+
+  triggerCancelAction: ->
+    cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
+    if cancelButton.length > 0
+      id = cancelButton.parent('.tent-button').attr('id')
+      buttonView = Ember.View.views[id]
+      buttonView.triggerAction()
+
   willDestroyElement: ->
     @hide()
 
