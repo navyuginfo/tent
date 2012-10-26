@@ -202,6 +202,16 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 		}
 	}
 
+	&.error {
+		.grid-table td {
+			background: rgba(255, 0, 0, 0.15);
+		}
+		.help-inline {
+			color: #B94A48;
+		}
+	}
+
+
 }
 
 

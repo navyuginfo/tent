@@ -25,6 +25,8 @@ Tent.RadioOption = Ember.SelectOption.extend
  		@get('parentView').set('selection', @get('content'))
 
 	didInsertElement: ->
+		@_super()
+		@set('inputIdentifier', @$('input[type="radio"]').attr('id'))
 
 	labelPathDidChange: Ember.observer(-> 
 		labelPath = Ember.get(@, 'parentView.optionLabelPath')

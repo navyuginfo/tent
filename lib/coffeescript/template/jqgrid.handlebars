@@ -1,2 +1,5 @@
 <table class="grid-table"></table>
-<div class="gridpager"></div> 
+<div class="gridpager"></div>
+{{#if view.hasErrors}}
+	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
+{{/if}}  

@@ -6,6 +6,7 @@
 view = null
 dispatcher = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
+
 setup = ->
   @TemplateTests = Ember.Namespace.create()
   @TemplateTests.testObject = Em.Object.create(
@@ -47,7 +48,7 @@ teardown = ->
     view.destroy() if view
     dispatcher.destroy()
 
-module "Button Widget", setup, teardown
+module "Tent.Button", setup, teardown
 
 #Test case scenarios for simple button functionality
 

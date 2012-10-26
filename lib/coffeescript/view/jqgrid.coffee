@@ -41,10 +41,10 @@ require '../template/jqgrid'
 *
 ###
 
-Tent.JqGrid = Ember.View.extend
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader']
+	classNameBindings: ['fixedHeader', 'hasErrors:error']
 	
 	###*
 	* @property {Object} collection The collection object providing the API to the data source
@@ -128,6 +128,8 @@ Tent.JqGrid = Ember.View.extend
 	*
 	###
 	onSaveCell: null
+
+
 	fullScreen: false
 	pagingData: 
 		page: 1 
@@ -171,6 +173,17 @@ Tent.JqGrid = Ember.View.extend
 		if @getTableDom()
 			@setSelectAllCheckbox(@getTableDom().get(0))
 	).observes('selection')
+
+	selectionDidChange: (->
+		@validate()
+	).observes('selection.@each')
+
+	valueForMandatoryValidation: (->
+		@get('selection')
+	).property('selection')
+
+	focus: ->
+		@getTableDom().focus()
 
 	didInsertElement: ->
 		@setupDomIDs()
