@@ -822,9 +822,17 @@
       </div>
     {{/view}} 
 
-    <!--   
-    {{view Tent.ModalPane text="_modalText" header="_modalHeader" primary="_ok" secondary="_cancel"}}
-    -->   
+    
+    {{view Tent.ModalPane 
+          label="Click Me" 
+          text="_modalText" 
+          header="_modalHeader" 
+          primaryLabel="_ok" 
+          secondaryLabel="_cancel"
+          primaryIcon="icon-save icon-white"
+          secondaryIcon="icon-remove"
+    }}
+      
     </script>
       </row>
     </container>

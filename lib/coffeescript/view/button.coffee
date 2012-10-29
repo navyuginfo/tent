@@ -58,6 +58,11 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ###
   validate: false
 
+  ###*
+  * @property {String} iconClass The css class to assign an icon to the button e.g. 'icon-remove icon-white'
+  ###
+  iconClass: null
+
   optionLabelPath: 'label'
   optionTargetPath: 'target'
   optionActionPath: 'action'
@@ -104,7 +109,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     'success',
     'warning',
     'danger',
-    'inverse'
+    'inverse',
+    'link'
     ]
 
   optionList: (->

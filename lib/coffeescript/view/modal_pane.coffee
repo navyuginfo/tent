@@ -8,7 +8,8 @@
 * Display a model popup panel.
 * 
 * A button will be displayed to allow the popup to be launched. You provide a {@link #label}
-* and optionally a {@link #type} for the button.
+* and optionally a {@link #type} for the button. If no label is provided, the button will not be displayed 
+* and the popup will be displayed automatically.
 *
 * Text to go into the header of the popup is provided using the {@link #header} property.
 *
@@ -19,6 +20,9 @@
 *
 * The primary button action is configured using the {@link #primaryAction} and {@link #primaryTarget} property pair.
 * Similarly use {@link #secondaryAction} and {@link #secondaryTarget} for the secondary button.
+* The close button (located at the top right), is bound to the secondary action, unless a {@link #closeAction} is provided.
+*
+* When the dialog is closed by clicking outside the dialog, the secondary action will be called.
 *
 * ##Usage
 *
@@ -33,6 +37,10 @@
                 primaryTargetBinding="Pad"
                 secondaryAction="modalCancel"
                 secondaryTargetBinding="Pad"
+                closeAction="clearUp"
+                closeTargetBinding="controller"
+                primaryIcon=""
+                secondaryIcon="icon-remove icon-white"
             }}
               <h5>Some more content</h5>
         {{/view}}
@@ -47,7 +55,7 @@ Tent.ModalPane = Ember.View.extend
   ###*
   * @property {String} label The label for the launch button
   ###
-  label:"_submit"
+  label:null
 
   ###*
   * @property {String} header The text to display in the header section of the modal dialog
@@ -96,14 +104,57 @@ Tent.ModalPane = Ember.View.extend
   ###
   secondaryTarget: "parentView"
 
+  ###*
+  * @property {String} primaryIcon An icon to display in the primary button
+  ###
+  primaryIcon: null
+
+  ###*
+  * @property {String} secondaryIcon An icon to display in the secondary button
+  ###
+  secondaryIcon: null
+  
+  ###*
+  * @property {String} closeAction The method to execute when the close button is clicked.
+  * This will default to the {@link #secondaryAction}
+  ###
+  closeAction: null
+
+  ###*
+  * @property {String} closeTarget The target providing the action to call when the close button is clicked
+  * This will default to the {@link #secondaryTarget}
+  ###
+  closeTarget: null
+
+  init: ->
+    @_super(arguments)
+    if not @get('closeAction')?
+      @set('closeAction', @get('secondaryAction'))
+    if not @get('closeTarget')?
+      @set('closeTarget', @get('secondaryTarget'))
+
+  didInsertElement: ->
+    if not @get('label')?
+      @launch()
+
+    @$(".modal").on('hidden', => 
+      @triggerCancelAction()
+    )
+
+  triggerCancelAction: ->
+    cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
+    if cancelButton.length > 0
+      id = cancelButton.parent('.tent-button').attr('id')
+      buttonView = Ember.View.views[id]
+      buttonView.triggerAction()
+
+  willDestroyElement: ->
+    @hide()
 
   click: (event)->
     target = event.target
     if $(target).hasClass('close-dialog')
       @hide()
-
-    #targetClick = target.getAttribute('click')
-    #(@destroy(); false) if targetClick == 'close' || 'primary' || 'secondary'
 
   launch: ->
      @.$('.modal').modal(@get('options'))

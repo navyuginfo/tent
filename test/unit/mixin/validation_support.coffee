@@ -1,12 +1,15 @@
 
 setup = ->
+	o = Ember.Object.extend Tent.ValidationSupport
+	@v = o.create()
+
 teardown = ->
+	o = null
+	@v = null
 
 module 'Tent.ValidationSupport', setup, teardown
 
 test 'basic functionality', ->
-	o = Ember.Object.extend Tent.ValidationSupport
-	v = o.create()
 
 	v.validate()
 	equal v.get('isValid'), true, 'reset validation to true'
@@ -23,9 +26,7 @@ test 'basic functionality', ->
 	equal v.get('hasErrors'), false, 'hasErrors is false'
 
 test 'Update error panel', ->
-	o = Ember.Object.extend Tent.ValidationSupport
-	v = o.create()
-
+	 
 	updated = false
 	v.updateErrorPanel = ->
 		updated = true
@@ -34,8 +35,7 @@ test 'Update error panel', ->
 	ok updated, 'updateErrorPanel should have been called'
 
 test 'Classnames', ->
-	o = Ember.Object.extend Tent.ValidationSupport
-	v = o.create()
+	 
 	v.classNames = []
 	equal v.classNames.contains('error'), false, 'No error to start with'
 	v.addValidationError('new error')
