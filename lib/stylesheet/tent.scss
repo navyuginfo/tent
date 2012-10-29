@@ -101,7 +101,7 @@ a[rel=tooltip] {
 /* Messages Panel */
 
 .tent-message-panel {
-	margin-top: 10px;
+	/*margin-top: 10px;*/
 
 	h5 {
 		float: left;
@@ -132,7 +132,7 @@ a[rel=tooltip] {
 
 	.alert {
 		position: relative;
-		margin: 10px 0px;
+		margin: 0px 0px;
 		padding: 7px;
 		@include border-radius(4px);
 		border: 1px solid #EED3D7;
