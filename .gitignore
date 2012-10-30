@@ -39,6 +39,7 @@ application.css
 # Generated stuff
 public/
 dist/
+temp/
 
 # Asset pipeline filter
 .bundle
