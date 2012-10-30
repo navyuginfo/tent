@@ -126,6 +126,12 @@ Tent.ModalPane = Ember.View.extend
   ###
   closeTarget: null
 
+  ###*
+  * @property {String} customButton will allow us to link the launch of modal pane with the html element whose id we provide.
+  * This will default to null
+  ###
+  customButton: null
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -134,8 +140,12 @@ Tent.ModalPane = Ember.View.extend
       @set('closeTarget', @get('secondaryTarget'))
 
   didInsertElement: ->
-    if not @get('label')?
+    if not (@get('label')? || @get('customButton')?)
       @launch()
+
+    if @get("customButton")
+      #that = this
+      $("#" + @get("customButton")).click(@launch).data('ref',this)
 
     @$(".modal").on('hidden', => 
       @triggerCancelAction()
@@ -156,8 +166,9 @@ Tent.ModalPane = Ember.View.extend
     if $(target).hasClass('close-dialog')
       @hide()
 
-  launch: ->
-     @.$('.modal').modal(@get('options'))
+  launch: () ->
+    that = $(this).data('ref') || this
+    return that.$('.modal').modal(that.get('options'))
 
   hide: ->
     @.$('.modal').modal('hide')    
