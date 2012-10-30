@@ -45,6 +45,7 @@ Tent.I18n.loadTranslations(
 			xml: 'XML'
 			json: 'JSON'
 			csv: 'CSV'
+			xlsx: 'XLSX'
 		}
 	}
 	filter: {
