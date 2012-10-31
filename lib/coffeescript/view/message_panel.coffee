@@ -59,7 +59,16 @@ require '../template/message_panel'
 Tent.MessagePanel = Ember.View.extend
 	templateName: 'message_panel'
 	classNames: ['tent-message-panel']
+	classNameBindings: ['type','isActive:active']
+
 	title: null
+
+	###*
+	* @property {String} type Defines the type of message panel. Typically there will be one 'primary'
+	* panel per application. Modal dialogues may also have 'secondary' panels which become active when the
+	* panels are displayed
+	###
+	type: 'primary'
 
 	###*
   	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
@@ -70,6 +79,14 @@ Tent.MessagePanel = Ember.View.extend
   	* @property {Boolean} collapsed A boolean indicating that the panel is collapsed by default
   	###
 	collapsed: true
+
+	###*
+	* @property {Boolean} isActive One message panel should be active at a time, usually the primary one.
+	* When a popup is displayed, it's message panel will usually become active, with the primary panel becoming
+	* inactive.
+	###
+	isActive: true
+
 	init: ->
 		@_super()
 		@clearAll()
@@ -80,24 +97,29 @@ Tent.MessagePanel = Ember.View.extend
 		$.unsubscribe('/message', @get('handler'))
 		@_super()
 
+	setActive: (isActive)->
+		@set('isActive', isActive)
+
 	handleNewMessage: (e, msg)->
-		if not msg.type?
-			throw new Error('Message must have a type')
-		errs = msg.messages
-		arrayWithMessageRemoved = []
-		if msg.messages? 
-			arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
-				item.sourceId != msg.sourceId
-			)
-			if msg.messages.length > 0
-				arrayWithMessageRemoved.pushObject($.extend({}, msg))
-		newErrors = Ember.ArrayProxy.create({content: $.merge([], arrayWithMessageRemoved)})
-		@set(msg.type, newErrors)
+		if @get('isActive')
+			if not msg.type?
+				throw new Error('Message must have a type')
+			errs = msg.messages
+			arrayWithMessageRemoved = []
+			if msg.messages? 
+				arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
+					item.sourceId != msg.sourceId
+				)
+				if msg.messages.length > 0
+					arrayWithMessageRemoved.pushObject($.extend({}, msg))
+			newErrors = Ember.ArrayProxy.create({content: $.merge([], arrayWithMessageRemoved)})
+			@set(msg.type, newErrors)
 
 
 	expandoClass: (->
 		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"
 	).property('collapsed')
+	
 	###*
 	 * return the error messages 
 	###

@@ -114,7 +114,7 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
-          {{view Tent.MessagePanel collapsible=true collapsed=true}}
+          {{view Tent.MessagePanel collapsible=true collapsed=true type="primary"}}
           {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
@@ -823,15 +823,19 @@
     {{/view}} 
 
     
-    {{view Tent.ModalPane 
+    {{#view Tent.ModalPane 
           label="Click Me" 
-          text="_modalText" 
           header="_modalHeader" 
           primaryLabel="_ok" 
           secondaryLabel="_cancel"
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
     }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+
+    {{/view}}
       
     </script>
       </row>
