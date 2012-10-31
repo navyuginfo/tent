@@ -53,7 +53,7 @@ require '../template/modal_pane'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
-  classNames: ['tent-widget', 'control-group']
+  classNames: ['tent-widget', 'control-group', 'tent-form']
   ###*
   * @property {String} label The label for the launch button
   ###
@@ -145,16 +145,40 @@ Tent.ModalPane = Ember.View.extend
     if not (@get('label')? || @get('customButton')?)
       @launch()
 
-    if @get("customButton")
-      $("#" + @get("customButton")).click(=> 
-        @launch()
-      )
+    @$(".modal").on('hidden', (e)=>
+      if not @targetIsMessagePanel(e.target)
+        @triggerCancelAction(e)
 
-    @$(".modal").on('hidden', => 
-      @triggerCancelAction()
+    if @get("customButton")
+      widget = @
+      $("#" + @get("customButton")).click(-> 
+        widget.launch()
+      )
     )
 
-  triggerCancelAction: ->
+  targetIsMessagePanel: (source)->
+    @$('.error-expando').get(0) == source
+
+  enableMessagePanel: ->
+    primaryPanel = @getPrimaryMessagePanelView()
+    panel = @getMessagePanelView()
+    primaryPanel.setActive(false) if primaryPanel?
+    panel.setActive(true) if panel?
+
+  disableMessagePanel: ->
+    primaryPanel = @getPrimaryMessagePanelView()
+    panel = @getMessagePanelView()
+    panel.clearAll()
+    primaryPanel.setActive(true) if primaryPanel?
+    panel.setActive(false)  if panel?
+
+  getPrimaryMessagePanelView: ->
+    Ember.View.views[$('.tent-message-panel.primary').attr('id')]
+
+  getMessagePanelView: ->
+    Ember.View.views[@$('.tent-message-panel').attr('id')]
+
+  triggerCancelAction: (e)->
     cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
     if cancelButton.length > 0
       id = cancelButton.parent('.tent-button').attr('id')
@@ -169,11 +193,13 @@ Tent.ModalPane = Ember.View.extend
     if $(target).hasClass('close-dialog')
       @hide()
 
-  launch: () ->
-    return @$('.modal').modal(@get('options'))
+  launch: ->
+     @.$('.modal').modal(@get('options'))
+     @enableMessagePanel()
 
   hide: ->
-    @.$('.modal').modal('hide')    
+    @.$('.modal').modal('hide')
+    @disableMessagePanel()
 
 
 Tent.ModalHeader = Ember.View.extend

@@ -162,7 +162,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	setupInitialSelection: (->
 		if @get('selection')?
 			sel = []
-
+			 
 			for item in @get('selection')
 				id = "" + item.get('id')
 				sel.pushObject(id)
@@ -175,6 +175,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	).observes('selection')
 
 	selectionDidChange: (->
+		@unHighlightAllRows()
+		@set('selectedIds',[])
+		@setupInitialSelection()
 		@validate()
 	).observes('selection.@each')
 
@@ -284,6 +287,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		if @getTableDom()?
 			@getTableDom().jqGrid('setSelection', item, false)
 			@editRow(item)
+
+	unHighlightAllRows: (item)->
+		if @getTableDom()?
+			@getTableDom().jqGrid('resetSelection')
 
 	setSelectAllCheckbox: (grid) ->
 		if @allRowsAreSelected(grid)

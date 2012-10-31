@@ -121,8 +121,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   # Cause validation to be triggered on widgets in the current form
   doValidation: ->
-    if not @get('messagePanel')?
-      @setupMessageBind()
+    @setupMessageBind()
     
     form = @findParentForm()
     if form?
@@ -131,7 +130,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   validateChildViews: (parentView)->
     for view in parentView.get('childViews')
         view.validate() if typeof view.validate == 'function'
-        @validateChildViews(view)
+        @validateChildViews(view) if view.get('childViews')?
 
   findParentForm: ->
     $form = @$().parents('.tent-form:first')
@@ -143,7 +142,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @set('messagePanel', mp)
 
   getMessagePanel: ->
-    mp = $('.tent-message-panel')
+    mp = $('.tent-message-panel.active')
     return view = Ember.View.views[mp.attr('id')] if mp.length > 0
   
   disableButtonIfErrorsExist: (->

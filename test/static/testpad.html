@@ -114,7 +114,7 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
-          {{view Tent.MessagePanel collapsible=true collapsed=true}}
+          {{view Tent.MessagePanel collapsible=true collapsed=true type="primary"}}
           {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
@@ -141,10 +141,10 @@
               controlClass="input-small"
             }}
 
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
-            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
-            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_typeHere" }}
             
             
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
@@ -159,7 +159,7 @@
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
 
-            {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"
+            {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
             }}
 
             {{view Tent.Button label="Submit" validate="true"}}
@@ -322,7 +322,7 @@
             <h5>Tabs</h5>
             
 
-            {{#view Tent.Tabs active="settings"}}
+            {{#view Tent.Tabs active="messages"}}
               {{#view Tent.TabPane id="profile" title="_profile"}}
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               {{/view}}
@@ -822,6 +822,7 @@
       </div>
     {{/view}} 
 
+ 
     <a id = "link_for_modalPane">Render Modal Pane</a>
     {{view Tent.ModalPane 
           customButton = "link_for_modalPane"
@@ -833,15 +834,19 @@
           secondaryIcon="icon-remove"
     }}
 
-    {{view Tent.ModalPane 
+    {{#view Tent.ModalPane 
           label="Click Me" 
-          text="_modalText" 
           header="_modalHeader" 
           primaryLabel="_ok" 
           secondaryLabel="_cancel"
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
     }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+
+    {{/view}}
       
     </script>
       </row>
