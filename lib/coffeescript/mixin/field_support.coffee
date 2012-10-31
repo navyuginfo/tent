@@ -96,6 +96,10 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   * @property {String} prefix A string value to display as the prefix
   ###
   prefix: null
+
+  translatedPlaceholder: (->
+    Tent.I18n.loc(@get('placeholder'))
+  ).property('placeholder')
   
   isTextDisplay: (->
     @get('textDisplay') or (not @get('isEditable'))

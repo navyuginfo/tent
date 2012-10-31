@@ -93,7 +93,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
 
   _prompt: (-> 
     if !@get('multiple')
-      if prompt = @get('prompt') then prompt else "Please Select..." 
+      if prompt = Tent.I18n.loc(@get('prompt')) then prompt else "Please Select..." 
   ).property('prompt')
   
   change: ->

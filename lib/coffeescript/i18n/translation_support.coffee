@@ -29,9 +29,10 @@ Tent.I18n = Ember.Namespace.create
 	* @param {String|Array} [vars] arguments to be interpolated in the translated string
 	###
 	loc: (key, vars) ->
-		string = Ember.get(@language, key) || key
-		vars = [vars] if typeof vars == 'string'
-		Ember.String.fmt(string, vars)
+		if key?
+			string = Ember.get(@language, key) || key
+			vars = [vars] if typeof vars == 'string'
+			return Ember.String.fmt(string, vars)
 
 Tent.translate = Tent.I18n.translate
 
