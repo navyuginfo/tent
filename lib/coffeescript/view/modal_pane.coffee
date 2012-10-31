@@ -148,15 +148,15 @@ Tent.ModalPane = Ember.View.extend
   enableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
     panel = @getMessagePanelView()
-    primaryPanel.setActive(false)
-    panel.setActive(true)
+    primaryPanel.setActive(false) if primaryPanel?
+    panel.setActive(true) if panel?
 
   disableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
     panel = @getMessagePanelView()
     panel.clearAll()
-    primaryPanel.setActive(true)
-    panel.setActive(false)
+    primaryPanel.setActive(true) if primaryPanel?
+    panel.setActive(false)  if panel?
 
   getPrimaryMessagePanelView: ->
     Ember.View.views[$('.tent-message-panel.primary').attr('id')]
