@@ -130,7 +130,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   validateChildViews: (parentView)->
     for view in parentView.get('childViews')
         view.validate() if typeof view.validate == 'function'
-        @validateChildViews(view)
+        @validateChildViews(view) if view.get('childViews')?
 
   findParentForm: ->
     $form = @$().parents('.tent-form:first')

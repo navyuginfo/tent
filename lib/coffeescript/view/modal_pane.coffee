@@ -137,9 +137,13 @@ Tent.ModalPane = Ember.View.extend
     if not @get('label')?
       @launch()
 
-    @$(".modal").on('hidden', => 
-      @triggerCancelAction()
+    @$(".modal").on('hidden', (e)=>
+      if not @targetIsMessagePanel(e.target)
+        @triggerCancelAction(e)
     )
+
+  targetIsMessagePanel: (source)->
+    @$('.error-expando').get(0) == source
 
   enableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
@@ -160,7 +164,7 @@ Tent.ModalPane = Ember.View.extend
   getMessagePanelView: ->
     Ember.View.views[@$('.tent-message-panel').attr('id')]
 
-  triggerCancelAction: ->
+  triggerCancelAction: (e)->
     cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
     if cancelButton.length > 0
       id = cancelButton.parent('.tent-button').attr('id')
