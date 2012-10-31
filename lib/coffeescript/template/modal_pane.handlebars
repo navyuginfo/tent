@@ -1,6 +1,8 @@
 
 	{{#if view.label}}
+		{{#unless view.customButton}}
 		{{view Tent.Button class="launch" labelBinding="view.label" aria-haspopup="true" action="launch" targetBinding="view" typeBinding="view.type"}}
+		{{/unless}}
 	{{/if}}
 
 	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">

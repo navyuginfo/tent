@@ -822,7 +822,18 @@
       </div>
     {{/view}} 
 
-    
+ 
+    <a id = "link_for_modalPane">Render Modal Pane</a>
+    {{view Tent.ModalPane 
+          customButton = "link_for_modalPane"
+          text="_modalText" 
+          header="_modalHeader" 
+          primaryLabel="_ok" 
+          secondaryLabel="_cancel"
+          primaryIcon="icon-save icon-white"
+          secondaryIcon="icon-remove"
+    }}
+
     {{#view Tent.ModalPane 
           label="Click Me" 
           header="_modalHeader" 

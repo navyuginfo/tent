@@ -10,6 +10,8 @@
 * A button will be displayed to allow the popup to be launched. You provide a {@link #label}
 * and optionally a {@link #type} for the button. If no label is provided, the button will not be displayed 
 * and the popup will be displayed automatically.
+* You may alternatively associate a separate element to launch the popup when clicked, by specifying a {@link #customButton}
+* value, which should be the id of the element.
 *
 * Text to go into the header of the popup is provided using the {@link #header} property.
 *
@@ -126,6 +128,12 @@ Tent.ModalPane = Ember.View.extend
   ###
   closeTarget: null
 
+  ###*
+  * @property {String} customButton will allow us to link the launch of modal pane with the html element whose id we provide.
+  * This will default to null
+  ###
+  customButton: null
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -134,12 +142,18 @@ Tent.ModalPane = Ember.View.extend
       @set('closeTarget', @get('secondaryTarget'))
 
   didInsertElement: ->
-    if not @get('label')?
+    if not (@get('label')? || @get('customButton')?)
       @launch()
 
     @$(".modal").on('hidden', (e)=>
       if not @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
+
+    if @get("customButton")
+      widget = @
+      $("#" + @get("customButton")).click(-> 
+        widget.launch()
+      )
     )
 
   targetIsMessagePanel: (source)->
