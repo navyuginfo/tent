@@ -488,6 +488,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
 						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
 						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
+                        <li><a href="#{@get('content').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
 					</ul>
 				</div>
 			"""
@@ -619,8 +620,3 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		@highlightRows(@getTableDom().get(0))
 		#@showEditableCells()
 	).observes('content', 'content.isLoaded', 'content.@each')
-
-
-
-
-		
