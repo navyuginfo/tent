@@ -2,14 +2,14 @@
 require './mixins/pager'
 require './mixins/sorter'
 require './mixins/filter'
-
+require './mixins/export_support'
 ###*
 * @class Tent.Data.Collection
 * An object used to wrap an array of objects, with a facade for paging, sorting and filtering, 
 ###
 
 
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, Tent.Data.ExportSupport,
 	content: null
 	dataType: null
 	data: []
