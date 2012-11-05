@@ -11,22 +11,26 @@
 
 		  	{{view Tent.ModalHeader}}
 		</div>
-		<div class="modal-body">
-			{{view Tent.MessagePanel type="secondary" isActive=false collapsible=true collapsed=true}}
-			{{#if view.text}}
-		  		{{view Tent.ModalBody}}
-		  	{{/if}}
-		  	{{yield}}
-		</div>
-		<div class="modal-footer">
-			<div class="btn-toolbar">
-
-			  {{#if view.secondaryLabel}}
-			  	{{view Tent.Button buttonClass="close-dialog pull-left" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" typeBinding="view.secondaryType" iconClassBinding="view.secondaryIcon"}}
-			  {{/if}}
-			  {{#if view.primaryLabel}}
-			  	{{view Tent.Button buttonClass="" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" typeBinding="view.primaryType" iconClassBinding="view.primaryIcon" validate=true}}
-			  {{/if}}
+		{{#if view.customContent}}
+			{{yield}}
+		{{else}}
+			<div class="modal-body">
+				{{view Tent.MessagePanel type="secondary" isActive=false collapsible=true collapsed=true}}
+				{{#if view.text}}
+			  		<p>{{loc view.text}}</p>
+			  	{{/if}}
+			  	{{yield}}
 			</div>
-		</div>
+		
+			<div class="modal-footer">
+				<div class="btn-toolbar">
+				  {{#if view.secondaryLabel}}
+				  	{{view Tent.Button buttonClass="close-dialog pull-left cancel" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" typeBinding="view.secondaryType" iconClassBinding="view.secondaryIcon"}}
+				  {{/if}}
+				  {{#if view.primaryLabel}}
+				  	{{view Tent.Button buttonClass="" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" typeBinding="view.primaryType" iconClassBinding="view.primaryIcon" validate=true}}
+				  {{/if}}
+				</div>
+			</div>
+		{{/if}}
 	</div>

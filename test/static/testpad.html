@@ -844,13 +844,28 @@
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
     }}
-       
-
       {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
       {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
       {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-
     {{/view}}
+
+
+    {{#view Tent.ModalPane 
+          label="Custom Footer" 
+          header="_modalHeader" 
+          customContent=true
+    }}
+      {{#view Tent.ModalBody text="_modalText"}}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+      {{/view}}
+    {{/view}}
+
       
     </script>
       </row>

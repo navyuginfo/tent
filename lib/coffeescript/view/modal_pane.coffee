@@ -49,11 +49,12 @@
 *
 ###
 require '../template/modal_pane'
-
+require '../template/modal_body'
+require '../template/modal_footer'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
-  classNames: ['tent-widget', 'control-group', 'tent-form']
+  classNames: ['tent-widget', 'control-group', 'tent-modal', 'tent-form']
   ###*
   * @property {String} label The label for the launch button
   ###
@@ -149,6 +150,12 @@ Tent.ModalPane = Ember.View.extend
   ###
   customButton: null
 
+  ###*
+  * @property {Boolean} customContent A boolean indicating that the ModalPane should not provide
+  * its own body or footer. A Tent.ModalBody and Tent.ModalFooter may be provided in the nested content.
+  ###
+  customContent: false
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -171,6 +178,11 @@ Tent.ModalPane = Ember.View.extend
         @triggerCancelAction(e)
     )
 
+    @$('.close-dialog').click (event)=>
+      if not $(event.target).attr('disabled')
+        @hide()
+
+
   targetIsMessagePanel: (source)->
     @$('.modal').get(0) == source
 
@@ -183,7 +195,7 @@ Tent.ModalPane = Ember.View.extend
   disableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
     panel = @getMessagePanelView()
-    panel.clearAll()
+    panel.clearAll() if panel?
     primaryPanel.setActive(true) if primaryPanel?
     panel.setActive(false)  if panel?
   
@@ -194,7 +206,7 @@ Tent.ModalPane = Ember.View.extend
     Ember.View.views[@$('.tent-message-panel').attr('id')]
 
   triggerCancelAction: (e)->
-    cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
+    cancelButton = @$('.cancel')
     if cancelButton.length > 0
       id = cancelButton.parent('.tent-button').attr('id')
       buttonView = Ember.View.views[id]
@@ -203,10 +215,11 @@ Tent.ModalPane = Ember.View.extend
   willDestroyElement: ->
     @hide()
 
-  click: (event)->
+  ###click: (event)->
     target = event.target
     if $(target).hasClass('close-dialog')
       @hide()
+###
 
   launch: ->
      @.$('.modal').modal(@get('options'))
@@ -222,5 +235,7 @@ Tent.ModalHeader = Ember.View.extend
   defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.header}}'
 
 Tent.ModalBody = Ember.View.extend
-  tagName: 'p'
-  defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.text}}'  
+  layoutName: 'modal_body'
+
+Tent.ModalFooter = Ember.View.extend
+  layoutName: 'modal_footer'
