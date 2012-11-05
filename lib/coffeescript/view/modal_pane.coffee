@@ -145,19 +145,19 @@ Tent.ModalPane = Ember.View.extend
     if not (@get('label')? || @get('customButton')?)
       @launch()
 
-    @$(".modal").on('hidden', (e)=>
-      if not @targetIsMessagePanel(e.target)
-        @triggerCancelAction(e)
-
-    if @get("customButton")
+    if @get('customButton')?
       widget = @
-      $("#" + @get("customButton")).click(-> 
+      $("#" + @.get("customButton")).click( ->
         widget.launch()
       )
+  
+    @$(".modal").on("hidden", (e)=>
+      if @targetIsMessagePanel(e.target)
+        @triggerCancelAction(e)
     )
 
   targetIsMessagePanel: (source)->
-    @$('.error-expando').get(0) == source
+    @$('.modal').get(0) == source
 
   enableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
