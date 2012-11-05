@@ -53,7 +53,7 @@ require '../template/modal_pane'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
-  classNames: ['tent-widget', 'control-group', 'tent-form']
+  classNames: ['tent-widget', 'control-group', 'tent-modal', 'tent-form']
   ###*
   * @property {String} label The label for the launch button
   ###
@@ -149,6 +149,13 @@ Tent.ModalPane = Ember.View.extend
   ###
   customButton: null
 
+  ###*
+  * @property {Boolean} autoLaunch A boolean to indicate whether the modal panel will be displayed on entering the 
+  * screen, regardless of any other property settings.
+  ###
+  autoLaunch: null
+  hidden: true
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -157,8 +164,11 @@ Tent.ModalPane = Ember.View.extend
       @set('closeTarget', @get('secondaryTarget'))
 
   didInsertElement: ->
-    if not (@get('label')? || @get('customButton')?)
+    if @get('autoLaunch')
       @launch()
+    else
+      if (not @cancelAutoLaunch()) and not (@get('label')? or @get('customButton')?)
+        @launch()
 
     if @get('customButton')?
       widget = @
@@ -170,6 +180,9 @@ Tent.ModalPane = Ember.View.extend
       if @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
     )
+
+  cancelAutoLaunch: ->
+    @get('autoLaunch')? and @get('autoLaunch') == false
 
   targetIsMessagePanel: (source)->
     @$('.modal').get(0) == source
@@ -209,10 +222,12 @@ Tent.ModalPane = Ember.View.extend
       @hide()
 
   launch: ->
-     @.$('.modal').modal(@get('options'))
-     @enableMessagePanel()
+    @set('hidden', false)
+    @.$('.modal').modal(@get('options'))
+    @enableMessagePanel()
 
   hide: ->
+    @set('hidden', true)
     @.$('.modal').modal('hide')
     @disableMessagePanel()
 
