@@ -14,6 +14,18 @@ accounting.settings =
 
 Tent.Formatting = {} unless Tent.Formatting?
 
+## Tent.Formatting
+#   format/unformat the numeric values with the specified or default settings provided.
+# Usage:
+#
+# #
+# @property
+#   divisor: function(){
+#     return locale.centisimal
+#   }.property('locale')
+# Here locale can be user supported language. So centisimal unit could be 1/100 or 1/1000
+#
+#
 Tent.Formatting.amount =
 	format: (amount, settings) ->
 		if amount?
@@ -24,16 +36,17 @@ Tent.Formatting.amount =
         else
           accounting.formatNumber(amount)
     else
-			""
+      ""
 	unformat: (amount, settings) ->
 		if amount?
-			if settings?
-				settings = Tent.Formatting.amount.settingsFilter(settings)
-				accounting.unformat(amount, settings)
-			else
-				accounting.unformat(amount)
-		else 
-			null
+      amount = if @divisor isnt `undefined` then amount / @divisor.func() else amount
+      if settings?
+        settings = Tent.Formatting.amount.settingsFilter(settings)
+        accounting.unformat(amount, settings)
+      else
+        accounting.unformat(amount)
+    else
+      null
 
 	settingsFilter: (rawSettings) ->
 		rawSettings
