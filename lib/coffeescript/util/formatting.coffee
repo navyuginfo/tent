@@ -39,12 +39,12 @@ Tent.Formatting.amount =
       ""
 	unformat: (amount, settings) ->
 		if amount?
-      amount = if @divisor isnt `undefined` then amount / @divisor.func() else amount
       if settings?
         settings = Tent.Formatting.amount.settingsFilter(settings)
-        accounting.unformat(amount, settings)
+        amount = accounting.unformat(amount, settings)
       else
-        accounting.unformat(amount)
+        amount = accounting.unformat(amount)
+      amount = if @divisor isnt `undefined` then amount / @divisor.func() else amount
     else
       null
 
