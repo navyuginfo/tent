@@ -69,11 +69,13 @@
 
     loc: function(key, vars) {
       var string;
-      string = Ember.get(this.language, key) || key;
-      if (typeof vars === 'string') {
-        vars = [vars];
+      if (key != null) {
+        string = Ember.get(this.language, key) || key;
+        if (typeof vars === 'string') {
+          vars = [vars];
+        }
+        return Ember.String.fmt(string, vars);
       }
-      return Ember.String.fmt(string, vars);
     }
   });
 
@@ -87,7 +89,8 @@
       &quot;export&quot;: {
         xml: 'XML',
         json: 'JSON',
-        csv: 'CSV'
+        csv: 'CSV',
+        xlsx: 'XLSX'
       }
     },
     filter: {
@@ -709,6 +712,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     */
 
     prefix: null,
+    translatedPlaceholder: (function() {
+      return Tent.I18n.loc(this.get('placeholder'));
+    }).property('placeholder'),
     isTextDisplay: (function() {
       return this.get('textDisplay') || (!this.get('isEditable'));
     }).property('textDisplay', 'isEditable'),
@@ -994,7 +1000,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.placeholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-TextField'>/**
@@ -1541,13 +1547,24 @@ Ember.TEMPLATES['slick']=Ember.Handlebars.compile(&quot; \n{{#if view.formLayout
 
 
 (function() {
+
+  Tent.Data.ExportSupport = Ember.Mixin.create({
+    getURL: function(type) {
+      return '#';
+    }
+  });
+
+}).call(this);
+
+
+(function() {
 <span id='Tent-Data-Collection'>/**
 </span>  * @class Tent.Data.Collection
   * An object used to wrap an array of objects, with a facade for paging, sorting and filtering,
   */
 
 
-  Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, {
+  Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, Tent.Data.ExportSupport, {
     content: null,
     dataType: null,
     data: [],
@@ -2622,6 +2639,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     */
 
     onSaveCell: null,
+<span id='Tent-JqGrid-property-Set'>    /**
+</span>    	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields.
+    */
+
+    clearAction: null,
     fullScreen: false,
     pagingData: {
       page: 1
@@ -2780,6 +2802,18 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         return this.editRow(item);
       }
     },
+    unHighlightAllRows: (function() {
+      var a, that;
+      if (this.get(&quot;clearAction&quot;) &amp;&amp; (this.getTableDom() != null)) {
+        a = this.get(&quot;selectedIds&quot;).slice();
+        that = this;
+        a.forEach(function(item) {
+          return that.selectItemMultiSelect(item, false);
+        });
+        this.set(&quot;clearAction&quot;, false);
+        return this.getTableDom().jqGrid(&quot;resetSelection&quot;);
+      }
+    }).observes(&quot;clearAction&quot;),
     setSelectAllCheckbox: function(grid) {
       if (this.allRowsAreSelected(grid)) {
         return grid.setHeadCheckBox(true);
@@ -3015,7 +3049,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         if (!(this.get('title') != null)) {
           tableDom.setCaption('&amp;nbsp;');
         }
-        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
+        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n                        &lt;li&gt;&lt;a href=\&quot;&quot; + (this.get('collection').getURL('xlsx')) + &quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xlsx&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
         this.$(&quot;.ui-jqgrid-titlebar&quot;).append(button);
         this.$('a.export-json').click(function() {
           var ret;
@@ -3813,7 +3847,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     _prompt: (function() {
       var prompt;
       if (!this.get('multiple')) {
-        if (prompt = this.get('prompt')) {
+        if (prompt = Tent.I18n.loc(this.get('prompt'))) {
           return prompt;
         } else {
           return &quot;Please Select...&quot;;
@@ -3978,7 +4012,7 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t  {{#if view.text}}\n\t\t  \t{{view Tent.ModalBody}}\n\t\t  {{/if}}\n\t\t  {{yield}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\n\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; type=\&quot;secondary\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t  {{#if view.primaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; type=\&quot;primary\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t&lt;/div&gt;\n\t\t&lt;/div&gt;\n\t&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t{{#if view.text}}\n\t\t  \t\t{{view Tent.ModalBody}}\n\t\t  \t{{/if}}\n\t\t  \t{{yield}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\n\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t  {{#if view.primaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t  {{/if}}\n\t\t\t&lt;/div&gt;\n\t\t&lt;/div&gt;\n\t&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-ModalPane'>/**
@@ -3988,6 +4022,8 @@ Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.labe
 * A button will be displayed to allow the popup to be launched. You provide a {@link #label}
 * and optionally a {@link #type} for the button. If no label is provided, the button will not be displayed 
 * and the popup will be displayed automatically.
+* You may alternatively associate a separate element to launch the popup when clicked, by specifying a {@link #customButton}
+* value, which should be the id of the element.
 *
 * Text to go into the header of the popup is provided using the {@link #header} property.
 *
@@ -4029,7 +4065,7 @@ Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.labe
 (function() {
 Tent.ModalPane = Ember.View.extend({
     layoutName: 'modal_pane',
-    classNames: ['tent-widget', 'control-group'],
+    classNames: ['tent-widget', 'control-group', 'tent-form'],
 <span id='Tent-ModalPane-property-label'>    /**
 </span>    * @property {String} label The label for the launch button
     */
@@ -4048,7 +4084,8 @@ Tent.ModalPane = Ember.View.extend({
 
     text: null,
 <span id='Tent-ModalPane-property-type'>    /**
-</span>    * @property {String} type The type of button used to launch the dialog. See {@link Tent.Button}
+</span>    * @property {String} type The type of button used to launch the dialog. May be
+    * one of {@link Tent.Button#type}
     */
 
     type: &quot;primary&quot;,
@@ -4092,6 +4129,20 @@ Tent.ModalPane = Ember.View.extend({
     */
 
     secondaryIcon: null,
+<span id='Tent-ModalPane-property-secondaryType'>    /**
+</span>    * @property {String} secondaryType The type of button to display for the secondary button. May be
+    * one of {@link Tent.Button#type}
+    *
+    */
+
+    secondaryType: 'secondary',
+<span id='Tent-ModalPane-property-primaryType'>    /**
+</span>    * @property {String} primaryType The type of button to display for the primary button. May be
+    * one of {@link Tent.Button#type}
+    *
+    */
+
+    primaryType: 'primary',
 <span id='Tent-ModalPane-property-closeAction'>    /**
 </span>    * @property {String} closeAction The method to execute when the close button is clicked.
     * This will default to the {@link #secondaryAction}
@@ -4104,6 +4155,12 @@ Tent.ModalPane = Ember.View.extend({
     */
 
     closeTarget: null,
+<span id='Tent-ModalPane-property-customButton'>    /**
+</span>    * @property {String} customButton will allow us to link the launch of modal pane with the html element whose id we provide.
+    * This will default to null
+    */
+
+    customButton: null,
     init: function() {
       this._super(arguments);
       if (!(this.get('closeAction') != null)) {
@@ -4114,15 +4171,56 @@ Tent.ModalPane = Ember.View.extend({
       }
     },
     didInsertElement: function() {
-      var _this = this;
-      if (!(this.get('label') != null)) {
+      var widget,
+        _this = this;
+      if (!((this.get('label') != null) || (this.get('customButton') != null))) {
         this.launch();
       }
-      return this.$(&quot;.modal&quot;).on('hidden', function() {
-        return _this.triggerCancelAction();
+      if (this.get('customButton') != null) {
+        widget = this;
+        $(&quot;#&quot; + this.get(&quot;customButton&quot;)).click(function() {
+          return widget.launch();
+        });
+      }
+      return this.$(&quot;.modal&quot;).on(&quot;hidden&quot;, function(e) {
+        if (_this.targetIsMessagePanel(e.target)) {
+          return _this.triggerCancelAction(e);
+        }
       });
     },
-    triggerCancelAction: function() {
+    targetIsMessagePanel: function(source) {
+      return this.$('.modal').get(0) === source;
+    },
+    enableMessagePanel: function() {
+      var panel, primaryPanel;
+      primaryPanel = this.getPrimaryMessagePanelView();
+      panel = this.getMessagePanelView();
+      if (primaryPanel != null) {
+        primaryPanel.setActive(false);
+      }
+      if (panel != null) {
+        return panel.setActive(true);
+      }
+    },
+    disableMessagePanel: function() {
+      var panel, primaryPanel;
+      primaryPanel = this.getPrimaryMessagePanelView();
+      panel = this.getMessagePanelView();
+      panel.clearAll();
+      if (primaryPanel != null) {
+        primaryPanel.setActive(true);
+      }
+      if (panel != null) {
+        return panel.setActive(false);
+      }
+    },
+    getPrimaryMessagePanelView: function() {
+      return Ember.View.views[$('.tent-message-panel.primary').attr('id')];
+    },
+    getMessagePanelView: function() {
+      return Ember.View.views[this.$('.tent-message-panel').attr('id')];
+    },
+    triggerCancelAction: function(e) {
       var buttonView, cancelButton, id;
       cancelButton = this.$('.modal-footer .btn-secondary.close-dialog');
       if (cancelButton.length &gt; 0) {
@@ -4142,10 +4240,12 @@ Tent.ModalPane = Ember.View.extend({
       }
     },
     launch: function() {
-      return this.$('.modal').modal(this.get('options'));
+      this.$('.modal').modal(this.get('options'));
+      return this.enableMessagePanel();
     },
     hide: function() {
-      return this.$('.modal').modal('hide');
+      this.$('.modal').modal('hide');
+      return this.disableMessagePanel();
     }
   });
 
@@ -4321,9 +4421,7 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     }).property('options', 'content').volatile(),
     doValidation: function() {
       var form;
-      if (!(this.get('messagePanel') != null)) {
-        this.setupMessageBind();
-      }
+      this.setupMessageBind();
       form = this.findParentForm();
       if (form != null) {
         return this.validateChildViews(form);
@@ -4338,7 +4436,11 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
         if (typeof view.validate === 'function') {
           view.validate();
         }
-        _results.push(this.validateChildViews(view));
+        if (view.get('childViews') != null) {
+          _results.push(this.validateChildViews(view));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     },
@@ -4358,7 +4460,7 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     },
     getMessagePanel: function() {
       var mp, view;
-      mp = $('.tent-message-panel');
+      mp = $('.tent-message-panel.active');
       if (mp.length &gt; 0) {
         return view = Ember.View.views[mp.attr('id')];
       }
@@ -4487,10 +4589,7 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile(&quot;&lt;ul {{bindAttr id=\&qu
 </span>    	* @property {String} active The id of the tabpane which should be initially displayed
     */
 
-    active: null,
-    didInsertElement: function() {
-      return this.$(&quot;a[#&quot; + this.get(&quot;active&quot;) + &quot;]&quot;).tab(&quot;show&quot;);
-    }
+    active: null
   });
 
 <span id='Tent-TabPane'>  /**
@@ -4668,7 +4767,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
-Ember.TEMPLATES['textarea']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot;&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.hasPrefix}}  \n      &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n    {{/if}}     \n    {{#if view.textDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\&quot;view.inputSizeClass\&quot; \n          valueBinding=\&quot;view.formattedValue\&quot; \n          placeholderBinding=\&quot;view.placeholder\&quot;\n          rowsBinding=\&quot;view.rows\&quot;\n          colsBinding=\&quot;view.cols\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      &lt;span class=\&quot;help-block\&quot;&gt;{{loc view.helpBlock}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n\n&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['textarea']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot;&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.hasPrefix}}  \n      &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n    {{/if}}     \n    {{#if view.textDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\&quot;view.inputSizeClass\&quot; \n          valueBinding=\&quot;view.formattedValue\&quot; \n          placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n          rowsBinding=\&quot;view.rows\&quot;\n          colsBinding=\&quot;view.cols\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      &lt;span class=\&quot;help-block\&quot;&gt;{{loc view.helpBlock}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n\n&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-Textarea'>/**
@@ -4970,7 +5069,15 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
   Tent.MessagePanel = Ember.View.extend({
     templateName: 'message_panel',
     classNames: ['tent-message-panel'],
+    classNameBindings: ['type', 'isActive:active'],
     title: null,
+<span id='Tent-MessagePanel-property-type'>    /**
+</span>    	* @property {String} type Defines the type of message panel. Typically there will be one 'primary'
+    	* panel per application. Modal dialogues may also have 'secondary' panels which become active when the
+    	* panels are displayed
+    */
+
+    type: 'primary',
 <span id='Tent-MessagePanel-property-collapsible'>    /**
 </span>     	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
     */
@@ -4981,6 +5088,13 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     */
 
     collapsed: true,
+<span id='Tent-MessagePanel-property-isActive'>    /**
+</span>    	* @property {Boolean} isActive One message panel should be active at a time, usually the primary one.
+    	* When a popup is displayed, it's message panel will usually become active, with the primary panel becoming
+    	* inactive.
+    */
+
+    isActive: true,
     init: function() {
       this._super();
       this.clearAll();
@@ -4991,25 +5105,30 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       $.unsubscribe('/message', this.get('handler'));
       return this._super();
     },
+    setActive: function(isActive) {
+      return this.set('isActive', isActive);
+    },
     handleNewMessage: function(e, msg) {
       var arrayWithMessageRemoved, errs, newErrors;
-      if (!(msg.type != null)) {
-        throw new Error('Message must have a type');
-      }
-      errs = msg.messages;
-      arrayWithMessageRemoved = [];
-      if (msg.messages != null) {
-        arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
-          return item.sourceId !== msg.sourceId;
-        });
-        if (msg.messages.length &gt; 0) {
-          arrayWithMessageRemoved.pushObject($.extend({}, msg));
+      if (this.get('isActive')) {
+        if (!(msg.type != null)) {
+          throw new Error('Message must have a type');
         }
+        errs = msg.messages;
+        arrayWithMessageRemoved = [];
+        if (msg.messages != null) {
+          arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
+            return item.sourceId !== msg.sourceId;
+          });
+          if (msg.messages.length &gt; 0) {
+            arrayWithMessageRemoved.pushObject($.extend({}, msg));
+          }
+        }
+        newErrors = Ember.ArrayProxy.create({
+          content: $.merge([], arrayWithMessageRemoved)
+        });
+        return this.set(msg.type, newErrors);
       }
-      newErrors = Ember.ArrayProxy.create({
-        content: $.merge([], arrayWithMessageRemoved)
-      });
-      return this.set(msg.type, newErrors);
     },
     expandoClass: (function() {
       if (this.get('collapsed')) {

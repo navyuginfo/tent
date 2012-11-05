@@ -39,6 +39,25 @@ test 'Ensure ModalPane renders ', ->
   ok view.$(".modal-footer .btn-primary").length > 0, 'footer rendered primary'
   ok view.$(".modal-footer .btn-secondary").length > 0, 'footer rendered primary'
 
+test 'Primary and secondary types', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane textBinding="text" headerBinding="header" 
+      primaryLabelBinding="primary" 
+      secondaryLabelBinding="secondary"
+      primaryType="success"
+      secondaryType="warning"
+    }}'
+    text: 'Do you want to perform this action!!!'
+    header: 'My Heading'
+    primary: 'OK'
+    secondary: 'Cancel'
+
+  appendView()
+
+  equal view.$('.btn-success').length, 1, 'success button rendered'
+  equal view.$('.btn-warning').length, 1, 'warning button rendered'
+  equal view.$('.btn-primary').length, 0, 'primary button not rendered'
+  equal view.$('.btn-secondary').length, 0, 'secondary button not rendered'
 
 test 'Ensure close button defaults to secondary action', ->
   view = Ember.View.create

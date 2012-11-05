@@ -72,7 +72,8 @@ Tent.ModalPane = Ember.View.extend
   text:null
 
   ###*
-  * @property {String} type The type of button used to launch the dialog. See {@link Tent.Button}
+  * @property {String} type The type of button used to launch the dialog. May be
+  * one of {@link Tent.Button#type}
   ###
   type: "primary" # button type
 
@@ -115,6 +116,20 @@ Tent.ModalPane = Ember.View.extend
   * @property {String} secondaryIcon An icon to display in the secondary button
   ###
   secondaryIcon: null
+
+  ###*
+  * @property {String} secondaryType The type of button to display for the secondary button. May be
+  * one of {@link Tent.Button#type}
+  *
+  ###
+  secondaryType: 'secondary'
+
+  ###*
+  * @property {String} primaryType The type of button to display for the primary button. May be
+  * one of {@link Tent.Button#type}
+  *
+  ###
+  primaryType: 'primary'
   
   ###*
   * @property {String} closeAction The method to execute when the close button is clicked.
@@ -171,7 +186,7 @@ Tent.ModalPane = Ember.View.extend
     panel.clearAll()
     primaryPanel.setActive(true) if primaryPanel?
     panel.setActive(false)  if panel?
-
+  
   getPrimaryMessagePanelView: ->
     Ember.View.views[$('.tent-message-panel.primary').attr('id')]
 

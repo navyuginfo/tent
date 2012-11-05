@@ -839,24 +839,12 @@
           header="_modalHeader" 
           primaryLabel="_ok" 
           secondaryLabel="_cancel"
+          secondaryType="warning"
+          primaryType="success"
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
     }}
-      {{#view Tent.Accordion}}
-        {{#view Tent.AccordionGroup title="_accordionTitle1x"}}
-          {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
-        {{/view}}
-        {{#view Tent.AccordionGroup title="_accordionTitle2x"}}
-            {{view Tent.TextField valueBinding="Pad.appName" label="Killer Input"}}
-            {{view Tent.Checkbox label="Self Destruct now" checkedBinding="Pad.privacyPolicy"}}
-        {{/view}}
-        {{#view Tent.AccordionGroup title="_accordionTitle3x"}}
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-        {{/view}}
-        {{#view Tent.AccordionGroup title="_accordionTitle4x"}}
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-        {{/view}}
-      {{/view}}
+       
 
       {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
       {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
