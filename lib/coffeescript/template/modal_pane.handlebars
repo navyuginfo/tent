@@ -22,7 +22,7 @@
 			<div class="btn-toolbar">
 
 			  {{#if view.secondaryLabel}}
-			  	{{view Tent.Button buttonClass="close-dialog" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" type="secondary" iconClassBinding="view.secondaryIcon"}}
+			  	{{view Tent.Button buttonClass="close-dialog pull-left" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" typeBinding="view.secondaryType" iconClassBinding="view.secondaryIcon"}}
 			  {{/if}}
 			  {{#if view.primaryLabel}}
 			  	{{view Tent.Button buttonClass="" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" type="primary" iconClassBinding="view.primaryIcon" validate=true}}
