@@ -5,7 +5,7 @@ teardown = ->
 
 module 'Tent.JqGrid', setup, teardown
 
-test 'Collection required', ->
+###test 'Collection required', ->
 	mockCollection = Ember.Object.create()
 
 	raises ->
@@ -17,13 +17,27 @@ test 'Collection required', ->
 		collection: mockCollection
 
 	equal grid.get('selectedIds').length, 0, 'No selectedIds'
+###
 
-test 'Initial Selection should be populated', ->
-	mockCollection = Ember.Object.create()
-	selection = [Ember.Object.create(id: 51,title: 't1'),Ember.Object.create(id: 52,title: 't2')]
+test 'Collection data set up', ->
+	mockCollection = Ember.Object.create
+		goToPage: ->
 
 	grid = Tent.JqGrid.create
 		collection: mockCollection
+
+	equal grid.pagingData.page, 1, 'Paging data'
+
+test 'Collection not provided', ->
+	grid = Tent.JqGrid.create()
+	equal grid.pagingData.page, 1, 'Paging data'
+
+
+test 'Initial Selection should be populated', ->
+	#mockCollection = Ember.Object.create()
+	selection = [Ember.Object.create(id: 51,title: 't1'),Ember.Object.create(id: 52,title: 't2')]
+
+	grid = Tent.JqGrid.create
 		selection: selection
 
 	equal grid.get('selectedIds').length, 2, 'Should be 2 selected IDs'

@@ -1,70 +1,35 @@
 require '../template/jqgrid'
+require '../mixin/grid/collection_support' 
+require '../mixin/grid/export_support'
 
 ###*
 * @class Tent.JqGrid
 * @extends Ember.View
 *
-* Create a jqGrid view which displays the data provided by a Collection object
-* The grid will bind to the following properties of the collection:
-* 	
-* - columnsDescriptor: an array of descriptor objects defining the columns to be displayed
-* 			e.g. [
-				{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
-				{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true},
-				{id: "amount", name: "amount", title: "_hAmount", field: "amount", sortable: true, formatter: "amount",  align: 'right'},
-			]
-* - totalRows: the total number of rows in the entire result set (including pages not visible)
-* - totalPages: The total number of pages of data available
-*
-* The collection should also provide the following methods:
-*
-* - sort(sortdata): Sort the collection according to the sortdata provided
-* 			e.g. 
-				{fields: [
-							sortAsc: true
-							field: 'title'
-					]
-				}
-*				
-* - goToPage(pageNumber): Navigate to the pagenumber provided (1 = first page)
+* Create a jqGrid view which displays the data provided by its content property
 *
 * ##Usage
 *		{{view Tent.JqGrid
                   label="Tasks"
-                  collectionBinding="Pad.tasksCollection"
+                  contentBinding="Pad.gridContent"
                   selectionBinding="Pad.selectedTasks"
-                  paged=true
-                  pageSize=6           
                   multiSelect=true             
               }}
 *
-*
+* - content: An array of objects, one for each row
+* - columns: An array of column descriptors
+* - 
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error']
-	
-	###*
-	* @property {Object} collection The collection object providing the API to the data source
-	###
-	collection: null
 
 	###*
 	* @property {String} title The title caption to appear above the table
 	###
 	title: null
-
-	###*
-	* @property {Boolean} paged Boolean to indicate the data should be presented as a paged list
-	###
-	paged: true
-
-	###*
-	* @property {Number} pageSize The number of items in each page
-	###
-	pageSize: 12
 
 	###*
 	* @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
@@ -88,12 +53,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	* a dialog to maximize the grid view.
 	###
 	showMaximizeButton: true
-
-	###*
-	* @property {Boolean} showExportButton Display a button in the header which allows the table data to 
-	* be exported a selected format.
-	###
-	showExportButton: true
 
 	###*
 	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
@@ -128,36 +87,31 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	*
 	###
 	onSaveCell: null
+
 	###*
 	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
-
 	fullScreen: false
-	pagingData: 
-		page: 1 
-	sortingData: {}
 	selectedIds: []
+
+	###*
+	* @property {Array} content The array of items to display in the grid.
+	* By default this will be retrieved from the collection, if provided
+	###
 	contentBinding: 'collection'
 
 	###*
-	* @property {Array} columnsBinding The array of column descriptors used to represent the data. 
-	* By default this will be retrieved from the collection
+	* @property {Array} columns The array of column descriptors used to represent the data. 
+	* By default this will be retrieved from the collection, if provided
 	###
 	columnsBinding: 'collection.columnsDescriptor'
-	totalRowsBinding: 'collection.totalRows'
-	totalPagesBinding: 'collection.totalPages'
 
 	init: ->
-		widget = @
 		@_super()
-		if not @get('collection')?
-			throw new Error("Collection must be provided for Tent.JqGrid")
-
-		if @get('paged')
-			@get('collection').set('pageSize', @get('pageSize'))
-
+		
 		@setupInitialSelection()
+		widget = @
 		$.subscribe("/ui/refresh", ->
 			widget.resizeToContainer()
 		)
@@ -165,7 +119,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	setupInitialSelection: (->
 		if @get('selection')?
 			sel = []
-			 
 			for item in @get('selection')
 				id = "" + item.get('id')
 				sel.pushObject(id)
@@ -189,9 +142,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		@getTableDom().focus()
 
 	didInsertElement: ->
+		@_super()
 		@setupDomIDs()
 		@buildGrid()
-		@get('collection').goToPage(1)
 		@gridDataDidChange()
 		@columnsDidChange()
 
@@ -257,25 +210,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 
 		@addNavigationBar()
 		@gridDataDidChange()
-
-	onPageOrSort: (postdata)->
-		#	postdata is of the form:
-		#       _search: false,	nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
-		if @shouldSort(postdata)
-			@get('collection').sort(
-				fields: [
-					sortAsc: postdata.sord=="asc"
-					field: postdata.sidx
-				])
-		else 
-			@get('pagingData').page = postdata.page
-			@get('collection').goToPage(postdata.page)
-
-		@get('sortingData').field = postdata.sidx
-		@get('sortingData').asc = postdata.sord
-
-	shouldSort: (postdata)->
-		postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
 
 	highlightRows: (grid)->
 		if @getTableDom()?
@@ -427,7 +361,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		cell.removeClass('error')
 
 	###*
-	* @method sendAction send and action to the router. This is called from the 'action' formatter
+	* @method sendAction send an action to the router. This is called from the 'action' formatter,
+	* which displays cell content as a link
 	###
 	sendAction: (action, element, rowId)->
 		view = @
@@ -437,12 +372,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
 
 	addNavigationBar: ->
+		@_super()
 		tableDom = @getTableDom()
-		widget = @
-		#tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
-
 		@renderColumnChooser(tableDom)
-		@renderExportButton(tableDom)
 		@renderMaximizeButton()
 		
 	renderColumnChooser: (tableDom)->
@@ -477,68 +409,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
 
-
-	renderExportButton: (tableDom)->
-		if @get('showExportButton') 
-			# Ensure that the caption header is displayed
-			if not @get('title')?
-				tableDom.setCaption('&nbsp;')
-
-			button = """
-				<div class="btn-group export">
-					<a class="" data-toggle="dropdown" href="#">
-					Export
-					<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
-						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
-						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
-                        <li><a href="#{@get('collection').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
-					</ul>
-				</div>
-			"""
-			@$(".ui-jqgrid-titlebar").append(button)
-
-			@$('a.export-json').click =>
-				ret = $.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
-				@clientDownload(ret)
-		 
-			@$('a.export-xml').click =>
-				ret = "<root>" + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-				@clientDownload(ret)
-
-			@$('a.export-csv').click =>
-				ret = @exportCSV(tableDom.getRowData(), @getColModel())
-				@clientDownload(ret)
-
-
-	clientDownload: (file) ->
-		# Allow the client to save the generated file.
-		# For no just print to a window
-		if navigator.appName != 'Microsoft Internet Explorer'
-			window.open('data:text/csv;charset=utf-8,' + escape(file))
-		else
-			popup = window.open('', 'csv', '')
-			popup.document.body.innerHTML = '<pre>' + file + '</pre>'
-
-	exportCSV: (data, keys)->
-
-		orderedData = [];
-		for obj in data
-		#for (var i = 0, iLen = data.length; i < iLen; i++) {
-		#	temp = data[i];
-			arr = []
-			for key, value of obj
-				arr.push(value)
-			orderedData.push(arr);
-
-		if @get('multiSelect')
-			keys = keys[1..]
-
-		str = ""
-		str += obj.name + ',' for obj in keys
-		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
 
 	renderMaximizeButton: ->
 		widget = @

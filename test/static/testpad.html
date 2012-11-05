@@ -208,7 +208,7 @@
                   selectionBinding="Pad.jqGridSelection"
                   fixedHeader=false
                   showMaximizeButton=true
-                  paged=false
+                  paged=true
                   pageSize=6
                   remotePaging=false
                   multiSelect=true
@@ -219,7 +219,22 @@
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
               }}
-              
+
+
+              <h5>Collection not provided</h5>
+ 
+              {{view Tent.JqGrid
+                  label="Tasks"                  
+                  contentBinding="Pad.jqGridContent"
+                  columnsBinding="Pad.gridColumnDescriptor"
+                  selectionBinding="Pad.jqGridSelectionNoCollection"
+                  fixedHeader=false
+                  showMaximizeButton=true
+                  multiSelect=true
+                  showColumnChooser=true
+                  required=true
+              }}
+      
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
