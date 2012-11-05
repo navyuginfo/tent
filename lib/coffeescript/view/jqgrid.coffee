@@ -128,7 +128,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	*
 	###
 	onSaveCell: null
-
+	###*
+	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields. 
+	###
+	clearAction: null
 
 	fullScreen: false
 	pagingData: 
@@ -175,9 +178,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	).observes('selection')
 
 	selectionDidChange: (->
-		@unHighlightAllRows()
-		@set('selectedIds',[])
-		@setupInitialSelection()
 		@validate()
 	).observes('selection.@each')
 
@@ -288,9 +288,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			@getTableDom().jqGrid('setSelection', item, false)
 			@editRow(item)
 
-	unHighlightAllRows: (item)->
-		if @getTableDom()?
-			@getTableDom().jqGrid('resetSelection')
+	unHighlightAllRows: (->
+	  if (@get("clearAction") &&  @getTableDom()?)
+	      a = @get("selectedIds").slice()
+	      that = this
+	      a.forEach (item) ->
+	        that.selectItemMultiSelect item, false
+	      @set "clearAction", false
+	      @getTableDom().jqGrid "resetSelection"
+	).observes("clearAction")
 
 	setSelectAllCheckbox: (grid) ->
 		if @allRowsAreSelected(grid)
@@ -488,7 +494,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
 						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
 						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
-                        <li><a href="#{@get('content').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
+                        <li><a href="#{@get('collection').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
 					</ul>
 				</div>
 			"""
