@@ -14,15 +14,16 @@ accounting.settings =
 
 Tent.Formatting = {} unless Tent.Formatting?
 
-Tent.Formatting.amount = 
+Tent.Formatting.amount =
 	format: (amount, settings) ->
 		if amount?
-			if settings?
-				settings = Tent.Formatting.amount.settingsFilter(settings)
-				accounting.formatNumber(amount, settings) 
-			else 
-				accounting.formatNumber(amount)
-		else
+      amount = if @divisor isnt `undefined` then amount * @divisor.func() else amount
+      if settings?
+          settings = Tent.Formatting.amount.settingsFilter(settings)
+          accounting.formatNumber(amount, settings)
+        else
+          accounting.formatNumber(amount)
+    else
 			""
 	unformat: (amount, settings) ->
 		if amount?
