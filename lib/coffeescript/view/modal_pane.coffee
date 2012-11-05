@@ -123,6 +123,13 @@ Tent.ModalPane = Ember.View.extend
   *
   ###
   secondaryType: 'secondary'
+
+  ###*
+  * @property {String} primaryType The type of button to display for the primary button. May be
+  * one of {@link Tent.Button#type}
+  *
+  ###
+  primaryType: 'primary'
   
   ###*
   * @property {String} closeAction The method to execute when the close button is clicked.

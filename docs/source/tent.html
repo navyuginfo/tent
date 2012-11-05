@@ -4012,7 +4012,7 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t{{#if view.text}}\n\t\t  \t\t{{view Tent.ModalBody}}\n\t\t  \t{{/if}}\n\t\t  \t{{yield}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\n\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t  {{#if view.primaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; type=\&quot;primary\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t  {{/if}}\n\t\t\t&lt;/div&gt;\n\t\t&lt;/div&gt;\n\t&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t{{#if view.text}}\n\t\t  \t\t{{view Tent.ModalBody}}\n\t\t  \t{{/if}}\n\t\t  \t{{yield}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\n\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t  {{#if view.primaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t  {{/if}}\n\t\t\t&lt;/div&gt;\n\t\t&lt;/div&gt;\n\t&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-ModalPane'>/**
@@ -4084,7 +4084,8 @@ Tent.ModalPane = Ember.View.extend({
 
     text: null,
 <span id='Tent-ModalPane-property-type'>    /**
-</span>    * @property {String} type The type of button used to launch the dialog. See {@link Tent.Button}
+</span>    * @property {String} type The type of button used to launch the dialog. May be
+    * one of {@link Tent.Button#type}
     */
 
     type: &quot;primary&quot;,
@@ -4135,6 +4136,13 @@ Tent.ModalPane = Ember.View.extend({
     */
 
     secondaryType: 'secondary',
+<span id='Tent-ModalPane-property-primaryType'>    /**
+</span>    * @property {String} primaryType The type of button to display for the primary button. May be
+    * one of {@link Tent.Button#type}
+    *
+    */
+
+    primaryType: 'primary',
 <span id='Tent-ModalPane-property-closeAction'>    /**
 </span>    * @property {String} closeAction The method to execute when the close button is clicked.
     * This will default to the {@link #secondaryAction}
