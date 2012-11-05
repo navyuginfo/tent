@@ -13,6 +13,8 @@ Then navigate to 'http://localhost:9292/testpad.html'.
 
 tent.js will be published to the /dist folder. 
 
+Unit tests may be run at: http://localhost:9292/qunit.html
+
 
 ## Folder Structure:
 
