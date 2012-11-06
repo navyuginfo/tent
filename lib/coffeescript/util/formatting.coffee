@@ -26,9 +26,8 @@ Tent.Formatting = {} unless Tent.Formatting?
 ###
 
 ###*
-* @property {Object} divisor A function to transform the value before formatting, and after unformatting.
-* This may typically be provided to normalise values when stored as centesimal values
-* The divisor is expected to have a 'func' property which returns a Numeric divisor
+* @property {Object} centisimalUnit A property to transform the value before formatting, and after unformatting.
+* This may typically be provided to normalise values when stored as centesimal values 1/100 or 1/1000.
 ###
 
 
@@ -43,7 +42,7 @@ Tent.Formatting.amount = Ember.Object.create
 	###
 	format: (amount, settings) ->
 		if amount?
-			amount = if @divisor? then amount * @divisor.func() else amount
+			amount = if @centisimalUnit? then amount * @centisimalUnit else amount
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
 				accounting.formatNumber(amount, settings)
@@ -66,7 +65,7 @@ Tent.Formatting.amount = Ember.Object.create
 				amount = accounting.unformat(amount, settings)
 			else
 				amount = accounting.unformat(amount)
-			amount = if @divisor? then amount / @divisor.func() else amount
+			amount = if @centisimalUnit? then amount / @centisimalUnit else amount
 		else
 			null
 
