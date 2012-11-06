@@ -125,19 +125,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			widget.resizeToContainer()
 		)
 
-	selectionDidChange: (->
-		@updateGrid()
-	).observes('selection.@each')
-
-	selectedIds: (->
-		#selectedIDs should observe selection
-		sel = []
-		for item in @get('selection')
-			id = "" + item.get('id')
-			sel.pushObject(id)
-		return sel
-	).property('selection.@each')
-
 	valueForMandatoryValidation: (->
 		@get('selection')
 	).property('selection')
@@ -149,8 +136,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@setupDomIDs()
 		@buildGrid()
-		@gridDataDidChange()
-		@columnsDidChange()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -451,28 +436,48 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each')
 
-	updateGrid: ->
-		if (@getTableDom())
-			@highlightRows(@getTableDom().get(0))
-			@showEditableCells()
-			@validate()
+	selectionDidChange: (->
+		@updateGrid()
+	).observes('selection.@each')
 
-	highlightRows: (grid)->
+	selectedIds: (->
+		#selectedIDs should observe selection
+		sel = []
+		for item in @get('selection')
+			id = "" + item.get('id')
+			sel.pushObject(id)
+		return sel
+	).property('selection.@each')
+
+	updateGrid: ->
 		if @getTableDom()?
-			if not grid?
-				grid = @getTableDom().get(0)
+			@highlightRows()
+			@showEditableCells()
+		@validate()
+
+	highlightRows: ()->
+		if @getTableDom()?
+			grid = @getTableDom().get(0)
 			if @getTableDom()?
 				for id in @getTableDom().jqGrid('getDataIDs')
-					if (@isRowSelected(id))
-						@getTableDom().jqGrid('setSelection', id, false)
+					if @get('multiSelect')
+						if (@isRowSelectedMultiSelect(id))
+							@getTableDom().jqGrid('setSelection', id, false)
+					else
+						if (@isRowSelectedSingleSelect(id))
+							@getTableDom().jqGrid('setSelection', id, false)
 				for item in @get('selectedIds')
 					@highlightRow(item)
 				@setSelectAllCheckbox(grid)
 
-	isRowSelected: (id)->
+	isRowSelectedMultiSelect: (id)->
 		# Is the row registered as selected within jqGrid
 		this.getTableDom().get(0).p.selarrrow.contains(id)
 
+	isRowSelectedSingleSelect: (id)->
+		# Is the row registered as selected within jqGrid
+		this.getTableDom().get(0).p.selrow == id
+	
 	highlightRow: (item)->
 		if @getTableDom()?
 			@getTableDom().jqGrid('setSelection', item, false)
