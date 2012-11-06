@@ -127,7 +127,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	selectionDidChange: (->
 		@updateGrid()
-	).observes('selection','selection.@each')
+	).observes('selection.@each')
 
 	selectedIds: (->
 		#selectedIDs should observe selection
@@ -237,10 +237,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@restoreRow(id)
 
 	didSelectAll: (rowIds, status) ->
-		newSel = []
-		for id in rowIds
-			newSel.pushObject(@getItemFromModel(id))
-		@set('selection', newSel)
+		originalRowsIds = rowIds.filter(-> true)
+		for id in originalRowsIds
+			if status
+				if !@get('selectedIds').contains(id)
+					@selectItem(id)
+			else 
+				@deselectItem(id)
 
 	clearSelection: ->
 		@get('selection').clear()
