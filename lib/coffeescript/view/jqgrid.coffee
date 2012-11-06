@@ -479,13 +479,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#@editRow(item)
 
 	unHighlightAllRows: (->
-	  if (@get("clearAction") &&  @getTableDom()?)
-	      a = @get("selectedIds").slice()
-	      that = this
-	      a.forEach (item) ->
-	        that.selectItemMultiSelect item, false
-	      @set "clearAction", false
-	      @getTableDom().jqGrid "resetSelection"
+		if (@get("clearAction") &&  @getTableDom()?)
+			@set('selection', [])
+			@set "clearAction", false
 	).observes("clearAction")
 
 	setSelectAllCheckbox: (grid) ->
