@@ -125,7 +125,7 @@ test 'Ensure close button defaults to secondary action', ->
     secondary: 'Cancel'
 
   appendView()
-  modalView = Ember.View.views[view.$('.modal').parent('.tent-widget').attr('id')]
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
   equal modalView.get('closeAction'), "saction", "Action has been transferred."
    
 
@@ -144,3 +144,45 @@ test 'Ensure cancel action is triggered on hide', ->
   view.$(".modal").trigger('hidden')
   
   ok didHide, 'hide action was called'
+
+test 'customContent blank', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.$('.modal-footer').length, 1, 'Footer exists'
+
+  Ember.run ->
+    modalView.set('customContent', true)
+  equal modalView.$('.modal-footer').length, 0, 'Standard Footer removed'
+
+test 'customContent', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{#view Tent.ModalPane 
+        customContent=true
+    }}
+      {{#view Tent.ModalBody text="_modalText"}}
+        text goes here
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+      {{/view}}
+    {{/view}}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.$('.modal-body').length, 1, 'Body exists'
+  equal modalView.$('.modal-footer').length, 1, 'Footer exists'
+  equal modalView.get('hidden'), false, "Visible initially"
+  
+  Ember.run ->
+    modalView.$('.cancel').click()
+  
+  equal modalView.get('hidden'), true, "Cancel should hide the panel"
+
+
+
+
+
+
