@@ -2,7 +2,8 @@ require '../template/jqgrid'
 
 ###*
 * @class Tent.JqGrid
-* @extends Ember.View
+* @mixins Tent.ValidationSupport
+* @mixins Tent.MandatorySupport
 *
 * Create a jqGrid view which displays the data provided by a Collection object
 * The grid will bind to the following properties of the collection:

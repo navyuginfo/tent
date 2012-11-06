@@ -26,7 +26,7 @@
 *
 * When the dialog is closed by clicking outside the dialog, the secondary action will be called.
 *
-* ##Usage
+* ## Usage
 *
 *       {{#view Tent.ModalPane   
                 text="_modalText" 
@@ -46,6 +46,40 @@
             }}
               <h5>Some more content</h5>
         {{/view}}
+*
+* <h4> Validation </h4>
+* The primary button will by default have validation set to true. This means that widgets within the modal dialog
+* will be validated on submission, and any errors that occur will be displayed in an error panel within the modal.
+* The primary button will be disabled until all of the validation errors have been corrected. 
+*
+* ## Alternate Usage
+*
+* If you need more complex footer content, you can provide it with a dedicated {@link Tent.ModalFooter} view.
+* In this instance, you also need to provide a {@link Tent.ModalBody} for the body content.
+*
+*
+* Usage is like:
+
+    {{#view Tent.ModalPane 
+          label="Using Custom Footer" 
+          header="_modalHeader" 
+          customContent=true
+    }}
+      {{#view Tent.ModalBody}}
+        body content goes here ...
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+        ... other buttons ...
+      {{/view}}
+    {{/view}}
+
+ - In order to use the ModalBody and ModalFooter views, you must set {@link #customContent} to true.
+ - Any button that will close the dialog should have a css class of 'close-dialog'
+ - The cancel button should be identified with a css class of 'cancel'. In the event that the Modal is 
+ closed by this button, or the 'x' close button, or by clicking outside of the modal, then the action 
+ associated with the cancel button will be executed.
 *
 ###
 require '../template/modal_pane'
@@ -248,8 +282,20 @@ Tent.ModalHeader = Ember.View.extend
   tagName: 'h3'
   defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.header}}'
 
+###*
+* @class Tent.ModalBody
+* Add a body panel to a modal dialog.
+*
+* This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+###
 Tent.ModalBody = Ember.View.extend
   layoutName: 'modal_body'
 
+###*
+* @class Tent.ModalFooter
+* Add a footer panel to a modal dialog.
+*
+* This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+###
 Tent.ModalFooter = Ember.View.extend
   layoutName: 'modal_footer'
