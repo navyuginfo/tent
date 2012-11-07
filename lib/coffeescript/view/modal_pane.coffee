@@ -220,6 +220,7 @@ Tent.ModalPane = Ember.View.extend
     @$(".modal:first").on("hidden", (e)=>
       if not @get('hidden') and @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
+        @hide()
     )
 
     modalId = @get('elementId')
