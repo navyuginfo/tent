@@ -188,7 +188,7 @@ test 'Select Row', ->
 	ok not gridView.$('#51').hasClass('ui-state-highlight'), 'previous item deselected' 
 
 
-test 'ClearAction', ->
+test 'ClearAction, and set selection to empty', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
 	          label="Tasks"
@@ -203,19 +203,42 @@ test 'ClearAction', ->
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 
-	Ember.run ->
-		gridView.didSelectRow('52')
+	gridView.didSelectRow('52')
 	equal gridView.get('selection').length, 1, '1 item selected'
 	ok gridView.$('#52').hasClass('ui-state-highlight'), 'correct item selected' 
-	Ember.run ->
-		gridView.set('clearAction', true)
+	gridView.set('clearAction', true)
 	ok not gridView.$('#52').hasClass('ui-state-highlight'), 'item deselected' 
-	 
+	gridView.didSelectRow('53')
+	equal gridView.get('selection').length, 1, '1 item selected'
+	ok gridView.$('#53').hasClass('ui-state-highlight'), 'correct item selected' 
+	gridView.set('selection', [])
+	equal gridView.get('selectedIds').length, 0, '0 ids selected'
+	
 
+test 'Multiselect', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          contentBinding="row_data"
+	          multiSelect=true
+	          required=true
+	    }}'
+		row_data: row_data
+		columns: column_data
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	 
+	gridView.didSelectRow('51')
+	equal gridView.get('selection').length, 1, '1 item selected'
+	gridView.didSelectRow('52')
+	equal gridView.get('selection').length, 2, '2 items selected'
+	 
+###
 test 'Multiselect', ->
 test 'Select all', ->
 test 'Export', ->
-test 'ClearAction', ->
 test 'Collection Support', ->
 ###
 

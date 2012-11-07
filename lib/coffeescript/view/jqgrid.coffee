@@ -466,6 +466,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					else
 						if (@isRowSelectedSingleSelect(id))
 							@getTableDom().jqGrid('setSelection', id, false)
+					@$('#'+id).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"})
 				for item in @get('selectedIds')
 					@highlightRow(item)
 				@setSelectAllCheckbox(grid)
@@ -478,10 +479,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		# Is the row registered as selected within jqGrid
 		this.getTableDom().get(0).p.selrow == id
 	
-	highlightRow: (item)->
+	highlightRow: (id)->
 		if @getTableDom()?
-			@getTableDom().jqGrid('setSelection', item, false)
-			#@editRow(item)
+			if @get('multiSelect')
+				if not @isRowSelectedMultiSelect(id)
+					@getTableDom().jqGrid('setSelection', id, false)
+			else
+				if not @isRowSelectedSingleSelect(id)
+					@getTableDom().jqGrid('setSelection', id, false)
+			@$('#'+id).addClass("ui-state-highlight").attr({"aria-selected":"true", "tabindex" : "0"});
 
 	unHighlightAllRows: (->
 		if (@get("clearAction") &&  @getTableDom()?)
