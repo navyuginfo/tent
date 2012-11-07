@@ -206,20 +206,33 @@ test "Modal within modal", ->
   innerModalView = Ember.View.views[outerModalView.$('.tent-modal').attr('id')]
 
   equal outerModalView.get('hidden'), false, "Outer modal is visible ["+outerModalView.get('elementId')+"]"
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'backdrop should display'
   equal innerModalView.get('hidden'), true, "Inner modal is hidden  ["+innerModalView.get('elementId')+"]"
-
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), undefined, 'inner backdrop should be hidden'
+  
   Ember.run ->
     $('#inner_modalPane').click()
   equal innerModalView.get('hidden'), false, "Inner modal is visible"
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'inner backdrop should be visible'
+  
 
   Ember.run ->
     innerModalView.$('.cancel').click()
   equal innerModalView.get('hidden'), true, "Inner modal is hidden again"
   equal outerModalView.get('hidden'), false, "Outer modal is still visible "
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'inner backdrop should be visible'
+  
 
   Ember.run ->
     outerModalView.$('.cancel.btn-warning').click()
   equal innerModalView.get('hidden'), true, "Inner modal is hidden after outer closed"
   equal outerModalView.get('hidden'), true, "Outer modal is now hidden "
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'inner backdrop should be visible'
+  
+
+
   
 

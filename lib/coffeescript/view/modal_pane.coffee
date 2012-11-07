@@ -284,21 +284,22 @@ Tent.ModalPane = Ember.View.extend
     @.$('.modal:first').modal('hide')
     @disableMessagePanel()
 
+  # If this is a nested modal, fade out the parent modal
   fadeParentModal: ->
     parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
-    parentBackdrop.hide()
+    parentBackdrop.hide().attr('data-hidden', true)
     if parentBackdrop.length > 0
-      @$('.modal-backdrop:first').fadeIn(0)
+      @$('.modal-backdrop:first').fadeIn(0).attr('data-hidden', false)
     else
-      @$('.modal-backdrop:first').fadeIn(200)
+      @$('.modal-backdrop:first').fadeIn(200).attr('data-hidden', false)
 
   restoreParentModal: ->
     parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
-    parentBackdrop.show()
+    parentBackdrop.show().attr('data-hidden', false)
     if parentBackdrop.length > 0
-      @$('.modal-backdrop:first').fadeOut(0)
+      @$('.modal-backdrop:first').fadeOut(0).attr('data-hidden', true)
     else
-      @$('.modal-backdrop:first').fadeOut(200)
+      @$('.modal-backdrop:first').fadeOut(200).attr('data-hidden', true)
     
 
 Tent.ModalHeader = Ember.View.extend
