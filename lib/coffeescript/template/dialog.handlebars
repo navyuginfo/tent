@@ -1,0 +1,16 @@
+{{#if view.visible}}
+	<div class='tent-dialog'>
+		<div class='tent-dialog-header'>
+			{{view Tent.Button buttonClass="close-dialog" label="&times;" actionBinding="view.closeAction" type="link"}}
+			<h3>{{loc view.headerMessage}}</h3>
+		</div>
+		<div class='tent-dialog-body'>
+			<p>{{loc view.message}}</p>
+		</div>
+		<div class='tent-dialog-footer'>
+	  	{{view Tent.Button buttonClass="close-dialog pull-left" label="Cancel" action="view.cancel" type="link" iconClass="icon-remove icon-white"}}
+			{{view Tent.Button buttonClass="pull-right" label="Ok" actionBinding="view.confirm" type="link" iconClass="icon-ok icon-white"}}		
+		</div>
+	</div>
+	<div class="tent-dialog-backdrop"></div>
+{{/if}}
