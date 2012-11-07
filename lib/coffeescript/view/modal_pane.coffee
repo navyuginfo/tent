@@ -217,14 +217,18 @@ Tent.ModalPane = Ember.View.extend
         widget.launch()
       )
   
-    @$(".modal").on("hidden", (e)=>
-      if @targetIsMessagePanel(e.target)
+    @$(".modal:first").on("hidden", (e)=>
+      if not @get('hidden') and @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
     )
 
-    @$('.close-dialog').click (event)=>
+    modalId = @get('elementId')
+    @$('.close-dialog').filter(->
+      $(this).parents('.tent-modal:first').attr('id') == modalId
+    ).click (event)=>
       if not $(event.target).attr('disabled')
         @hide()
+      event.stopPropagation()
 
   cancelAutoLaunch: ->
     @get('autoLaunch')? and @get('autoLaunch') == false
@@ -249,10 +253,10 @@ Tent.ModalPane = Ember.View.extend
     Ember.View.views[$('.tent-message-panel.primary').attr('id')]
 
   getMessagePanelView: ->
-    Ember.View.views[@$('.tent-message-panel').attr('id')]
+    Ember.View.views[@$('.tent-message-panel:first').attr('id')]
 
   triggerCancelAction: (e)->
-    cancelButton = @$('.cancel')
+    cancelButton = @$('.cancel:last') #don't get child modal cancel button
     if cancelButton.length > 0
       id = cancelButton.parent('.tent-button').attr('id')
       buttonView = Ember.View.views[id]
@@ -269,14 +273,32 @@ Tent.ModalPane = Ember.View.extend
 
   launch: ->
     @set('hidden', false)
-    @.$('.modal').modal(@get('options'))
+    @.$('.modal:first').modal(@get('options'))
+    @fadeParentModal()
     @enableMessagePanel()
 
   hide: ->
     @set('hidden', true)
-    @.$('.modal').modal('hide')
+    @restoreParentModal()
+    @.$('.modal:first').modal('hide')
     @disableMessagePanel()
 
+  fadeParentModal: ->
+    parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
+    parentBackdrop.hide()
+    if parentBackdrop.length > 0
+      @$('.modal-backdrop:first').fadeIn(0)
+    else
+      @$('.modal-backdrop:first').fadeIn(200)
+
+  restoreParentModal: ->
+    parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
+    parentBackdrop.show()
+    if parentBackdrop.length > 0
+      @$('.modal-backdrop:first').fadeOut(0)
+    else
+      @$('.modal-backdrop:first').fadeOut(200)
+    
 
 Tent.ModalHeader = Ember.View.extend
   tagName: 'h3'

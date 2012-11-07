@@ -181,8 +181,45 @@ test 'customContent', ->
   
   equal modalView.get('hidden'), true, "Cancel should hide the panel"
 
+test "Modal within modal", ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{#view Tent.ModalPane
+      primaryLabel="_ok" 
+      secondaryLabel="outerCancelButton"
+      secondaryType="warning"
+      primaryType="success"
+    }}
+       
+        <a id = "inner_modalPane">launch inner modal</a>
+        {{view Tent.ModalPane 
+              customButton = "inner_modalPane"
+              text="_modalText" 
+              header="_modalHeaderInner" 
+              primaryLabel="_ok" 
+              secondaryLabel="innerCancelButton"
+        }}
+       
+    {{/view}}'
+  appendView()
 
+  outerModalView = Ember.View.views[view.$('.tent-modal:first').attr('id')]
+  innerModalView = Ember.View.views[outerModalView.$('.tent-modal').attr('id')]
 
+  equal outerModalView.get('hidden'), false, "Outer modal is visible ["+outerModalView.get('elementId')+"]"
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden  ["+innerModalView.get('elementId')+"]"
 
+  Ember.run ->
+    $('#inner_modalPane').click()
+  equal innerModalView.get('hidden'), false, "Inner modal is visible"
 
+  Ember.run ->
+    innerModalView.$('.cancel').click()
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden again"
+  equal outerModalView.get('hidden'), false, "Outer modal is still visible "
+
+  Ember.run ->
+    outerModalView.$('.cancel.btn-warning').click()
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden after outer closed"
+  equal outerModalView.get('hidden'), true, "Outer modal is now hidden "
+  
 
