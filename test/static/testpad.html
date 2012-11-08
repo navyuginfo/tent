@@ -852,6 +852,41 @@
 
 
     {{#view Tent.ModalPane 
+          label="Modal within Modal"
+          autoLaunch=false
+          header="_modalHeader" 
+          primaryLabel="_ok" 
+          secondaryLabel="_cancel"
+          secondaryType="warning"
+          primaryType="success"
+          primaryIcon="icon-save icon-white"
+          secondaryIcon="icon-remove"
+    }}
+        <a id = "inner_modalPane">launch inner modal</a>
+        {{view Tent.ModalPane 
+              customButton = "inner_modalPane"
+              text="_modalText" 
+              header="_modalHeaderInner" 
+              primaryLabel="_ok" 
+              secondaryLabel="_cancel"
+              primaryIcon="icon-save icon-white"
+              secondaryIcon="icon-remove"
+        }}
+
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+
+    {{/view}}
+
+
+    {{#view Tent.ModalPane 
           label="Custom Footer" 
           header="_modalHeader" 
           customContent=true
