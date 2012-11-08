@@ -229,7 +229,7 @@ Tent.ModalPane = Ember.View.extend
     ).click (event)=>
       if not $(event.target).attr('disabled')
         @hide()
-      event.stopPropagation()
+      #event.stopPropagation()
 
   cancelAutoLaunch: ->
     @get('autoLaunch')? and @get('autoLaunch') == false

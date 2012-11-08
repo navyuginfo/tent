@@ -861,6 +861,8 @@
           primaryType="success"
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
+          secondaryAction="clickCancelOuter"
+          secondaryTargetBinding="Pad"
     }}
         <a id = "inner_modalPane">launch inner modal</a>
         {{view Tent.ModalPane 
@@ -871,15 +873,10 @@
               secondaryLabel="_cancel"
               primaryIcon="icon-save icon-white"
               secondaryIcon="icon-remove"
+              secondaryAction="clickCancelInner"
+              secondaryTargetBinding="Pad"
         }}
 
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
 
