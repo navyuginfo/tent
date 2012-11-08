@@ -19,9 +19,15 @@ setup = ->
 	]
 
 teardown = ->
+	
 	if view
-		Ember.run -> view.destroy()
+		gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+		Ember.run -> 
+			view.destroy()
+			gridView.destroy()
 		view = null
+		gridView = null
+	 
 	@TemplateTests = undefined
 	@dispatcher.destroy()
 	@row_data = null
@@ -223,9 +229,11 @@ test 'Multiselect', ->
 	          contentBinding="row_data"
 	          multiSelect=true
 	          required=true
+	          selection=selection
 	    }}'
 		row_data: row_data
 		columns: column_data
+		selection: []
 
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
@@ -234,10 +242,48 @@ test 'Multiselect', ->
 	equal gridView.get('selection').length, 1, '1 item selected'
 	gridView.didSelectRow('52')
 	equal gridView.get('selection').length, 2, '2 items selected'
-	 
+	ok gridView.$('#51').hasClass('ui-state-highlight'), '51 selected' 
+	ok gridView.$('#52').hasClass('ui-state-highlight'), '52 selected' 
+	gridView.deselectItem('52')
+	ok not gridView.$('#52').hasClass('ui-state-highlight'), 'deselected 52' 
+	gridView.clearSelection()
+	ok not gridView.$('#51').hasClass('ui-state-highlight'), 'clear selection' 
+	gridView.didSelectAll([51,52,53])
+	equal gridView.get('selection').length, 3, 'All items selected'
+	ok gridView.$('#51').hasClass('ui-state-highlight'), 'Select all' 
+	ok gridView.$('#52').hasClass('ui-state-highlight'), '52 select all' 
+	ok gridView.$('#53').hasClass('ui-state-highlight'), '53 select all' 
+	gridView.didSelectAll([51,52,53], false)
+	equal gridView.get('selection').length, 0, 'No items selected'
+	ok not gridView.$('#51').hasClass('ui-state-highlight'), '51 not selected' 
+	ok not gridView.$('#52').hasClass('ui-state-highlight'), '52 not selected' 
+	ok not gridView.$('#53').hasClass('ui-state-highlight'), '53 not selected' 
+
+
+test 'Error Cell', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          contentBinding="row_data"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	    }}'
+		row_data: row_data
+		columns: column_data
+		selection: []
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	gridView.markErrorCell(52, 2)
+	ok gridView.getCell(52,2).hasClass('error'), 'Error class added'
+	gridView.unmarkErrorCell(52, 2)
+	ok not gridView.getCell(52,2).hasClass('error'), 'Error class removed'
+
+
 ###
-test 'Multiselect', ->
-test 'Select all', ->
 test 'Export', ->
 test 'Collection Support', ->
 ###

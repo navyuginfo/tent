@@ -1,6 +1,7 @@
 require '../template/jqgrid'
 require '../mixin/grid/collection_support' 
 require '../mixin/grid/export_support'
+require '../mixin/grid/editable_support'
 
 ###*
 * @class Tent.JqGrid
@@ -8,6 +9,7 @@ require '../mixin/grid/export_support'
 * @mixins Tent.MandatorySupport
 * @mixins Tent.Grid.CollectionSupport
 * @mixins Tent.Grid.ExportSupport
+* @mixins Tent.Grid.EditableSupport
 *
 * Create a jqGrid view which displays the data provided by its content property
 *
@@ -25,7 +27,7 @@ require '../mixin/grid/export_support'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error']
@@ -59,45 +61,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	showMaximizeButton: true
 
 	###*
-	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	*  
-	###
-	onEditRow: null
-
-	###*
-	* @property {Function} onRestoreRow A callback function which will be called when editing of a row is cancelled,
-	* and the original values restored to the cells. 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	*  
-	###
-	onRestoreRow: null
-
-	###*
-	* @property {Function} onSaveCell A callback function which will be called when an editable cell is saved. (This 
-	* usually occurs on change or blur) 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	* -cellName: the name of the edited cell
-	* -iCell: the position of the edited cell
-	*
-	###
-	onSaveCell: null
-
-	###*
 	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
 	fullScreen: false
-	 
 
 	###*
 	* @property {Array} content The array of items to display in the grid.
@@ -204,27 +171,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	selectItemSingleSelect: (itemId) ->
 		@clearSelection()
 		@selectItem(itemId)
-		#@showEditableCells(itemId)
 
 	selectItemMultiSelect: (itemId, status) ->
-		if status #status indicates whether the row is being selected or unselected
-				@selectItem(itemId)
-			else 
-				@deselectItem(itemId)
-		#@showEditableCells(itemId)
-
-	showEditableCells: ->
-		if @getTableDom()?
-			for id in @getTableDom().jqGrid('getDataIDs')
-				if @get('selectedIds').contains(id)
-					@editRow(id)
-				else
-					@restoreRow(id)
+		if status!=false #status indicates whether the row is being selected or unselected
+			@selectItem(itemId)
+		else 
+			@deselectItem(itemId)
 
 	didSelectAll: (rowIds, status) ->
 		originalRowsIds = rowIds.filter(-> true)
 		for id in originalRowsIds
-			if status
+			if status!=false
 				if !@get('selectedIds').contains(id)
 					@selectItem(id)
 			else 
@@ -245,60 +202,19 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			)
 		)
 
-	# When a row is deselected, revert to the previous value 
-	restoreRow: (rowId) ->
-		#@getTableDom().jqGrid('saveRow', rowId)
-		@getTableDom().jqGrid('restoreRow', rowId)
-		@saveEditedRow(rowId)
-		@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
-
-	# Make all editable cells editable
-	editRow: (rowId) ->
-		@getTableDom().jqGrid('editRow', rowId, false,  @onEditFunc())
-
-	onEditFunc: (rowId) ->
-		widget = @
-		(rowId) ->
-			widget.get('onEditRow').call(widget, rowId, widget.getTableDom()) if widget.get('onEditRow')?
-
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
 
-	# Called by a cell widget on blur or change
-	saveEditableCell: (element)->
-		rowId = $(element).parents('tr:first').attr('id')
-		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
-		cellName = @getColModel()[cellpos].name
-		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
-		@onSaveCell.call(@, rowId, @getTableDom(), cellName, cellpos) if @onSaveCell?
-
-	saveEditedRow: (rowId, status, options)->
-		rowData = @getTableDom().getRowData(rowId)
-		for col in @getColModel()
-			if col.editable
-				@saveEditedCell(rowId, col.name, rowData[col.name])
-
-	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
-		# Need to unformat/validate the value before saving 
-		formatter = @getTableDom().getColProp(cellName).formatter
-		#if formatter?
-		if $.fn.fmatter[formatter]?
-			if cell?
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
-			else
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
-		else 
-			@getItemFromModel(rowId).set(cellName, value)
-		#@getTableDom().triggerHandler()
 
 	markErrorCell: (rowId, iCell) ->
-		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
-		cell.addClass('error')
+		@getCell(rowId, iCell).addClass('error')
 
 	unmarkErrorCell: (rowId, iCell) ->
-		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
-		cell.removeClass('error')
+		@getCell(rowId, iCell).removeClass('error')
+
+	getCell: (rowId, iCell) ->
+		return @getTableDom().find('#'+rowId ).children().eq(iCell)
 
 	###*
 	* @method sendAction send an action to the router. This is called from the 'action' formatter,
@@ -312,9 +228,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
 
 	addNavigationBar: ->
-		@_super()
 		tableDom = @getTableDom()
 		@renderColumnChooser(tableDom)
+		@_super()
 		@renderMaximizeButton()
 		
 	renderColumnChooser: (tableDom)->

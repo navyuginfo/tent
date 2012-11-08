@@ -1,3 +1,7 @@
+###*
+* @class Tent.Grid.ExportSupport
+* Adds export functionality to a grid
+###
 
 Tent.Grid.ExportSupport = Ember.Mixin.create
 	###*
