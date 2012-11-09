@@ -44,3 +44,13 @@ $required-icon-color: red;
 		text-decoration: none;
 	}
 }
+
+/* ModalPane */
+
+body>.modal-backdrop, body>.modal-backdrop.fade.in {
+	opacity: .01
+}
+.tent-modal .modal-backdrop {
+	display: none;
+	@include transition(all 0.3s ease);
+}

@@ -4,7 +4,7 @@
 		{{view Tent.Button class="launch" labelBinding="view.label" aria-haspopup="true" action="launch" targetBinding="view" typeBinding="view.type"}}
 		{{/unless}}
 	{{/if}}
-
+	<div class="modal-backdrop fade in"></div>
 	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-header">
 			{{view Tent.Button buttonClass="close-dialog close" label="&times;" actionBinding="view.closeAction" targetBinding="view.closeTarget" type="link"}}
