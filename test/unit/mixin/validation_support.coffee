@@ -62,6 +62,12 @@ test 'Custom Validations', ->
 	equal v.get('validationErrors').length, 1, 'One error message'
 	v.set('formattedValue','')
 	ok v.validate(), "Doesn't try to evaluate empty string"
+	v.set('validations', 'nulll')
+
+	raises(-> 
+			v.validate()
+		,'Should have thrown exception: validator doesnt exist')
+
 
 test 'Custom validations with options: formatted value', ->
 	v.set('validations', 'datebetween')

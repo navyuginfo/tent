@@ -38,6 +38,26 @@ test 'Basic functionality', ->
 	view.clearInfos()
 	equal view.getInfosForView('id1').length, 0, '0 infos returned'
 
+test 'Removing messages', ->
+	view = Tent.MessagePanel.create()
+
+	message = Tent.Message.create
+		type: Tent.Message.ERROR_TYPE
+		sourceId: 'id1'
+		messages: ['error1', 'error2','error3']
+
+	message2 = Tent.Message.create
+		type: Tent.Message.ERROR_TYPE
+		sourceId: 'id2'
+		messages: ['error4', 'error5', 'error6']
+
+	view.handleNewMessage(null, message)
+	view.handleNewMessage(null, message2)
+	equal view.getErrorsForView('id1').length, 3, '3 errors for id1 returned'
+	equal view.get('error').get('content').length, 2, '2 errors in total'
+
+	view.removeMessage(Tent.Message.ERROR_TYPE, 'id2')
+	equal view.get('error').get('content').length, 1, '1 error left'
 
 test 'Test auto clearing of errors for source', ->
 	view = Tent.MessagePanel.create()
@@ -140,5 +160,7 @@ test 'Called by ValidationSupport', ->
 	widget.addValidationError("second")
 	widget.addValidationError("third")
 	equal errorPanel.getErrorsForView(widget.get('elementId')).length, 3, 'Should be 3 errors'
+
+
 
 	

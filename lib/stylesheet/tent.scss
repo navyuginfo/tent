@@ -135,7 +135,7 @@ a[rel=tooltip] {
 		margin: 10px 0px;
 		padding: 7px;
 		@include border-radius(4px);
-		border: 1px solid #EED3D7;
+		/*border: 1px solid #EED3D7;*/
 	}
 
 	.alert-error {
@@ -147,6 +147,11 @@ a[rel=tooltip] {
 		@extend .alert;
 		border: 1px solid #BCE8F1;
 	}
+
+	.alert-block {
+		 
+	}
+
 
 	.error-message {
 		cursor: pointer;

@@ -37,3 +37,18 @@
 	</div>
 </section>
 {{/if}}
+
+{{#if view.hasWarnings}}
+	{{#each view.warning}}
+		<section class="alert clearfix">
+			{{view Tent.Button label="x" type="link" action="removeMessageCommand" targetBinding="view" class="close"}}
+			<h5>Warning</h5>
+				<div>
+					<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
+		  				<label>{{loc this.label}}</label> : {{this.messages}}
+		  			</div> 
+			 	</div>
+		</section>
+	{{/each}}
+{{/if}}
+

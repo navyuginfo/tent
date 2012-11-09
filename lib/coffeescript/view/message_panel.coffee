@@ -104,7 +104,6 @@ Tent.MessagePanel = Ember.View.extend
 		if @get('isActive')
 			if not msg.type?
 				throw new Error('Message must have a type')
-			errs = msg.messages
 			arrayWithMessageRemoved = []
 			if msg.messages? 
 				arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
@@ -137,6 +136,19 @@ Tent.MessagePanel = Ember.View.extend
 				$.merge(infos, info.messages)
 		return infos.uniq()
 
+	removeMessage: (type, id)->
+		msgArr = @get(type).get('content')
+		@get(type).set('content', msgArr.filter((item, index, enumerable) ->
+			item.sourceId != id
+		))
+
+	# Called from a button view
+	removeMessageCommand: (button) ->
+		type = button.bindingContext.get('type')
+		id = button.bindingContext.get('sourceId')
+		@removeMessage(type,id)
+
+
 	hasErrors: (->
 		@get('error').toArray().length > 0
 	).property('error')
@@ -145,17 +157,25 @@ Tent.MessagePanel = Ember.View.extend
 		@get('info').toArray().length > 0
 	).property('info')
 
+	hasWarnings: (->
+		@get('warning').toArray().length > 0
+	).property('warning')
+
 	hasMoreThanOneError: (->
 		@get('error').toArray().length > 1
 	).property('error')
 
+
 	clearAll: ->
 		@clearErrors()
 		@clearInfos()
+		@clearWarnings()
 	clearErrors: ->
 		@set('error', Ember.ArrayProxy.create({content: []}))
 	clearInfos: ->
 		@set('info', Ember.ArrayProxy.create({content: []}))
+	clearWarnings: ->
+		@set('warning', Ember.ArrayProxy.create({content: []}))
 
 	click: (e) ->
 		target = $(e.target)
@@ -165,7 +185,8 @@ Tent.MessagePanel = Ember.View.extend
 			#target.hasClass('error-message') 
 			targetId = wrappingMessage.attr('data-target')
 			Ember.View.views[targetId].focus() if Ember.View.views[targetId]?
-			
+	
+
 
 Tent.Message = Ember.Object.extend
 	messages: null
@@ -175,5 +196,6 @@ Tent.Message = Ember.Object.extend
 
 Tent.Message.ERROR_TYPE = 'error'
 Tent.Message.INFO_TYPE = 'info'
+Tent.Message.WARNING_TYPE = 'warning'
 
 #Tent.errorPanel = Tent.ErrorPanel.create()
