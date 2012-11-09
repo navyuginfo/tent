@@ -11,3 +11,27 @@
 {{#if view.hasOptions}}
 	{{collection contentBinding="view._options" tagName="ul" classNames="dropdown-menu" itemViewClass="Tent.ButtonOptions"}}
 {{/if}}
+
+{{#if view.warn}}
+
+	{{#view Tent.ModalPane 
+          autoLaunch=false
+          header="warning.header" 
+          primaryLabel="button.proceed" 
+          secondaryLabel="button.dontProceed"
+          primaryType="warning"
+          primaryIcon="icon-ok icon-white"
+          secondaryIcon="icon-remove"
+          primaryAction="ignoreWarnings"
+          primaryTargetBinding="view"
+    }}
+    	{{loc warning.warningsOnPage}}
+    	 
+		{{#each view.parentView.messagePanel.warning}}
+				<div class="alert">
+					<strong>{{loc label}}:</strong>  {{messages}}
+				</div>
+		{{/each}}
+			 
+    {{/view}}
+{{/if}}

@@ -37,6 +37,14 @@ Tent.I18n = Ember.Namespace.create
 Tent.translate = Tent.I18n.translate
 
 Tent.I18n.loadTranslations(
+	button: {
+		ok: 'Ok'
+		yes: 'Yes'
+		cancel: 'Cancel'
+		no: 'No'
+		proceed: 'Ignore warnings and proceed'
+		dontProceed: 'No, return to page'
+	}
 	jqGrid: {
 		hideShowAlt: 'Hide/Show Columns'
 		hideShowCaption: 'Columns'
@@ -61,5 +69,9 @@ Tent.I18n.loadTranslations(
 		contains: 'contains'
 		equal: 'equal'
 		nEqual: 'not equal' 
+	}
+	warning: {
+		header: 'Warnings Exist'
+		warningsOnPage: 'The following warnings exist on this page. Do you wish to ignore them and proceed?'
 	}
 )
