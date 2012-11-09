@@ -42,10 +42,9 @@ Tent.Formatting.amount = Ember.Object.create
 	###
 	format: (amount, settings) ->
 		if amount?
-			amount = if @centisimalUnit? then amount * @centisimalUnit else amount
-			if settings?
-				settings = Tent.Formatting.amount.settingsFilter(settings)
-				accounting.formatNumber(amount, settings)
+			_settings = @settingsFilter(settings)
+			if _settings
+				accounting.formatNumber(amount, _settings)
 			else
 				accounting.formatNumber(amount)
 		else
@@ -60,12 +59,11 @@ Tent.Formatting.amount = Ember.Object.create
 	###
 	unformat: (amount, settings) ->
 		if amount?
-			if settings?
-				settings = Tent.Formatting.amount.settingsFilter(settings)
-				amount = accounting.unformat(amount, settings)
-			else
-				amount = accounting.unformat(amount)
-			amount = if @centisimalUnit? then amount / @centisimalUnit else amount
+      _settings=@settingsFilter(settings)
+      if _settings? and _settings.number?
+        amount = accounting.unformat(amount, _settings.number.decimal)
+      else
+        amount = accounting.unformat(amount)
 		else
 			null
 
