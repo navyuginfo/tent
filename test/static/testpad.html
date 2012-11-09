@@ -139,6 +139,8 @@
               isFilterBinding="Pad.isFilter"
               filterValueBinding="Pad.filter"
               controlClass="input-small"
+              validations=""
+              warnings="capitalize"
             }}
 
             {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
@@ -158,11 +160,39 @@
             {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
+            
 
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
             }}
 
             {{view Tent.Button label="Submit" validate="true"}}
+
+            <h4>Validations</h4>
+            {{view Tent.TextField 
+              label="email validation" 
+              tooltip="_provide_some_info" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              disabledBinding="Pad.isDisabled"
+              textDisplayBinding="Pad.textDisplay"
+              isFilterBinding="Pad.isFilter"
+              filterValueBinding="Pad.filter"
+              controlClass="input-small"
+              validations="email"
+            }}
+
+            {{view Tent.DateField label="date range" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              tooltip="_tooltip"
+              disabledBinding="Pad.isDisabled" 
+              textDisplayBinding="Pad.textDisplay" 
+              validations="datebetween"
+              validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
+            }}
+
+
+            
 
             
           {{/view}}

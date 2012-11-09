@@ -492,10 +492,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 					<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
-						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
-						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
-                        <li><a href="#{@get('collection').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
+						<li class="export-json"><a>#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
+						<li class="export-xml"><a>#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
+						<li class="export-csv"><a>#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
+                        <li class="export-excel"><a href="#{@get('collection').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
 					</ul>
 				</div>
 			"""

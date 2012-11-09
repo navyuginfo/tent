@@ -152,12 +152,17 @@ a[rel=tooltip] {
 		cursor: pointer;
 		padding: 0px 50px;
 		
-		&:hover {
-			text-decoration: underline;
-		}
-		
 		label {
-			display: inline;
+			display: inline-block;
+			vertical-align: top;
+			width: 110px;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		ul {
+			display: inline-block;
 		}
 	}
 

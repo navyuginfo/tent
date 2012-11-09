@@ -8,14 +8,40 @@
  * Some docs here...
 ###
 
-Tent.ValidationSupport = Ember.Mixin.create  
+Tent.ValidationSupport = Ember.Mixin.create
+  ###*
+  * @property validations A list of custom validations which should be applied to the widget
+  ###
+  validations: ""
   isValid: true
   validationErrors: []
   
+  init: ->
+    @_super()
+
   validate: ->
     @flushValidationErrors()
-    @set('isValid', true)
-    true
+    valid = @executeCustomValidations()
+    @set('isValid', valid)
+    return valid
+
+  executeCustomValidations: ->
+    valid = true
+    if @get('validations')
+      for vName in @get('validations').split(',')
+        validator = Tent.Validations.get(vName)
+        options = @parseCustomValidationOptions(vName)
+        valid = valid and validator.validate(@get('formattedValue'), options)
+        @addValidationError(validator.getErrorMessage(@get('formattedValue'), options)) unless valid
+    return valid
+
+  parseCustomValidationOptions:(vName) ->
+    if @get('validationOptions')? 
+      if typeof @get('validationOptions') == 'string'
+        return eval("(" + this.get('validationOptions') + ")")[vName]
+      else
+        return @get('validationOptions')[vName]
+    null
 
   errorsDidChange: (->
     @updateErrorPanel()
