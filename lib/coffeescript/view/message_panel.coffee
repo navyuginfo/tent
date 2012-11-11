@@ -163,8 +163,16 @@ Tent.MessagePanel = Ember.View.extend
 		@get('info').length > 0
 	).property('info','info.@each')
 
-	hasWarnings: (->
+	hasWarnings: ((severity)->
 		@get('warning').length > 0
+	).property('warning','warning.@each')
+
+	hasSevereWarnings: (->
+		hasW = false
+		for w in @get('warning')
+			if w.severity == 'high'
+				return true
+		hasW
 	).property('warning','warning.@each')
 
 	hasMoreThanOneError: (->

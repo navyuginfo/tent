@@ -68,6 +68,8 @@ test 'Custom Validations', ->
 			v.validate()
 		,'Should have thrown exception: validator doesnt exist')
 
+	v.set('validations', '')	
+	ok v.validate(), "Doesn't try to evaluate empty string validator"
 
 test 'Custom validations with options: formatted value', ->
 	v.set('validations', 'datebetween')
@@ -128,6 +130,9 @@ test 'Warnings', ->
 			textView.validate()
 		,'Should have thrown exception: warning validator doesnt exist')
 
+	v.set('warnings', '')	
+	equal textView.get('validationWarnings').length, 0, 'empty string'
+
 	textView.set('warnings','email')
 	textView.set('formattedValue', 'not_an_email')
 	textView.validate()
@@ -143,6 +148,8 @@ test 'Warnings', ->
 	textView.set('processWarnings', true)
 	textView.validate()
 	equal textView.get('validationWarnings').length, 1, 'processing again'
+
+
 
 ###
 #test 'Custom validations with options: value', ->

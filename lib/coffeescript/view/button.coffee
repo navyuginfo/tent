@@ -165,8 +165,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).observes('messagePanel', 'messagePanel.hasErrors')
 
   doWarningsExist: (->
-     @get('messagePanel.hasWarnings')
-  ).property('messagePanel', 'messagePanel.hasWarnings')
+     @get('messagePanel.hasSevereWarnings')
+  ).property('messagePanel', 'messagePanel.hasSevereWarnings')
 
   ignoreWarnings: ->
     @get('messagePanel').clearWarnings()

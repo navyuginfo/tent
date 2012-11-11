@@ -10,13 +10,19 @@
 
 Tent.ValidationSupport = Ember.Mixin.create
   ###*
-  * @property validations A list of custom validations which should be applied to the widget
+  * @property {String }validations A list of comma-separated custom validations which should be applied to the widget
   ###
-  validations: ""
+  validations: null
   isValid: true
   validationErrors: []
   validationWarnings: []
   processWarnings: true
+
+  ###*
+  * @property {String} warnings A list of comma-separated custom validations which should be applied to the widget, but are interpreted
+  * as warnings which may be ignored.
+  ###
+  warnings=null
   
   init: ->
     @_super()
@@ -31,7 +37,7 @@ Tent.ValidationSupport = Ember.Mixin.create
 
   executeCustomValidations: ->
     valid = true
-    if @get('validations')
+    if @get('validations')? and @get('validations') != ""
       for vName in @get('validations').split(',')
         validator = Tent.Validations.get(vName)
         if not validator?
@@ -43,7 +49,7 @@ Tent.ValidationSupport = Ember.Mixin.create
 
   executeCustomWarnings:->
     valid = true
-    if @get('warnings')
+    if @get('warnings')?  and @get('warnings') != ""
       for wName in @get('warnings').split(',')
         validator = Tent.Validations.get(wName)
         if not validator?
@@ -83,6 +89,7 @@ Tent.ValidationSupport = Ember.Mixin.create
       type: Tent.Message.WARNING_TYPE
       sourceId: @get('elementId')
       label: @get('label')
+      severity: @get('warningseverity')
     $.publish("/message", [message]);
 
   hasErrors: (->
@@ -106,10 +113,12 @@ Tent.ValidationSupport = Ember.Mixin.create
     classNames = @get('classNames')
     if classNames?
       if @get('hasWarnings')
-        @$('').addClass('warning')
+        # TODO : adding class explicitly since it would not work when adding to classNames.
+        # investigate further
+        @$('').addClass('warning') if @$('')?
         classNames[classNames.length] = 'warning' unless classNames.contains('warning')
       else
-        @$('').removeClass('warning')
+        @$('').removeClass('warning') if @$('')?
         classNames.removeObject 'warning'
 
   ).observes('validationWarnings','validationWarnings.@each')
