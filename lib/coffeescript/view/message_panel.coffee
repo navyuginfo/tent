@@ -149,9 +149,11 @@ Tent.MessagePanel = Ember.View.extend
 		@removeMessage(type,id)
 		@stopProcessingWarnings(id)
 
-
 	stopProcessingWarnings: (id)->
-		view = Ember.View.views[id].set('processWarnings', false)
+		view = Ember.View.views[id]
+		view.set('processWarnings', false)
+		view.flushValidationWarnings()
+
 
 	hasErrors: (->
 		@get('error').length > 0

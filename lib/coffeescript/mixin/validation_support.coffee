@@ -89,6 +89,10 @@ Tent.ValidationSupport = Ember.Mixin.create
     return not @get('isValid')
   ).property('isValid') 
 
+  hasWarnings: (->
+    return @get('validationWarnings').length > 0
+  ).property('validationWarnings','validationWarnings.@each')
+
   observesErrors: (->
     classNames = @get('classNames')
     if classNames?
@@ -97,6 +101,18 @@ Tent.ValidationSupport = Ember.Mixin.create
       else
         classNames.removeObject 'error'
   ).observes('hasErrors')
+
+  observesWarnings: (->
+    classNames = @get('classNames')
+    if classNames?
+      if @get('hasWarnings')
+        @$('').addClass('warning')
+        classNames[classNames.length] = 'warning' unless classNames.contains('warning')
+      else
+        @$('').removeClass('warning')
+        classNames.removeObject 'warning'
+
+  ).observes('validationWarnings','validationWarnings.@each')
 
   flushValidationErrors: ->
     @set('validationErrors', [])
