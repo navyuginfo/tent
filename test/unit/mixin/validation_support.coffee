@@ -116,6 +116,34 @@ test 'Custom Validations with Text view and options', ->
 	textView.set('formattedValue', '1/1/2012')
 	ok not textView.validate(), 'Options should not succeed'
 
+test 'Warnings', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.TextField 
+		}}'
+
+	appendView()
+	textView = Ember.View.views[view.$('.tent-text-field').attr('id')]
+	textView.set('warnings','blah')
+	raises(-> 
+			textView.validate()
+		,'Should have thrown exception: warning validator doesnt exist')
+
+	textView.set('warnings','email')
+	textView.set('formattedValue', 'not_an_email')
+	textView.validate()
+	equal textView.get('validationWarnings').length, 1, '1 warning added'
+	textView.set('formattedValue', 'aa@bb.com')
+	textView.validate()
+	equal textView.get('validationWarnings').length, 0, 'no more warnings'
+
+	textView.set('processWarnings', false)
+	textView.set('formattedValue', 'not_an_email')
+	textView.validate()
+	equal textView.get('validationWarnings').length, 0, 'stopped processing warnings'
+	textView.set('processWarnings', true)
+	textView.validate()
+	equal textView.get('validationWarnings').length, 1, 'processing again'
+
 ###
 #test 'Custom validations with options: value', ->
 

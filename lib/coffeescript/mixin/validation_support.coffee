@@ -16,6 +16,7 @@ Tent.ValidationSupport = Ember.Mixin.create
   isValid: true
   validationErrors: []
   validationWarnings: []
+  processWarnings: true
   
   init: ->
     @_super()
@@ -24,7 +25,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     @flushValidationErrors()
     @flushValidationWarnings()
     valid = @executeCustomValidations()
-    @executeCustomWarnings()
+    @executeCustomWarnings() if @get('processWarnings')
     @set('isValid', valid)
     return valid
 
@@ -111,7 +112,6 @@ Tent.ValidationSupport = Ember.Mixin.create
 
   addValidationWarning: (warning) ->
     @get('validationWarnings').pushObject(warning)
-
 
  
 

@@ -147,8 +147,12 @@ Tent.MessagePanel = Ember.View.extend
 		type = button.bindingContext.get('type')
 		id = button.bindingContext.get('sourceId')
 		@removeMessage(type,id)
+		@stopProcessingWarnings(id)
 
-	
+
+	stopProcessingWarnings: (id)->
+		view = Ember.View.views[id].set('processWarnings', false)
+
 	hasErrors: (->
 		@get('error').length > 0
 	).property('error','error.@each')
