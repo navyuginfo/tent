@@ -94,7 +94,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @doValidation()
     if !@isDisabled
       if !@get('hasOptions')
-        if @get('warn') and @get('doWarningsExist')
+        if @get('warn')==true and @get('doWarningsExist')
           @showWarningPanel()
         else
           @_super() 
