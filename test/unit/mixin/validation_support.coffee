@@ -71,6 +71,11 @@ test 'Custom Validations', ->
 	v.set('validations', '')	
 	ok v.validate(), "Doesn't try to evaluate empty string validator"
 
+	v.set('validations', ' email ')	
+	v.set('formattedValue','billy@bob.com')
+	ok v.validate(), "Check for trim"
+
+
 test 'Custom validations with options: formatted value', ->
 	v.set('validations', 'datebetween')
 	v.set('formattedValue','10/10/2012')
@@ -149,6 +154,9 @@ test 'Warnings', ->
 	textView.validate()
 	equal textView.get('validationWarnings').length, 1, 'processing again'
 
+	textView.set('warnings',' email ')
+	textView.set('formattedValue', 'aa@bb.com')
+	ok textView.validate(), 'Check for trim'
 
 
 ###

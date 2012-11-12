@@ -39,7 +39,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     valid = true
     if @get('validations')? and @get('validations') != ""
       for vName in @get('validations').split(',')
-        validator = Tent.Validations.get(vName)
+        validator = Tent.Validations.get(vName.trim())
         if not validator?
           throw new Error('Validator ['+vName+'] cannot be found')
         options = @parseCustomValidationOptions(vName)
@@ -51,7 +51,7 @@ Tent.ValidationSupport = Ember.Mixin.create
     valid = true
     if @get('warnings')?  and @get('warnings') != ""
       for wName in @get('warnings').split(',')
-        validator = Tent.Validations.get(wName)
+        validator = Tent.Validations.get(wName.trim())
         if not validator?
           throw new Error('Validator ['+wName+'] cannot be found')
         options = @parseCustomValidationOptions(wName)

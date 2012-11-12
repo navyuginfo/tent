@@ -167,7 +167,7 @@
             warnings="email"
             }}
 
-            {{view Tent.Button label="Submit" validate="true" warn="true"}}
+            {{view Tent.Button label="Submit" validate=true warn=true}}
 
             <h4>Validations</h4>
             {{view Tent.TextField 
@@ -191,6 +191,7 @@
               textDisplayBinding="Pad.textDisplay" 
               validations="datebetween"
               validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
+              warnings="futuredate"
             }}
 
 
@@ -895,6 +896,7 @@
           secondaryIcon="icon-remove"
           secondaryAction="clickCancelOuter"
           secondaryTargetBinding="Pad"
+          warn=true
     }}
         <a id = "inner_modalPane">launch inner modal</a>
         {{view Tent.ModalPane 
@@ -909,7 +911,7 @@
               secondaryTargetBinding="Pad"
         }}
 
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true warnings="email" warningseverity="high"}}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
 
     {{/view}}

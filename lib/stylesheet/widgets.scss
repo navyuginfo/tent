@@ -33,6 +33,11 @@ $required-icon-color: red;
 			content: '*';
 		}
 	}
+
+	ul.help-inline {
+		list-style: none;
+		margin-left: 0px;
+	}
 }
 
 /*  Buttons */

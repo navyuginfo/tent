@@ -35,3 +35,17 @@ Tent.Validations.datebetween = Tent.Validation.create
 		value
 
 	ERROR_MESSAGE: Tent.messages.DATE_BETWEEN_ERROR
+
+Tent.Validations.futuredate = Tent.Validation.create
+	validate: (value, options, message) ->
+		today = new Date()
+		if not @isValueEmpty(value) and @convertToDate(value) > today
+			return false
+		true
+
+	convertToDate: (value) ->
+		if not (value instanceof Date)
+			return Tent.Formatting.date.unformat(value)
+		value
+
+	ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR

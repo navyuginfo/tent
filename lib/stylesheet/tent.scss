@@ -58,6 +58,10 @@ a[rel=tooltip] {
 
 /*  Modal Dialog */
 
+.tent-modal {
+	text-align: left;
+}
+
 .modal {
 	outline: none;
 	.tent-button .btn-secondary {
@@ -101,7 +105,7 @@ a[rel=tooltip] {
 /* Messages Panel */
 
 .tent-message-panel {
-	margin-top: 10px;
+	margin-top: 5px;
 
 	h5 {
 		float: left;
@@ -132,15 +136,21 @@ a[rel=tooltip] {
 
 	.alert {
 		position: relative;
-		margin: 10px 0px;
+		margin: 2px 0px 6px 0px;
 		padding: 7px;
 		@include border-radius(4px);
 		/*border: 1px solid #EED3D7;*/
+		.error-message {
+			padding: 0px 0px 0px 100px;
+		}
 	}
 
 	.alert-error {
 		@extend .alert;
 		border: 1px solid #EED3D7;
+		.error-message {
+			padding: 0px 0px 0px 58px;
+		}
 	}
 
 	.alert-info {
@@ -151,7 +161,6 @@ a[rel=tooltip] {
 	.alert-block {
 		 
 	}
-
 
 	.error-message {
 		cursor: pointer;
@@ -168,8 +177,12 @@ a[rel=tooltip] {
 
 		ul {
 			display: inline-block;
+			list-style: none;
+			margin-left: 0px;
 		}
 	}
+
+
 
 	.info-message {
 		padding: 0px 50px;
@@ -182,6 +195,10 @@ a[rel=tooltip] {
 			height: auto;
 		}
 	}
+}
+
+.btn-toolbar {
+	font-size: inherit;
 }
 
 
