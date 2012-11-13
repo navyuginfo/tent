@@ -19,6 +19,27 @@ jQuery.extend $.fn.fmatter.amount,
 		input.val(Tent.Formatting.amount.format(cellvalue) or "")
 
 
+# Percent Edit Formatter
+jQuery.extend $.fn.fmatter, 
+	percent: (cellvalue, opts, cell) ->
+		if (not cellvalue) and (cellvalue != 0)
+			cellvalue = $('input', cell).attr('value') or 0
+		Tent.Formatting.percent.format(cellvalue)
+
+jQuery.extend $.fn.fmatter.amount,
+	unformat: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0)
+			cellvalue = $('input', cell).attr('value')
+		Tent.Formatting.percent.unformat(cellvalue) or ""
+
+# Format the value of a Dom element
+jQuery.extend $.fn.fmatter.amount,
+	formatCell: (cellvalue, options, cell) ->
+		input = $('input', cell)
+		cellvalue = input.attr('value')
+		input.val(Tent.Formatting.percent.format(cellvalue) or "")
+
+
 # Date Formatter
 jQuery.extend $.fn.fmatter, 
 	date: (cellvalue, options, rowdata) ->

@@ -117,3 +117,30 @@ Tent.Formatting.number = Ember.Object.create
 
 	cssClass: ->
 		"amount"
+
+Tent.Formatting.percent = Ember.Object.create
+	isValidNumber: (value)->
+		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 
+
+	errorText: ->
+		Tent.I18n.loc 'formatting.percent'
+
+	format: (value) ->
+		if (typeof value == 'number') 
+			Math.round(1000*value)/10.toString(10) + "%"
+		else if value?
+			value
+		else 
+			""
+	unformat: (value) ->
+		# Convert from a string to a number
+		if @isValidNumber(value)
+			val = parseFloat(value)
+		else if value==""
+			return null
+		else 
+			value
+
+	cssClass: ->
+		"amount"
+
