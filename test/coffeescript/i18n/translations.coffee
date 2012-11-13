@@ -46,6 +46,7 @@ Tent.translations =
 	_hStart: 'Start'
 	_hFinish: 'Finish'
 	_hEffortDriven: 'Effort Driven'
+	_hCompleted: 'Completed'
 	_typeHere: 'Please provide a value'
 	_enterEmail:'Please enter an email address'
 	formatting: {

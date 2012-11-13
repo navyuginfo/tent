@@ -122,6 +122,7 @@ end
 Compass.configuration do |c|
   c.project_path = 'lib'
   c.http_generated_images_path = '/public/images'
+  c.line_comments = false
 end
 
 load_gem_assets('public', 'bootstrap-sass')
