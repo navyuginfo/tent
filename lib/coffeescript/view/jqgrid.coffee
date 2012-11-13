@@ -466,18 +466,18 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	addColumnDropdowns: ->
 		widget = this
 		for column in @get('columns')
-			template = Handlebars.compile "<ul class='column-dropdown' data-column='{{field}}'>
+			template = Handlebars.compile "
 				{{#if groupable}}
-					<li class='group'>Group</li>
-				{{/if}}
-			</ul>"
-			dropDown = $(template(column))
+					<ul class='dropdown-menu column-dropdown' data-column='{{field}}'>
+						{{#if groupable}}
+							<li class='group'>Group</li>
+						{{/if}}
+					</ul>
+				{{/if}}"
+			#dropDown = $(template(column))
 			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
-			@$(columnDivId).append dropDown
-			@$(columnDivId).addClass('has-dropdown')
-			@$(columnDivId).click(->
-				$('.column-dropdown', @).toggle()
-			)
+			@$(columnDivId).after template(column)
+			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
 
 		@$('.column-dropdown .group').click((e)->
 			target = $(e.target)

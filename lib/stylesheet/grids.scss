@@ -74,7 +74,6 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 		}
 	}
 
-
 	.ui-jqgrid .ui-jqgrid-hdiv {
 		overflow: visible;
 	}
@@ -89,25 +88,22 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
 		white-space: normal;
 		overflow: visible;
-
+		position: relative;
 		.has-dropdown {
-			overflow: visible;
 			cursor: pointer;
 			div {
 				overflow: visible;
 			}
-			.column-dropdown {
-				position: absolute;
-				z-index: 10000;
-				background-color: pink;
-				top: 20px;
-				list-style: none;
-				width: 100%;
-				left: 0px;
-				margin: 0px;
-				display: none;
-				cursor: pointer;
-			}
+		}
+		.column-dropdown {
+			width: 100%;
+			min-width: 60px;
+			margin: 0px;
+			cursor: pointer;
+			border-width: 2px;
+			border: 1px solid #A09F9F;
+			box-sizing: border-box;
+			@include border-top-radius(0px)
 		}
 	}
 	/****/
