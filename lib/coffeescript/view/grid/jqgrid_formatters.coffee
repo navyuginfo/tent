@@ -1,9 +1,13 @@
 # Amount Edit Formatter
 jQuery.extend $.fn.fmatter, 
-	amount: (cellvalue, opts, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
+	amount: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value') or 0
-		Tent.Formatting.amount.format(cellvalue)
+		formattedVal = Tent.Formatting.amount.format(cellvalue)
+		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+			'<span class="negative">'+formattedVal+'</span>'
+		else 
+			formattedVal
 
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
@@ -19,6 +23,24 @@ jQuery.extend $.fn.fmatter.amount,
 		input.val(Tent.Formatting.amount.format(cellvalue) or "")
 
 
+# Number Edit Formatter
+jQuery.extend $.fn.fmatter, 
+	number: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0) and cell?
+			cellvalue = $('input', cell).attr('value') or 0
+		formattedVal = Tent.Formatting.number.format(cellvalue)
+		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+			'<span class="negative">'+formattedVal+'</span>'
+		else 
+			formattedVal
+
+jQuery.extend $.fn.fmatter.number,
+	unformat: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0)
+			cellvalue = $('input', cell).attr('value')
+		Tent.Formatting.number.unformat(cellvalue) or ""
+
+
 # Percent Edit Formatter
 jQuery.extend $.fn.fmatter, 
 	percent: (cellvalue, opts, cell) ->
@@ -26,14 +48,14 @@ jQuery.extend $.fn.fmatter,
 			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.percent.format(cellvalue)
 
-jQuery.extend $.fn.fmatter.amount,
+jQuery.extend $.fn.fmatter.percent,
 	unformat: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.percent.unformat(cellvalue) or ""
 
 # Format the value of a Dom element
-jQuery.extend $.fn.fmatter.amount,
+jQuery.extend $.fn.fmatter.percent,
 	formatCell: (cellvalue, options, cell) ->
 		input = $('input', cell)
 		cellvalue = input.attr('value')
@@ -54,30 +76,8 @@ jQuery.extend $.fn.fmatter.date,
 		Tent.Formatting.date.unformat(cellvalue)
 
 
- 
-
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->
-		### Original Implementation
-				parentView = this.p.parentView
-				#parentView.get('controller.namespace').router.send(options.colModel.formatoptions.action))
-		      	
-				view = Ember.View.create
-					template: Ember.Handlebars.compile '<a {{action '+options.colModel.formatoptions.action+' content}}>'+cellvalue+'</a>'
-					parentView: parentView 
-					#sendAction: (a) ->
-					#	alert('here it is - formatter ['+@get('action')+']')
-					#	false
-				c = Ember.Object.create
-					content: parentView.getItemFromModel(options.rowId)
-				view[options.colModel.formatoptions.action] = ->
-					console.log 'action target not implemented'
-					false
-				view.set('_context', c)
-				view.createElement()
-				view.$().html()	
-		###
-
 		'<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
 
 

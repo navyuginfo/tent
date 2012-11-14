@@ -7,29 +7,29 @@ Pad.Models.TaskModel = DS.Model.extend
 	percentcomplete: DS.attr('number')
 	start: DS.attr('date')
 	finish: DS.attr('date')
-	effortdriven: DS.attr('string')
+	effortdriven: DS.attr('number')
 	completed: DS.attr('boolean')
 
 Pad.Models.TaskModel.FIXTURES = [{
 			id: 51
 			title: "Task 1"
-			amount: 123456.789
+			amount: -123456.789
 			duration: "5"
 			percentcomplete: Math.random()
 			start: new Date("01/01/2009")
 			finish: new Date("01/05/2009")
-			effortdriven: 1
+			effortdriven: -1
 			completed: true
 		},
 		{
 			id: 52,
 			title: "Task 2",
-			amount: 123456.789,
+			amount: -123456.789,
 			duration: "6",
 			percentcomplete: Math.random()
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: -41
 			completed: true
 		},
 		{

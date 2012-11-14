@@ -9,6 +9,7 @@
 $error-color: red;
 $error-background-color: rgba(255, 0, 0, 0.22);
 $breadcrumb-color: #333;
+$negative-color: red;
 
 
 /* Tent-Specific */
@@ -174,5 +175,8 @@ a[rel=tooltip] {
 	}
 }
 
-
+/* Data Type Formatting */
+.negative {
+	color: $negative-color;
+}
 
