@@ -84,6 +84,29 @@ test 'Number unformatting', ->
 	equal formatter.unformat(undefined), null, 'undefined'
 	equal formatter.unformat(""), null, 'empty string'
 
+test 'Percent Formatting', ->
+	formatter = Tent.Formatting.percent
+
+	equal formatter.format(.12), '12%', 'Number'
+	equal formatter.format(.1234), '12.3%', 'decimal places'
+	equal formatter.format(-.1234), '-12.3%', 'negative'
+	equal formatter.format(.00465), '0.5%', 'fraction'
+	equal formatter.format("12.3%"), '12.3%', 'string'
+	equal formatter.format(null), '', 'null'
+	equal formatter.format(undefined), '', 'undefined'
+	equal formatter.format(""), '', 'empty string'
+
+test 'Percent unformatting', ->
+	formatter = Tent.Formatting.percent
+
+	equal formatter.unformat('12.3%'), .123, 'Number'
+	equal formatter.unformat('12.3456%'), .123, 'decimal places'
+	equal formatter.unformat('-123.456%'), -1.235, 'negative'
+	equal formatter.unformat('46.5'), .465, 'fraction'
+	equal formatter.unformat('0.465'), .005, 'fraction'
+	equal formatter.unformat(null), null, 'null'
+	equal formatter.unformat(undefined), null, 'undefined'
+	equal formatter.unformat(""), null, 'empty string'
 	
 	
 	

@@ -134,10 +134,13 @@ Tent.Formatting.percent = Ember.Object.create
 			""
 	unformat: (value) ->
 		# Convert from a string to a number
-		if @isValidNumber(value)
-			val = parseFloat(value)
-		else if value==""
+		if value=="" or not value?
 			return null
+		if value.indexOf('%') != -1
+			value = value.split('%')[0]
+
+		if @isValidNumber(value)
+			val = parseFloat((value/100).toFixed(3))
 		else 
 			value
 
