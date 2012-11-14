@@ -47,6 +47,9 @@ Tent.I18n.loadTranslations(
 			csv: 'CSV'
 			xlsx: 'XLSX'
 		}
+		grouping: {
+			_groupBy: 'Group'
+		}
 	}
 	filter: {
 		availableFilters: 'Available Filters'
@@ -61,5 +64,8 @@ Tent.I18n.loadTranslations(
 		contains: 'contains'
 		equal: 'equal'
 		nEqual: 'not equal' 
+	}
+	grouping: {
+		
 	}
 )

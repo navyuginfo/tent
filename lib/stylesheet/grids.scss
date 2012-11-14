@@ -95,15 +95,14 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 				overflow: visible;
 			}
 		}
-		.column-dropdown {
-			width: 100%;
+		.column-dropdown {		
 			min-width: 60px;
 			margin: 0px;
 			cursor: pointer;
 			border-width: 2px;
 			border: 1px solid #A09F9F;
 			box-sizing: border-box;
-			@include border-top-radius(0px)
+			@include border-radius(0px)
 		}
 	}
 	/****/

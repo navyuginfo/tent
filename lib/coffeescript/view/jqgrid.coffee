@@ -183,6 +183,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 				if not @get('selectedIds').contains(id)
 					@highlightRow(id)
 			@set('selectedIds', sel.uniq())
+		else
+			@set('selection', [])
 
 		if @getTableDom()
 			@setSelectAllCheckbox(@getTableDom().get(0))
@@ -258,6 +260,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			groupingView: {
 				groupField: [@get('groupField')]
 				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0} - {1} Item(s)</b>']
+				groupDataSorted: true
 			}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
@@ -374,7 +377,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 
 	clearSelection: ->
 		@get('selectedIds').clear()
-		@get('selection').clear()
+		@get('selection').clear() if @get('selection')?
 
 	selectItem: (itemId) ->
 		@get('selectedIds').pushObject(itemId)
@@ -467,25 +470,46 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		widget = this
 		for column in @get('columns')
 			template = Handlebars.compile "
-				{{#if groupable}}
-					<ul class='dropdown-menu column-dropdown' data-column='{{field}}'>
-						{{#if groupable}}
-							<li class='group'>Group</li>
+				{{#if column.groupable}}
+					<ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'>
+						{{#if column.groupable}}
+							<li class='group dropdown-submenu'>
+								<a tabindex='-1'>Group</a>
+							    <ul class='dropdown-menu'>
+							    	{{#each groupType}}
+							    		<li data-grouptype='{{name}}'><a tabindex='-1'>{{title}}</a></li>
+							    	{{/each}}
+							    </ul>
+							</li>
 						{{/if}}
 					</ul>
 				{{/if}}"
-			#dropDown = $(template(column))
+			# Find another way to add these properties..
+			context = 
+				column: column
+				groupType: Tent.JqGrid.Grouping.ranges[column.type]
+
+			
 			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
-			@$(columnDivId).after template(column)
+			@$(columnDivId).after template(context)
 			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
 
-		@$('.column-dropdown .group').click((e)->
+		@$('.column-dropdown').click((e)->
 			target = $(e.target)
+			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
 			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			widget.groupByColumn(column)
+			widget.groupByColumn(column, groupType)
 		)
 
-	groupByColumn: (column)->
+	groupByColumn: (column, type)->
+		#this.getTableDom().jqGrid('sortGrid', column, true)
+		@get('collection').sort(
+			fields: [
+				sortAsc: true
+				field: column
+			]
+		)
+
 		this.getTableDom().groupingGroupBy(column, {groupText : ['<b>' + @getTitleForColumn(column) + ' = {0} - {1} Item(s)</b>']})
 		
 	renderColumnChooser: (tableDom)->
