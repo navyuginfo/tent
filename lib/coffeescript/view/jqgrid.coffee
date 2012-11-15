@@ -14,7 +14,7 @@ require '../mixin/grid/editable_support'
 * Create a jqGrid view which displays the data provided by its content property
 *
 * ##Usage
-*		{{view Tent.JqGrid
+*   {{view Tent.JqGrid
                   label="Tasks"
                   contentBinding="Pad.gridContent"
                   selectionBinding="Pad.selectedTasks"
@@ -26,6 +26,7 @@ require '../mixin/grid/editable_support'
 * - selection: An array of selected objects. This will provide the initial selections, as well as 
 * contain the items selected from the grid.
 ###
+
 
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport,
 	templateName: 'jqgrid'
@@ -513,4 +514,3 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if !selectedIds.contains(id)
 				allSelected = false
 		allSelected
-
