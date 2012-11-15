@@ -34,7 +34,7 @@ Tent.I18n = Ember.Namespace.create
 			vars = [vars] if typeof vars == 'string'
 			return Ember.String.fmt(string, vars)
 
-Tent.translate = Tent.I18n.translate
+Tent.translate = Tent.I18n.loc
 
 Tent.I18n.loadTranslations(
 	jqGrid: {
@@ -66,6 +66,13 @@ Tent.I18n.loadTranslations(
 		nEqual: 'not equal' 
 	}
 	grouping: {
-		
+		range: {
+			exact: 'Exact'
+			tens: 'Tens'
+			week: 'Week'
+			month: 'Month'
+			quarter: 'Quarter'
+			year: 'Year'
+		}
 	}
 )

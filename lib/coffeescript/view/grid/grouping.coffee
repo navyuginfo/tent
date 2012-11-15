@@ -4,61 +4,65 @@ Tent.JqGrid.Grouping = Ember.Object.create
 	ranges:
 		default: 
 			name: 'exact'
-			title: 'grouping.range.exact'
+			title: Tent.I18n.loc 'grouping.range.exact'
 			comparator: 
 				compare: (last, value) ->
-					return last != value
+					return last == value
 		date: [
 			{
 				name: 'exact'
-				title: 'grouping.range.exact'
+				title: Tent.I18n.loc  'grouping.range.exact'
 			}
 			{
 				name: 'week'
-				title: 'grouping.range.week'
+				title: Tent.I18n.loc 'grouping.range.week'
 			}
 			{
 				name: 'month'
-				title: 'grouping.range.month'
+				title: Tent.I18n.loc 'grouping.range.month'
 			}
 			{
 				name: 'quarter'
-				title: 'grouping.range.quarter'
+				title: Tent.I18n.loc 'grouping.range.quarter'
 			}
 			{
 				name: 'year'
-				title: 'grouping.range.year'
+				title: Tent.I18n.loc 'grouping.range.year'
 			}
 		]
 		string: [
 			{
 				name: 'exact'
-				title: 'grouping.range.exact'
+				title: Tent.I18n.loc 'grouping.range.exact'
 				
 			}
 		]
 		number: [
 			{
 				name: 'exact'
-				title: 'grouping.range.exact'
+				title: Tent.I18n.loc 'grouping.range.exact'
 			}
 			{
 				name: '10s'
-				title: 'grouping.range.tens'
+				title: Tent.I18n.loc 'grouping.range.tens'
 				comparator: 
 					compare: (last, value) ->
 						lower = last - (last%10)
 						upper = lower + 9
 						return lower <= value <= upper
+					rowTitle: (value)->
+						lower = value - (value%10)
+						upper = lower + 9
+						return lower + ' - ' + upper
 			}
 		]
 		boolean: [
 			{
 				name: 'exact'
-				title: 'grouping.range.exact'
+				title: Tent.I18n.loc 'grouping.range.exact'
 				comparator: 
 					compare: (last, value) ->
-						return last != value
+						return last == value
 			}
 		]
 

@@ -22,13 +22,13 @@ Pad.Models.TaskModel.FIXTURES = [{
 			completed: true
 		},
 		{
-			id: 52,
-			title: "Task 2",
-			amount: 123456.789,
-			duration: "6",
-			percentcomplete: Math.round(Math.random() * 100),
-			start: new Date("01/01/2009"),
-			finish: new Date("01/05/2009"),
+			id: 52
+			title: "Task 2"
+			amount: 123456.789
+			duration: "6"
+			percentcomplete: Math.round(Math.random() * 100)
+			start: new Date("01/01/2009")
+			finish: new Date("01/05/2009")
 			effortdriven: 2
 			completed: true
 		},

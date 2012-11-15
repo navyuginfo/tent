@@ -259,7 +259,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			grouping: @get('grouping')
 			groupingView: {
 				groupField: [@get('groupField')]
-				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0} - {1} Item(s)</b>']
+				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
 				groupDataSorted: true
 			}
 			onSelectRow: (itemId, status, e) ->
@@ -519,7 +519,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 				comparator = type.comparator if type.comparator?
 
 		this.getTableDom().groupingGroupBy(column, {
-				groupText : ['<b>' + @getTitleForColumn(column) + ' = {0} - {1} Item(s)</b>']
+				groupText : ['<b>' + @getTitleForColumn(column) + ' = {0}</b>']
 				range: comparator
 			}
 		)
