@@ -485,6 +485,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 					</ul>
 				{{/if}}"
 
+			column.groupable = not (column.groupable? && column.groupable ==false)
 			context = 
 				column: column
 				groupType: Tent.JqGrid.Grouping.ranges[column.type]
