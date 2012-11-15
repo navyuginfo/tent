@@ -60,7 +60,7 @@ $.jgrid.extend({
 						grp.groups[grp.counters[i].pos].summary = grp.counters[i].summary;
 					} else {
 
-						if( (typeof(v) !== "object" && (!grp.range.compare(grp.lastvalues[i], v))) ) {
+						if( (!grp.range.compare(grp.lastvalues[i], v)) ) {
 							// This record is not in same group as previous one
 							grp.groups.push({idx:i,dataIndex:fieldName,value:v, startRow: irow, cnt:1, summary : [] } );
 							grp.lastvalues[i] = v;

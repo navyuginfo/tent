@@ -484,11 +484,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 						{{/if}}
 					</ul>
 				{{/if}}"
-			# Find another way to add these properties..
+
 			context = 
 				column: column
 				groupType: Tent.JqGrid.Grouping.ranges[column.type]
-
 			
 			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
 			@$(columnDivId).after template(context)
@@ -505,7 +504,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		)
 
 	groupByColumn: (column, groupType, columnType)->
-		#this.getTableDom().jqGrid('sortGrid', column, true)
 		@get('collection').sort(
 			fields: [
 				sortAsc: true
@@ -513,13 +511,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			]
 		)
 
-		comparator = Tent.JqGrid.Grouping.ranges.default.comparator
-		for type in Tent.JqGrid.Grouping.ranges[columnType]
-			if type.name == groupType
-				comparator = type.comparator if type.comparator?
-
+		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
 		this.getTableDom().groupingGroupBy(column, {
-				groupText : ['<b>' + @getTitleForColumn(column) + ' = {0}</b>']
+				groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
 				range: comparator
 			}
 		)
