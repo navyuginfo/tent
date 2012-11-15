@@ -1,9 +1,22 @@
 # Amount Edit Formatter
+
+###*
+* @class jqgrid.formatter.amount Allows jsGrid cell content to be formatted as an amount
+* This formatter should be added to a column descriptor as follows:
+*       {id: "some_id", ..., formatter: "amount", formatoptions:{negative:true}}
+*
+* When 'negative' is set to true, then negative values will be displayed in different style to
+* non-negative amounts (usually colored red).
+###
 jQuery.extend $.fn.fmatter, 
-	amount: (cellvalue, opts, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
+	amount: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value') or 0
-		Tent.Formatting.amount.format(cellvalue)
+		formattedVal = Tent.Formatting.amount.format(cellvalue)
+		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+			'<span class="negative">'+formattedVal+'</span>'
+		else 
+			formattedVal
 
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
@@ -19,21 +32,52 @@ jQuery.extend $.fn.fmatter.amount,
 		input.val(Tent.Formatting.amount.format(cellvalue) or "")
 
 
-# Percent Edit Formatter
+# Number Edit Formatter
+###*
+* @class jqgrid.formatter.number Allows jsGrid cell content to be formatted as a number
+* This formatter should be added to a column descriptor as follows:
+*       {id: "some_id", ..., formatter: "number", formatoptions:{negative:true}}
+*
+* When 'negative' is set to true, then negative values will be displayed in different style to
+* non-negative numbers (usually colored red).
+###
+jQuery.extend $.fn.fmatter, 
+	number: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0) and cell?
+			cellvalue = $('input', cell).attr('value') or 0
+		formattedVal = Tent.Formatting.number.format(cellvalue)
+		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+			'<span class="negative">'+formattedVal+'</span>'
+		else 
+			formattedVal
+
+jQuery.extend $.fn.fmatter.number,
+	unformat: (cellvalue, options, cell) ->
+		if (not cellvalue) and (cellvalue != 0)
+			cellvalue = $('input', cell).attr('value')
+		Tent.Formatting.number.unformat(cellvalue) or ""
+
+
+# Percent Formatter
+###*
+* @class jqgrid.formatter.percent Allows jsGrid cell content to be formatted as a percentage value
+* This formatter should be added to a column descriptor as follows:
+*       {id: "some_id", ..., formatter: "percent"}
+###
 jQuery.extend $.fn.fmatter, 
 	percent: (cellvalue, opts, cell) ->
 		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.percent.format(cellvalue)
 
-jQuery.extend $.fn.fmatter.amount,
+jQuery.extend $.fn.fmatter.percent,
 	unformat: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0)
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.percent.unformat(cellvalue) or ""
 
 # Format the value of a Dom element
-jQuery.extend $.fn.fmatter.amount,
+jQuery.extend $.fn.fmatter.percent,
 	formatCell: (cellvalue, options, cell) ->
 		input = $('input', cell)
 		cellvalue = input.attr('value')
@@ -41,6 +85,11 @@ jQuery.extend $.fn.fmatter.amount,
 
 
 # Date Formatter
+###*
+* @class jqgrid.formatter.date Allows jsGrid cell content to be formatted as date values
+* This formatter should be added to a column descriptor as follows (dateFormat is optional):
+*       {id: "some_id", ..., formatter: "date", formatoptions:{dateFormat: "dd-M-yy"}}
+###
 jQuery.extend $.fn.fmatter, 
 	date: (cellvalue, options, rowdata) ->
 		if options.colModel.formatoptions
@@ -54,34 +103,17 @@ jQuery.extend $.fn.fmatter.date,
 		Tent.Formatting.date.unformat(cellvalue)
 
 
- 
-
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->
-		### Original Implementation
-				parentView = this.p.parentView
-				#parentView.get('controller.namespace').router.send(options.colModel.formatoptions.action))
-		      	
-				view = Ember.View.create
-					template: Ember.Handlebars.compile '<a {{action '+options.colModel.formatoptions.action+' content}}>'+cellvalue+'</a>'
-					parentView: parentView 
-					#sendAction: (a) ->
-					#	alert('here it is - formatter ['+@get('action')+']')
-					#	false
-				c = Ember.Object.create
-					content: parentView.getItemFromModel(options.rowId)
-				view[options.colModel.formatoptions.action] = ->
-					console.log 'action target not implemented'
-					false
-				view.set('_context', c)
-				view.createElement()
-				view.$().html()	
-		###
-
 		'<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
 
 
-#	checkboxEdit Formatter
+# CheckboxEdit Formatter
+###*
+* @class jqgrid.formatter.checkboxEdit Allows jsGrid boolean cell content to be displayed as a checkbox
+* This formatter should be added to a column descriptor as follows:
+*       {id: "some_id", ..., formatter: "checkboxEdit"}
+###
 jQuery.extend $.fn.fmatter, 
 	checkboxEdit: (cval, opts) ->
 		op = $.extend({},opts.checkbox)
@@ -102,6 +134,11 @@ jQuery.extend $.fn.fmatter.checkboxEdit,
 
 
 # Select Edit formatter
+###*
+* @class jqgrid.formatter.selectEdit Allows jsGrid cell content to be selected from a select box dropdown
+* This formatter should be added to a column descriptor as follows:
+*       {id: "some_id", ..., formatter: "selectEdit", editoptions:{value: {1:'One',2:'Two',3:'Three'}}}
+###
 jQuery.extend $.fn.fmatter, 
 	selectEdit: (cval, opts) ->
  		options = opts.colModel.editoptions.value
