@@ -79,7 +79,7 @@
     }
   });
 
-  Tent.translate = Tent.I18n.translate;
+  Tent.translate = Tent.I18n.loc;
 
   Tent.I18n.loadTranslations({
     jqGrid: {
@@ -91,6 +91,9 @@
         json: 'JSON',
         csv: 'CSV',
         xlsx: 'XLSX'
+      },
+      grouping: {
+        _groupBy: 'Group'
       }
     },
     filter: {
@@ -106,6 +109,16 @@
       contains: 'contains',
       equal: 'equal',
       nEqual: 'not equal'
+    },
+    grouping: {
+      range: {
+        exact: 'Exact',
+        tens: 'Tens',
+        week: 'Week',
+        month: 'Month',
+        quarter: 'Quarter',
+        year: 'Year'
+      }
     }
   });
 
@@ -2644,6 +2657,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     */
 
     showExportButton: true,
+<span id='Tent-JqGrid-property-grouping'>    /**
+</span>    	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
+    */
+
+    grouping: false,
+<span id='Tent-JqGrid-property-groupField'>    /**
+</span>    	* @property {String} groupField The name of the field by which to group the grid
+    */
+
+    groupField: null,
 <span id='Tent-JqGrid-property-onEditRow'>    /**
 </span>    	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
     	* The context of the function is this JqGrid View, and it will accept the following parameters:
@@ -2727,6 +2750,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           }
         }
         this.set('selectedIds', sel.uniq());
+      } else {
+        this.set('selection', []);
       }
       if (this.getTableDom()) {
         return this.setSelectAllCheckbox(this.getTableDom().get(0));
@@ -2791,6 +2816,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         cloneToTop: false,
         editurl: 'clientArray',
         pager: this.get('paged') ? this.getPagerId() : void 0,
+        grouping: this.get('grouping'),
+        groupingView: {
+          groupField: [this.get('groupField')],
+          groupText: ['&lt;b&gt;' + this.getTitleForColumn(this.get('groupField')) + ' = {0}&lt;/b&gt;'],
+          groupDataSorted: true
+        },
         onSelectRow: function(itemId, status, e) {
           return widget.didSelectRow(itemId, status, e);
         },
@@ -2802,6 +2833,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         }
       });
       this.addNavigationBar();
+      this.addColumnDropdowns();
       return this.gridDataDidChange();
     },
     onPageOrSort: function(postdata) {
@@ -2930,7 +2962,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     },
     clearSelection: function() {
       this.get('selectedIds').clear();
-      return this.get('selection').clear();
+      if (this.get('selection') != null) {
+        return this.get('selection').clear();
+      }
     },
     selectItem: function(itemId) {
       this.get('selectedIds').pushObject(itemId);
@@ -3045,6 +3079,54 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       this.renderColumnChooser(tableDom);
       this.renderExportButton(tableDom);
       return this.renderMaximizeButton();
+    },
+    addColumnDropdowns: function() {
+      var column, columnDivId, context, template, widget, _i, _len, _ref;
+      widget = this;
+      _ref = this.get('columns');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        template = Handlebars.compile(&quot;				{{#if column.groupable}}					&lt;ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'&gt;						{{#if column.groupable}}							&lt;li class='group dropdown-submenu'&gt;								&lt;a tabindex='-1'&gt;Group&lt;/a&gt;							    &lt;ul class='dropdown-menu'&gt;							    	{{#each groupType}}							    		&lt;li data-grouptype='{{name}}'&gt;&lt;a tabindex='-1'&gt;{{title}}&lt;/a&gt;&lt;/li&gt;							    	{{/each}}							    &lt;/ul&gt;							&lt;/li&gt;						{{/if}}					&lt;/ul&gt;				{{/if}}&quot;);
+        column.groupable = !((column.groupable != null) &amp;&amp; column.groupable === false);
+        context = {
+          column: column,
+          groupType: Tent.JqGrid.Grouping.ranges[column.type]
+        };
+        columnDivId = '#jqgh_' + this.get('elementId') + '_jqgrid_' + column.field;
+        this.$(columnDivId).after(template(context));
+        this.$(columnDivId).addClass('has-dropdown').attr('data-toggle', 'dropdown');
+      }
+      return this.$('.column-dropdown').click(function(e) {
+        var col, columnType, groupType, target, _j, _len1, _ref1;
+        target = $(e.target);
+        groupType = target.attr('data-grouptype') || target.parents('li[data-grouptype]:first').attr('data-grouptype');
+        column = target.attr('data-column') || target.parents('ul.column-dropdown:first').attr('data-column');
+        columnType = 'string';
+        _ref1 = widget.get('columns');
+        for (_j = 0, _len1 = _ref1.length; _j &lt; _len1; _j++) {
+          col = _ref1[_j];
+          if (col.field === column) {
+            columnType = col.type;
+          }
+        }
+        return widget.groupByColumn(column, groupType, columnType);
+      });
+    },
+    groupByColumn: function(column, groupType, columnType) {
+      var comparator;
+      this.get('collection').sort({
+        fields: [
+          {
+            sortAsc: true,
+            field: column
+          }
+        ]
+      });
+      comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
+      return this.getTableDom().groupingGroupBy(column, {
+        groupText: ['&lt;b&gt;' + this.getTitleForColumn(column) + ':  {0}&lt;/b&gt;'],
+        range: comparator
+      });
     },
     renderColumnChooser: function(tableDom) {
       var widget;
@@ -3168,6 +3250,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         return this.getTableDom().setGridWidth(this.$().width());
       }
     },
+    getTitleForColumn: function(colName) {
+      var column, _i, _len, _ref;
+      _ref = this.get('columns');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        if (column.field === colName) {
+          return Tent.I18n.loc(column.title);
+        }
+      }
+    },
     colNames: (function() {
       var column, names, _i, _len, _ref;
       names = [];
@@ -3197,7 +3289,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           width: column.width || 20,
           position: &quot;right&quot;,
           hidden: column.hidden,
-          hidedlg: column.hideable === false ? true : void 0
+          hidedlg: column.hideable === false ? true : void 0,
+          sortable: column.sortable,
+          groupable: column.groupable
         };
         columns.pushObject(item);
       }
@@ -3235,9 +3329,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         records: this.get('totalRows'),
         page: this.get('pagingData').page
       };
+      this.resetGrouping();
       this.getTableDom()[0].addJSONData(data);
       return this.highlightRows(this.getTableDom().get(0));
-    }).observes('content', 'content.isLoaded', 'content.@each')
+    }).observes('content', 'content.isLoaded', 'content.@each'),
+    resetGrouping: function() {
+      return this.getTableDom().groupingSetup();
+    }
   });
 
 }).call(this);
@@ -3401,6 +3499,257 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       custom_func: Tent.JqGrid.Validators.amount
     }
   };
+
+}).call(this);
+
+
+
+<span id='Tent-JqGrid-Grouping'>/**
+</span>* @class Tent.JqGrid.Grouping
+* Provides configuration options for grouping by column values and comparators for defining
+* grouping ranges.
+*
+*/
+
+
+(function() {
+
+  Tent.JqGrid.Grouping = Ember.Object.extend;
+
+<span id='Tent-JqGrid-Grouping-method-getComparator'>  /**
+</span>  * @method getComparator returns a comparator to use for a combination of datatype and grouping type
+  * @param {String} dataType the type of the column which is defining the grouping e.g. 'date'
+  * @param {String} groupType the type of grouping to perform e.g. 'month'
+  */
+
+
+  Tent.JqGrid.Grouping.getComparator = function(dataType, groupType) {
+    var comparator, type, _i, _len, _ref;
+    comparator = this.ranges[&quot;default&quot;].comparator;
+    if (!(this.ranges[dataType] != null)) {
+      throw new Error('Invalid data type for grid grouping.');
+    }
+    _ref = this.ranges[dataType];
+    for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+      type = _ref[_i];
+      if (type.name === groupType) {
+        if (type.comparator != null) {
+          comparator = type.comparator;
+        }
+      }
+    }
+    return comparator;
+  };
+
+<span id='Tent-JqGrid-Grouping-comparator'>  /**
+</span>  * @class Tent.JqGrid.Grouping.comparator
+  * A base class for providing custom comparison functions for determining if values lie in a particular range.
+  */
+
+
+  Tent.JqGrid.Grouping.comparator = Ember.Object.extend({
+<span id='Tent-JqGrid-Grouping-comparator-method-compare'>    /**
+</span>    	* @method compare Test whether a value lies in the same range as another.
+    	* @param {Object} firstValue The value defining the range to use in the test
+    	* @param {Object} testValue The value to test
+    	* @param {Boolean} The result of the test
+    */
+
+    compare: function(firstValue, testValue) {
+      return firstValue === testValue;
+    },
+<span id='Tent-JqGrid-Grouping-comparator-method-rowTitle'>    /**
+</span>    	* @method rowTitle Returns the text to display as the first interpolation of the group row text
+    	* @param {Object} value the value which is used to determine the range
+    */
+
+    rowTitle: function(value) {
+      return value;
+    }
+  });
+
+<span id='Tent-JqGrid-Grouping-comparator-property-Tent.JqGrid.Grouping.ranges'>  /**
+</span>  * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
+  */
+
+
+  Tent.JqGrid.Grouping.ranges = Ember.Object.create({
+    &quot;default&quot;: {
+      name: 'exact',
+      title: Tent.I18n.loc('grouping.range.exact'),
+      comparator: Tent.JqGrid.Grouping.comparator.create()
+    },
+<span id='Tent-JqGrid-Grouping-ranges-date'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.date
+    */
+
+    date: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-exact'>        /**
+</span>        				* @property {Object} exact group dates which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return last.compareTo(value) === 0;
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-week'>        /**
+</span>        				* @property {Object} week group dates which occur in the same week
+        */
+
+        name: 'week',
+        title: Tent.I18n.loc('grouping.range.week'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getWeek() === value.getWeek());
+          },
+          rowTitle: function(value) {
+            var date;
+            date = Tent.Formatting.date.unformat(value);
+            return 'Week ' + date.getWeek() + ', ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-month'>        /**
+</span>        				* @property {Object} month group dates which occur in the same month
+        */
+
+        name: 'month',
+        title: Tent.I18n.loc('grouping.range.month'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getMonth() === value.getMonth());
+          },
+          rowTitle: function(value) {
+            var date;
+            date = Tent.Formatting.date.unformat(value);
+            return Tent.Formatting.date.format(date, 'MM') + ' ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-quarter'>        /**
+</span>        				* @property {Object} quarter group dates which occur in the same quarter
+        */
+
+        name: 'quarter',
+        title: Tent.I18n.loc('grouping.range.quarter'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            var quarter, _ref;
+            quarter = Math.floor(last.getMonth() / 3) + 1;
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (((quarter - 1) * 3) &lt;= (_ref = value.getMonth()) &amp;&amp; _ref &lt;= ((quarter - 1) * 3) + 2);
+          },
+          rowTitle: function(value) {
+            var date, quarter;
+            date = Tent.Formatting.date.unformat(value);
+            quarter = Math.floor(date.getMonth() / 3) + 1;
+            return 'Quarter ' + quarter + ', ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-year'>        /**
+</span>        				* @property {Object} year group dates which occur in the same year
+        */
+
+        name: 'year',
+        title: Tent.I18n.loc('grouping.range.year'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return last.getFullYear() === value.getFullYear();
+          },
+          rowTitle: function(value) {
+            return 'Year = ' + Tent.Formatting.date.unformat(value).getFullYear();
+          }
+        })
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-string'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.string
+    */
+
+    string: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-string-property-exact'>        /**
+</span>        				* @property {Object} exact group string which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-number'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.number
+    */
+
+    number: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-number-property-exact'>        /**
+</span>        				* @property {Object} exact group numbers which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-number-property-10s'>        /**
+</span>        				* @property {Object} 10s group numbers in ranges of ten
+        */
+
+        name: '10s',
+        title: Tent.I18n.loc('grouping.range.tens'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          lower: null,
+          upper: null,
+          compare: function(last, value) {
+            this.calculateRange(last);
+            return (this.get('lower') &lt;= value &amp;&amp; value &lt;= this.get('upper'));
+          },
+          rowTitle: function(value) {
+            value = parseFloat(value);
+            this.calculateRange(value);
+            return this.get('lower') + ' - ' + this.get('upper');
+          },
+          calculateRange: function(value) {
+            var lower, upper;
+            if (value &gt;= 0) {
+              lower = value - (value % 10);
+              upper = lower + 9;
+            } else {
+              if (value % 10 === 0) {
+                lower = value;
+                upper = value + 9;
+              } else {
+                upper = -1 + value - (value % 10);
+                lower = upper - 9;
+              }
+            }
+            this.set('lower', lower);
+            return this.set('upper', upper);
+          }
+        })
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-boolean'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.boolean
+    */
+
+    boolean: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-boolean-property-exact'>        /**
+</span>        				* @property {Object} exact group boleans which have the same value
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }
+    ]
+  });
 
 }).call(this);
 
@@ -4051,7 +4400,7 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t&lt;/div&gt;\n\t\t\n\t\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left cancel\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t\t  {{/if}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t{{/if}}\n\t&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\t&lt;div class=\&quot;modal-backdrop fade in\&quot;&gt;&lt;/div&gt;\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t&lt;/div&gt;\n\t\t\n\t\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left cancel\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t\t  {{/if}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t{{/if}}\n\t&lt;/div&gt;\n&quot;);
 
 Ember.TEMPLATES['modal_body']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;modal-body\&quot;&gt;\n\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t{{#if view.text}}\n  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n  \t{{/if}}\n  \t{{yield}}\n&lt;/div&gt;&quot;);
 
@@ -4261,7 +4610,7 @@ Tent.ModalPane = Ember.View.extend({
       }
     },
     didInsertElement: function() {
-      var widget,
+      var modalId, widget,
         _this = this;
       if (this.get('autoLaunch')) {
         this.launch();
@@ -4276,12 +4625,16 @@ Tent.ModalPane = Ember.View.extend({
           return widget.launch();
         });
       }
-      this.$(&quot;.modal&quot;).on(&quot;hidden&quot;, function(e) {
-        if (_this.targetIsMessagePanel(e.target)) {
-          return _this.triggerCancelAction(e);
+      this.$(&quot;.modal:first&quot;).on(&quot;hidden&quot;, function(e) {
+        if (!_this.get('hidden') &amp;&amp; _this.targetIsMessagePanel(e.target)) {
+          _this.triggerCancelAction(e);
+          return _this.hide();
         }
       });
-      return this.$('.close-dialog').click(function(event) {
+      modalId = this.get('elementId');
+      return this.$('.close-dialog').filter(function() {
+        return $(this).parents('.tent-modal:first').attr('id') === modalId;
+      }).click(function(event) {
         if (!$(event.target).attr('disabled')) {
           return _this.hide();
         }
@@ -4322,11 +4675,11 @@ Tent.ModalPane = Ember.View.extend({
       return Ember.View.views[$('.tent-message-panel.primary').attr('id')];
     },
     getMessagePanelView: function() {
-      return Ember.View.views[this.$('.tent-message-panel').attr('id')];
+      return Ember.View.views[this.$('.tent-message-panel:first').attr('id')];
     },
     triggerCancelAction: function(e) {
       var buttonView, cancelButton, id;
-      cancelButton = this.$('.cancel');
+      cancelButton = this.$('.cancel:last');
       if (cancelButton.length &gt; 0) {
         id = cancelButton.parent('.tent-button').attr('id');
         buttonView = Ember.View.views[id];
@@ -4344,13 +4697,35 @@ Tent.ModalPane = Ember.View.extend({
 
     launch: function() {
       this.set('hidden', false);
-      this.$('.modal').modal(this.get('options'));
+      this.$('.modal:first').modal(this.get('options'));
+      this.fadeParentModal();
       return this.enableMessagePanel();
     },
     hide: function() {
       this.set('hidden', true);
-      this.$('.modal').modal('hide');
+      this.restoreParentModal();
+      this.$('.modal:first').modal('hide');
       return this.disableMessagePanel();
+    },
+    fadeParentModal: function() {
+      var parentBackdrop;
+      parentBackdrop = this.$().parents('.tent-modal:first').find('.modal-backdrop:first');
+      parentBackdrop.hide().attr('data-hidden', true);
+      if (parentBackdrop.length &gt; 0) {
+        return this.$('.modal-backdrop:first').fadeIn(0).attr('data-hidden', false);
+      } else {
+        return this.$('.modal-backdrop:first').fadeIn(200).attr('data-hidden', false);
+      }
+    },
+    restoreParentModal: function() {
+      var parentBackdrop;
+      parentBackdrop = this.$().parents('.tent-modal:first').find('.modal-backdrop:first');
+      parentBackdrop.show().attr('data-hidden', false);
+      if (parentBackdrop.length &gt; 0) {
+        return this.$('.modal-backdrop:first').fadeOut(0).attr('data-hidden', true);
+      } else {
+        return this.$('.modal-backdrop:first').fadeOut(200).attr('data-hidden', true);
+      }
     }
   });
 
@@ -5071,24 +5446,17 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;\n\n{{view E
 }).call(this);
 
 
-Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n&lt;/span&gt;\n&lt;span&gt;\n  {{#if view.anyFiles}}\n    {{view Tent.Table listBinding=\&quot;view.selectedFiles\&quot; columns=\&quot;files.0.name\&quot; headers=\&quot;filename\&quot;}}\n    {{view Tent.Button label=\&quot;Upload\&quot; type=\&quot;primary\&quot; action=\&quot;upload\&quot; targetBinding=\&quot;view\&quot;}}\n  {{/if}}\n&lt;/span&gt;\n&quot;);
+Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n&lt;/span&gt;\n&quot;);
 
 (function() {
 Tent.FileUpload = Ember.View.extend({
     templateName: 'file_upload',
     classNameBindings: ['tent-file-upload'],
-    init: function() {
-      this._super();
-      return this.set('selectedFiles', Ember.A());
-    },
     didInsertElement: function() {
       var _this = this;
       return this.$('input').fileupload({
         add: function(e, data) {
-          return _this.addFile(e, data);
-        },
-        done: function(e, data) {
-          return _this.doneUploading(e, data);
+          return data.submit().success(_this.successWrapper(_this.get('parentView.controller')));
         }
       });
     },
@@ -5104,28 +5472,7 @@ Tent.FileUpload = Ember.View.extend({
           return void 0;
         };
       }
-    },
-    upload: function() {
-      var _this = this;
-      return this.get('selectedFiles').forEach(function(file) {
-        var success;
-        success = _this.successWrapper(_this.get('parentView.controller'));
-        return file.submit().success(success);
-      });
-    },
-    addFile: function(e, data) {
-      return this.get('selectedFiles').pushObject(data);
-    },
-    doneUploading: function(e, data) {
-      var selectedFiles;
-      selectedFiles = this.get('selectedFiles');
-      return selectedFiles.removeObject(selectedFiles.filter(function(file) {
-        return file.files[0] === data.files[0];
-      })[0]);
-    },
-    anyFiles: (function() {
-      return this.get('selectedFiles').length &gt; 0;
-    }).property('selectedFiles.@each')
+    }
   });
 
 }).call(this);
