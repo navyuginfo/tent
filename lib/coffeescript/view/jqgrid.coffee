@@ -498,10 +498,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			target = $(e.target)
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
 			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			widget.groupByColumn(column, groupType)
+			columnType = 'string'
+			for col in widget.get('columns')
+				if col.field == column then columnType= col.type
+			widget.groupByColumn(column, groupType, columnType)
 		)
 
-	groupByColumn: (column, type)->
+	groupByColumn: (column, groupType, columnType)->
 		#this.getTableDom().jqGrid('sortGrid', column, true)
 		@get('collection').sort(
 			fields: [
@@ -510,7 +513,16 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			]
 		)
 
-		this.getTableDom().groupingGroupBy(column, {groupText : ['<b>' + @getTitleForColumn(column) + ' = {0} - {1} Item(s)</b>']})
+		comparator = Tent.JqGrid.Grouping.ranges.default.comparator
+		for type in Tent.JqGrid.Grouping.ranges[columnType]
+			if type.name == groupType
+				comparator = type.comparator if type.comparator?
+
+		this.getTableDom().groupingGroupBy(column, {
+				groupText : ['<b>' + @getTitleForColumn(column) + ' = {0} - {1} Item(s)</b>']
+				range: comparator
+			}
+		)
 		
 	renderColumnChooser: (tableDom)->
 		widget =  @

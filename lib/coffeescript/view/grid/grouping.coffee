@@ -2,6 +2,12 @@
 
 Tent.JqGrid.Grouping = Ember.Object.create
 	ranges:
+		default: 
+			name: 'exact'
+			title: 'grouping.range.exact'
+			comparator: 
+				compare: (last, value) ->
+					return last != value
 		date: [
 			{
 				name: 'exact'
@@ -28,6 +34,7 @@ Tent.JqGrid.Grouping = Ember.Object.create
 			{
 				name: 'exact'
 				title: 'grouping.range.exact'
+				
 			}
 		]
 		number: [
@@ -35,12 +42,23 @@ Tent.JqGrid.Grouping = Ember.Object.create
 				name: 'exact'
 				title: 'grouping.range.exact'
 			}
+			{
+				name: '10s'
+				title: 'grouping.range.tens'
+				comparator: 
+					compare: (last, value) ->
+						lower = last - (last%10)
+						upper = lower + 9
+						return lower <= value <= upper
+			}
 		]
 		boolean: [
 			{
 				name: 'exact'
 				title: 'grouping.range.exact'
+				comparator: 
+					compare: (last, value) ->
+						return last != value
 			}
 		]
-
 

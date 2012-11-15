@@ -29,7 +29,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 2
 			completed: true
 		},
 		{
@@ -40,7 +40,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 3
 			completed: false
 		},
 		{
@@ -51,7 +51,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 4
 			completed: false
 		},
 		{
@@ -62,7 +62,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 8
 			completed: false
 		},
 		{
@@ -73,7 +73,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 11
 			completed: false
 		},
 		{
@@ -84,7 +84,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 12
 			completed: false
 		},
 		{
@@ -95,7 +95,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 13
 			completed: false
 		},
 		{
@@ -106,7 +106,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 14
 			completed: false
 		},
 		{
@@ -117,7 +117,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 15
 			completed: false
 		},
 		{
@@ -128,7 +128,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 20
 			completed: false
 		},
 		{
@@ -139,7 +139,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 22
 			completed: false
 		},
 		{
@@ -150,7 +150,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 25
 			completed: false
 		},
 		{
@@ -161,7 +161,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 35
 			completed: false
 		},
 		{
@@ -172,7 +172,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 36
 			completed: false
 		},
 		{
@@ -183,7 +183,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 37
 			completed: false
 		},
 		{
@@ -194,7 +194,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 38
 			completed: false
 		},
 		{
@@ -205,7 +205,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 52
 			completed: false
 		},
 		{
@@ -216,7 +216,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 54
 			completed: false
 		},
 		{
@@ -227,7 +227,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 59
 			completed: false
 		},
 		{
@@ -238,7 +238,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 63
 			completed: false
 		},
 		{
@@ -249,7 +249,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 64
 		},
 		{
 			id: 73,
@@ -259,7 +259,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 65
 			completed: false
 		},
 		{
@@ -270,7 +270,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 66
 			completed: false
 		},
 		{
@@ -281,7 +281,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 67
 			completed: false
 		},
 		{
@@ -292,7 +292,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 68
 			completed: false
 		},
 		{
@@ -303,7 +303,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			percentcomplete: Math.round(Math.random() * 100),
 			start: new Date("01/01/2009"),
 			finish: new Date("01/05/2009"),
-			effortdriven: 1
+			effortdriven: 69
 			completed: false
 		}
 	]
