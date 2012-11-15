@@ -39,6 +39,27 @@ test 'Basic functionality', ->
 	equal view.getInfosForView('id1').length, 0, '0 infos returned'
 
 
+test 'Removing messages', ->
+	view = Tent.MessagePanel.create()
+
+	message = Tent.Message.create
+		type: Tent.Message.ERROR_TYPE
+		sourceId: 'id1'
+		messages: ['error1', 'error2','error3']
+
+	message2 = Tent.Message.create
+		type: Tent.Message.ERROR_TYPE
+		sourceId: 'id2'
+		messages: ['error4', 'error5', 'error6']
+
+	view.handleNewMessage(null, message)
+	view.handleNewMessage(null, message2)
+	equal view.getErrorsForView('id1').length, 3, '3 errors for id1 returned'
+	equal view.get('error').length, 2, '2 errors in total'
+
+	view.removeMessage(Tent.Message.ERROR_TYPE, 'id2')
+	equal view.get('error').length, 1, '1 error left'
+
 test 'Test auto clearing of errors for source', ->
 	view = Tent.MessagePanel.create()
 
@@ -57,6 +78,7 @@ test 'Test auto clearing of errors for source', ->
 	view.handleNewMessage(null, message)
 	equal view.getErrorsForView('id1').length, 0, 'Errors should have been cleared'
 
+
 test 'Collapsed property', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.MessagePanel collapsed=false }}'
@@ -67,6 +89,7 @@ test 'Collapsed property', ->
 	Ember.run ->
 		$.publish('/message', {type:'error', messages:['message1']})
 	equal view.$('.error-expando.in').length, 1, 'in- attribute added'
+
 
 test 'Collapsible property', ->
 	view = Ember.View.create
@@ -140,5 +163,21 @@ test 'Called by ValidationSupport', ->
 	widget.addValidationError("second")
 	widget.addValidationError("third")
 	equal errorPanel.getErrorsForView(widget.get('elementId')).length, 3, 'Should be 3 errors'
+
+test 'hasWarnings', ->
+	view = Tent.MessagePanel.create()
+
+	message = Tent.Message.create
+		type: Tent.Message.WARNING_TYPE
+		sourceId: 'id1'
+		messages: ['warning1', 'warning2']
+
+	view.handleNewMessage(null, message)
+
+	ok view.get('hasWarnings'), 'there should be warnings'
+
+	#equal view.getErrorsForView('id1').length, 2, '2 errors returned'
+
+
 
 	

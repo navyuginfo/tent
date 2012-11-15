@@ -24,7 +24,7 @@
       {{/if}}
     {{/if}}
     {{#if view.hasErrors}}
-      <span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
+      <ul class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>
     {{/if}}  
   </div>
   {{#if view.tooltip}}

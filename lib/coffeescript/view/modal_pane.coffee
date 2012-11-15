@@ -195,6 +195,20 @@ Tent.ModalPane = Ember.View.extend
   * screen, regardless of any other property settings.
   ###
   autoLaunch: null
+
+  ###*
+  * @property {Boolean} validate Determines whether the primary button executes validations on 
+  * the form widgets.
+  ###
+  validate: true
+
+  ###*
+  * @property {Boolean} warn A boolean to indicate that warning messages will be handled by the 
+  * primary button. If warning messages of a certain severity exist, a popup will be displayed to 
+  * allow the user to chose to ignore the warnings.
+  ###
+  warn: false
+
   hidden: true
 
   init: ->
