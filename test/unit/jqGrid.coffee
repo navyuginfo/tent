@@ -75,3 +75,4 @@ test 'Validate on Selection', ->
 	grid.set('selection', selection)
 	ok didValidate, 'Should have validated'
 
+

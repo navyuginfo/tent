@@ -1,6 +1,12 @@
+Tent.JqGrid.Grouping = Ember.Object.extend
 
-Tent.JqGrid.Grouping = Ember.Object.create
-	getComparator: (dataType, groupType)->
+Tent.JqGrid.Grouping.comparator = Ember.Object.extend
+	compare: (last, value) ->
+		return last == value
+	rowTitle: (value)->
+		value
+
+Tent.JqGrid.Grouping.getComparator = (dataType, groupType)->
 		comparator = @ranges.default.comparator
 		if not @ranges[dataType]?
 			throw new Error('Invalid data type for grid grouping.')
@@ -9,25 +15,24 @@ Tent.JqGrid.Grouping = Ember.Object.create
 				comparator = type.comparator if type.comparator?
 		comparator 
 
-	ranges:
+Tent.JqGrid.Grouping.ranges = Ember.Object.create
 		default: 
 			name: 'exact'
 			title: Tent.I18n.loc 'grouping.range.exact'
-			comparator: 
-				compare: (last, value) ->
-					return last == value
+			comparator: Tent.JqGrid.Grouping.comparator.create()
+
 		date: [
 			{
 				name: 'exact'
 				title: Tent.I18n.loc  'grouping.range.exact'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value) ->
 						return last.compareTo(value) == 0
 			}
 			{
 				name: 'week'
 				title: Tent.I18n.loc 'grouping.range.week'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getWeek() == value.getWeek())
 					rowTitle: (value)->
@@ -37,7 +42,7 @@ Tent.JqGrid.Grouping = Ember.Object.create
 			{
 				name: 'month'
 				title: Tent.I18n.loc 'grouping.range.month'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getMonth() == value.getMonth())
 					rowTitle: (value)->
@@ -47,7 +52,7 @@ Tent.JqGrid.Grouping = Ember.Object.create
 			{
 				name: 'quarter'
 				title: Tent.I18n.loc 'grouping.range.quarter'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						quarter = Math.floor(last.getMonth()/3) + 1
 						(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
@@ -60,7 +65,7 @@ Tent.JqGrid.Grouping = Ember.Object.create
 			{
 				name: 'year'
 				title: Tent.I18n.loc 'grouping.range.year'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						last.getFullYear() == value.getFullYear()
 					rowTitle: (value)->
@@ -71,52 +76,50 @@ Tent.JqGrid.Grouping = Ember.Object.create
 			{
 				name: 'exact'
 				title: Tent.I18n.loc 'grouping.range.exact'
-				
+				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 		]
 		number: [
 			{
 				name: 'exact'
 				title: Tent.I18n.loc 'grouping.range.exact'
+				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 			{
 				name: '10s'
 				title: Tent.I18n.loc 'grouping.range.tens'
-				comparator: 
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
 					compare: (last, value) ->
-						if last >= 0
-							lower = last - (last%10)
-							upper = lower + 9
-						else 
-							if last%10 == 0
-								lower = last
-								upper = last + 9
-							else
-								upper = -1 + last - (last%10) 
-								lower = upper - 9
-						return lower <= value <= upper
+						@calculateRange(last)
+						return @get('lower') <= value <= @get('upper')
+
 					rowTitle: (value)->
 						value = parseFloat(value)
-						if value >=0
+						@calculateRange(value)
+						return @get('lower') + ' - ' + @get('upper')
+
+					calculateRange: (value)->
+						if value >= 0
 							lower = value - (value%10)
 							upper = lower + 9
-						else
+						else 
 							if value%10 == 0
 								lower = value
 								upper = value + 9
 							else
 								upper = -1 + value - (value%10) 
 								lower = upper - 9
-						return lower + ' - ' + upper
+						@set('lower',lower)
+						@set('upper', upper)
 			}
 		]
 		boolean: [
 			{
 				name: 'exact'
 				title: Tent.I18n.loc 'grouping.range.exact'
-				comparator: 
-					compare: (last, value) ->
-						return last == value
+				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 		]
 
