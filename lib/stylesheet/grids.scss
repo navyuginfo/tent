@@ -120,6 +120,7 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 
 	}
 
+	/* Export */
 	.column-chooser, .export {
 		float: right;
 		margin-right: 30px;
@@ -143,6 +144,21 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 		}
 		.export-excel {
 			background-image: url(images/export/page_excel.png)
+
+	.custom-export {
+		padding: 15px 5px;
+		width: 360px;
+		label {
+			font-size: 11px;
+			/*float: none;*/
+			margin-left: 20px;
+			padding-top: 5px;
+		}
+		.control-group {
+			margin-bottom: 5px;
+		}
+		.controls {
+			margin-left: 150px;
 		}
 	}
 
@@ -263,10 +279,11 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 			color: #B94A48;
 		}
 	}
-
-
 }
 
+.dropdown-submenu-left > .dropdown-menu.custom-export {
+	left: -367px;
+}
 
 /* Selected row in a Tent.Table */
 .tent-selected {
