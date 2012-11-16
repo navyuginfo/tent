@@ -79,33 +79,59 @@
     }
   });
 
-  Tent.translate = Tent.I18n.translate;
+  Tent.translate = Tent.I18n.loc;
 
   Tent.I18n.loadTranslations({
-    jqGrid: {
-      hideShowAlt: 'Hide/Show Columns',
-      hideShowCaption: 'Columns',
-      hideShowTitle: 'Hide/Show Columns',
-      &quot;export&quot;: {
-        xml: 'XML',
-        json: 'JSON',
-        csv: 'CSV',
-        xlsx: 'XLSX'
+    tent: {
+      button: {
+        ok: 'Ok',
+        yes: 'Yes',
+        cancel: 'Cancel',
+        no: 'No',
+        proceed: 'Ignore warnings and proceed',
+        dontProceed: 'No, return to page'
+      },
+      jqGrid: {
+        hideShowAlt: 'Hide/Show Columns',
+        hideShowCaption: 'Columns',
+        hideShowTitle: 'Hide/Show Columns',
+        &quot;export&quot;: {
+          xml: 'XML',
+          json: 'JSON',
+          csv: 'CSV',
+          xlsx: 'XLSX'
+        }
+      },
+      filter: {
+        filter: 'Filter',
+        availableFilters: 'Available Filters',
+        selectedFilter: 'Selected Filter',
+        currentFilter: 'Current Filter',
+        saveFilter: 'Save Filter',
+        save: 'Save',
+        cancel: 'Cancel',
+        label: 'Label',
+        description: 'Description',
+        beginsWith: 'begins with',
+        contains: 'contains',
+        equal: 'equal',
+        nEqual: 'not equal'
+      },
+      warning: {
+        header: 'Warnings Exist',
+        warningsOnPage: 'The following warnings exist on this page. Do you wish to ignore them and proceed?'
+      },
+      grouping: {
+        _groupBy: 'Group',
+        range: {
+          exact: 'Exact',
+          tens: 'Tens',
+          week: 'Week',
+          month: 'Month',
+          quarter: 'Quarter',
+          year: 'Year'
+        }
       }
-    },
-    filter: {
-      availableFilters: 'Available Filters',
-      selectedFilter: 'Selected Filter',
-      currentFilter: 'Current Filter',
-      saveFilter: 'Save Filter',
-      save: 'Save',
-      cancel: 'Cancel',
-      label: 'Label',
-      description: 'Description',
-      beginsWith: 'begins with',
-      contains: 'contains',
-      equal: 'equal',
-      nEqual: 'not equal'
     }
   });
 
@@ -214,6 +240,8 @@
     Tent.messages = {};
   }
 
+  Tent.messages.GENERIC_ERROR = 'Error';
+
   Tent.messages.REQUIRED_ERROR = 'Required field';
 
   Tent.messages.NUMERIC_ERROR = &quot;Numeric field required&quot;;
@@ -223,6 +251,10 @@
   Tent.messages.EMAIL_FORMAT_ERROR = &quot;Email format error&quot;;
 
   Tent.messages.DATE_FORMAT_ERROR = &quot;Date format error&quot;;
+
+  Tent.messages.DATE_BETWEEN_ERROR = &quot;Date should be between %@2 and %@3&quot;;
+
+  Tent.messages.DATE_FUTURE_ERROR = &quot;You provided a date in the future&quot;;
 
 }).call(this);
 
@@ -531,6 +563,73 @@
 
 
 (function() {
+
+  Tent.Validations = Ember.Object.create();
+
+  Tent.Validation = Ember.Object.extend({
+    ERROR_MESSAGE: Tent.messages.GENERIC_ERROR,
+    isValueEmpty: function(value) {
+      return !((value != null) &amp;&amp; value !== '');
+    },
+    getErrorMessage: function(value, options) {
+      var key, optString, val;
+      optString = &quot;&quot;;
+      for (key in options) {
+        val = options[key];
+        optString = optString + (&quot;,'&quot; + val + &quot;'&quot;);
+      }
+      return eval(&quot;this.get('ERROR_MESSAGE').fmt(value&quot; + optString + &quot; )&quot;);
+    }
+  });
+
+  Tent.Validations.email = Tent.Validation.create({
+    validate: function(value, options, message) {
+      var isValid, pattern;
+      pattern = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/i;
+      return isValid = this.isValueEmpty(value) || pattern.test(value);
+    },
+    ERROR_MESSAGE: Tent.messages.EMAIL_FORMAT_ERROR
+  });
+
+  Tent.Validations.datebetween = Tent.Validation.create({
+    validate: function(value, options, message) {
+      var isValid;
+      if (!(options != null) || !(options.startDate != null) || !(options.endDate != null)) {
+        return false;
+      }
+      return isValid = this.isValueEmpty(value) || (this.convertToDate(value) &gt; this.convertToDate(options.startDate) &amp;&amp; this.convertToDate(value) &lt; this.convertToDate(options.endDate));
+    },
+    convertToDate: function(value) {
+      if (!(value instanceof Date)) {
+        return new Date(value);
+      }
+      return value;
+    },
+    ERROR_MESSAGE: Tent.messages.DATE_BETWEEN_ERROR
+  });
+
+  Tent.Validations.futuredate = Tent.Validation.create({
+    validate: function(value, options, message) {
+      var today;
+      today = new Date();
+      if (!this.isValueEmpty(value) &amp;&amp; this.convertToDate(value) &gt; today) {
+        return false;
+      }
+      return true;
+    },
+    convertToDate: function(value) {
+      if (!(value instanceof Date)) {
+        return Tent.Formatting.date.unformat(value);
+      }
+      return value;
+    },
+    ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
+  });
+
+}).call(this);
+
+
+(function() {
 }).call(this);
 
 
@@ -619,18 +718,97 @@
 
 
 (function() {
+  var warnings;
 
   Tent.ValidationSupport = Ember.Mixin.create({
+<span id='Tent-ValidationSupport-property-validations'>    /**
+</span>    * @property {String }validations A list of comma-separated custom validations which should be applied to the widget
+    */
+
+    validations: null,
     isValid: true,
     validationErrors: [],
+    validationWarnings: [],
+    processWarnings: true
+<span id='Tent-ValidationSupport-property-warnings'>    /**
+</span>    * @property {String} warnings A list of comma-separated custom validations which should be applied to the widget, but are interpreted
+    * as warnings which may be ignored.
+    */
+
+  }, warnings = null, {
+    init: function() {
+      return this._super();
+    },
     validate: function() {
+      var valid;
       this.flushValidationErrors();
-      this.set('isValid', true);
-      return true;
+      this.flushValidationWarnings();
+      valid = this.executeCustomValidations();
+      if (this.get('processWarnings')) {
+        this.executeCustomWarnings();
+      }
+      this.set('isValid', valid);
+      return valid;
+    },
+    executeCustomValidations: function() {
+      var options, vName, valid, validator, _i, _len, _ref;
+      valid = true;
+      if ((this.get('validations') != null) &amp;&amp; this.get('validations') !== &quot;&quot;) {
+        _ref = this.get('validations').split(',');
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          vName = _ref[_i];
+          validator = Tent.Validations.get(vName.trim());
+          if (!(validator != null)) {
+            throw new Error('Validator [' + vName + '] cannot be found');
+          }
+          options = this.parseCustomValidationOptions(vName);
+          valid = valid &amp;&amp; validator.validate(this.get('formattedValue'), options);
+          if (!valid) {
+            this.addValidationError(validator.getErrorMessage(this.get('formattedValue'), options));
+          }
+        }
+      }
+      return valid;
+    },
+    executeCustomWarnings: function() {
+      var options, valid, validator, wName, _i, _len, _ref, _results;
+      valid = true;
+      if ((this.get('warnings') != null) &amp;&amp; this.get('warnings') !== &quot;&quot;) {
+        _ref = this.get('warnings').split(',');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          wName = _ref[_i];
+          validator = Tent.Validations.get(wName.trim());
+          if (!(validator != null)) {
+            throw new Error('Validator [' + wName + '] cannot be found');
+          }
+          options = this.parseCustomValidationOptions(wName);
+          valid = valid &amp;&amp; validator.validate(this.get('formattedValue'), options);
+          if (!valid) {
+            _results.push(this.addValidationWarning(validator.getErrorMessage(this.get('formattedValue'), options)));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
+    },
+    parseCustomValidationOptions: function(vName) {
+      if (this.get('validationOptions') != null) {
+        if (typeof this.get('validationOptions') === 'string') {
+          return eval(&quot;(&quot; + this.get('validationOptions') + &quot;)&quot;)[vName];
+        } else {
+          return this.get('validationOptions')[vName];
+        }
+      }
+      return null;
     },
     errorsDidChange: (function() {
       return this.updateErrorPanel();
     }).observes('validationErrors.@each'),
+    warningsDidChange: (function() {
+      return this.updateWarningPanel();
+    }).observes('validationWarnings.@each'),
     updateErrorPanel: function() {
       var message;
       message = Tent.Message.create({
@@ -641,9 +819,23 @@
       });
       return $.publish(&quot;/message&quot;, [message]);
     },
+    updateWarningPanel: function() {
+      var message;
+      message = Tent.Message.create({
+        messages: $.merge([], this.get('validationWarnings')),
+        type: Tent.Message.WARNING_TYPE,
+        sourceId: this.get('elementId'),
+        label: this.get('label'),
+        severity: this.get('warningseverity')
+      });
+      return $.publish(&quot;/message&quot;, [message]);
+    },
     hasErrors: (function() {
       return !this.get('isValid');
     }).property('isValid'),
+    hasWarnings: (function() {
+      return this.get('validationWarnings').length &gt; 0;
+    }).property('validationWarnings', 'validationWarnings.@each'),
     observesErrors: (function() {
       var classNames;
       classNames = this.get('classNames');
@@ -657,13 +849,38 @@
         }
       }
     }).observes('hasErrors'),
+    observesWarnings: (function() {
+      var classNames;
+      classNames = this.get('classNames');
+      if (classNames != null) {
+        if (this.get('hasWarnings')) {
+          if (this.$('') != null) {
+            this.$('').addClass('warning');
+          }
+          if (!classNames.contains('warning')) {
+            return classNames[classNames.length] = 'warning';
+          }
+        } else {
+          if (this.$('') != null) {
+            this.$('').removeClass('warning');
+          }
+          return classNames.removeObject('warning');
+        }
+      }
+    }).observes('validationWarnings', 'validationWarnings.@each'),
     flushValidationErrors: function() {
       this.set('validationErrors', []);
       return this.set('isValid', true);
     },
+    flushValidationWarnings: function() {
+      return this.set('validationWarnings', []);
+    },
     addValidationError: function(error) {
       this.get('validationErrors').pushObject(error);
       return this.set('isValid', false);
+    },
+    addValidationWarning: function(warning) {
+      return this.get('validationWarnings').pushObject(warning);
     }
   });
 
@@ -916,16 +1133,16 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     isFilter: false,
     operators: [
       Ember.Object.create({
-        label: &quot;filter.beginsWith&quot;,
+        label: &quot;tent.filter.beginsWith&quot;,
         operator: &quot;begin&quot;
       }), Ember.Object.create({
-        label: &quot;filter.contains&quot;,
+        label: &quot;tent.filter.contains&quot;,
         operator: &quot;contain&quot;
       }), Ember.Object.create({
-        label: &quot;filter.equal&quot;,
+        label: &quot;tent.filter.equal&quot;,
         operator: &quot;equal&quot;
       }), Ember.Object.create({
-        label: &quot;filter.nEqual&quot;,
+        label: &quot;tent.filter.nEqual&quot;,
         operator: &quot;nequal&quot;
       })
     ],
@@ -1073,7 +1290,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}&lt;li&gt;{{loc error}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-TextField'>/**
@@ -2583,12 +2800,15 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
 Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;grid-table\&quot;&gt;&lt;/table&gt;\n&lt;div class=\&quot;gridpager\&quot;&gt;&lt;/div&gt;\n{{#if view.hasErrors}}\n\t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n{{/if}}  &quot;);
 
 (function() {
-<span id='Tent-JqGrid'>/**
-</span>  * @class Tent.JqGrid
-  * @mixins Tent.ValidationSupport
-  * @mixins Tent.MandatorySupport
+
+  Tent.Grid = Ember.Namespace.create();
+
+<span id='Tent-Grid-CollectionSupport'>  /**
+</span>  * @class Tent.Grid.CollectionSupport
+  * 
+  * A mixin which allows the use of a collection to provide content and 
+  * functionality for a grid
   *
-  * Create a jqGrid view which displays the data provided by a Collection object
   * The grid will bind to the following properties of the collection:
   * 	
   * - columnsDescriptor: an array of descriptor objects defining the columns to be displayed
@@ -2612,509 +2832,91 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   *				
   * - goToPage(pageNumber): Navigate to the pagenumber provided (1 = first page)
   *
-  * ##Usage
-  *		{{view Tent.JqGrid
-                    label=&quot;Tasks&quot;
-                    collectionBinding=&quot;Pad.tasksCollection&quot;
-                    selectionBinding=&quot;Pad.selectedTasks&quot;
-                    paged=true
-                    pageSize=6           
-                    multiSelect=true             
-                }}
-  *
-  *
   */
 
 
-  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, {
-    templateName: 'jqgrid',
-    classNames: ['tent-jqgrid'],
-    classNameBindings: ['fixedHeader', 'hasErrors:error'],
-<span id='Tent-JqGrid-property-collection'>    /**
+  Tent.Grid.CollectionSupport = Ember.Mixin.create({
+<span id='Tent-Grid-CollectionSupport-property-collection'>    /**
 </span>    	* @property {Object} collection The collection object providing the API to the data source
     */
 
     collection: null,
-<span id='Tent-JqGrid-property-title'>    /**
-</span>    	* @property {String} title The title caption to appear above the table
-    */
-
-    title: null,
-<span id='Tent-JqGrid-property-paged'>    /**
+<span id='Tent-Grid-CollectionSupport-property-paged'>    /**
 </span>    	* @property {Boolean} paged Boolean to indicate the data should be presented as a paged list
     */
 
-    paged: true,
-<span id='Tent-JqGrid-property-pageSize'>    /**
+    paged: false,
+<span id='Tent-Grid-CollectionSupport-property-pageSize'>    /**
 </span>    	* @property {Number} pageSize The number of items in each page
     */
 
     pageSize: 12,
-<span id='Tent-JqGrid-property-multiSelect'>    /**
-</span>    	* @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
-    */
+    pagingData: {
+      page: 1
+    },
+    totalRowsBinding: 'collection.totalRows',
+    totalPagesBinding: 'collection.totalPages',
+    sortingData: {},
+    init: function() {
+      this._super(arguments);
+      if (this.get('collection') != null) {
+        if (this.get('paged')) {
+          return this.get('collection').set('pageSize', this.get('pageSize'));
+        }
+      }
+    },
+    didInsertElement: function() {
+      if (this.get('collection') != null) {
+        return this.get('collection').goToPage(1);
+      }
+    },
+    onPageOrSort: function(postdata) {
+      if (this.get('collection') != null) {
+        if (this.shouldSort(postdata)) {
+          this.get('collection').sort({
+            fields: [
+              {
+                sortAsc: postdata.sord === &quot;asc&quot;,
+                field: postdata.sidx
+              }
+            ]
+          });
+        } else {
+          this.get('pagingData').page = postdata.page;
+          this.get('collection').goToPage(postdata.page);
+        }
+        this.get('sortingData').field = postdata.sidx;
+        return this.get('sortingData').asc = postdata.sord;
+      }
+    },
+    shouldSort: function(postdata) {
+      return postdata.sidx !== &quot;&quot; &amp;&amp; (postdata.sidx !== this.get('sortingData').field || postdata.sord !== this.get('sortingData').asc);
+    }
+  });
 
-    multiSelect: false,
-<span id='Tent-JqGrid-property-fixedHeader'>    /**
-</span>    	* @property {Boolean} fixedHeader Boolean indicating that the header remains in view when the content is scrolled.
-    */
+}).call(this);
 
-    fixedHeader: false,
-<span id='Tent-JqGrid-property-showColumnChooser'>    /**
-</span>    	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
-    	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
-    	* in this dialog
-    */
 
-    showColumnChooser: true,
-<span id='Tent-JqGrid-property-showMaximizeButton'>    /**
-</span>    	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
-    	* a dialog to maximize the grid view.
-    */
 
-    showMaximizeButton: true,
-<span id='Tent-JqGrid-property-showExportButton'>    /**
+<span id='Tent-Grid-ExportSupport'>/**
+</span>* @class Tent.Grid.ExportSupport
+* Adds export functionality to a grid
+*/
+
+
+(function() {
+
+  Tent.Grid.ExportSupport = Ember.Mixin.create({
+<span id='Tent-Grid-ExportSupport-property-showExportButton'>    /**
 </span>    	* @property {Boolean} showExportButton Display a button in the header which allows the table data to 
     	* be exported a selected format.
     */
 
     showExportButton: true,
-<span id='Tent-JqGrid-property-onEditRow'>    /**
-</span>    	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
-    	* The context of the function is this JqGrid View, and it will accept the following parameters:
-    	* 
-    	* -rowId: the id of the selected row
-    	* -grid: the jqGrid
-    	*
-    */
-
-    onEditRow: null,
-<span id='Tent-JqGrid-property-onRestoreRow'>    /**
-</span>    	* @property {Function} onRestoreRow A callback function which will be called when editing of a row is cancelled,
-    	* and the original values restored to the cells. 
-    	* The context of the function is this JqGrid View, and it will accept the following parameters:
-    	* 
-    	* -rowId: the id of the selected row
-    	* -grid: the jqGrid
-    	*
-    */
-
-    onRestoreRow: null,
-<span id='Tent-JqGrid-property-onSaveCell'>    /**
-</span>    	* @property {Function} onSaveCell A callback function which will be called when an editable cell is saved. (This 
-    	* usually occurs on change or blur) 
-    	* The context of the function is this JqGrid View, and it will accept the following parameters:
-    	* 
-    	* -rowId: the id of the selected row
-    	* -grid: the jqGrid
-    	* -cellName: the name of the edited cell
-    	* -iCell: the position of the edited cell
-    	*
-    */
-
-    onSaveCell: null,
-<span id='Tent-JqGrid-property-Set'>    /**
-</span>    	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields.
-    */
-
-    clearAction: null,
-    fullScreen: false,
-    pagingData: {
-      page: 1
-    },
-    sortingData: {},
-    selectedIds: [],
-    contentBinding: 'collection',
-<span id='Tent-JqGrid-property-columnsBinding'>    /**
-</span>    	* @property {Array} columnsBinding The array of column descriptors used to represent the data. 
-    	* By default this will be retrieved from the collection
-    */
-
-    columnsBinding: 'collection.columnsDescriptor',
-    totalRowsBinding: 'collection.totalRows',
-    totalPagesBinding: 'collection.totalPages',
-    init: function() {
-      var widget;
-      widget = this;
-      this._super();
-      if (!(this.get('collection') != null)) {
-        throw new Error(&quot;Collection must be provided for Tent.JqGrid&quot;);
-      }
-      if (this.get('paged')) {
-        this.get('collection').set('pageSize', this.get('pageSize'));
-      }
-      this.setupInitialSelection();
-      return $.subscribe(&quot;/ui/refresh&quot;, function() {
-        return widget.resizeToContainer();
-      });
-    },
-    setupInitialSelection: (function() {
-      var id, item, sel, _i, _len, _ref;
-      if (this.get('selection') != null) {
-        sel = [];
-        _ref = this.get('selection');
-        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-          item = _ref[_i];
-          id = &quot;&quot; + item.get('id');
-          sel.pushObject(id);
-          if (!this.get('selectedIds').contains(id)) {
-            this.highlightRow(id);
-          }
-        }
-        this.set('selectedIds', sel.uniq());
-      }
-      if (this.getTableDom()) {
-        return this.setSelectAllCheckbox(this.getTableDom().get(0));
-      }
-    }).observes('selection'),
-    selectionDidChange: (function() {
-      return this.validate();
-    }).observes('selection.@each'),
-    valueForMandatoryValidation: (function() {
-      return this.get('selection');
-    }).property('selection'),
-    focus: function() {
-      return this.getTableDom().focus();
-    },
-    didInsertElement: function() {
-      this.setupDomIDs();
-      this.buildGrid();
-      this.get('collection').goToPage(1);
-      this.gridDataDidChange();
-      return this.columnsDidChange();
-    },
-    setupDomIDs: function() {
-      this.set('tableId', this.get('elementId') + '_jqgrid');
-      this.$('.grid-table').attr('id', this.get('tableId'));
-      return this.$('.gridpager').attr('id', this.get('elementId') + '_pager');
-    },
-    getTableDom: function() {
-      return this.$('#' + this.get('tableId'));
-    },
-    getTopPagerId: function() {
-      return '#' + this.get('tableId') + '_toppager_left';
-    },
-    getPagerId: function() {
-      return '#' + this.get('elementId') + '_pager';
-    },
-    getColModel: function() {
-      return this.getTableDom().getGridParam('colModel');
-    },
-    buildGrid: function() {
-      var widget;
-      widget = this;
-      this.getTableDom().jqGrid({
-        parentView: widget,
-        datatype: function(postdata) {
-          return widget.onPageOrSort(postdata);
-        },
-        height: this.get('height') || 'auto',
-        colNames: this.get('colNames'),
-        colModel: this.get('columnModel'),
-        multiselect: this.get('multiSelect'),
-        caption: this.get('title') != null ? Tent.I18n.loc(this.get('title')) : void 0,
-        autowidth: true,
-        sortable: true,
-        forceFit: true,
-        shrinkToFit: true,
-        viewsortcols: [false, 'vertical', false],
-        hidegrid: false,
-        viewrecords: true,
-        rowNum: this.get('paged') ? this.get('pageSize') : void 0,
-        gridview: true,
-        toppager: false,
-        cloneToTop: false,
-        editurl: 'clientArray',
-        pager: this.get('paged') ? this.getPagerId() : void 0,
-        onSelectRow: function(itemId, status, e) {
-          return widget.didSelectRow(itemId, status, e);
-        },
-        onSelectAll: function(rowIds, status) {
-          return widget.didSelectAll(rowIds, status);
-        },
-        loadComplete: function() {
-          return widget.highlightRows(this);
-        }
-      });
-      this.addNavigationBar();
-      return this.gridDataDidChange();
-    },
-    onPageOrSort: function(postdata) {
-      if (this.shouldSort(postdata)) {
-        this.get('collection').sort({
-          fields: [
-            {
-              sortAsc: postdata.sord === &quot;asc&quot;,
-              field: postdata.sidx
-            }
-          ]
-        });
-      } else {
-        this.get('pagingData').page = postdata.page;
-        this.get('collection').goToPage(postdata.page);
-      }
-      this.get('sortingData').field = postdata.sidx;
-      return this.get('sortingData').asc = postdata.sord;
-    },
-    shouldSort: function(postdata) {
-      return postdata.sidx !== &quot;&quot; &amp;&amp; (postdata.sidx !== this.get('sortingData').field || postdata.sord !== this.get('sortingData').asc);
-    },
-    highlightRows: function(grid) {
-      var item, _i, _len, _ref;
-      if (this.getTableDom() != null) {
-        _ref = this.get('selectedIds');
-        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-          item = _ref[_i];
-          this.highlightRow(item);
-        }
-        return this.setSelectAllCheckbox(grid);
-      }
-    },
-    highlightRow: function(item) {
-      if (this.getTableDom() != null) {
-        this.getTableDom().jqGrid('setSelection', item, false);
-        return this.editRow(item);
-      }
-    },
-    unHighlightAllRows: (function() {
-      var a, that;
-      if (this.get(&quot;clearAction&quot;) &amp;&amp; (this.getTableDom() != null)) {
-        a = this.get(&quot;selectedIds&quot;).slice();
-        that = this;
-        a.forEach(function(item) {
-          return that.selectItemMultiSelect(item, false);
-        });
-        this.set(&quot;clearAction&quot;, false);
-        return this.getTableDom().jqGrid(&quot;resetSelection&quot;);
-      }
-    }).observes(&quot;clearAction&quot;),
-    setSelectAllCheckbox: function(grid) {
-      if (this.allRowsAreSelected(grid)) {
-        return grid.setHeadCheckBox(true);
-      } else {
-        return grid.setHeadCheckBox(false);
-      }
-    },
-    allRowsAreSelected: function(grid) {
-      var allSelected, id, selectedIds, _i, _len, _ref;
-      selectedIds = this.get('selectedIds');
-      allSelected = true;
-      _ref = $(grid).jqGrid('getDataIDs');
-      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-        id = _ref[_i];
-        if (!selectedIds.contains(id)) {
-          allSelected = false;
-        }
-      }
-      return allSelected;
-    },
-    didSelectRow: function(itemId, status, e) {
-      if (!this.get('multiSelect')) {
-        return this.selectItemSingleSelect(itemId);
-      } else {
-        return this.selectItemMultiSelect(itemId, status);
-      }
-    },
-    selectItemSingleSelect: function(itemId) {
-      this.clearSelection();
-      this.selectItem(itemId);
-      return this.showEditableCellsSingleSelect(itemId);
-    },
-    selectItemMultiSelect: function(itemId, status) {
-      if (status) {
-        this.selectItem(itemId);
-      } else {
-        this.deselectItem(itemId);
-      }
-      return this.showEditableCellsMultiSelect(itemId);
-    },
-    showEditableCellsSingleSelect: function(itemId) {
-      if (itemId !== this.get('lastSelectedRowId')) {
-        if (this.get('lastSelectedRowId') != null) {
-          this.restoreRow(this.get('lastSelectedRowId'));
-        }
-        this.editRow(itemId);
-        return this.set('lastSelectedRowId', itemId);
-      }
-    },
-    showEditableCellsMultiSelect: function(itemId) {
-      if (this.get('selectedIds').contains(itemId)) {
-        return this.editRow(itemId);
-      } else {
-        return this.restoreRow(itemId);
-      }
-    },
-    didSelectAll: function(rowIds, status) {
-      var id, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = rowIds.length; _i &lt; _len; _i++) {
-        id = rowIds[_i];
-        if (status) {
-          if (!this.get('selectedIds').contains(id)) {
-            this.selectItem(id);
-            _results.push(this.editRow(id));
-          } else {
-            _results.push(void 0);
-          }
-        } else {
-          this.deselectItem(id);
-          _results.push(this.restoreRow(id));
-        }
-      }
-      return _results;
-    },
-    clearSelection: function() {
-      this.get('selectedIds').clear();
-      return this.get('selection').clear();
-    },
-    selectItem: function(itemId) {
-      this.get('selectedIds').pushObject(itemId);
-      return this.get('selection').pushObject(this.getItemFromModel(itemId));
-    },
-    deselectItem: function(itemId) {
-      this.get('selectedIds').removeObject(itemId);
-      return this.removeItemFromSelection(itemId);
-    },
-    removeItemFromSelection: function(id) {
-      return this.set('selection', this.get('selection').filter(function(item, index) {
-        return item.get('id') !== parseInt(id);
-      }));
-    },
-    restoreRow: function(rowId) {
-      this.getTableDom().jqGrid('restoreRow', rowId);
-      this.saveEditedRow(rowId);
-      if (this.get('onRestoreRow') != null) {
-        return this.get('onRestoreRow').call(this, rowId, this.getTableDom());
-      }
-    },
-    editRow: function(rowId) {
-      return this.getTableDom().jqGrid('editRow', rowId, false, this.onEditFunc());
-    },
-    onEditFunc: function(rowId) {
-      var widget;
-      widget = this;
-      return function(rowId) {
-        if (widget.get('onEditRow') != null) {
-          return widget.get('onEditRow').call(widget, rowId, widget.getTableDom());
-        }
-      };
-    },
-    getItemFromModel: function(id) {
-      var model, _i, _len, _ref;
-      _ref = this.get('content').toArray();
-      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-        model = _ref[_i];
-        if (model.get('id') === parseInt(id)) {
-          return model;
-        }
-      }
-    },
-    saveEditableCell: function(element) {
-      var cellName, cellpos, rowId;
-      rowId = $(element).parents('tr:first').attr('id');
-      cellpos = $(element).parents('tr').children().index($(element).parents('td'));
-      cellName = this.getColModel()[cellpos].name;
-      this.saveEditedCell(rowId, cellName, null, null, null, $(element).parent());
-      if (this.onSaveCell != null) {
-        return this.onSaveCell.call(this, rowId, this.getTableDom(), cellName, cellpos);
-      }
-    },
-    saveEditedRow: function(rowId, status, options) {
-      var col, rowData, _i, _len, _ref, _results;
-      rowData = this.getTableDom().getRowData(rowId);
-      _ref = this.getColModel();
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-        col = _ref[_i];
-        if (col.editable) {
-          _results.push(this.saveEditedCell(rowId, col.name, rowData[col.name]));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    },
-    saveEditedCell: function(rowId, cellName, value, iRow, iCell, cell) {
-      var formatter;
-      formatter = this.getTableDom().getColProp(cellName).formatter;
-      if ($.fn.fmatter[formatter] != null) {
-        if (cell != null) {
-          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell));
-        } else {
-          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value));
-        }
-      } else {
-        return this.getItemFromModel(rowId).set(cellName, value);
-      }
-    },
-    markErrorCell: function(rowId, iCell) {
-      var cell;
-      cell = this.getTableDom().find('#' + rowId).children().eq(iCell);
-      return cell.addClass('error');
-    },
-    unmarkErrorCell: function(rowId, iCell) {
-      var cell;
-      cell = this.getTableDom().find('#' + rowId).children().eq(iCell);
-      return cell.removeClass('error');
-    },
-<span id='Tent-JqGrid-method-sendAction'>    /**
-</span>    	* @method sendAction send and action to the router. This is called from the 'action' formatter
-    */
-
-    sendAction: function(action, element, rowId) {
-      var view;
-      view = this;
-      while (!view.get('controller') &amp;&amp; (view.get('parentView') != null)) {
-        view = view.get('parentView');
-      }
-      if (view.get('controller') != null) {
-        if (this.get('parentView.controller.namespace.router') != null) {
-          return view.get('controller.namespace.router').send(action, this.getItemFromModel(rowId));
-        }
-      }
-    },
     addNavigationBar: function() {
-      var tableDom, widget;
+      var tableDom;
       tableDom = this.getTableDom();
-      widget = this;
-      this.renderColumnChooser(tableDom);
-      this.renderExportButton(tableDom);
-      return this.renderMaximizeButton();
-    },
-    renderColumnChooser: function(tableDom) {
-      var widget;
-      widget = this;
-      if (this.get('showColumnChooser')) {
-        if (!(this.get('title') != null)) {
-          tableDom.setCaption('&amp;nbsp;');
-        }
-        this.$(&quot;.ui-jqgrid-titlebar&quot;).append('&lt;a class=&quot;column-chooser&quot;&gt;&lt;span class=&quot;ui-icon ui-icon-newwin&quot;&gt;&lt;/span&gt;' + Tent.I18n.loc(&quot;jqGrid.hideShowCaption&quot;) + '&lt;/a&gt;');
-        return this.$('a.column-chooser').click(function() {
-          return tableDom.jqGrid('setColumns', {
-            caption: Tent.I18n.loc(&quot;jqGrid.hideShowTitle&quot;),
-            showCancel: false,
-            ShrinkToFit: true,
-            recreateForm: true,
-            updateAfterCheck: true,
-            colnameview: false,
-            top: 60,
-            width: 300,
-            afterSubmitForm: function(itemId, status, e) {
-              return widget.columnsDidChange();
-            }
-          });
-        });
-      }
-    },
-    columnsDidChange: function() {
-      if (this.get('fixedHeader')) {
-        return this.adjustHeightForFixedHeader();
-      }
-    },
-    adjustHeightForFixedHeader: function() {
-      var top;
-      top = this.$('.ui-jqgrid-htable').height() + this.$('.ui-jqgrid-titlebar').height() + 6;
-      return this.$('.ui-jqgrid-bdiv').css('top', top);
+      return this.renderExportButton(tableDom);
     },
     renderExportButton: function(tableDom) {
       var button,
@@ -3123,7 +2925,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         if (!(this.get('title') != null)) {
           tableDom.setCaption('&amp;nbsp;');
         }
-        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n                        &lt;li&gt;&lt;a href=\&quot;&quot; + (this.get('collection').getURL('xlsx')) + &quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xlsx&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
+        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n                        &lt;li&gt;&lt;a href=\&quot;&quot; + (this.get('collection') != null ? this.get('collection').getURL('xlsx') : void 0) + &quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xlsx&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
         this.$(&quot;.ui-jqgrid-titlebar&quot;).append(button);
         this.$('a.export-json').click(function() {
           var ret;
@@ -3172,6 +2974,488 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         str += obj.name + ',';
       }
       return str = str.slice(0, -1) + '\r\n' + orderedData.join('\r\n');
+    }
+  });
+
+}).call(this);
+
+
+
+<span id='Tent-Grid-EditableSupport'>/**
+</span>* @class Tent.Grid.EditableSupport
+* Provides support for editable fields in a grid
+*/
+
+
+(function() {
+
+  Tent.Grid.EditableSupport = Ember.Mixin.create({
+<span id='Tent-Grid-EditableSupport-property-onEditRow'>    /**
+</span>    	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
+    	* The context of the function is this JqGrid View, and it will accept the following parameters:
+    	* 
+    	* -rowId: the id of the selected row
+    	* -grid: the jqGrid
+    	*
+    */
+
+    onEditRow: null,
+<span id='Tent-Grid-EditableSupport-property-onRestoreRow'>    /**
+</span>    	* @property {Function} onRestoreRow A callback function which will be called when editing of a row is cancelled,
+    	* and the original values restored to the cells. 
+    	* The context of the function is this JqGrid View, and it will accept the following parameters:
+    	* 
+    	* -rowId: the id of the selected row
+    	* -grid: the jqGrid
+    	*
+    */
+
+    onRestoreRow: null,
+<span id='Tent-Grid-EditableSupport-property-onSaveCell'>    /**
+</span>    	* @property {Function} onSaveCell A callback function which will be called when an editable cell is saved. (This 
+    	* usually occurs on change or blur) 
+    	* The context of the function is this JqGrid View, and it will accept the following parameters:
+    	* 
+    	* -rowId: the id of the selected row
+    	* -grid: the jqGrid
+    	* -cellName: the name of the edited cell
+    	* -iCell: the position of the edited cell
+    	*
+    */
+
+    onSaveCell: null,
+    showEditableCells: function() {
+      var id, _i, _len, _ref, _results;
+      if (this.getTableDom() != null) {
+        _ref = this.getTableDom().jqGrid('getDataIDs');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          id = _ref[_i];
+          if (this.get('selectedIds').contains(id)) {
+            _results.push(this.editRow(id));
+          } else {
+            _results.push(this.restoreRow(id));
+          }
+        }
+        return _results;
+      }
+    },
+    editRow: function(rowId) {
+      return this.getTableDom().jqGrid('editRow', rowId, false, this.onEditFunc());
+    },
+    restoreRow: function(rowId) {
+      this.getTableDom().jqGrid('restoreRow', rowId);
+      this.saveEditedRow(rowId);
+      if (this.get('onRestoreRow') != null) {
+        return this.get('onRestoreRow').call(this, rowId, this.getTableDom());
+      }
+    },
+    onEditFunc: function(rowId) {
+      var widget;
+      widget = this;
+      return function(rowId) {
+        if (widget.get('onEditRow') != null) {
+          return widget.get('onEditRow').call(widget, rowId, widget.getTableDom());
+        }
+      };
+    },
+    saveEditedRow: function(rowId, status, options) {
+      var col, rowData, _i, _len, _ref, _results;
+      rowData = this.getTableDom().getRowData(rowId);
+      _ref = this.getColModel();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        col = _ref[_i];
+        if (col.editable) {
+          _results.push(this.saveEditedCell(rowId, col.name, rowData[col.name]));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    },
+    saveEditedCell: function(rowId, cellName, value, iRow, iCell, cell) {
+      var formatter;
+      formatter = this.getTableDom().getColProp(cellName).formatter;
+      if ($.fn.fmatter[formatter] != null) {
+        if (cell != null) {
+          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell));
+        } else {
+          return this.getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value));
+        }
+      } else {
+        return this.getItemFromModel(rowId).set(cellName, value);
+      }
+    },
+    saveEditableCell: function(element) {
+      var cellName, cellpos, rowId;
+      rowId = $(element).parents('tr:first').attr('id');
+      cellpos = $(element).parents('tr').children().index($(element).parents('td'));
+      cellName = this.getColModel()[cellpos].name;
+      this.saveEditedCell(rowId, cellName, null, null, null, $(element).parent());
+      if (this.onSaveCell != null) {
+        return this.onSaveCell.call(this, rowId, this.getTableDom(), cellName, cellpos);
+      }
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+<span id='Tent-JqGrid'>/**
+</span>  * @class Tent.JqGrid
+  * @mixins Tent.ValidationSupport
+  * @mixins Tent.MandatorySupport
+  * @mixins Tent.Grid.CollectionSupport
+  * @mixins Tent.Grid.ExportSupport
+  * @mixins Tent.Grid.EditableSupport
+  *
+  * Create a jqGrid view which displays the data provided by its content property
+  *
+  * ##Usage
+  *		{{view Tent.JqGrid
+                    label=&quot;Tasks&quot;
+                    contentBinding=&quot;Pad.gridContent&quot;
+                    selectionBinding=&quot;Pad.selectedTasks&quot;
+                    multiSelect=true             
+                }}
+  *
+  * - content: An array of objects, one for each row
+  * - columns: An array of column descriptors
+  * - selection: An array of selected objects. This will provide the initial selections, as well as 
+  * contain the items selected from the grid.
+  */
+
+
+  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, {
+    templateName: 'jqgrid',
+    classNames: ['tent-jqgrid'],
+    classNameBindings: ['fixedHeader', 'hasErrors:error'],
+<span id='Tent-JqGrid-property-title'>    /**
+</span>    	* @property {String} title The title caption to appear above the table
+    */
+
+    title: null,
+<span id='Tent-JqGrid-property-multiSelect'>    /**
+</span>    	* @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
+    */
+
+    multiSelect: false,
+<span id='Tent-JqGrid-property-fixedHeader'>    /**
+</span>    	* @property {Boolean} fixedHeader Boolean indicating that the header remains in view when the content is scrolled.
+    */
+
+    fixedHeader: false,
+<span id='Tent-JqGrid-property-showColumnChooser'>    /**
+</span>    	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
+    	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
+    	* in this dialog
+    */
+
+    showColumnChooser: true,
+<span id='Tent-JqGrid-property-showMaximizeButton'>    /**
+</span>    	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
+    	* a dialog to maximize the grid view.
+    */
+
+    showMaximizeButton: true,
+<span id='Tent-JqGrid-property-grouping'>    /**
+</span>    	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
+    */
+
+    grouping: false,
+<span id='Tent-JqGrid-property-groupField'>    /**
+</span>    	* @property {String} groupField The name of the field by which to group the grid
+    */
+
+    groupField: null,
+<span id='Tent-JqGrid-property-clearAction'>    /** 
+</span>    	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields.
+    */
+
+    clearAction: null,
+    fullScreen: false,
+<span id='Tent-JqGrid-property-content'>    /**
+</span>    	* @property {Array} content The array of items to display in the grid.
+    	* By default this will be retrieved from the collection, if provided
+    */
+
+    contentBinding: 'collection',
+<span id='Tent-JqGrid-property-columns'>    /**
+</span>    	* @property {Array} columns The array of column descriptors used to represent the data. 
+    	* By default this will be retrieved from the collection, if provided
+    */
+
+    columnsBinding: 'collection.columnsDescriptor',
+<span id='Tent-JqGrid-property-selection'>    /**
+</span>    	* @property {Array} selection The array of items selected in the list. This can be used as a setter
+    	and a getter.
+    */
+
+    selection: [],
+    init: function() {
+      var widget;
+      this._super();
+      widget = this;
+      $.subscribe(&quot;/ui/refresh&quot;, function() {
+        return widget.resizeToContainer();
+      });
+      if (!(this.get('selection') != null)) {
+        return this.set('selection', []);
+      }
+    },
+    valueForMandatoryValidation: (function() {
+      return this.get('selection');
+    }).property('selection'),
+    focus: function() {
+      return this.getTableDom().focus();
+    },
+    didInsertElement: function() {
+      this._super();
+      this.setupDomIDs();
+      return this.buildGrid();
+    },
+    setupDomIDs: function() {
+      this.set('tableId', this.get('elementId') + '_jqgrid');
+      this.$('.grid-table').attr('id', this.get('tableId'));
+      return this.$('.gridpager').attr('id', this.get('elementId') + '_pager');
+    },
+    getTableDom: function() {
+      return this.$('#' + this.get('tableId'));
+    },
+    getTopPagerId: function() {
+      return '#' + this.get('tableId') + '_toppager_left';
+    },
+    getPagerId: function() {
+      return '#' + this.get('elementId') + '_pager';
+    },
+    getColModel: function() {
+      return this.getTableDom().getGridParam('colModel');
+    },
+    buildGrid: function() {
+      var widget;
+      widget = this;
+      this.getTableDom().jqGrid({
+        parentView: widget,
+        datatype: function(postdata) {
+          return widget.onPageOrSort(postdata);
+        },
+        height: this.get('height') || 'auto',
+        colNames: this.get('colNames'),
+        colModel: this.get('columnModel'),
+        multiselect: this.get('multiSelect'),
+        caption: this.get('title') != null ? Tent.I18n.loc(this.get('title')) : void 0,
+        autowidth: true,
+        sortable: true,
+        forceFit: true,
+        shrinkToFit: true,
+        viewsortcols: [false, 'vertical', false],
+        hidegrid: false,
+        viewrecords: true,
+        rowNum: this.get('paged') ? this.get('pageSize') : void 0,
+        gridview: true,
+        toppager: false,
+        cloneToTop: false,
+        editurl: 'clientArray',
+        pager: this.get('paged') ? this.getPagerId() : void 0,
+        grouping: this.get('grouping'),
+        groupingView: {
+          groupField: [this.get('groupField')],
+          groupText: ['&lt;b&gt;' + this.getTitleForColumn(this.get('groupField')) + ' = {0}&lt;/b&gt;'],
+          groupDataSorted: true
+        },
+        onSelectRow: function(itemId, status, e) {
+          return widget.didSelectRow(itemId, status, e);
+        },
+        onSelectAll: function(rowIds, status) {
+          return widget.didSelectAll(rowIds, status);
+        }
+      });
+      this.addNavigationBar();
+      this.addColumnDropdowns();
+      return this.gridDataDidChange();
+    },
+    didSelectRow: function(itemId, status, e) {
+      if (!this.get('multiSelect')) {
+        return this.selectItemSingleSelect(itemId);
+      } else {
+        return this.selectItemMultiSelect(itemId, status);
+      }
+    },
+    selectItemSingleSelect: function(itemId) {
+      this.clearSelection();
+      return this.selectItem(itemId);
+    },
+    selectItemMultiSelect: function(itemId, status) {
+      if (status !== false) {
+        return this.selectItem(itemId);
+      } else {
+        return this.deselectItem(itemId);
+      }
+    },
+    didSelectAll: function(rowIds, status) {
+      var id, originalRowsIds, _i, _len, _results;
+      originalRowsIds = rowIds.filter(function() {
+        return true;
+      });
+      _results = [];
+      for (_i = 0, _len = originalRowsIds.length; _i &lt; _len; _i++) {
+        id = originalRowsIds[_i];
+        if (status !== false) {
+          if (!this.get('selectedIds').contains(id)) {
+            _results.push(this.selectItem(id));
+          } else {
+            _results.push(void 0);
+          }
+        } else {
+          _results.push(this.deselectItem(id));
+        }
+      }
+      return _results;
+    },
+    clearSelection: function() {
+      this.get('selectedIds').clear();
+      if (this.get('selection') != null) {
+        return this.get('selection').clear();
+      }
+    },
+    selectItem: function(itemId) {
+      return this.get('selection').pushObject(this.getItemFromModel(itemId));
+    },
+    deselectItem: function(itemId) {
+      return this.removeItemFromSelection(itemId);
+    },
+    removeItemFromSelection: function(id) {
+      return this.set('selection', this.get('selection').filter(function(item, index) {
+        return item.get('id') !== parseInt(id);
+      }));
+    },
+    getItemFromModel: function(id) {
+      var model, _i, _len, _ref;
+      _ref = this.get('content').toArray();
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        model = _ref[_i];
+        if (model.get('id') === parseInt(id)) {
+          return model;
+        }
+      }
+    },
+    markErrorCell: function(rowId, iCell) {
+      return this.getCell(rowId, iCell).addClass('error');
+    },
+    unmarkErrorCell: function(rowId, iCell) {
+      return this.getCell(rowId, iCell).removeClass('error');
+    },
+    getCell: function(rowId, iCell) {
+      return this.getTableDom().find('#' + rowId).children().eq(iCell);
+    },
+<span id='Tent-JqGrid-method-sendAction'>    /**
+</span>    	* @method sendAction send an action to the router. This is called from the 'action' formatter,
+    	* which displays cell content as a link
+    */
+
+    sendAction: function(action, element, rowId) {
+      var view;
+      view = this;
+      while (!view.get('controller') &amp;&amp; (view.get('parentView') != null)) {
+        view = view.get('parentView');
+      }
+      if (view.get('controller') != null) {
+        if (this.get('parentView.controller.namespace.router') != null) {
+          return view.get('controller.namespace.router').send(action, this.getItemFromModel(rowId));
+        }
+      }
+    },
+    addNavigationBar: function() {
+      var tableDom;
+      tableDom = this.getTableDom();
+      this.renderColumnChooser(tableDom);
+      this._super();
+      return this.renderMaximizeButton();
+    },
+    addColumnDropdowns: function() {
+      var column, columnDivId, context, template, widget, _i, _len, _ref;
+      widget = this;
+      _ref = this.get('columns');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        template = Handlebars.compile(&quot;				{{#if column.groupable}}					&lt;ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'&gt;						{{#if column.groupable}}							&lt;li class='group dropdown-submenu'&gt;								&lt;a tabindex='-1'&gt;Group&lt;/a&gt;							    &lt;ul class='dropdown-menu'&gt;							    	{{#each groupType}}							    		&lt;li data-grouptype='{{name}}'&gt;&lt;a tabindex='-1'&gt;{{title}}&lt;/a&gt;&lt;/li&gt;							    	{{/each}}							    &lt;/ul&gt;							&lt;/li&gt;						{{/if}}					&lt;/ul&gt;				{{/if}}&quot;);
+        column.groupable = !((column.groupable != null) &amp;&amp; column.groupable === false);
+        context = {
+          column: column,
+          groupType: Tent.JqGrid.Grouping.ranges[column.type]
+        };
+        columnDivId = '#jqgh_' + this.get('elementId') + '_jqgrid_' + column.field;
+        this.$(columnDivId).after(template(context));
+        this.$(columnDivId).addClass('has-dropdown').attr('data-toggle', 'dropdown');
+      }
+      return this.$('.column-dropdown').click(function(e) {
+        var col, columnType, groupType, target, _j, _len1, _ref1;
+        target = $(e.target);
+        groupType = target.attr('data-grouptype') || target.parents('li[data-grouptype]:first').attr('data-grouptype');
+        column = target.attr('data-column') || target.parents('ul.column-dropdown:first').attr('data-column');
+        columnType = 'string';
+        _ref1 = widget.get('columns');
+        for (_j = 0, _len1 = _ref1.length; _j &lt; _len1; _j++) {
+          col = _ref1[_j];
+          if (col.field === column) {
+            columnType = col.type;
+          }
+        }
+        return widget.groupByColumn(column, groupType, columnType);
+      });
+    },
+    groupByColumn: function(column, groupType, columnType) {
+      var comparator;
+      this.get('collection').sort({
+        fields: [
+          {
+            sortAsc: true,
+            field: column
+          }
+        ]
+      });
+      comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
+      return this.getTableDom().groupingGroupBy(column, {
+        groupText: ['&lt;b&gt;' + this.getTitleForColumn(column) + ':  {0}&lt;/b&gt;'],
+        range: comparator
+      });
+    },
+    renderColumnChooser: function(tableDom) {
+      var widget;
+      widget = this;
+      if (this.get('showColumnChooser')) {
+        if (!(this.get('title') != null)) {
+          tableDom.setCaption('&amp;nbsp;');
+        }
+        this.$(&quot;.ui-jqgrid-titlebar&quot;).append('&lt;a class=&quot;column-chooser&quot;&gt;&lt;span class=&quot;ui-icon ui-icon-newwin&quot;&gt;&lt;/span&gt;' + Tent.I18n.loc(&quot;tent.jqGrid.hideShowCaption&quot;) + '&lt;/a&gt;');
+        return this.$('a.column-chooser').click(function() {
+          return tableDom.jqGrid('setColumns', {
+            caption: Tent.I18n.loc(&quot;tent.jqGrid.hideShowTitle&quot;),
+            showCancel: false,
+            ShrinkToFit: true,
+            recreateForm: true,
+            updateAfterCheck: true,
+            colnameview: false,
+            top: 60,
+            width: 300,
+            afterSubmitForm: function(itemId, status, e) {
+              return widget.columnsDidChange();
+            }
+          });
+        });
+      }
+    },
+    columnsDidChange: function() {
+      if (this.get('fixedHeader')) {
+        return this.adjustHeightForFixedHeader();
+      }
+    },
+    adjustHeightForFixedHeader: function() {
+      var top;
+      top = this.$('.ui-jqgrid-htable').height() + this.$('.ui-jqgrid-titlebar').height() + 6;
+      return this.$('.ui-jqgrid-bdiv').css('top', top);
     },
     renderMaximizeButton: function() {
       var widget;
@@ -3203,6 +3487,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         return this.getTableDom().setGridWidth(this.$().width());
       }
     },
+    getTitleForColumn: function(colName) {
+      var column, _i, _len, _ref;
+      _ref = this.get('columns');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        if (column.field === colName) {
+          return Tent.I18n.loc(column.title);
+        }
+      }
+    },
     colNames: (function() {
       var column, names, _i, _len, _ref;
       names = [];
@@ -3232,7 +3526,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           width: column.width || 20,
           position: &quot;right&quot;,
           hidden: column.hidden,
-          hidedlg: column.hideable === false ? true : void 0
+          hidedlg: column.hideable === false ? true : void 0,
+          sortable: column.sortable,
+          groupable: column.groupable
         };
         columns.pushObject(item);
       }
@@ -3270,9 +3566,116 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         records: this.get('totalRows'),
         page: this.get('pagingData').page
       };
+      this.resetGrouping();
       this.getTableDom()[0].addJSONData(data);
-      return this.highlightRows(this.getTableDom().get(0));
-    }).observes('content', 'content.isLoaded', 'content.@each')
+      return this.updateGrid();
+    }).observes('content', 'content.isLoaded', 'content.@each'),
+    resetGrouping: function() {
+      return this.getTableDom().groupingSetup();
+    },
+    selectionDidChange: (function() {
+      return this.updateGrid();
+    }).observes('selection.@each'),
+    selectedIds: (function() {
+      var id, item, sel, _i, _len, _ref;
+      sel = [];
+      if (this.get('selection') != null) {
+        _ref = this.get('selection');
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          item = _ref[_i];
+          id = &quot;&quot; + item.get('id');
+          sel.pushObject(id);
+        }
+      }
+      return sel;
+    }).property('selection.@each'),
+    updateGrid: function() {
+      if (this.getTableDom() != null) {
+        this.highlightRows();
+        this.showEditableCells();
+      }
+      return this.validate();
+    },
+    highlightRows: function() {
+      var grid, id, item, _i, _j, _len, _len1, _ref, _ref1;
+      if (this.getTableDom() != null) {
+        grid = this.getTableDom().get(0);
+        if (this.getTableDom() != null) {
+          _ref = this.getTableDom().jqGrid('getDataIDs');
+          for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+            id = _ref[_i];
+            if (this.get('multiSelect')) {
+              if (this.isRowSelectedMultiSelect(id)) {
+                this.getTableDom().jqGrid('setSelection', id, false);
+              }
+            } else {
+              if (this.isRowSelectedSingleSelect(id)) {
+                this.getTableDom().jqGrid('setSelection', id, false);
+              }
+            }
+            this.$('#' + id).removeClass(&quot;ui-state-highlight&quot;).attr({
+              &quot;aria-selected&quot;: &quot;false&quot;,
+              &quot;tabindex&quot;: &quot;-1&quot;
+            });
+          }
+          _ref1 = this.get('selectedIds');
+          for (_j = 0, _len1 = _ref1.length; _j &lt; _len1; _j++) {
+            item = _ref1[_j];
+            this.highlightRow(item);
+          }
+          return this.setSelectAllCheckbox(grid);
+        }
+      }
+    },
+    isRowSelectedMultiSelect: function(id) {
+      return this.getTableDom().get(0).p.selarrrow.contains(id);
+    },
+    isRowSelectedSingleSelect: function(id) {
+      return this.getTableDom().get(0).p.selrow === id;
+    },
+    highlightRow: function(id) {
+      if (this.getTableDom() != null) {
+        if (this.get('multiSelect')) {
+          if (!this.isRowSelectedMultiSelect(id)) {
+            this.getTableDom().jqGrid('setSelection', id, false);
+          }
+        } else {
+          if (!this.isRowSelectedSingleSelect(id)) {
+            this.getTableDom().jqGrid('setSelection', id, false);
+          }
+        }
+        return this.$('#' + id).addClass(&quot;ui-state-highlight&quot;).attr({
+          &quot;aria-selected&quot;: &quot;true&quot;,
+          &quot;tabindex&quot;: &quot;0&quot;
+        });
+      }
+    },
+    unHighlightAllRows: (function() {
+      if (this.get(&quot;clearAction&quot;) &amp;&amp; (this.getTableDom() != null)) {
+        this.set('selection', []);
+        return this.set(&quot;clearAction&quot;, false);
+      }
+    }).observes(&quot;clearAction&quot;),
+    setSelectAllCheckbox: function(grid) {
+      if (this.allRowsAreSelected(grid)) {
+        return grid.setHeadCheckBox(true);
+      } else {
+        return grid.setHeadCheckBox(false);
+      }
+    },
+    allRowsAreSelected: function(grid) {
+      var allSelected, id, selectedIds, _i, _len, _ref;
+      selectedIds = this.get('selectedIds');
+      allSelected = true;
+      _ref = $(grid).jqGrid('getDataIDs');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        id = _ref[_i];
+        if (!selectedIds.contains(id)) {
+          allSelected = false;
+        }
+      }
+      return allSelected;
+    }
   });
 
 }).call(this);
@@ -3523,6 +3926,257 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       custom_func: Tent.JqGrid.Validators.amount
     }
   };
+
+}).call(this);
+
+
+
+<span id='Tent-JqGrid-Grouping'>/**
+</span>* @class Tent.JqGrid.Grouping
+* Provides configuration options for grouping by column values and comparators for defining
+* grouping ranges.
+*
+*/
+
+
+(function() {
+
+  Tent.JqGrid.Grouping = Ember.Object.extend;
+
+<span id='Tent-JqGrid-Grouping-method-getComparator'>  /**
+</span>  * @method getComparator returns a comparator to use for a combination of datatype and grouping type
+  * @param {String} dataType the type of the column which is defining the grouping e.g. 'date'
+  * @param {String} groupType the type of grouping to perform e.g. 'month'
+  */
+
+
+  Tent.JqGrid.Grouping.getComparator = function(dataType, groupType) {
+    var comparator, type, _i, _len, _ref;
+    comparator = this.ranges[&quot;default&quot;].comparator;
+    if (!(this.ranges[dataType] != null)) {
+      throw new Error('Invalid data type for grid grouping.');
+    }
+    _ref = this.ranges[dataType];
+    for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+      type = _ref[_i];
+      if (type.name === groupType) {
+        if (type.comparator != null) {
+          comparator = type.comparator;
+        }
+      }
+    }
+    return comparator;
+  };
+
+<span id='Tent-JqGrid-Grouping-comparator'>  /**
+</span>  * @class Tent.JqGrid.Grouping.comparator
+  * A base class for providing custom comparison functions for determining if values lie in a particular range.
+  */
+
+
+  Tent.JqGrid.Grouping.comparator = Ember.Object.extend({
+<span id='Tent-JqGrid-Grouping-comparator-method-compare'>    /**
+</span>    	* @method compare Test whether a value lies in the same range as another.
+    	* @param {Object} firstValue The value defining the range to use in the test
+    	* @param {Object} testValue The value to test
+    	* @param {Boolean} The result of the test
+    */
+
+    compare: function(firstValue, testValue) {
+      return firstValue === testValue;
+    },
+<span id='Tent-JqGrid-Grouping-comparator-method-rowTitle'>    /**
+</span>    	* @method rowTitle Returns the text to display as the first interpolation of the group row text
+    	* @param {Object} value the value which is used to determine the range
+    */
+
+    rowTitle: function(value) {
+      return value;
+    }
+  });
+
+<span id='Tent-JqGrid-Grouping-comparator-property-Tent.JqGrid.Grouping.ranges'>  /**
+</span>  * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
+  */
+
+
+  Tent.JqGrid.Grouping.ranges = Ember.Object.create({
+    &quot;default&quot;: {
+      name: 'exact',
+      title: Tent.I18n.loc('tent.grouping.range.exact'),
+      comparator: Tent.JqGrid.Grouping.comparator.create()
+    },
+<span id='Tent-JqGrid-Grouping-ranges-date'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.date
+    */
+
+    date: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-exact'>        /**
+</span>        				* @property {Object} exact group dates which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('tent.grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return last.compareTo(value) === 0;
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-week'>        /**
+</span>        				* @property {Object} week group dates which occur in the same week
+        */
+
+        name: 'week',
+        title: Tent.I18n.loc('tent.grouping.range.week'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getWeek() === value.getWeek());
+          },
+          rowTitle: function(value) {
+            var date;
+            date = Tent.Formatting.date.unformat(value);
+            return 'Week ' + date.getWeek() + ', ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-month'>        /**
+</span>        				* @property {Object} month group dates which occur in the same month
+        */
+
+        name: 'month',
+        title: Tent.I18n.loc('tent.grouping.range.month'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getMonth() === value.getMonth());
+          },
+          rowTitle: function(value) {
+            var date;
+            date = Tent.Formatting.date.unformat(value);
+            return Tent.Formatting.date.format(date, 'MM') + ' ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-quarter'>        /**
+</span>        				* @property {Object} quarter group dates which occur in the same quarter
+        */
+
+        name: 'quarter',
+        title: Tent.I18n.loc('tent.grouping.range.quarter'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            var quarter, _ref;
+            quarter = Math.floor(last.getMonth() / 3) + 1;
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (((quarter - 1) * 3) &lt;= (_ref = value.getMonth()) &amp;&amp; _ref &lt;= ((quarter - 1) * 3) + 2);
+          },
+          rowTitle: function(value) {
+            var date, quarter;
+            date = Tent.Formatting.date.unformat(value);
+            quarter = Math.floor(date.getMonth() / 3) + 1;
+            return 'Quarter ' + quarter + ', ' + date.getFullYear();
+          }
+        })
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-date-property-year'>        /**
+</span>        				* @property {Object} year group dates which occur in the same year
+        */
+
+        name: 'year',
+        title: Tent.I18n.loc('tent.grouping.range.year'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          compare: function(last, value) {
+            return last.getFullYear() === value.getFullYear();
+          },
+          rowTitle: function(value) {
+            return 'Year = ' + Tent.Formatting.date.unformat(value).getFullYear();
+          }
+        })
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-string'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.string
+    */
+
+    string: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-string-property-exact'>        /**
+</span>        				* @property {Object} exact group string which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('tent.grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-number'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.number
+    */
+
+    number: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-number-property-exact'>        /**
+</span>        				* @property {Object} exact group numbers which are the same
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('tent.grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }, {
+<span id='Tent-JqGrid-Grouping-ranges-number-property-10s'>        /**
+</span>        				* @property {Object} 10s group numbers in ranges of ten
+        */
+
+        name: '10s',
+        title: Tent.I18n.loc('tent.grouping.range.tens'),
+        comparator: Tent.JqGrid.Grouping.comparator.create({
+          lower: null,
+          upper: null,
+          compare: function(last, value) {
+            this.calculateRange(last);
+            return (this.get('lower') &lt;= value &amp;&amp; value &lt;= this.get('upper'));
+          },
+          rowTitle: function(value) {
+            value = parseFloat(value);
+            this.calculateRange(value);
+            return this.get('lower') + ' - ' + this.get('upper');
+          },
+          calculateRange: function(value) {
+            var lower, upper;
+            if (value &gt;= 0) {
+              lower = value - (value % 10);
+              upper = lower + 9;
+            } else {
+              if (value % 10 === 0) {
+                lower = value;
+                upper = value + 9;
+              } else {
+                upper = -1 + value - (value % 10);
+                lower = upper - 9;
+              }
+            }
+            this.set('lower', lower);
+            return this.set('upper', upper);
+          }
+        })
+      }
+    ],
+<span id='Tent-JqGrid-Grouping-ranges-boolean'>    /**
+</span>    		* @class Tent.JqGrid.Grouping.ranges.boolean
+    */
+
+    boolean: [
+      {
+<span id='Tent-JqGrid-Grouping-ranges-boolean-property-exact'>        /**
+</span>        				* @property {Object} exact group boleans which have the same value
+        */
+
+        name: 'exact',
+        title: Tent.I18n.loc('tent.grouping.range.exact'),
+        comparator: Tent.JqGrid.Grouping.comparator.create()
+      }
+    ]
+  });
 
 }).call(this);
 
@@ -4173,7 +4827,7 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\t&lt;div class=\&quot;modal-backdrop fade in\&quot;&gt;&lt;/div&gt;\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t&lt;/div&gt;\n\t\t\n\t\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left cancel\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t\t  {{/if}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t{{/if}}\n\t&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\t&lt;div class=\&quot;modal-backdrop fade in\&quot;&gt;&lt;/div&gt;\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t&lt;/div&gt;\n\t\t\n\t\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left cancel\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=\&quot;true\&quot; warnBinding=\&quot;view.warn\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t{{/if}}\n\t&lt;/div&gt;\n&quot;);
 
 Ember.TEMPLATES['modal_body']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;modal-body\&quot;&gt;\n\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t{{#if view.text}}\n  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n  \t{{/if}}\n  \t{{yield}}\n&lt;/div&gt;&quot;);
 
@@ -4372,6 +5026,19 @@ Tent.ModalPane = Ember.View.extend({
     */
 
     autoLaunch: null,
+<span id='Tent-ModalPane-property-validate'>    /**
+</span>    * @property {Boolean} validate Determines whether the primary button executes validations on 
+    * the form widgets.
+    */
+
+    validate: true,
+<span id='Tent-ModalPane-property-warn'>    /**
+</span>    * @property {Boolean} warn A boolean to indicate that warning messages will be handled by the 
+    * primary button. If warning messages of a certain severity exist, a popup will be displayed to 
+    * allow the user to chose to ignore the warnings.
+    */
+
+    warn: false,
     hidden: true,
     init: function() {
       this._super(arguments);
@@ -4572,7 +5239,7 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['button']=Ember.Handlebars.compile(&quot;&lt;div \t{{bindAttr class=\&quot;view.classes view.buttonClass\&quot; disabled=\&quot;view.isDisabled\&quot;}} \n\t\t{{action triggerAction target=\&quot;view\&quot;}}\n\t\t{{bindAttr data-toggle=\&quot;view.dataToggle\&quot;}}\n\t\trole=\&quot;button\&quot;\n\t\t&gt;\n  &lt;i {{bindAttr class=\&quot;view.iconClass\&quot;}} /&gt; {{loc view.label}}\n  {{#if view.hasOptions}}\n  \t &lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n  {{/if}}\n&lt;/div&gt;\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\&quot;view._options\&quot; tagName=\&quot;ul\&quot; classNames=\&quot;dropdown-menu\&quot; itemViewClass=\&quot;Tent.ButtonOptions\&quot;}}\n{{/if}}&quot;);
+Ember.TEMPLATES['button']=Ember.Handlebars.compile(&quot;&lt;div \t{{bindAttr class=\&quot;view.classes view.buttonClass\&quot; disabled=\&quot;view.isDisabled\&quot;}} \n\t\t{{action triggerAction target=\&quot;view\&quot;}}\n\t\t{{bindAttr data-toggle=\&quot;view.dataToggle\&quot;}}\n\t\trole=\&quot;button\&quot;\n\t\t&gt;\n  &lt;i {{bindAttr class=\&quot;view.iconClass\&quot;}} /&gt; {{loc view.label}}\n  {{#if view.hasOptions}}\n  \t &lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n  {{/if}}\n&lt;/div&gt;\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\&quot;view._options\&quot; tagName=\&quot;ul\&quot; classNames=\&quot;dropdown-menu\&quot; itemViewClass=\&quot;Tent.ButtonOptions\&quot;}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          autoLaunch=false\n          header=\&quot;tent.warning.header\&quot; \n          primaryLabel=\&quot;tent.button.proceed\&quot; \n          secondaryLabel=\&quot;tent.button.dontProceed\&quot;\n          primaryType=\&quot;warning\&quot;\n          primaryIcon=\&quot;icon-ok icon-white\&quot;\n          secondaryIcon=\&quot;icon-remove\&quot;\n          primaryAction=\&quot;ignoreWarnings\&quot;\n          primaryTargetBinding=\&quot;view\&quot;\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t&lt;div class=\&quot;alert\&quot;&gt;\n  \t\t\t\t\t&lt;strong&gt;{{loc label}}:&lt;/strong&gt;  {{messages}}\n  \t\t\t\t&lt;/div&gt;\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}&quot;);
 
 
 <span id='Tent-Button'>/**
@@ -4628,6 +5295,14 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     */
 
     validate: false,
+<span id='Tent-Button-property-warn'>    /**
+</span>    * @property {Boolean} warn If warn is set to true, a dialog will be presented if there are any 
+    * warnings pending on the page. The user will be asked to either procede, ignoring the warnings, or to 
+    * cancel the button action and fix the warnings. {@link #validate} must also be set to true to 
+    * enable this property.
+    */
+
+    warn: false,
 <span id='Tent-Button-property-iconClass'>    /**
 </span>    * @property {String} iconClass The css class to assign an icon to the button e.g. 'icon-remove icon-white'
     */
@@ -4654,13 +5329,17 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
       }
       return target || this.get('context.target') || this.get('content') || this.get('context');
     }).property('target', 'content', 'context'),
-    triggerAction: function() {
-      if (this.get('validate')) {
+    triggerAction: function(dontValidate) {
+      if (this.get('validate') &amp;&amp; !dontValidate === false) {
         this.doValidation();
       }
       if (!this.isDisabled) {
         if (!this.get('hasOptions')) {
-          return this._super();
+          if (this.get('warn') === true &amp;&amp; this.get('doWarningsExist')) {
+            return this.showWarningPanel();
+          } else {
+            return this._super();
+          }
         } else {
           return this.$().toggleClass('open');
         }
@@ -4745,7 +5424,25 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
       if (mp != null) {
         return this.set('isDisabled', mp.get('hasErrors'));
       }
-    }).observes('messagePanel', 'messagePanel.hasErrors')
+    }).observes('messagePanel', 'messagePanel.hasErrors'),
+    doWarningsExist: (function() {
+      return this.get('messagePanel.hasSevereWarnings');
+    }).property('messagePanel', 'messagePanel.hasSevereWarnings'),
+    ignoreWarnings: function() {
+      this.get('messagePanel').clearWarnings();
+      this.hideWarningPanel();
+      return this.triggerAction(false);
+    },
+    showWarningPanel: function() {
+      var modal;
+      modal = Ember.View.views[this.$('.tent-modal').attr('id')];
+      return modal.launch();
+    },
+    hideWarningPanel: function() {
+      var modal;
+      modal = Ember.View.views[this.$('.tent-modal').attr('id')];
+      return modal.hide();
+    }
   });
 
   Tent.ButtonOptions = Ember.View.extend(Ember.TargetActionSupport, {
@@ -5088,7 +5785,7 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
 }).call(this);
 
 
-Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;\n\n{{view Ember.View \n\ttemplateNameBinding=\&quot;view.filterTemplate\&quot; \n\tcollectionBinding=\&quot;view.collection\&quot;\n\tfilterBinding=\&quot;view.currentFilter\&quot;\n}}\n\n\n&lt;div class=\&quot;form-inline\&quot;&gt;\n\n\t\t{{view Tent.Select span=\&quot;4\&quot;\n\t\t\tlabel=\&quot;filter.currentFilter\&quot; \n\t\t\tlistBinding=\&quot;view.availableFilters\&quot; \n\t\t\tselectionBinding=\&quot;view.selectedFilter\&quot; \n\t\t\toptionLabelPath=\&quot;content.label\&quot; \n\t\t\toptionValuePath=\&quot;content.name\&quot;\n\t\t}}\n\n\t    {{#view Tent.ModalPane \n\t    \tlabel=\&quot;filter.saveFilter\&quot;\n\t        header=\&quot;filter.saveFilter\&quot; \n\t        primaryLabel=\&quot;filter.save\&quot; \n\t        secondaryLabel=\&quot;filter.cancel\&quot;\n\t        type=\&quot;link\&quot;\n\t        primaryAction=\&quot;saveFilter\&quot;\n\t        primaryTargetBinding=\&quot;view\&quot;\n\t    \t}}\n    \t\n      \t\t{{view Tent.TextField valueBinding=\&quot;view.parentView.currentFilter.label\&quot; label=\&quot;filter.label\&quot; required=true}}\n      \t\t{{view Tent.TextField valueBinding=\&quot;view.parentView.currentFilter.description\&quot; label=\&quot;filter.description\&quot;}}\n      \t{{/view}}\n    \n      \t{{view Tent.Button label=\&quot;Filter\&quot; type=\&quot;primary\&quot; action=\&quot;filter\&quot; targetBinding=\&quot;view\&quot;}}\n\n&lt;/div&gt;\n\n&quot;);
+Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;\n\n{{view Ember.View \n\ttemplateNameBinding=\&quot;view.filterTemplate\&quot; \n\tcollectionBinding=\&quot;view.collection\&quot;\n\tfilterBinding=\&quot;view.currentFilter\&quot;\n}}\n\n\n&lt;div class=\&quot;form-inline\&quot;&gt;\n\n\t\t{{view Tent.Select span=\&quot;4\&quot;\n\t\t\tlabel=\&quot;tent.filter.currentFilter\&quot; \n\t\t\tlistBinding=\&quot;view.availableFilters\&quot; \n\t\t\tselectionBinding=\&quot;view.selectedFilter\&quot; \n\t\t\toptionLabelPath=\&quot;content.label\&quot; \n\t\t\toptionValuePath=\&quot;content.name\&quot;\n\t\t}}\n\n\t    {{#view Tent.ModalPane \n\t    \tlabel=\&quot;tent.filter.saveFilter\&quot;\n\t        header=\&quot;tent.filter.saveFilter\&quot; \n\t        primaryLabel=\&quot;filter.save\&quot; \n\t        secondaryLabel=\&quot;tent.filter.cancel\&quot;\n\t        type=\&quot;link\&quot;\n\t        primaryAction=\&quot;saveFilter\&quot;\n\t        primaryTargetBinding=\&quot;view\&quot;\n\t    \t}}\n    \t\n      \t\t{{view Tent.TextField valueBinding=\&quot;view.parentView.currentFilter.label\&quot; label=\&quot;tent.filter.label\&quot; required=true}}\n      \t\t{{view Tent.TextField valueBinding=\&quot;view.parentView.currentFilter.description\&quot; label=\&quot;tent.filter.description\&quot;}}\n      \t{{/view}}\n    \n      \t{{view Tent.Button label=\&quot;tent.filter.filter\&quot; type=\&quot;primary\&quot; action=\&quot;filter\&quot; targetBinding=\&quot;view\&quot;}}\n\n&lt;/div&gt;\n\n&quot;);
 
 (function() {
 <span id='Tent-CollectionFilter'>/**
@@ -5251,7 +5948,7 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasErrors}}\n&lt;section class=\&quot;alert-error clearfix\&quot;&gt;\n\t&lt;h5&gt;Errors&lt;/h5&gt;\n\t{{#if view.collapsible}}\n\t\t&lt;div {{bindAttr class=\&quot;view.expandoClass\&quot;}}&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : {{this.messages}}\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t&lt;a href=\&quot;#\&quot; class=\&quot;dropdown-toggle pull-right close\&quot; data-toggle=\&quot;collapse\&quot; data-target=\&quot;.error-expando\&quot;&gt;\n\t\t\t\t\t&lt;b class=\&quot;caret\&quot;&gt;&lt;/b&gt;&lt;/a&gt;\n\t\t\t{{/if}}\n\t\t&lt;/div&gt;\n\t\t\n\t{{else}}\n\t\t&lt;div&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : {{this.messages}}\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t&lt;/div&gt;\n\t{{/if}}\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasInfos}}\n&lt;section class=\&quot;alert-info clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearInfos\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;h5&gt;Info&lt;/h5&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.info}}\n\t\t\t&lt;div class=\&quot;info-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/section&gt;\n{{/if}}&quot;);
+Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasErrors}}\n&lt;section class=\&quot;alert-error clearfix\&quot;&gt;\n\t&lt;h5&gt;Errors&lt;/h5&gt;\n\t{{#if view.collapsible}}\n\t\t&lt;div {{bindAttr class=\&quot;view.expandoClass\&quot;}}&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}: &lt;/label&gt; &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t&lt;a href=\&quot;#\&quot; class=\&quot;dropdown-toggle pull-right close\&quot; data-toggle=\&quot;collapse\&quot; data-target=\&quot;.error-expando\&quot;&gt;\n\t\t\t\t\t&lt;b class=\&quot;caret\&quot;&gt;&lt;/b&gt;&lt;/a&gt;\n\t\t\t{{/if}}\n\t\t&lt;/div&gt;\n\t\t\n\t{{else}}\n\t\t&lt;div&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t&lt;/div&gt;\n\t{{/if}}\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasInfos}}\n&lt;section class=\&quot;alert-info clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearInfos\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;h5&gt;Info&lt;/h5&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.info}}\n\t\t\t&lt;div class=\&quot;info-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t&lt;section class=\&quot;alert clearfix\&quot;&gt;\n\t\t\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;removeMessageCommand\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t\t\t&lt;h5&gt;Warning&lt;/h5&gt;\n\t\t\t\t&lt;div&gt;\n\t\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t\t  \t\t\t\t&lt;label&gt;{{loc this.label}}:&lt;/label&gt; {{this.messages}}\n\t\t  \t\t\t&lt;/div&gt; \n\t\t\t \t&lt;/div&gt;\n\t\t&lt;/section&gt;\n\t{{/each}}\n{{/if}}\n\n&quot;);
 
 (function() {
 <span id='Tent-MessagePanel'>/**
@@ -5355,12 +6052,11 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       return this.set('isActive', isActive);
     },
     handleNewMessage: function(e, msg) {
-      var arrayWithMessageRemoved, errs, newErrors;
+      var arrayWithMessageRemoved;
       if (this.get('isActive')) {
         if (!(msg.type != null)) {
           throw new Error('Message must have a type');
         }
-        errs = msg.messages;
         arrayWithMessageRemoved = [];
         if (msg.messages != null) {
           arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
@@ -5370,10 +6066,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
             arrayWithMessageRemoved.pushObject($.extend({}, msg));
           }
         }
-        newErrors = Ember.ArrayProxy.create({
-          content: $.merge([], arrayWithMessageRemoved)
-        });
-        return this.set(msg.type, newErrors);
+        return this.set(msg.type, arrayWithMessageRemoved);
       }
     },
     expandoClass: (function() {
@@ -5390,7 +6083,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     getErrorsForView: function(viewId) {
       var error, errors, _i, _len, _ref;
       errors = [];
-      _ref = this.get('error').get('content');
+      _ref = this.get('error');
       for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
         error = _ref[_i];
         if (error.sourceId === viewId) {
@@ -5402,7 +6095,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     getInfosForView: function(viewId) {
       var info, infos, _i, _len, _ref;
       infos = [];
-      _ref = this.get('info').get('content');
+      _ref = this.get('info');
       for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
         info = _ref[_i];
         if (info.sourceId === viewId) {
@@ -5411,28 +6104,63 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       }
       return infos.uniq();
     },
+    removeMessage: function(type, id) {
+      var msgArr;
+      msgArr = this.get(type);
+      return this.set(type, msgArr.filter(function(item, index, enumerable) {
+        return item.sourceId !== id;
+      }));
+    },
+    removeMessageCommand: function(button) {
+      var id, type;
+      type = button.bindingContext.get('type');
+      id = button.bindingContext.get('sourceId');
+      this.removeMessage(type, id);
+      return this.stopProcessingWarnings(id);
+    },
+    stopProcessingWarnings: function(id) {
+      var view;
+      view = Ember.View.views[id];
+      view.set('processWarnings', false);
+      return view.flushValidationWarnings();
+    },
     hasErrors: (function() {
-      return this.get('error').toArray().length &gt; 0;
-    }).property('error'),
+      return this.get('error').length &gt; 0;
+    }).property('error', 'error.@each'),
     hasInfos: (function() {
-      return this.get('info').toArray().length &gt; 0;
-    }).property('info'),
+      return this.get('info').length &gt; 0;
+    }).property('info', 'info.@each'),
+    hasWarnings: (function(severity) {
+      return this.get('warning').length &gt; 0;
+    }).property('warning', 'warning.@each'),
+    hasSevereWarnings: (function() {
+      var hasW, w, _i, _len, _ref;
+      hasW = false;
+      _ref = this.get('warning');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        w = _ref[_i];
+        if (w.severity === 'high') {
+          return true;
+        }
+      }
+      return hasW;
+    }).property('warning', 'warning.@each'),
     hasMoreThanOneError: (function() {
-      return this.get('error').toArray().length &gt; 1;
-    }).property('error'),
+      return this.get('error').length &gt; 1;
+    }).property('error', 'error.@each'),
     clearAll: function() {
       this.clearErrors();
-      return this.clearInfos();
+      this.clearInfos();
+      return this.clearWarnings();
     },
     clearErrors: function() {
-      return this.set('error', Ember.ArrayProxy.create({
-        content: []
-      }));
+      return this.set('error', []);
     },
     clearInfos: function() {
-      return this.set('info', Ember.ArrayProxy.create({
-        content: []
-      }));
+      return this.set('info', []);
+    },
+    clearWarnings: function() {
+      return this.set('warning', []);
     },
     click: function(e) {
       var target, targetId, wrappingMessage;
@@ -5457,6 +6185,8 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
   Tent.Message.ERROR_TYPE = 'error';
 
   Tent.Message.INFO_TYPE = 'info';
+
+  Tent.Message.WARNING_TYPE = 'warning';
 
 }).call(this);
 

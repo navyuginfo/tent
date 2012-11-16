@@ -24,39 +24,90 @@
 
 
     <script>
+      var mydata = [
+      {
+        id: 51,
+        sel: true,
+        cell: [
+          51,
+          "Task 1",
+          "5",
+          true
+        ]
+      },
+      {
+        id: 52,
+        sel: true,
+        cell: [
+          52,
+          "Task 1",
+          "5",
+          true
+        ]
+      },
+      {
+        id: 53,
+        sel: true,
+        cell: [
+          53,
+          "Task 1",
+          "5",
+          true
+        ]
+      }
+    ];
+      
+
+
       jQuery("#list4").jqGrid({
+         
         datatype: "local",
         height: 250,
-        colNames:['Inv No','Date', 'Client', 'Amount','Tax','Total','Notes'],
+        colNames:['id','title', 'duration', 'completed'],
         colModel:[
-            {name:'id',index:'id', width:60, sorttype:"int"},
-            {name:'invdate',index:'invdate', width:90, sorttype:"date"},
-            {name:'name',index:'name', width:100},
-            {name:'amount',index:'amount', width:80, align:"right",sorttype:"float"},
-            {name:'tax',index:'tax', width:80, align:"right",sorttype:"float"},   
-            {name:'total',index:'total', width:80,align:"right",sorttype:"float"},    
-            {name:'note',index:'note',  sortable:false}   
-          ],
-          multiselect: true,
-          caption: "Manipulating Array Data"
+            {id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, hidden: true},
+            {id: "title", name: "title", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
+            {id: "duration", name: "duration", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right'},
+            {id: "completed", name: "completed", title: "_hCompleted",field: "completed", width:30, hideable: true, align: 'center', editable: false}
+          ]
+          ,
+          multiselect: false,
+          caption: "Manipulating Array Data",
+          autowidth: true,
+          sortable: true,  
+          forceFit: true,  
+          shrinkToFit: true,
+          viewsortcols: [false,'vertical',false],
+          hidegrid: false,  
+          viewrecords: true, 
+          rowNum: 3,
+          gridview: true,
+          toppager:false,
+          cloneToTop:false,
+
+          grouping: true,
+          groupingView: {
+            groupField: ['duration']
+          }
+           
       });
-      var mydata = [
-          {id:"1",invdate:"2007-10-01",name:"test",note:"notejdfkljl <b>jdfals</b>  sfjklas ds sfjas  sadfljk sj ds ajdlsfj d ajlsf ",amount:"200.00",tax:"10.00",total:"210.00"},
-          {id:"2",invdate:"2007-10-02",name:"test2",note:"note2",amount:"300.00",tax:"20.00",total:"320.00"},
-          {id:"3",invdate:"2007-09-01",name:"test3",note:"note3",amount:"400.00",tax:"30.00",total:"430.00"},
-          {id:"4",invdate:"2007-10-04",name:"test",note:"note",amount:"200.00",tax:"10.00",total:"210.00"},
-          {id:"5",invdate:"2007-10-05",name:"test2",note:"note2",amount:"300.00",tax:"20.00",total:"320.00"},
-          {id:"6",invdate:"2007-09-06",name:"test3",note:"note3",amount:"400.00",tax:"30.00",total:"430.00"},
-          {id:"7",invdate:"2007-10-04",name:"test",note:"note",amount:"200.00",tax:"10.00",total:"210.00"},
-          {id:"8",invdate:"2007-10-03",name:"test2",note:"note2",amount:"300.00",tax:"20.00",total:"320.00"},
-          {id:"9",invdate:"2007-09-01",name:"test3",note:"note3",amount:"400.00",tax:"30.00",total:"430.00"}
-          ];
+
       
       /*for(var i=0;i<=mydata.length;i++)
         jQuery("#list4").jqGrid('addRowData',i+1,mydata[i]);
+      
+        jQuery("#list4").jqGrid('addRowData','id', mydata);
+        jQuery("#list4").jqGrid('sortGrid', 'name', true);
       */
-        jQuery("#list4").jqGrid('addRowData','id',mydata);
 
+      var data = {
+        rows: mydata,
+        total: 1,
+        records: 3,
+        page: 1
+      }
+      
+      jQuery("#list4")[0].addJSONData(data)
 
     </script>
   </body>

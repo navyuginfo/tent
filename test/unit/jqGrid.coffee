@@ -136,6 +136,7 @@ test 'Validate on Selection', ->
 	grid.set('selection', selection)
 	ok didValidate, 'Should have validated'
 
+
 test 'Insert into dom. Single-select, non-paged', ->
 	selection = [Ember.Object.create(id: 52,title: "Task 2")]
 
@@ -287,4 +288,5 @@ test 'Error Cell', ->
 test 'Export', ->
 test 'Collection Support', ->
 ###
+
 

@@ -17,6 +17,7 @@
     <script src="javascript/slick-grid.js" type="text/javascript"></script>
     <script src="javascript/jqGrid.js" type="text/javascript"></script>
     <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/date.js" type="text/javascript"></script>
     <script src="javascript/pubsub.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
@@ -244,7 +245,7 @@
                   paged=true
                   pageSize=6
                   remotePaging=false
-                  multiSelect=false
+                  multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
                   onEditRowBinding="Pad.jqOnEditRow"
@@ -271,6 +272,28 @@
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
+
+
+              <h5>Client-Side</h5>
+
+              {{view Tent.JqGrid
+                  label="Tasks"
+                  collectionBinding="Pad.clientSideCollection"
+                  contentBinding= "Pad.clientSideCollection.modelData"
+                  selectionBinding="Pad.jqClientSideGridSelection"
+                  fixedHeader=false
+                  showMaximizeButton=true
+                  paged=false
+                  multiSelect=true
+                  useColumnFilters=false
+                  showColumnChooser=true
+                  onEditRowBinding="Pad.jqOnEditRow"
+                  onRestoreRowBinding="Pad.jqOnRestoreRow"
+                  onSaveCellBinding="Pad.jqOnSaveCell"
+                  required=true
+                  grouping=true
+                  groupField="effortdriven"
+              }}
 
               {{view Tent.Button label="Submit" validate="true"}}
 

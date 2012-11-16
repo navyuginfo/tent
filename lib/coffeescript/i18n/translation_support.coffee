@@ -34,7 +34,7 @@ Tent.I18n = Ember.Namespace.create
 			vars = [vars] if typeof vars == 'string'
 			return Ember.String.fmt(string, vars)
 
-Tent.translate = Tent.I18n.translate
+Tent.translate = Tent.I18n.loc
 
 Tent.I18n.loadTranslations(
 	tent: {
@@ -76,5 +76,18 @@ Tent.I18n.loadTranslations(
 			header: 'Warnings Exist'
 			warningsOnPage: 'The following warnings exist on this page. Do you wish to ignore them and proceed?'
 		}
+ 
+		grouping: {
+			_groupBy: 'Group'
+			range: {
+				exact: 'Exact'
+				tens: 'Tens'
+				week: 'Week'
+				month: 'Month'
+				quarter: 'Quarter'
+				year: 'Year'
+			}
+		}
 	}
+ 
 )

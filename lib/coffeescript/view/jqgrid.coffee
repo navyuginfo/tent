@@ -61,7 +61,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	showMaximizeButton: true
 
 	###*
-	* @property {Boolean} Set this property to true to deselect all the selected items and restore all the editable fields. 
+	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
+	###
+	grouping: false
+
+	###*
+	* @property {String} groupField The name of the field by which to group the grid
+	###
+	groupField: null
+
+	###* 
+	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
 	fullScreen: false
@@ -91,6 +101,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		$.subscribe("/ui/refresh", ->
 			widget.resizeToContainer()
 		)
+		@set('selection',[]) if not @get('selection')?
 
 	valueForMandatoryValidation: (->
 		@get('selection')
@@ -151,6 +162,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
+
+			grouping: @get('grouping')
+			groupingView: {
+				groupField: [@get('groupField')]
+				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
+				groupDataSorted: true
+			}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -159,6 +177,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		})
 
 		@addNavigationBar()
+		@addColumnDropdowns()
 		@gridDataDidChange()
 
 
@@ -188,7 +207,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@deselectItem(id)
 
 	clearSelection: ->
-		@get('selection').clear()
+		@get('selectedIds').clear()
+		@get('selection').clear() if @get('selection')?
 
 	selectItem: (itemId) ->
 		@get('selection').pushObject(@getItemFromModel(itemId))
@@ -232,6 +252,59 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@renderColumnChooser(tableDom)
 		@_super()
 		@renderMaximizeButton()
+
+	addColumnDropdowns: ->
+		widget = this
+		for column in @get('columns')
+			template = Handlebars.compile "
+				{{#if column.groupable}}
+					<ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'>
+						{{#if column.groupable}}
+							<li class='group dropdown-submenu'>
+								<a tabindex='-1'>Group</a>
+							    <ul class='dropdown-menu'>
+							    	{{#each groupType}}
+							    		<li data-grouptype='{{name}}'><a tabindex='-1'>{{title}}</a></li>
+							    	{{/each}}
+							    </ul>
+							</li>
+						{{/if}}
+					</ul>
+				{{/if}}"
+
+			column.groupable = not (column.groupable? && column.groupable ==false)
+			context = 
+				column: column
+				groupType: Tent.JqGrid.Grouping.ranges[column.type]
+			
+			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
+			@$(columnDivId).after template(context)
+			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
+
+		@$('.column-dropdown').click((e)->
+			target = $(e.target)
+			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
+			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
+			columnType = 'string'
+			for col in widget.get('columns')
+				if col.field == column then columnType= col.type
+			widget.groupByColumn(column, groupType, columnType)
+		)
+
+	groupByColumn: (column, groupType, columnType)->
+		@get('collection').sort(
+			fields: [
+				sortAsc: true
+				field: column
+			]
+		)
+
+		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
+		this.getTableDom().groupingGroupBy(column, {
+				groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
+				range: comparator
+			}
+		)
 		
 	renderColumnChooser: (tableDom)->
 		widget =  @
@@ -291,6 +364,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @$()?
 			@getTableDom().setGridWidth(@$().width())
 
+	getTitleForColumn: (colName)->
+		for column in @get('columns')
+			return Tent.I18n.loc(column.title) if column.field==colName
+
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
@@ -318,6 +395,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				position: "right"
 				hidden: column.hidden
 				hidedlg: true if column.hideable == false
+				sortable: column.sortable
+				groupable: column.groupable
 			columns.pushObject(item)
 		columns
 	).property('columns')
@@ -347,9 +426,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			total: @get('totalPages')
 			records: @get('totalRows')
 			page: @get('pagingData').page
+		@resetGrouping()
 		@getTableDom()[0].addJSONData(data)
 		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each')
+
+	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
+	# grouping so that they accumulate. We need to explicitly clear the grouping here.
+	#
+	resetGrouping: ->
+		this.getTableDom().groupingSetup()
+		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->
 		@updateGrid()
@@ -358,10 +445,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	selectedIds: (->
 		#selectedIDs should observe selection
 		sel = []
-		for item in @get('selection')
-			id = "" + item.get('id')
-			sel.pushObject(id)
+		if @get('selection')?
+			for item in @get('selection') 
+				id = "" + item.get('id')
+				sel.pushObject(id)
 		return sel
+
 	).property('selection.@each')
 
 	updateGrid: ->
@@ -424,7 +513,4 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if !selectedIds.contains(id)
 				allSelected = false
 		allSelected
-
-
-
 
