@@ -240,10 +240,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if not @get('title')?
 				tableDom.setCaption('&nbsp;')
 
-			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.hideShowCaption") + '</a>')
+			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("tent.jqGrid.hideShowCaption") + '</a>')
 			@$('a.column-chooser').click(() ->
 				tableDom.jqGrid('setColumns',{
-					caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
+					caption: Tent.I18n.loc("tent.jqGrid.hideShowTitle"),
 					showCancel: false,
 					ShrinkToFit: true,
 					recreateForm: true,
@@ -264,7 +264,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeightForFixedHeader: () ->
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
-
 
 	renderMaximizeButton: ->
 		widget = @

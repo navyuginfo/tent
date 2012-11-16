@@ -26,7 +26,7 @@
 *
 * When the dialog is closed by clicking outside the dialog, the secondary action will be called.
 *
-* ##Usage
+* ## Usage
 *
 *       {{#view Tent.ModalPane   
                 text="_modalText" 
@@ -47,13 +47,48 @@
               <h5>Some more content</h5>
         {{/view}}
 *
+* <h4> Validation </h4>
+* The primary button will by default have validation set to true. This means that widgets within the modal dialog
+* will be validated on submission, and any errors that occur will be displayed in an error panel within the modal.
+* The primary button will be disabled until all of the validation errors have been corrected. 
+*
+* ## Alternate Usage
+*
+* If you need more complex footer content, you can provide it with a dedicated {@link Tent.ModalFooter} view.
+* In this instance, you also need to provide a {@link Tent.ModalBody} for the body content.
+*
+*
+* Usage is like:
+
+    {{#view Tent.ModalPane 
+          label="Using Custom Footer" 
+          header="_modalHeader" 
+          customContent=true
+    }}
+      {{#view Tent.ModalBody}}
+        body content goes here ...
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+        ... other buttons ...
+      {{/view}}
+    {{/view}}
+
+ - In order to use the ModalBody and ModalFooter views, you must set {@link #customContent} to true.
+ - Any button that will close the dialog should have a css class of 'close-dialog'
+ - The cancel button should be identified with a css class of 'cancel'. In the event that the Modal is 
+ closed by this button, or the 'x' close button, or by clicking outside of the modal, then the action 
+ associated with the cancel button will be executed.
+*
 ###
 require '../template/modal_pane'
-
+require '../template/modal_body'
+require '../template/modal_footer'
 
 Tent.ModalPane = Ember.View.extend
   layoutName: 'modal_pane'
-  classNames: ['tent-widget', 'control-group', 'tent-form']
+  classNames: ['tent-widget', 'control-group', 'tent-modal', 'tent-form']
   ###*
   * @property {String} label The label for the launch button
   ###
@@ -149,6 +184,33 @@ Tent.ModalPane = Ember.View.extend
   ###
   customButton: null
 
+  ###*
+  * @property {Boolean} customContent A boolean indicating that the ModalPane should not provide
+  * its own body or footer. A Tent.ModalBody and Tent.ModalFooter may be provided in the nested content.
+  ###
+  customContent: false
+
+  ###*
+  * @property {Boolean} autoLaunch A boolean to indicate whether the modal panel will be displayed on entering the 
+  * screen, regardless of any other property settings.
+  ###
+  autoLaunch: null
+
+  ###*
+  * @property {Boolean} validate Determines whether the primary button executes validations on 
+  * the form widgets.
+  ###
+  validate: true
+
+  ###*
+  * @property {Boolean} warn A boolean to indicate that warning messages will be handled by the 
+  * primary button. If warning messages of a certain severity exist, a popup will be displayed to 
+  * allow the user to chose to ignore the warnings.
+  ###
+  warn: false
+
+  hidden: true
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -157,8 +219,11 @@ Tent.ModalPane = Ember.View.extend
       @set('closeTarget', @get('secondaryTarget'))
 
   didInsertElement: ->
-    if not (@get('label')? || @get('customButton')?)
+    if @get('autoLaunch')
       @launch()
+    else
+      if (not @cancelAutoLaunch()) and not (@get('label')? or @get('customButton')?)
+        @launch()
 
     if @get('customButton')?
       widget = @
@@ -166,10 +231,22 @@ Tent.ModalPane = Ember.View.extend
         widget.launch()
       )
   
-    @$(".modal").on("hidden", (e)=>
-      if @targetIsMessagePanel(e.target)
+    @$(".modal:first").on("hidden", (e)=>
+      if not @get('hidden') and @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
+        @hide()
     )
+
+    modalId = @get('elementId')
+    @$('.close-dialog').filter(->
+      $(this).parents('.tent-modal:first').attr('id') == modalId
+    ).click (event)=>
+      if not $(event.target).attr('disabled')
+        @hide()
+      #event.stopPropagation()
+
+  cancelAutoLaunch: ->
+    @get('autoLaunch')? and @get('autoLaunch') == false
 
   targetIsMessagePanel: (source)->
     @$('.modal').get(0) == source
@@ -183,7 +260,7 @@ Tent.ModalPane = Ember.View.extend
   disableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
     panel = @getMessagePanelView()
-    panel.clearAll()
+    panel.clearAll() if panel?
     primaryPanel.setActive(true) if primaryPanel?
     panel.setActive(false)  if panel?
   
@@ -191,10 +268,10 @@ Tent.ModalPane = Ember.View.extend
     Ember.View.views[$('.tent-message-panel.primary').attr('id')]
 
   getMessagePanelView: ->
-    Ember.View.views[@$('.tent-message-panel').attr('id')]
+    Ember.View.views[@$('.tent-message-panel:first').attr('id')]
 
   triggerCancelAction: (e)->
-    cancelButton = @$('.modal-footer .btn-secondary.close-dialog')
+    cancelButton = @$('.cancel:last') #don't get child modal cancel button
     if cancelButton.length > 0
       id = cancelButton.parent('.tent-button').attr('id')
       buttonView = Ember.View.views[id]
@@ -203,24 +280,60 @@ Tent.ModalPane = Ember.View.extend
   willDestroyElement: ->
     @hide()
 
-  click: (event)->
+  ###click: (event)->
     target = event.target
     if $(target).hasClass('close-dialog')
       @hide()
+  ###
 
   launch: ->
-     @.$('.modal').modal(@get('options'))
-     @enableMessagePanel()
+    @set('hidden', false)
+    @.$('.modal:first').modal(@get('options'))
+    @fadeParentModal()
+    @enableMessagePanel()
 
   hide: ->
-    @.$('.modal').modal('hide')
+    @set('hidden', true)
+    @restoreParentModal()
+    @.$('.modal:first').modal('hide')
     @disableMessagePanel()
 
+  # If this is a nested modal, fade out the parent modal
+  fadeParentModal: ->
+    parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
+    parentBackdrop.hide().attr('data-hidden', true)
+    if parentBackdrop.length > 0
+      @$('.modal-backdrop:first').fadeIn(0).attr('data-hidden', false)
+    else
+      @$('.modal-backdrop:first').fadeIn(200).attr('data-hidden', false)
+
+  restoreParentModal: ->
+    parentBackdrop = @$().parents('.tent-modal:first').find('.modal-backdrop:first')
+    parentBackdrop.show().attr('data-hidden', false)
+    if parentBackdrop.length > 0
+      @$('.modal-backdrop:first').fadeOut(0).attr('data-hidden', true)
+    else
+      @$('.modal-backdrop:first').fadeOut(200).attr('data-hidden', true)
+    
 
 Tent.ModalHeader = Ember.View.extend
   tagName: 'h3'
   defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.header}}'
 
+###*
+* @class Tent.ModalBody
+* Add a body panel to a modal dialog.
+*
+* This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+###
 Tent.ModalBody = Ember.View.extend
-  tagName: 'p'
-  defaultTemplate: Ember.Handlebars.compile '{{loc view.parentView.text}}'  
+  layoutName: 'modal_body'
+
+###*
+* @class Tent.ModalFooter
+* Add a footer panel to a modal dialog.
+*
+* This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+###
+Tent.ModalFooter = Ember.View.extend
+  layoutName: 'modal_footer'

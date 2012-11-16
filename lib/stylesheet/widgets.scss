@@ -33,6 +33,11 @@ $required-icon-color: red;
 			content: '*';
 		}
 	}
+
+	ul.help-inline {
+		list-style: none;
+		margin-left: 0px;
+	}
 }
 
 /*  Buttons */
@@ -43,4 +48,14 @@ $required-icon-color: red;
 	&:hover {
 		text-decoration: none;
 	}
+}
+
+/* ModalPane */
+
+body>.modal-backdrop, body>.modal-backdrop.fade.in {
+	opacity: .01
+}
+.tent-modal .modal-backdrop {
+	display: none;
+	@include transition(all 0.3s ease);
 }

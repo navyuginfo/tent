@@ -14,24 +14,60 @@ accounting.settings =
 
 Tent.Formatting = {} unless Tent.Formatting?
 
-Tent.Formatting.amount = 
+###*
+* @class Tent.Formatting
+* 
+* Formatting methods for converting base values to and from presentation strings.
+*
+###
+
+###*
+* @class Tent.Formatting.amount
+###
+
+###*
+* @property {Object} divisor A function to transform the value before formatting, and after unformatting.
+* This may typically be provided to normalise values when stored as centesimal values
+* The divisor is expected to have a 'func' property which returns a Numeric divisor
+###
+
+
+Tent.Formatting.amount = Ember.Object.create
+
+	###*
+	* @method format
+	* Formats an amount
+	* @param {Number} amount The amount to format
+	* @param {Array} [settings] Optional setting to use for formatting
+	* @return {String} The formatted value
+	###
 	format: (amount, settings) ->
 		if amount?
+			amount = if @divisor? then amount * @divisor.func() else amount
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
-				accounting.formatNumber(amount, settings) 
-			else 
+				accounting.formatNumber(amount, settings)
+			else
 				accounting.formatNumber(amount)
 		else
 			""
+
+	###*
+	* @method unformat
+	* Unformats an amount
+	* @param {String} amount The amount to format
+	* @param {Array} [settings] Optional setting to use for formatting
+	* @return {Number} The unformatted value
+	###
 	unformat: (amount, settings) ->
 		if amount?
 			if settings?
 				settings = Tent.Formatting.amount.settingsFilter(settings)
-				accounting.unformat(amount, settings)
+				amount = accounting.unformat(amount, settings)
 			else
-				accounting.unformat(amount)
-		else 
+				amount = accounting.unformat(amount)
+			amount = if @divisor? then amount / @divisor.func() else amount
+		else
 			null
 
 	settingsFilter: (rawSettings) ->
@@ -81,3 +117,33 @@ Tent.Formatting.number = Ember.Object.create
 
 	cssClass: ->
 		"amount"
+
+Tent.Formatting.percent = Ember.Object.create
+	isValidNumber: (value)->
+		(value != '') && !(isNaN(value) || isNaN(parseFloat(value))) 
+
+	errorText: ->
+		Tent.I18n.loc 'formatting.percent'
+
+	format: (value) ->
+		if (typeof value == 'number') 
+			Math.round(1000*value)/10.toString(10) + "%"
+		else if value?
+			value
+		else 
+			""
+	unformat: (value) ->
+		# Convert from a string to a number
+		if value=="" or not value?
+			return null
+		if value.indexOf('%') != -1
+			value = value.split('%')[0]
+
+		if @isValidNumber(value)
+			val = parseFloat((value/100).toFixed(3))
+		else 
+			value
+
+	cssClass: ->
+		"amount"
+

@@ -315,4 +315,9 @@
 		 
 	)
 
+	Pad.clickCancelOuter = ->
+		#alert('cancel outer.')
+	Pad.clickCancelInner = ->
+		#alert('cancel inner.')
+
 )(minispade)

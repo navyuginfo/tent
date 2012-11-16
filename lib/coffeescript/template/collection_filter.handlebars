@@ -10,7 +10,7 @@
 <div class="form-inline">
 
 		{{view Tent.Select span="4"
-			label="filter.currentFilter" 
+			label="tent.filter.currentFilter" 
 			listBinding="view.availableFilters" 
 			selectionBinding="view.selectedFilter" 
 			optionLabelPath="content.label" 
@@ -18,20 +18,20 @@
 		}}
 
 	    {{#view Tent.ModalPane 
-	    	label="filter.saveFilter"
-	        header="filter.saveFilter" 
+	    	label="tent.filter.saveFilter"
+	        header="tent.filter.saveFilter" 
 	        primaryLabel="filter.save" 
-	        secondaryLabel="filter.cancel"
+	        secondaryLabel="tent.filter.cancel"
 	        type="link"
 	        primaryAction="saveFilter"
 	        primaryTargetBinding="view"
 	    	}}
     	
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="filter.label" required=true}}
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="filter.description"}}
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true}}
+      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description"}}
       	{{/view}}
     
-      	{{view Tent.Button label="Filter" type="primary" action="filter" targetBinding="view"}}
+      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view"}}
 
 </div>
 

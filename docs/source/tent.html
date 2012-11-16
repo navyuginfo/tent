@@ -372,9 +372,38 @@
     Tent.Formatting = {};
   }
 
-  Tent.Formatting.amount = {
+<span id='Tent-Formatting'>  /**
+</span>  * @class Tent.Formatting
+  * 
+  * Formatting methods for converting base values to and from presentation strings.
+  *
+  */
+
+
+<span id='Tent-Formatting-amount'>  /**
+</span>  * @class Tent.Formatting.amount
+  */
+
+
+<span id='Tent-Formatting-amount-property-divisor'>  /**
+</span>  * @property {Object} divisor A function to transform the value before formatting, and after unformatting.
+  * This may typically be provided to normalise values when stored as centesimal values
+  * The divisor is expected to have a 'func' property which returns a Numeric divisor
+  */
+
+
+  Tent.Formatting.amount = Ember.Object.create({
+<span id='Tent-Formatting-amount-method-format'>    /**
+</span>    	* @method format
+    	* Formats an amount
+    	* @param {Number} amount The amount to format
+    	* @param {Array} [settings] Optional setting to use for formatting
+    	* @return {String} The formatted value
+    */
+
     format: function(amount, settings) {
       if (amount != null) {
+        amount = this.divisor != null ? amount * this.divisor.func() : amount;
         if (settings != null) {
           settings = Tent.Formatting.amount.settingsFilter(settings);
           return accounting.formatNumber(amount, settings);
@@ -385,14 +414,23 @@
         return &quot;&quot;;
       }
     },
+<span id='Tent-Formatting-amount-method-unformat'>    /**
+</span>    	* @method unformat
+    	* Unformats an amount
+    	* @param {String} amount The amount to format
+    	* @param {Array} [settings] Optional setting to use for formatting
+    	* @return {Number} The unformatted value
+    */
+
     unformat: function(amount, settings) {
       if (amount != null) {
         if (settings != null) {
           settings = Tent.Formatting.amount.settingsFilter(settings);
-          return accounting.unformat(amount, settings);
+          amount = accounting.unformat(amount, settings);
         } else {
-          return accounting.unformat(amount);
+          amount = accounting.unformat(amount);
         }
+        return amount = this.divisor != null ? amount / this.divisor.func() : amount;
       } else {
         return null;
       }
@@ -403,7 +441,7 @@
     cssClass: function() {
       return &quot;amount&quot;;
     }
-  };
+  });
 
   Tent.Formatting.date = Ember.Object.create({
     options: {
@@ -445,6 +483,41 @@
         return val = parseFloat(value);
       } else if (value === &quot;&quot;) {
         return null;
+      } else {
+        return value;
+      }
+    },
+    cssClass: function() {
+      return &quot;amount&quot;;
+    }
+  });
+
+  Tent.Formatting.percent = Ember.Object.create({
+    isValidNumber: function(value) {
+      return (value !== '') &amp;&amp; !(isNaN(value) || isNaN(parseFloat(value)));
+    },
+    errorText: function() {
+      return Tent.I18n.loc('formatting.percent');
+    },
+    format: function(value) {
+      if (typeof value === 'number') {
+        return Math.round(1000 * value) / 10..toString(10) + &quot;%&quot;;
+      } else if (value != null) {
+        return value;
+      } else {
+        return &quot;&quot;;
+      }
+    },
+    unformat: function(value) {
+      var val;
+      if (value === &quot;&quot; || !(value != null)) {
+        return null;
+      }
+      if (value.indexOf('%') !== -1) {
+        value = value.split('%')[0];
+      }
+      if (this.isValidNumber(value)) {
+        return val = parseFloat((value / 100).toFixed(3));
       } else {
         return value;
       }
@@ -2512,7 +2585,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 (function() {
 <span id='Tent-JqGrid'>/**
 </span>  * @class Tent.JqGrid
-  * @extends Ember.View
+  * @mixins Tent.ValidationSupport
+  * @mixins Tent.MandatorySupport
   *
   * Create a jqGrid view which displays the data provided by a Collection object
   * The grid will bind to the following properties of the collection:
@@ -3204,14 +3278,31 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 }).call(this);
 
 
+
+<span id='jqgrid-formatter-amount'>/**
+</span>* @class jqgrid.formatter.amount Allows jsGrid cell content to be formatted as an amount
+* This formatter should be added to a column descriptor as follows:
+*       {id: &quot;some_id&quot;, ..., formatter: &quot;amount&quot;, formatoptions:{negative:true}}
+*
+* When 'negative' is set to true, then negative values will be displayed in different style to
+* non-negative amounts (usually colored red).
+*/
+
+
 (function() {
 
   jQuery.extend($.fn.fmatter, {
-    amount: function(cellvalue, opts, cell) {
-      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+    amount: function(cellvalue, options, cell) {
+      var formattedVal;
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
         cellvalue = $('input', cell).attr('value') || 0;
       }
-      return Tent.Formatting.amount.format(cellvalue);
+      formattedVal = Tent.Formatting.amount.format(cellvalue);
+      if ((options != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
+        return '&lt;span class=&quot;negative&quot;&gt;' + formattedVal + '&lt;/span&gt;';
+      } else {
+        return formattedVal;
+      }
     }
   });
 
@@ -3233,6 +3324,81 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
     }
   });
 
+<span id='jqgrid-formatter-number'>  /**
+</span>  * @class jqgrid.formatter.number Allows jsGrid cell content to be formatted as a number
+  * This formatter should be added to a column descriptor as follows:
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;number&quot;, formatoptions:{negative:true}}
+  *
+  * When 'negative' is set to true, then negative values will be displayed in different style to
+  * non-negative numbers (usually colored red).
+  */
+
+
+  jQuery.extend($.fn.fmatter, {
+    number: function(cellvalue, options, cell) {
+      var formattedVal;
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
+        cellvalue = $('input', cell).attr('value') || 0;
+      }
+      formattedVal = Tent.Formatting.number.format(cellvalue);
+      if ((options != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
+        return '&lt;span class=&quot;negative&quot;&gt;' + formattedVal + '&lt;/span&gt;';
+      } else {
+        return formattedVal;
+      }
+    }
+  });
+
+  jQuery.extend($.fn.fmatter.number, {
+    unformat: function(cellvalue, options, cell) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+        cellvalue = $('input', cell).attr('value');
+      }
+      return Tent.Formatting.number.unformat(cellvalue) || &quot;&quot;;
+    }
+  });
+
+<span id='jqgrid-formatter-percent'>  /**
+</span>  * @class jqgrid.formatter.percent Allows jsGrid cell content to be formatted as a percentage value
+  * This formatter should be added to a column descriptor as follows:
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;percent&quot;}
+  */
+
+
+  jQuery.extend($.fn.fmatter, {
+    percent: function(cellvalue, opts, cell) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+        cellvalue = $('input', cell).attr('value') || 0;
+      }
+      return Tent.Formatting.percent.format(cellvalue);
+    }
+  });
+
+  jQuery.extend($.fn.fmatter.percent, {
+    unformat: function(cellvalue, options, cell) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+        cellvalue = $('input', cell).attr('value');
+      }
+      return Tent.Formatting.percent.unformat(cellvalue) || &quot;&quot;;
+    }
+  });
+
+  jQuery.extend($.fn.fmatter.percent, {
+    formatCell: function(cellvalue, options, cell) {
+      var input;
+      input = $('input', cell);
+      cellvalue = input.attr('value');
+      return input.val(Tent.Formatting.percent.format(cellvalue) || &quot;&quot;);
+    }
+  });
+
+<span id='jqgrid-formatter-date'>  /**
+</span>  * @class jqgrid.formatter.date Allows jsGrid cell content to be formatted as date values
+  * This formatter should be added to a column descriptor as follows (dateFormat is optional):
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;date&quot;, formatoptions:{dateFormat: &quot;dd-M-yy&quot;}}
+  */
+
+
   jQuery.extend($.fn.fmatter, {
     date: function(cellvalue, options, rowdata) {
       if (options.colModel.formatoptions) {
@@ -3251,28 +3417,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter, {
     action: function(cellvalue, options, rowdata) {
-      /* Original Implementation
-      				parentView = this.p.parentView
-      				#parentView.get('controller.namespace').router.send(options.colModel.formatoptions.action))
-      		      	
-      				view = Ember.View.create
-      					template: Ember.Handlebars.compile '&lt;a {{action '+options.colModel.formatoptions.action+' content}}&gt;'+cellvalue+'&lt;/a&gt;'
-      					parentView: parentView 
-      					#sendAction: (a) -&gt;
-      					#	alert('here it is - formatter ['+@get('action')+']')
-      					#	false
-      				c = Ember.Object.create
-      					content: parentView.getItemFromModel(options.rowId)
-      				view[options.colModel.formatoptions.action] = -&gt;
-      					console.log 'action target not implemented'
-      					false
-      				view.set('_context', c)
-      				view.createElement()
-      				view.$().html()
-      */
       return '&lt;a onclick=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\')&quot;&gt;' + cellvalue + '&lt;/a&gt;';
     }
   });
+
+<span id='jqgrid-formatter-checkboxEdit'>  /**
+</span>  * @class jqgrid.formatter.checkboxEdit Allows jsGrid boolean cell content to be displayed as a checkbox
+  * This formatter should be added to a column descriptor as follows:
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;checkboxEdit&quot;}
+  */
+
 
   jQuery.extend($.fn.fmatter, {
     checkboxEdit: function(cval, opts) {
@@ -3296,6 +3450,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       return $('input', cell).is(':checked');
     }
   });
+
+<span id='jqgrid-formatter-selectEdit'>  /**
+</span>  * @class jqgrid.formatter.selectEdit Allows jsGrid cell content to be selected from a select box dropdown
+  * This formatter should be added to a column descriptor as follows:
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;selectEdit&quot;, editoptions:{value: {1:'One',2:'Two',3:'Three'}}}
+  */
+
 
   jQuery.extend($.fn.fmatter, {
     selectEdit: function(cval, opts) {
@@ -4012,7 +4173,11 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t{{#if view.text}}\n\t\t  \t\t{{view Tent.ModalBody}}\n\t\t  \t{{/if}}\n\t\t  \t{{yield}}\n\t\t&lt;/div&gt;\n\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\n\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t  {{/if}}\n\t\t\t  {{#if view.primaryLabel}}\n\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t  {{/if}}\n\t\t\t&lt;/div&gt;\n\t\t&lt;/div&gt;\n\t&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\&quot;launch\&quot; labelBinding=\&quot;view.label\&quot; aria-haspopup=\&quot;true\&quot; action=\&quot;launch\&quot; targetBinding=\&quot;view\&quot; typeBinding=\&quot;view.type\&quot;}}\n\t\t{{/unless}}\n\t{{/if}}\n\t&lt;div class=\&quot;modal-backdrop fade in\&quot;&gt;&lt;/div&gt;\n\t&lt;div class=\&quot;modal hide fade\&quot; tabindex=\&quot;-1\&quot; role=\&quot;dialog\&quot; aria-hidden=\&quot;true\&quot;&gt;\n\t\t&lt;div class=\&quot;modal-header\&quot;&gt;\n\t\t\t{{view Tent.Button buttonClass=\&quot;close-dialog close\&quot; label=\&quot;&amp;times;\&quot; actionBinding=\&quot;view.closeAction\&quot; targetBinding=\&quot;view.closeTarget\&quot; type=\&quot;link\&quot;}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t&lt;/div&gt;\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t&lt;div class=\&quot;modal-body\&quot;&gt;\n\t\t\t\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t&lt;/div&gt;\n\t\t\n\t\t\t&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t\t\t\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;close-dialog pull-left cancel\&quot; labelBinding=\&quot;view.secondaryLabel\&quot; actionBinding=\&quot;view.secondaryAction\&quot; targetBinding=\&quot;view.secondaryTarget\&quot; typeBinding=\&quot;view.secondaryType\&quot; iconClassBinding=\&quot;view.secondaryIcon\&quot;}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\&quot;\&quot; labelBinding=\&quot;view.primaryLabel\&quot; actionBinding=\&quot;view.primaryAction\&quot; targetBinding=\&quot;view.primaryTarget\&quot; typeBinding=\&quot;view.primaryType\&quot; iconClassBinding=\&quot;view.primaryIcon\&quot; validate=true}}\n\t\t\t\t  {{/if}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t{{/if}}\n\t&lt;/div&gt;\n&quot;);
+
+Ember.TEMPLATES['modal_body']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;modal-body\&quot;&gt;\n\t{{view Tent.MessagePanel type=\&quot;secondary\&quot; isActive=false collapsible=true collapsed=true}}\n\t{{#if view.text}}\n  \t\t&lt;p&gt;{{loc view.text}}&lt;/p&gt;\n  \t{{/if}}\n  \t{{yield}}\n&lt;/div&gt;&quot;);
+
+Ember.TEMPLATES['modal_footer']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;modal-footer\&quot;&gt;\n\t&lt;div class=\&quot;btn-toolbar\&quot;&gt;\n\t\t{{yield}}\n\t&lt;/div&gt;\n&lt;/div&gt;&quot;);
 
 
 <span id='Tent-ModalPane'>/**
@@ -4038,7 +4203,7 @@ Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.labe
 *
 * When the dialog is closed by clicking outside the dialog, the secondary action will be called.
 *
-* ##Usage
+* ## Usage
 *
 *       {{#view Tent.ModalPane   
                 text=&quot;_modalText&quot; 
@@ -4059,13 +4224,47 @@ Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile(&quot;\n\t{{#if view.labe
               &lt;h5&gt;Some more content&lt;/h5&gt;
         {{/view}}
 *
+* &lt;h4&gt; Validation &lt;/h4&gt;
+* The primary button will by default have validation set to true. This means that widgets within the modal dialog
+* will be validated on submission, and any errors that occur will be displayed in an error panel within the modal.
+* The primary button will be disabled until all of the validation errors have been corrected. 
+*
+* ## Alternate Usage
+*
+* If you need more complex footer content, you can provide it with a dedicated {@link Tent.ModalFooter} view.
+* In this instance, you also need to provide a {@link Tent.ModalBody} for the body content.
+*
+*
+* Usage is like:
+
+    {{#view Tent.ModalPane 
+          label=&quot;Using Custom Footer&quot; 
+          header=&quot;_modalHeader&quot; 
+          customContent=true
+    }}
+      {{#view Tent.ModalBody}}
+        body content goes here ...
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass=&quot;close-dialog pull-left cancel&quot; label=&quot;cancel&quot; type=&quot;secondary&quot;}}
+        {{view Tent.Button buttonClass=&quot;&quot; label=&quot;go&quot; type=&quot;primary&quot; validate=true}}
+        ... other buttons ...
+      {{/view}}
+    {{/view}}
+
+ - In order to use the ModalBody and ModalFooter views, you must set {@link #customContent} to true.
+ - Any button that will close the dialog should have a css class of 'close-dialog'
+ - The cancel button should be identified with a css class of 'cancel'. In the event that the Modal is 
+ closed by this button, or the 'x' close button, or by clicking outside of the modal, then the action 
+ associated with the cancel button will be executed.
+*
 */
 
 
 (function() {
 Tent.ModalPane = Ember.View.extend({
     layoutName: 'modal_pane',
-    classNames: ['tent-widget', 'control-group', 'tent-form'],
+    classNames: ['tent-widget', 'control-group', 'tent-modal', 'tent-form'],
 <span id='Tent-ModalPane-property-label'>    /**
 </span>    * @property {String} label The label for the launch button
     */
@@ -4161,6 +4360,19 @@ Tent.ModalPane = Ember.View.extend({
     */
 
     customButton: null,
+<span id='Tent-ModalPane-property-customContent'>    /**
+</span>    * @property {Boolean} customContent A boolean indicating that the ModalPane should not provide
+    * its own body or footer. A Tent.ModalBody and Tent.ModalFooter may be provided in the nested content.
+    */
+
+    customContent: false,
+<span id='Tent-ModalPane-property-autoLaunch'>    /**
+</span>    * @property {Boolean} autoLaunch A boolean to indicate whether the modal panel will be displayed on entering the 
+    * screen, regardless of any other property settings.
+    */
+
+    autoLaunch: null,
+    hidden: true,
     init: function() {
       this._super(arguments);
       if (!(this.get('closeAction') != null)) {
@@ -4171,10 +4383,14 @@ Tent.ModalPane = Ember.View.extend({
       }
     },
     didInsertElement: function() {
-      var widget,
+      var modalId, widget,
         _this = this;
-      if (!((this.get('label') != null) || (this.get('customButton') != null))) {
+      if (this.get('autoLaunch')) {
         this.launch();
+      } else {
+        if ((!this.cancelAutoLaunch()) &amp;&amp; !((this.get('label') != null) || (this.get('customButton') != null))) {
+          this.launch();
+        }
       }
       if (this.get('customButton') != null) {
         widget = this;
@@ -4182,11 +4398,23 @@ Tent.ModalPane = Ember.View.extend({
           return widget.launch();
         });
       }
-      return this.$(&quot;.modal&quot;).on(&quot;hidden&quot;, function(e) {
-        if (_this.targetIsMessagePanel(e.target)) {
-          return _this.triggerCancelAction(e);
+      this.$(&quot;.modal:first&quot;).on(&quot;hidden&quot;, function(e) {
+        if (!_this.get('hidden') &amp;&amp; _this.targetIsMessagePanel(e.target)) {
+          _this.triggerCancelAction(e);
+          return _this.hide();
         }
       });
+      modalId = this.get('elementId');
+      return this.$('.close-dialog').filter(function() {
+        return $(this).parents('.tent-modal:first').attr('id') === modalId;
+      }).click(function(event) {
+        if (!$(event.target).attr('disabled')) {
+          return _this.hide();
+        }
+      });
+    },
+    cancelAutoLaunch: function() {
+      return (this.get('autoLaunch') != null) &amp;&amp; this.get('autoLaunch') === false;
     },
     targetIsMessagePanel: function(source) {
       return this.$('.modal').get(0) === source;
@@ -4206,7 +4434,9 @@ Tent.ModalPane = Ember.View.extend({
       var panel, primaryPanel;
       primaryPanel = this.getPrimaryMessagePanelView();
       panel = this.getMessagePanelView();
-      panel.clearAll();
+      if (panel != null) {
+        panel.clearAll();
+      }
       if (primaryPanel != null) {
         primaryPanel.setActive(true);
       }
@@ -4218,11 +4448,11 @@ Tent.ModalPane = Ember.View.extend({
       return Ember.View.views[$('.tent-message-panel.primary').attr('id')];
     },
     getMessagePanelView: function() {
-      return Ember.View.views[this.$('.tent-message-panel').attr('id')];
+      return Ember.View.views[this.$('.tent-message-panel:first').attr('id')];
     },
     triggerCancelAction: function(e) {
       var buttonView, cancelButton, id;
-      cancelButton = this.$('.modal-footer .btn-secondary.close-dialog');
+      cancelButton = this.$('.cancel:last');
       if (cancelButton.length &gt; 0) {
         id = cancelButton.parent('.tent-button').attr('id');
         buttonView = Ember.View.views[id];
@@ -4232,20 +4462,43 @@ Tent.ModalPane = Ember.View.extend({
     willDestroyElement: function() {
       return this.hide();
     },
-    click: function(event) {
-      var target;
-      target = event.target;
-      if ($(target).hasClass('close-dialog')) {
-        return this.hide();
-      }
-    },
+    /*click: (event)-&gt;
+      target = event.target
+      if $(target).hasClass('close-dialog')
+        @hide()
+    */
+
     launch: function() {
-      this.$('.modal').modal(this.get('options'));
+      this.set('hidden', false);
+      this.$('.modal:first').modal(this.get('options'));
+      this.fadeParentModal();
       return this.enableMessagePanel();
     },
     hide: function() {
-      this.$('.modal').modal('hide');
+      this.set('hidden', true);
+      this.restoreParentModal();
+      this.$('.modal:first').modal('hide');
       return this.disableMessagePanel();
+    },
+    fadeParentModal: function() {
+      var parentBackdrop;
+      parentBackdrop = this.$().parents('.tent-modal:first').find('.modal-backdrop:first');
+      parentBackdrop.hide().attr('data-hidden', true);
+      if (parentBackdrop.length &gt; 0) {
+        return this.$('.modal-backdrop:first').fadeIn(0).attr('data-hidden', false);
+      } else {
+        return this.$('.modal-backdrop:first').fadeIn(200).attr('data-hidden', false);
+      }
+    },
+    restoreParentModal: function() {
+      var parentBackdrop;
+      parentBackdrop = this.$().parents('.tent-modal:first').find('.modal-backdrop:first');
+      parentBackdrop.show().attr('data-hidden', false);
+      if (parentBackdrop.length &gt; 0) {
+        return this.$('.modal-backdrop:first').fadeOut(0).attr('data-hidden', true);
+      } else {
+        return this.$('.modal-backdrop:first').fadeOut(200).attr('data-hidden', true);
+      }
     }
   });
 
@@ -4254,9 +4507,28 @@ Tent.ModalPane = Ember.View.extend({
     defaultTemplate: Ember.Handlebars.compile('{{loc view.parentView.header}}')
   });
 
+<span id='Tent-ModalBody'>  /**
+</span>  * @class Tent.ModalBody
+  * Add a body panel to a modal dialog.
+  *
+  * This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+  */
+
+
   Tent.ModalBody = Ember.View.extend({
-    tagName: 'p',
-    defaultTemplate: Ember.Handlebars.compile('{{loc view.parentView.text}}')
+    layoutName: 'modal_body'
+  });
+
+<span id='Tent-ModalFooter'>  /**
+</span>  * @class Tent.ModalFooter
+  * Add a footer panel to a modal dialog.
+  *
+  * This view should be used only within a Tent.ModalPane which has its {@link Tent.ModalPane#customContent} property set to true
+  */
+
+
+  Tent.ModalFooter = Ember.View.extend({
+    layoutName: 'modal_footer'
   });
 
 }).call(this);
@@ -4392,6 +4664,8 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
         } else {
           return this.$().toggleClass('open');
         }
+      } else {
+        return false;
       }
     },
     classes: (function() {
@@ -4945,24 +5219,17 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;\n\n{{view E
 }).call(this);
 
 
-Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n&lt;/span&gt;\n&lt;span&gt;\n  {{#if view.anyFiles}}\n    {{view Tent.Table listBinding=\&quot;view.selectedFiles\&quot; columns=\&quot;files.0.name\&quot; headers=\&quot;filename\&quot;}}\n    {{view Tent.Button label=\&quot;Upload\&quot; type=\&quot;primary\&quot; action=\&quot;upload\&quot; targetBinding=\&quot;view\&quot;}}\n  {{/if}}\n&lt;/span&gt;\n&quot;);
+Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n&lt;/span&gt;\n&quot;);
 
 (function() {
 Tent.FileUpload = Ember.View.extend({
     templateName: 'file_upload',
     classNameBindings: ['tent-file-upload'],
-    init: function() {
-      this._super();
-      return this.set('selectedFiles', Ember.A());
-    },
     didInsertElement: function() {
       var _this = this;
       return this.$('input').fileupload({
         add: function(e, data) {
-          return _this.addFile(e, data);
-        },
-        done: function(e, data) {
-          return _this.doneUploading(e, data);
+          return data.submit().success(_this.successWrapper(_this.get('parentView.controller')));
         }
       });
     },
@@ -4978,28 +5245,7 @@ Tent.FileUpload = Ember.View.extend({
           return void 0;
         };
       }
-    },
-    upload: function() {
-      var _this = this;
-      return this.get('selectedFiles').forEach(function(file) {
-        var success;
-        success = _this.successWrapper(_this.get('parentView.controller'));
-        return file.submit().success(success);
-      });
-    },
-    addFile: function(e, data) {
-      return this.get('selectedFiles').pushObject(data);
-    },
-    doneUploading: function(e, data) {
-      var selectedFiles;
-      selectedFiles = this.get('selectedFiles');
-      return selectedFiles.removeObject(selectedFiles.filter(function(file) {
-        return file.files[0] === data.files[0];
-      })[0]);
-    },
-    anyFiles: (function() {
-      return this.get('selectedFiles').length &gt; 0;
-    }).property('selectedFiles.@each')
+    }
   });
 
 }).call(this);
