@@ -130,6 +130,22 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 		}
 	}
 
+	/* Export */
+	.export {
+		.export-json {
+			background-image: url(images/export/)
+		}
+		.export-xml {
+			background-image: url(images/export/file_xml2.png)
+		}
+		.export-csv {
+			background-image: url(images/export/csv_text.png)
+		}
+		.export-excel {
+			background-image: url(images/export/page_excel.png)
+		}
+	}
+
 	.maximize {
 		float: left;
 		cursor: pointer;

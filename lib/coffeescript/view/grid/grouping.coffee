@@ -49,7 +49,7 @@ Tent.JqGrid.Grouping.comparator = Ember.Object.extend
 Tent.JqGrid.Grouping.ranges = Ember.Object.create
 		default: 
 			name: 'exact'
-			title: Tent.I18n.loc 'grouping.range.exact'
+			title: Tent.I18n.loc 'tent.grouping.range.exact'
 			comparator: Tent.JqGrid.Grouping.comparator.create()
 
 		###*
@@ -62,7 +62,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} exact group dates which are the same
 				###
 				name: 'exact'
-				title: Tent.I18n.loc  'grouping.range.exact'
+				title: Tent.I18n.loc  'tent.grouping.range.exact'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value) ->
 						return last.compareTo(value) == 0
@@ -72,7 +72,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} week group dates which occur in the same week
 				###
 				name: 'week'
-				title: Tent.I18n.loc 'grouping.range.week'
+				title: Tent.I18n.loc 'tent.grouping.range.week'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getWeek() == value.getWeek())
@@ -85,7 +85,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} month group dates which occur in the same month
 				###
 				name: 'month'
-				title: Tent.I18n.loc 'grouping.range.month'
+				title: Tent.I18n.loc 'tent.grouping.range.month'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getMonth() == value.getMonth())
@@ -98,7 +98,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} quarter group dates which occur in the same quarter
 				###
 				name: 'quarter'
-				title: Tent.I18n.loc 'grouping.range.quarter'
+				title: Tent.I18n.loc 'tent.grouping.range.quarter'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						quarter = Math.floor(last.getMonth()/3) + 1
@@ -114,7 +114,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} year group dates which occur in the same year
 				###
 				name: 'year'
-				title: Tent.I18n.loc 'grouping.range.year'
+				title: Tent.I18n.loc 'tent.grouping.range.year'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
 						last.getFullYear() == value.getFullYear()
@@ -131,7 +131,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} exact group string which are the same
 				###
 				name: 'exact'
-				title: Tent.I18n.loc 'grouping.range.exact'
+				title: Tent.I18n.loc 'tent.grouping.range.exact'
 				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 		]
@@ -144,7 +144,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} exact group numbers which are the same
 				###
 				name: 'exact'
-				title: Tent.I18n.loc 'grouping.range.exact'
+				title: Tent.I18n.loc 'tent.grouping.range.exact'
 				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 			{
@@ -152,7 +152,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} 10s group numbers in ranges of ten
 				###
 				name: '10s'
-				title: Tent.I18n.loc 'grouping.range.tens'
+				title: Tent.I18n.loc 'tent.grouping.range.tens'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
 					upper: null
@@ -189,7 +189,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				* @property {Object} exact group boleans which have the same value
 				###
 				name: 'exact'
-				title: Tent.I18n.loc 'grouping.range.exact'
+				title: Tent.I18n.loc 'tent.grouping.range.exact'
 				comparator: Tent.JqGrid.Grouping.comparator.create()
 			}
 		]

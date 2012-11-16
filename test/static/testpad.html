@@ -140,9 +140,12 @@
               isFilterBinding="Pad.isFilter"
               filterValueBinding="Pad.filter"
               controlClass="input-small"
+              validations=""
+              warnings="email"
+              warningseverity="high"
             }}
 
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"}}
             {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
             {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_typeHere" }}
@@ -159,11 +162,41 @@
             {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
+            
 
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
+            warnings="email"
             }}
 
-            {{view Tent.Button label="Submit" validate="true"}}
+            {{view Tent.Button label="Submit" validate=true warn=true}}
+
+            <h4>Validations</h4>
+            {{view Tent.TextField 
+              label="email validation" 
+              tooltip="_provide_some_info" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              disabledBinding="Pad.isDisabled"
+              textDisplayBinding="Pad.textDisplay"
+              isFilterBinding="Pad.isFilter"
+              filterValueBinding="Pad.filter"
+              controlClass="input-small"
+              validations="email"
+            }}
+
+            {{view Tent.DateField label="date range" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              tooltip="_tooltip"
+              disabledBinding="Pad.isDisabled" 
+              textDisplayBinding="Pad.textDisplay" 
+              validations="datebetween"
+              validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
+              warnings="futuredate"
+            }}
+
+
+            
 
             
           {{/view}}
@@ -211,7 +244,7 @@
                   showMaximizeButton=true
                   paged=true
                   pageSize=6
-                  remotePaging=true
+                  remotePaging=false
                   multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
@@ -220,7 +253,22 @@
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
               }}
-              
+
+
+              <h5>Collection not provided</h5>
+ 
+              {{view Tent.JqGrid
+                  label="Tasks"                  
+                  contentBinding="Pad.jqGridContent"
+                  columnsBinding="Pad.gridColumnDescriptor"
+                  selectionBinding="Pad.jqGridSelectionNoCollection"
+                  fixedHeader=false
+                  showMaximizeButton=true
+                  multiSelect=true
+                  showColumnChooser=true
+                  required=true
+              }}
+      
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
@@ -236,8 +284,6 @@
                   fixedHeader=false
                   showMaximizeButton=true
                   paged=false
-                   
-                  
                   multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
@@ -888,6 +934,7 @@
           secondaryIcon="icon-remove"
           secondaryAction="clickCancelOuter"
           secondaryTargetBinding="Pad"
+          warn=true
     }}
         <a id = "inner_modalPane">launch inner modal</a>
         {{view Tent.ModalPane 
@@ -902,7 +949,7 @@
               secondaryTargetBinding="Pad"
         }}
 
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true warnings="email" warningseverity="high"}}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
 
     {{/view}}
@@ -914,13 +961,13 @@
           customContent=true
     }}
       {{#view Tent.ModalBody text="_modalText"}}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.TextField  label="_numericInput" currency="EUR" required=true warnings="email"}}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
         {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
       {{/view}}
       {{#view Tent.ModalFooter}}
         {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
-        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true warn=true}}
       {{/view}}
     {{/view}}
 

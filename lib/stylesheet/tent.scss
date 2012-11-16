@@ -9,6 +9,7 @@
 $error-color: red;
 $error-background-color: rgba(255, 0, 0, 0.22);
 $breadcrumb-color: #333;
+$negative-color: red;
 
 
 /* Tent-Specific */
@@ -58,6 +59,10 @@ a[rel=tooltip] {
 
 /*  Modal Dialog */
 
+.tent-modal {
+	text-align: left;
+}
+
 .modal {
 	outline: none;
 	.tent-button .btn-secondary {
@@ -101,7 +106,8 @@ a[rel=tooltip] {
 /* Messages Panel */
 
 .tent-message-panel {
-	margin-top: 10px;
+	margin-top: 5px;
+	margin-bottom: 20px;
 
 	h5 {
 		float: left;
@@ -109,11 +115,14 @@ a[rel=tooltip] {
 	}
 	
 	.close {
-		position: static
+		position: static;
+		.btn-link {
+			color: #000;
+		}
 	}
 
 	a.close, .close .btn {
-		top: 6px;
+		top: 15px;
 		position: absolute;
 		right: 10px;
 		padding: 0px;
@@ -132,15 +141,25 @@ a[rel=tooltip] {
 
 	.alert {
 		position: relative;
-		margin: 10px 0px;
+		margin: 2px 0px 6px 0px;
 		padding: 7px;
 		@include border-radius(4px);
-		border: 1px solid #EED3D7;
+		border: 1px solid #EEDCB9;
+		.error-message {
+			padding: 0px 0px 0px 100px;
+		}
+
+		i {
+			font-style: normal;
+		}
 	}
 
 	.alert-error {
 		@extend .alert;
 		border: 1px solid #EED3D7;
+		.error-message {
+			padding: 0px 0px 0px 58px;
+		}
 	}
 
 	.alert-info {
@@ -148,16 +167,30 @@ a[rel=tooltip] {
 		border: 1px solid #BCE8F1;
 	}
 
+	.alert-block {
+		 
+	}
+
 	.error-message {
 		cursor: pointer;
 		padding: 0px 50px;
-		
-		&:hover {
-			text-decoration: underline;
-		}
-		
+		font-size: 13px;
+
 		label {
-			display: inline;
+			display: inline-block;
+			font-size: 13px;
+			font-weight: bold;
+			text-shadow: 0 1px 1px #FFEFEF;
+			font-style: normal;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		ul {
+			display: inline-block;
+			list-style: none;
+			margin-left: 0px;
 		}
 	}
 
@@ -174,5 +207,13 @@ a[rel=tooltip] {
 	}
 }
 
+.btn-toolbar {
+	font-size: inherit;
+}
+
+/* Data Type Formatting */
+.negative {
+	color: $negative-color;
+}
 
 
