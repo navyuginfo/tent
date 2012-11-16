@@ -25,11 +25,6 @@ Tent.Formatting = {} unless Tent.Formatting?
 * @class Tent.Formatting.amount
 ###
 
-###*
-* @property {Object} centisimalUnit A property to transform the value before formatting, and after unformatting.
-* This may typically be provided to normalise values when stored as centesimal values 1/100 or 1/1000.
-###
-
 
 Tent.Formatting.amount = Ember.Object.create
 
@@ -42,9 +37,9 @@ Tent.Formatting.amount = Ember.Object.create
 	###
 	format: (amount, settings) ->
 		if amount?
-			_settings = @settingsFilter(settings)
-			if _settings
-				accounting.formatNumber(amount, _settings)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.formatNumber(amount, settings)
 			else
 				accounting.formatNumber(amount)
 		else
@@ -59,11 +54,11 @@ Tent.Formatting.amount = Ember.Object.create
 	###
 	unformat: (amount, settings) ->
 		if amount?
-      _settings=@settingsFilter(settings)
-      if _settings? and _settings.number?
-        amount = accounting.unformat(amount, _settings.number.decimal)
-      else
-        amount = accounting.unformat(amount)
+			if settings?
+				settings = Tent.Formatting.amount.settingsFilter(settings)
+				accounting.unformat(amount, settings)
+			else
+				accounting.unformat(amount)
 		else
 			null
 
