@@ -5,6 +5,7 @@
 			selectionBinding="view.selectedFilter" 
 			optionLabelPath="content.label" 
 			optionValuePath="content.name"
+			prompt="tent.filter.noFilter"
 	}}
 	{{view Tent.TextField label="tent.filter.search" type="search" }}
 	
@@ -37,6 +38,7 @@
 		        type="link"
 		        primaryAction="saveFilter"
 		        primaryTargetBinding="view"
+		        closeOnSubmit=true
 		    	}}
 	    	
 	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true}}

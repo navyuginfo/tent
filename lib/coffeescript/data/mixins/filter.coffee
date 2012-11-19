@@ -26,7 +26,7 @@ Tent.Data.Filter = Ember.Mixin.create
 					values: {id: {field:"id",op: "equal", data: "5"}}
 				}
 			])
-
+		
 	availableFilters: (->
 		return @get('filters')
 	).property('filters', 'filters.@each')
@@ -46,6 +46,7 @@ Tent.Data.Filter = Ember.Mixin.create
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
+		@set('filters', []) if not @get('filters')
 		@get('filters').pushObject(filterDef)
 		#@get('availableFilters').notifyPropertyChange('content')
 

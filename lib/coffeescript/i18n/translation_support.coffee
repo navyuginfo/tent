@@ -90,6 +90,7 @@ Tent.I18n.loadTranslations(
 			equal: 'equal'
 			nEqual: 'not equal' 
 			search: 'Search'
+			noFilter: 'No Filter'
 		}
 		warning: {
 			header: 'Warnings Exist'

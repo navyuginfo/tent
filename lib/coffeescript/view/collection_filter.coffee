@@ -61,6 +61,7 @@ Tent.CollectionFilter = Ember.View.extend
       #@get('container').appendTo(@$('.filter-details'))
       #@$('.filter-details').append(@get('container').$(''))
       #@get('container').appendTo('');
+    @$('.filter-details').collapse('hide')
 
   filter: ->
     @get('collection').filter(@get('currentFilter'))
@@ -77,7 +78,11 @@ Tent.CollectionFilter = Ember.View.extend
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
     @set('selectedFilter', @get('currentFilter'))
+    @closeSaveFilterDialog()
     return true
+
+  closeSaveFilterDialog: ->
+    Ember.View.views[@$('.filter-details .tent-modal').attr('id')].hide()
 
   currentFilterDidChange: (->
     console.log @get('currentFilter.values.id.data')

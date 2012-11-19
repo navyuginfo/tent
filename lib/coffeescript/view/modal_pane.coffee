@@ -258,6 +258,10 @@ Tent.ModalPane = Ember.View.extend
   cancelAutoLaunch: ->
     @get('autoLaunch')? and @get('autoLaunch') == false
 
+  primaryButtonClass: (->
+    '.close-dialog' if @get('closeOnSubmit')
+  ).property('closeOnSubmit')
+
   targetIsMessagePanel: (source)->
     @$('.modal').get(0) == source
 
