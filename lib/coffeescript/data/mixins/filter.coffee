@@ -8,13 +8,13 @@ Tent.Data.Filter = Ember.Mixin.create
 					name: "task1"
 					label: "Task 1"
 					description: "Select the first task"
-					values: {id: {op: "equal", data: "51"}, title: {op: "equal", data: "Task 1"}}
+					values: {id: {field:"id", op: "equal", data: "51"}, title: {field:"title",op: "equal", data: "Task 1"}}
 				},
 				{
 					name: "task2"
 					label: "Task 2"
 					description: "Select all tasks 50-59"
-					values: {id: {op: "equal", data: "5"}}
+					values: {id: {field:"id",op: "equal", data: "5"}}
 				}
 			])
 
@@ -23,8 +23,8 @@ Tent.Data.Filter = Ember.Mixin.create
 	).property('filters', 'filters.@each')
 
 	filter: (selectedFilter) ->
-		if selectedFilter?
-			@set('selectedFilter', selectedFilter)
+		#if selectedFilter?
+		@set('selectedFilter', selectedFilter)
 		@update(@REQUEST_TYPE.FILTER)
 
 	# Called by UI button to trigger filtering

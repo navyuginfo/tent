@@ -40,6 +40,12 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	###*
 	* @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
 	###
+	controlClass: ''
+
+	###*
+	* @property {String} type The type of the input element ('text', 'password' etc)
+	###
+	type: 'text'
 
 	didInsertElement: ->
 		@_super(arguments)

@@ -252,10 +252,6 @@
               validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
               warnings="futuredate"
             }}
-
-
-            
-
             
           {{/view}}
 
@@ -290,10 +286,7 @@
               <h4>jqGrid</h4>
                
               <h5>Remote Paging, Sorting, Filtering</h5>
-
-              {{view Tent.CollectionFilter 
-                  filterTemplate="task_collection_filter" 
-                  collectionBinding="Pad.jqRemoteCollection"}}
+ 
 
               {{view Tent.JqGrid
                   label="Tasks"
@@ -313,6 +306,7 @@
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
                   resizeGridSteps=false
+                  grouping=true
               }}
 
 

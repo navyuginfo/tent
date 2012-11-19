@@ -54,6 +54,11 @@ a[rel=tooltip] {
 
 /*  Modal Dialog */
 
+/* Hide the base backdrop, as each modal handles its own. */
+body > .modal-backdrop {
+	visibility: hidden;
+}
+
 .tent-modal {
 	text-align: left;
 }
@@ -67,11 +72,65 @@ a[rel=tooltip] {
 
 /* List Filters */
 
-.tent-filter {
-	padding: 10px;
-	border-radius: 4px;
-	margin-bottom: 5px;
+.filter-panel {
+	position: absolute;
+	z-index: 1000;
+	 
+	width: 100%;
+	height: 30px;
+	box-sizing: border-box;
+	@include transition(all 0.3s ease);
+	
+	a.toggle {
+		padding: 2px;
+		display: inline-block;
+		vertical-align: top;
+		float: right;
+		.caret {
+			vertical-align: middle;
+		}
+	}
+
+	/* Styling for a compact form : maybe generalize this */
+	label {
+		font-size: 12px;
+	}
+	.control-group {
+		margin-bottom: 5px;
+	}
+	select,textarea,input {
+		height: 22px;
+		padding: 0px 6px;
+	}
+	.btn {
+		font-size: 12px;
+		padding: 0px 14px;
+	}
 }
+
+.tent-filter {
+	background-color: #D0E4D0;
+	margin-left: -1px;
+	/*padding: 10px;
+	border-radius: 4px;
+	margin-bottom: 5px;*/
+	.summary-panel {
+		padding: 5px;
+		height: 30px;
+		overflow: hidden;
+		box-sizing: border-box;
+
+	}
+
+	.filter-details {
+		padding: 0px 20px;
+		border-right: 1px solid #D1D1D1;
+		border-left: 1px solid #D1D1D1;
+		border-bottom: 1px solid #D1D1D1;
+		border-bottom-left-radius: 7px;
+		border-bottom-right-radius: 7px;
+	}
+}	
 
 
 /* Breadcrumb */

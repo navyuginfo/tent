@@ -3,6 +3,7 @@ require '../mixin/grid/collection_support'
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
 require '../mixin/grid/column_menu'
+require '../mixin/grid/filter_support'
 
 ###*
 * @class Tent.JqGrid
@@ -12,6 +13,7 @@ require '../mixin/grid/column_menu'
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
 * @mixins Tent.Grid.ColumnMenu
+* @mixins Tent.Grid.FilterSupport
 *
 * Create a jqGrid view which displays the data provided by its content property
 *
@@ -29,7 +31,7 @@ require '../mixin/grid/column_menu'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.FilterSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -65,7 +67,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	###*
 	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
 	###
-	grouping: false
+	grouping: true
 
 	###*
 	* @property {String} groupField The name of the field by which to group the grid
@@ -175,16 +177,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
+			toolbar: [true,"top"],
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
 
 			grouping: @get('grouping')
-			groupingView: {
-				groupField: [@get('groupField')]
-				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
-				groupDataSorted: true
-			}
+		#	groupingView: @{
+		#		groupField: [@get('groupField')]
+		#		groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
+		#		groupDataSorted: true
+		#	}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -193,6 +196,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		})
 		@addMarkupToHeaders()
 		@addNavigationBar()
+		@addFilterPanel()
 		@addColumnDropdowns()
 		@gridDataDidChange()
 		@resizeToContainer()
@@ -531,7 +535,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	# grouping so that they accumulate. We need to explicitly clear the grouping here.
 	#
 	resetGrouping: ->
-		this.getTableDom().groupingSetup()
+		if @get('grouping')
+			this.getTableDom().groupingSetup()
 		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->

@@ -1,37 +1,49 @@
-
-
-{{view Ember.View 
-	templateNameBinding="view.filterTemplate" 
-	collectionBinding="view.collection"
-	filterBinding="view.currentFilter"
-}}
-
-
-<div class="form-inline">
-
-		{{view Tent.Select span="4"
+<div class="summary-panel form-inline">
+	{{view Tent.Select span="4"
 			label="tent.filter.currentFilter" 
 			listBinding="view.availableFilters" 
 			selectionBinding="view.selectedFilter" 
 			optionLabelPath="content.label" 
 			optionValuePath="content.name"
-		}}
-
-	    {{#view Tent.ModalPane 
-	    	label="tent.filter.saveFilter"
-	        header="tent.filter.saveFilter" 
-	        primaryLabel="filter.save" 
-	        secondaryLabel="tent.filter.cancel"
-	        type="link"
-	        primaryAction="saveFilter"
-	        primaryTargetBinding="view"
-	    	}}
-    	
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true}}
-      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description"}}
-      	{{/view}}
-    
-      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view"}}
+	}}
+	{{view Tent.TextField label="tent.filter.search" type="search" }}
+	
+	<a class="toggle" data-toggle="collapse" {{bindAttr data-target="view.collapsiblePanel"}}>
+		<span class="caret"></span>
+	</a>
 
 </div>
 
+<div class="filter-details collapse">
+
+	{{#if view.filterTemplate}}
+		{{view Ember.View 
+			templateNameBinding="view.filterTemplate" 
+			collectionBinding="view.collection"
+			filterBinding="view.currentFilter"
+		}}
+	{{else}}
+		{{view Tent.FilterFieldsView
+			collectionBinding="view.collection"
+		}}
+	{{/if}}
+
+	<div class="form-inline">
+		    {{#view Tent.ModalPane 
+		    	label="tent.filter.saveFilter"
+		        header="tent.filter.saveFilter" 
+		        primaryLabel="filter.save" 
+		        secondaryLabel="tent.filter.cancel"
+		        type="link"
+		        primaryAction="saveFilter"
+		        primaryTargetBinding="view"
+		    	}}
+	    	
+	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true}}
+	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description"}}
+	      	{{/view}}
+	    
+	      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="pull-right"}}
+
+	</div>
+</div>
