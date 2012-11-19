@@ -5,6 +5,8 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 	###
 	filterTemplate: null
 
+	filtering: false
+
 	addFilterPanel: ->
 		#Temporary!!!
 		@getTopToolbar().css({'position','relative','height':'30px'})

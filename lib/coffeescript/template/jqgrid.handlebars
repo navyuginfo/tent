@@ -5,11 +5,12 @@
 {{/if}}
 
 {{#if view.collection}}
+	{{#if view.filtering}}
 		{{view Tent.CollectionFilter 
 			filterTemplateBinding="view.filterTemplate" 
 			collectionBinding="view.collection"
 		}}
-	 
+	{{/if}}
 {{/if}}
 
 <table class="grid-table"></table>

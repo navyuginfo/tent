@@ -177,7 +177,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
-			toolbar: [true,"top"],
+			toolbar: [true,"top"] if @get('filtering'),
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
@@ -196,7 +196,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		})
 		@addMarkupToHeaders()
 		@addNavigationBar()
-		@addFilterPanel()
+		if @get('filtering')
+			@addFilterPanel()
 		@addColumnDropdowns()
 		@gridDataDidChange()
 		@resizeToContainer()

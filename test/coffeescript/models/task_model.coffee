@@ -27,7 +27,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			amount: 123456.789
 			duration: "6"
 			percentcomplete: Math.round(Math.random() * 100)
-			start: "02/01/2009"
+			start: "01/11/2009"
 			finish: "01/05/2009"
 			effortdriven: -9
 			completed: true
@@ -38,7 +38,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			amount: 123456.789,
 			duration: "7",
 			percentcomplete: Math.round(Math.random() * 100),
-			start: "03/01/2009",
+			start: "01/12/2009",
 			finish: "01/05/2009"
 			effortdriven: 3
 			completed: false
@@ -49,7 +49,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			amount: 123456.789,
 			duration: "14",
 			percentcomplete: Math.round(Math.random() * 100),
-			start: "04/01/2009",
+			start: "01/13/2009",
 			finish: "01/05/2009"
 			effortdriven: 4
 			completed: false
@@ -60,7 +60,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			amount: 123456.789,
 			duration: "27",
 			percentcomplete: Math.round(Math.random() * 100),
-			start: "01/01/2009",
+			start: "01/14/2009",
 			finish: "01/05/2009",
 			effortdriven: 8
 			completed: false
@@ -71,7 +71,7 @@ Pad.Models.TaskModel.FIXTURES = [{
 			amount: 123456.789,
 			duration: "2",
 			percentcomplete: Math.round(Math.random() * 100),
-			start: "01/01/2009",
+			start: "01/15/2009",
 			finish: "01/05/2009",
 			effortdriven: 11
 			completed: false
