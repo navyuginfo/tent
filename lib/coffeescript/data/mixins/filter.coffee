@@ -8,7 +8,16 @@ Tent.Data.Filter = Ember.Mixin.create
 					name: "task1"
 					label: "Task 1"
 					description: "Select the first task"
-					values: {id: {field:"id", op: "equal", data: "51"}, title: {field:"title",op: "equal", data: "Task 1"}}
+					values: {
+						id: {field:"id", op: "equal", data: "5"}, 
+						title: {field:"title",op: "equal", data: "Task 1"}
+						duration: {field:"duration",op: "equal", data: "5"}
+						#percentcomplete: {field:"percentcomplete",op: "equal", data: "41"}
+						effortdriven: {field:"effortdriven",op: "equal", data: "-1"}
+						start: {field:"start",op: "equal", data: ""}
+						finish: {field:"finish",op: "equal", data: ""}
+						completed: {field:"completed",op: "equal", data: true}
+					}
 				},
 				{
 					name: "task2"

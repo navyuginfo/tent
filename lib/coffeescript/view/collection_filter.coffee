@@ -61,9 +61,11 @@ Tent.CollectionFilter = Ember.View.extend
       #@get('container').appendTo(@$('.filter-details'))
       #@$('.filter-details').append(@get('container').$(''))
       #@get('container').appendTo('');
-  
+
   filter: ->
     @get('collection').filter(@get('currentFilter'))
+    @$('.filter-details').collapse('hide')
+    #@$('.summary-panel .toggle').click()
 
   selectedFilterDidChange: (->
     #if @get('selectedFilter')?
@@ -141,7 +143,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
           fieldView = Tent.Checkbox.create
             label: Tent.I18n.loc(column.title) 
             isFilter: true 
-            valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
+            checkedBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
             filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
             filterBinding: "parentView.parentView.parentView.currentFilter"
             field: column.field

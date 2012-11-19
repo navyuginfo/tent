@@ -14,7 +14,7 @@
 
 </div>
 
-<div class="filter-details collapse">
+<div class="filter-details collapse in">
 
 	{{#if view.filterTemplate}}
 		{{view Ember.View 
@@ -43,7 +43,7 @@
 	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description"}}
 	      	{{/view}}
 	    
-	      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="pull-right"}}
+	      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="do-filter pull-right"}}
 
 	</div>
 </div>

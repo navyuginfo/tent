@@ -5,7 +5,7 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 	###
 	filterTemplate: null
 
-	filtering: false
+	filtering: true
 
 	addFilterPanel: ->
 		#Temporary!!!

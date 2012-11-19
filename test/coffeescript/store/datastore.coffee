@@ -89,7 +89,7 @@ Pad.DataStore = Ember.Object.extend
 		for item in modelData
 			passed = true
 			for columnId of filterFields
-				if columnId != undefined and filterFields[columnId]?
+				if columnId != undefined and filterFields[columnId]? and filterFields[columnId].data? and filterFields[columnId].data != ""
 					if item.get(columnId) instanceof Date
 						if filterFields[columnId].data.getTime() != item.get(columnId).getTime()
 							passed = false	
