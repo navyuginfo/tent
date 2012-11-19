@@ -3,4 +3,8 @@
     	{{loc view.label}}
     	{{view Ember.Checkbox checkedBinding="view.checked" disabledBinding = "view.disabled" valueBinding= "view.value"}}
     </label>
+
+    {{#if view.hasWarnings}}
+      <ul class="help-inline warning" {{bindAttr id="view.warningId"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>
+    {{/if}} 
 </div> 

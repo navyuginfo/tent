@@ -39,5 +39,8 @@
   	{{#if view.hasErrors}}
       	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>
     {{/if}}
+    {{#if view.hasWarnings}}
+      <ul class="help-inline" {{bindAttr id="view.warningId"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>
+    {{/if}}  
   </div>
 </div>
