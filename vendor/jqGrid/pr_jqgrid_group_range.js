@@ -155,8 +155,8 @@ $.jgrid.extend({
 				formatter = function(value) {
 					return $t.formatter(hid, value, cp[n.idx], value );
 				}
-
 				str += "<tr id=\""+hid+"\" role=\"row\" class= \"ui-widget-content jqgroup ui-row-"+$t.p.direction+" "+clid+"\"><td style=\"padding-left:"+(n.idx * 12) + "px;"+"\" colspan=\""+colspans+"\">"+icon+$.jgrid.template(grp.groupText[n.idx], gv, n.cnt, n.summary, grp, n.value, formatter)+"</td></tr>";
+
 				var leaf = len-1 === n.idx; 
 				if( leaf ) {
 					var gg = grp.groups[i+1];

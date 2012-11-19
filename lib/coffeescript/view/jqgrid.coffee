@@ -284,7 +284,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@renderMaximizeButton()
 
-
 	renderColumnChooser: (tableDom)->
 		widget =  @
 		if @get('showColumnChooser')

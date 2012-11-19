@@ -163,7 +163,6 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					compare: (last, value)->
 						quarter = Math.floor(last.getMonth()/3) + 1
 						(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
-						
 					rowTitle: (value)->
 						if (typeof value == "string")
 							value = Tent.Formatting.date.unformat(value)
