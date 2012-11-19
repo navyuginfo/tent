@@ -2,30 +2,4 @@
 <div class="gridpager"></div>
 {{#if view.hasErrors}}
 	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
-{{/if}}  
-
-{{#view Tent.ModalPane 
-      header="Custom Export" 
-      customButton = "link_for_advanceExportOptions"
-      primaryLabel="button.export" 
-      secondaryLabel="button.cancel"
-      primaryAction="exportCustom"
-      primaryTargetBinding="view"
-}}
-
-
-    {{view Tent.Select listBinding="view.parentView.exportDelimiterOptions" valueBinding="view.parentView.exportDelimiter" label="Delimiter" 
-      optionLabelPath="content.label" optionValuePath="content.value" selectionBinding="view.parentView.selectedDelimiter"}}
-    
-    {{view Tent.TextField valueBinding="view.parentView.exportCustomDelimiter" label="Enter Delimiter" }}
-
-    {{view Tent.Select listBinding="view.parentView.exportColumnHeaderOptions" valueBinding="view.parentView.exportColumnHeaders" label="Column Headers" 
-      optionLabelPath="content.label" optionValuePath="content.value"   selectionBinding="view.parentView.selectedColumnHeaders"}}
-    
-    {{view Tent.Select listBinding="view.parentView.exportIncludeQuoteOptions" valueBinding="view.parentView.exportIncludeQuotes" label="Include Quotes" 
-      optionLabelPath="content.label" optionValuePath="content.value"  selectionBinding="view.parentView.selectedIncludeQuotes" }}
-    
-
-
-{{/view}}
-
+{{/if}}
