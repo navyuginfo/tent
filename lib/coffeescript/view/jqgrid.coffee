@@ -269,19 +269,31 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 							    </ul>
 							</li>
 						{{/if}}
+						{{#if column.renamable}}
+							<li class='rename dropdown-submenu'>
+								<a tabindex='-1'>Rename</a>
+							    <ul class='dropdown-menu'>
+							    	<li>
+							    		<input type='text' value='{{title}}'/>
+							    	</li>
+							    </ul>
+							</li>
+						{{/if}}
 					</ul>
 				{{/if}}"
 
 			column.groupable = not (column.groupable? && column.groupable ==false)
+			column.renamable = not (column.renamable? && column.renamable ==false)
 			context = 
 				column: column
+				title: Tent.I18n.loc column.title
 				groupType: Tent.JqGrid.Grouping.ranges[column.type]
 			
 			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
 			@$(columnDivId).after template(context)
 			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
 
-		@$('.column-dropdown').click((e)->
+		@$('.group.dropdown-submenu').click((e)->
 			target = $(e.target)
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
 			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
@@ -289,6 +301,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			for col in widget.get('columns')
 				if col.field == column then columnType= col.type
 			widget.groupByColumn(column, groupType, columnType)
+		)
+
+		@$('.rename.dropdown-submenu').hover((e)->
+			$('input',@).focus()
+		).click((e)->
+			target = $(e.target)
+			e.stopPropagation()
+			e.preventDefault()
+		)
+
+		@$('.rename.dropdown-submenu input').keyup((e)->
+			target = $(e.target)
+			#if e.keyCode == 13
+			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
+			widget.changeColumnHeader(column, $(this).val())
 		)
 
 	groupByColumn: (column, groupType, columnType)->
@@ -305,7 +332,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				range: comparator
 			}
 		)
-		
+
+	changeColumnHeader: (colname, value) ->
+		@getTableDom().jqGrid('setLabel', colname, value);
+		for column in @get('columns')
+			column.title = value if column.name == colname
+
 	renderColumnChooser: (tableDom)->
 		widget =  @
 		if @get('showColumnChooser')

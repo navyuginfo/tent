@@ -39,7 +39,6 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType').cacheable()
 
-
 	init: ->
 		@_super()
 		@update(@REQUEST_TYPE.ALL)
