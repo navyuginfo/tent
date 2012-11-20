@@ -13,7 +13,7 @@ jQuery.extend $.fn.fmatter,
 		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value') or 0
 		formattedVal = Tent.Formatting.amount.format(cellvalue)
-		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+		if options? and options.colModel.formatoptions? and options.colModel.formatoptions.negative and cellvalue < 0
 			'<span class="negative">'+formattedVal+'</span>'
 		else 
 			formattedVal
@@ -46,7 +46,7 @@ jQuery.extend $.fn.fmatter,
 		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value') or 0
 		formattedVal = Tent.Formatting.number.format(cellvalue)
-		if options? and options.colModel.formatoptions.negative and cellvalue < 0
+		if options? and options.colModel.formatoptions? and options.colModel.formatoptions.negative and cellvalue < 0
 			'<span class="negative">'+formattedVal+'</span>'
 		else 
 			formattedVal
