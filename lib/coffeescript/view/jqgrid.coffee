@@ -313,9 +313,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 		@$('.rename.dropdown-submenu input').keyup((e)->
 			target = $(e.target)
-			#if e.keyCode == 13
 			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			widget.changeColumnHeader(column, $(this).val())
+			if e.keyCode == 13	
+				columnDivId = '#jqgh_' + widget.get('elementId') + '_jqgrid_' + column
+				$(columnDivId).dropdown('toggle')
+			else
+				widget.changeColumnHeader(column, $(this).val())
 		)
 
 	groupByColumn: (column, groupType, columnType)->
