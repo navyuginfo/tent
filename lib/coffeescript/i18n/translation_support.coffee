@@ -88,8 +88,13 @@ Tent.I18n.loadTranslations(
 			beginsWith: 'begins with'
 			contains: 'contains'
 			equal: 'equal'
-			nEqual: 'not equal' 
+			nEqual: 'not equal'
+			before: 'before'
+			after: 'after'
+			beforeInc: 'before incl'
+			afterInc: 'after incl'
 			search: 'Search'
+			clear: 'Clear'
 			noFilter: 'No Filter'
 		}
 		warning: {

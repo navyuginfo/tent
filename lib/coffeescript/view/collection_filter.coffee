@@ -55,6 +55,11 @@ Tent.CollectionFilter = Ember.View.extend
   
     @get('currentFilter')['values'] = values
 
+  clearFilter: ->
+    currentFilter = @get('currentFilter')
+    for column in @get('collection.columnsDescriptor')
+      currentFilter.values[column.field] = {field:column.field, op:"", data:""}
+
   didInsertElement: ->
     #if not @get('filterTemplate')?
       #@populateContainer()
@@ -91,6 +96,9 @@ Tent.CollectionFilter = Ember.View.extend
   collapsiblePanel: (->
     "#" + @get('elementId') + ' .filter-details'
   ).property()
+
+  doSearch: ->
+    @get('collection').search(@get('searchValue'))
 
 
 

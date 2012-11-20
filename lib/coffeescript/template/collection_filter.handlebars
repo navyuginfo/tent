@@ -6,13 +6,14 @@
 			optionLabelPath="content.label" 
 			optionValuePath="content.name"
 			prompt="tent.filter.noFilter"
+			class="pull-left"
 	}}
-	{{view Tent.TextField label="tent.filter.search" type="search" }}
-	
-	<a class="toggle" data-toggle="collapse" {{bindAttr data-target="view.collapsiblePanel"}}>
+	<a class="toggle pull right" data-toggle="collapse" {{bindAttr data-target="view.collapsiblePanel"}}>
 		<span class="caret"></span>
 	</a>
 
+	{{view Tent.Button label="tent.filter.search" type="link" class="pull-right" action="doSearch" targetBinding="view"}}
+	{{view Tent.TextField label="" type="search" class="pull-right no-label" valueBinding="view.searchValue"}}
 </div>
 
 <div class="filter-details collapse in">
@@ -44,8 +45,10 @@
 	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true}}
 	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description"}}
 	      	{{/view}}
-	    
-	      	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="do-filter pull-right"}}
+	    	
+	    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="do-filter pull-right"}}
+
+	    	{{view Tent.Button label="tent.filter.clear" type="link" action="clearFilter" targetBinding="view" class="do-filter pull-left"}}
 
 	</div>
 </div>

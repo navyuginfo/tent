@@ -1,3 +1,7 @@
+###*
+* @class Tent.Data.Pager
+* Adds paging support
+###
 
 Tent.Data.Pager = Ember.Mixin.create
 	paged: false

@@ -1,3 +1,7 @@
+###*
+* @class Tent.Data.Sorter
+* Adds sorting support
+###
 Tent.Data.Sorter = Ember.Mixin.create
 	columnFilters: {}
 	
@@ -5,9 +9,12 @@ Tent.Data.Sorter = Ember.Mixin.create
 		@_super()
 		@REQUEST_TYPE.SORT = 'sorting'
 
-
-	sort: (args) ->
-		@set('sortFields', args)
+	###*
+	* @method sort Sort the collection according to the sort fields provided
+	* @param {Object} sortFields An object defining the fields and sort order
+	###
+	sort: (sortFields) ->
+		@set('sortFields', sortFields)
 		@update(@REQUEST_TYPE.SORT)
 
 	getSortingInfo: ->

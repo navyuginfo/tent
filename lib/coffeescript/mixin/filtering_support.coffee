@@ -1,3 +1,8 @@
+###*
+* @class Tent.FilteringSupport 
+* Allows widgets to participate in filter panels, and provides them with a range of 
+* comparison operators
+###
 Tent.FilteringSupport = Ember.Mixin.create
 	isFilter: false
 	operators: [
@@ -9,35 +14,12 @@ Tent.FilteringSupport = Ember.Mixin.create
 
 	init: ->
 		@_super(arguments)
-		
-		#@set('selectedOperator', @get('filterValue.op'))
 
 	didInsertElement: ->
 		@_super()
 		if @get('filter')
 			@get('filter.values')[@get('id')] = {}
 
-	###selectedOperator: (->
-		if @get('filterValue')
-			console.log "Setting selectedOperator" + @get('filterValue.op')
-			@get('filterValue.op')
-	).property('filterValue')
-	###
-
-	###filterValue: (->
-		console.log @get('selectedOperator') + "  :  " + @get('value')
-		return {op: @get('selectedOperator'), data: [@get('value')]}
-	).property('selectedOperator', 'value')
-	###
-	
-	###filterValueDidChange: (->
-		if @get('isFilter')
-			if @get('filterValue')
-				@set('value', @get('filterValue')[0]) 
-			else 
-				@set('value', null) 
-	).observes('filterValue')
-	###
 	filterDidChange: (->
 		console.log 'filter changed'
 	).observes('filter')

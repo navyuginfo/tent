@@ -1,8 +1,14 @@
+###*
+* @class Tent.Data.Filter
+* Adds filtering support
+###
+
 Tent.Data.Filter = Ember.Mixin.create
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
-		@set('filters', 
+
+		###@set('filters', 
 			[
 				{
 					name: "task1"
@@ -26,7 +32,7 @@ Tent.Data.Filter = Ember.Mixin.create
 					values: {id: {field:"id",op: "equal", data: "5"}}
 				}
 			])
-		
+		###
 	availableFilters: (->
 		return @get('filters')
 	).property('filters', 'filters.@each')
