@@ -27,4 +27,44 @@
 
 .control-group.error .help-inline.warning {
 	color: #C09853;
+}  
+ 
+// Left-opening Sub menus
+// ---------------------------
+.dropdown-submenu-left {
+  position: relative;
+}
+.dropdown-submenu-left > .dropdown-menu {
+  top: 0;
+  left: -100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  -webkit-border-radius: 6px 0px 6px 6px;
+     -moz-border-radius: 6px 0px 6px 6px;
+          border-radius: 6px 0px 6px 6px;
+}
+.dropdown-submenu-left:hover > .dropdown-menu {
+  display: block;
+}
+
+.dropdown-submenu-left > a:before {
+  display: block;
+  content: "  ";
+  float: left;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 5px 5px 0px;
+  border-right-color: #aaa;
+  margin-top: 5px;
+  margin-left: -10px;
+}
+.dropdown-submenu-left:hover > a:before {
+	border-right-color: white;
+}
+
+
+.custom-export .form-horizontal .control-label {
+  width : 0px;
 }
