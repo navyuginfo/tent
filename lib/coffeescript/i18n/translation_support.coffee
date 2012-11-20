@@ -38,6 +38,9 @@ Tent.translate = Tent.I18n.loc
 
 Tent.I18n.loadTranslations(
 	tent: {
+		on: 'On'
+		off: 'Off'
+		pleaseSelect: 'Please Select'
 		button: {
 			ok: 'Ok'
 			yes: 'Yes'
@@ -55,6 +58,15 @@ Tent.I18n.loadTranslations(
 				json: 'JSON'
 				csv: 'CSV'
 				xlsx: 'XLSX'
+				comma: 'COMMA'
+				pipe: 'PIPE'
+				semicolon:'SEMI COLON'
+				colon: 'COLON'
+				_or: 'or'
+				enterDelimiter: 'Enter Delimiter'
+				headers: 'Column Headers'
+				inclQuotes: 'Include Quotes'
+				export: 'Export'
 			}
 		}
 		filter: {

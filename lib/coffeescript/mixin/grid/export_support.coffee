@@ -20,6 +20,8 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			if not @get('title')?
 				tableDom.setCaption('&nbsp;')
 
+			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx') else "#"
+
 			button = """
 				<div class="btn-group export">
 					<a class="" data-toggle="dropdown" href="#">
@@ -27,9 +29,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 					<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
-						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
-						<li><a href="#{@get('collection').getURL('xlsx')}">#{Tent.I18n.loc("jqGrid.export.xlsx")}</a></li>
+						<li><a class="export-json">#{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
+						<li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li>
+						<li><a href="#{xslxUrl}">#{Tent.I18n.loc("tent.jqGrid.export.xlsx")}</a></li>
 						<li class="divider"></li>
 						<li class="dropdown-submenu-left">
 							<a href="#">Delimiter</a>
@@ -40,48 +42,48 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 											<label class="control-label">Delimiter</label>
 											<div class="controls">
 													<select name="delimiter" class="input-small" id="delimiter">
-													<option value="">Please Select</option>  
-													<option value="," selected>COMMA</option>
-													<option value="|">PIPE</option>
-													<option value=";">SEMI COLON</option>
-													<option value=":">COLON</option>
+													<option value="">#{Tent.I18n.loc("tent.pleaseSelect")}</option>  
+													<option value="," selected>#{Tent.I18n.loc("tent.jqGrid.export.comma")}</option>
+													<option value="|">#{Tent.I18n.loc("tent.jqGrid.export.pipe")}</option>
+													<option value=";">#{Tent.I18n.loc("tent.jqGrid.export.semicolon")}</option>
+													<option value=":">#{Tent.I18n.loc("tent.jqGrid.export.colon")}</option>
 												</select>
 											</div>
 										</div>            
 										<div class="control-group">
-											<label class="control-label">or</label>
+											<label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export._or")}</label>
 										</div>                     
 										<div class="control-group">
-											<label class="control-label">Enter Delimiter</label>
+											<label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export.enterDelimiter")}</label>
 											<div class="controls">
 												<input type="text" name="customDelimiter" id="customDelimiter"  maxlength="1" class="input-small">
 											</div>
 										</div>
 										<div class="control-group">
-											<label class="control-label">Column Headers</label>
+											<label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export.headers")}</label>
 											<div class="controls">
 												<label class="radio inline">
-													<input type="radio" name="columnHeaders" value="true" checked>On
+													<input type="radio" name="columnHeaders" value="true" checked>#{Tent.I18n.loc("tent.on")}
 												</label>
 												<label class="radio inline">
-													<input type="radio" name="columnHeaders" value="false">Off
+													<input type="radio" name="columnHeaders" value="false">#{Tent.I18n.loc("tent.off")}
 												</label>  
 											</div>
 										</div>        
 										<div class="control-group">
-											<label class="control-label">Include Quotes</label>
+											<label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export.inclQuotes")}</label>
 											<div class="controls">
 												<label class="radio inline">
-													<input type="radio" name="includeQuotes" value="true" checked>On
+													<input type="radio" name="includeQuotes" value="true" checked>#{Tent.I18n.loc("tent.on")}
 												</label>
 												<label class="radio inline">
-													<input type="radio" name="includeQuotes" value="false">Off
+													<input type="radio" name="includeQuotes" value="false">#{Tent.I18n.loc("tent.off")}
 												</label>  
 											</div>
 										</div>                                  
 										<div class="control-group">
 											<div class="controls">
-												<button type="button" class="btn">Export</button>
+												<button type="button" class="btn">#{Tent.I18n.loc("tent.jqGrid.export.export")}</button>
 											</div>
 										</div>
 
