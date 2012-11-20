@@ -334,6 +334,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		)
 
 	changeColumnHeader: (colname, value) ->
+		# jqGrid ignores "" as a column header, so set it to a space.
+		if value == ""
+			value = " "
 		@getTableDom().jqGrid('setLabel', colname, value);
 		for column in @get('columns')
 			column.title = value if column.name == colname
