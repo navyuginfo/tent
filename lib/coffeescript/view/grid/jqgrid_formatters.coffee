@@ -21,8 +21,8 @@ jQuery.extend $.fn.fmatter,
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0)
-			cellvalue = $('input', cell).attr('value')
-		Tent.Formatting.amount.unformat(cellvalue) or ""
+          cellvalue = ((if (cell isnt `undefined`) then $("input", cell).attr("value") else cellvalue))
+        Tent.Formatting.amount.unformat(cellvalue) or ""
 
 # Format the value of a Dom element
 jQuery.extend $.fn.fmatter.amount,
