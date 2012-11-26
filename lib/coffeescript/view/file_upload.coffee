@@ -6,10 +6,12 @@ Tent.FileUpload = Ember.View.extend
 
   didInsertElement: -> @$('input').fileupload
     add: (e, data) =>
+      $('<div class="modal-backdrop" id="file-upload-wait"></div>').appendTo($('body'))
       data.submit().success @successWrapper(@get 'parentView.controller')
 
   successWrapper: (context) ->
     success = @get 'uploadSuccessFunction'
+    $('#file-upload-wait').remove()
     if context and success
       (result, textStatus, jqXHR) -> success.apply(context, arguments)
     else
