@@ -12,6 +12,7 @@ Tent.messages.EMAIL_FORMAT_ERROR = "Email format error"
 Tent.messages.DATE_FORMAT_ERROR = "Date format error"
 Tent.messages.DATE_BETWEEN_ERROR = "Date should be between %@2 and %@3"
 Tent.messages.DATE_FUTURE_ERROR = "You provided a date in the future"
+Tent.messages.MAX_LENGTH = "Length should be less then %@2 characters"
 
 
 
