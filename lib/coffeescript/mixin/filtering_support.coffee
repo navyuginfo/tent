@@ -13,6 +13,7 @@ Tent.FilteringSupport = Ember.Mixin.create
 		#@set('selectedOperator', @get('filterValue.op'))
 
 	didInsertElement: ->
+		@_super()
 		if @get('filter')
 			@get('filter.values')[@get('id')] = {}
 

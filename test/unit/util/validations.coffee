@@ -39,6 +39,17 @@ test 'Date between validation with parameters', ->
 	ok Tent.Validations.datebetween.validate(value, {startDate:startDate, endDate:endDate}), 'Dates are strings'
 
  
+test 'Maximum length validations with params', ->
+  #Validate max
+  value = "AXS92234908203948092234"
+  options = {max: 20}
+  ok not Tent.Validations.maxLength.validate(value, options), '24 caracters string failed to validate'
+
+  #Validate max
+  value = "809223423423"
+  options = {max: 20}
+  ok Tent.Validations.maxLength.validate(value, options), '12 caracters string validated succesfully'
+
 
 
 
