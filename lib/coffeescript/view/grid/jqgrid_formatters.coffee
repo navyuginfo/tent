@@ -20,15 +20,16 @@ jQuery.extend $.fn.fmatter,
 
 jQuery.extend $.fn.fmatter.amount,
 	unformat: (cellvalue, options, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
-			cellvalue = $('input', cell).attr('value')
-		Tent.Formatting.amount.unformat(cellvalue) or ""
+		if (not cellvalue) and (cellvalue != 0) and cell?
+          cellvalue = $("input", cell).attr("value") 
+        Tent.Formatting.amount.unformat(cellvalue) or ""
 
 # Format the value of a Dom element
 jQuery.extend $.fn.fmatter.amount,
 	formatCell: (cellvalue, options, cell) ->
-		input = $('input', cell)
-		cellvalue = input.attr('value')
+		if cell?
+			input = $('input', cell)
+			cellvalue = $("input", cell).attr("value")
 		input.val(Tent.Formatting.amount.format(cellvalue) or "")
 
 
@@ -53,7 +54,7 @@ jQuery.extend $.fn.fmatter,
 
 jQuery.extend $.fn.fmatter.number,
 	unformat: (cellvalue, options, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
+		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.number.unformat(cellvalue) or ""
 
@@ -66,22 +67,23 @@ jQuery.extend $.fn.fmatter.number,
 ###
 jQuery.extend $.fn.fmatter, 
 	percent: (cellvalue, opts, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
+		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.percent.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.percent,
 	unformat: (cellvalue, options, cell) ->
-		if (not cellvalue) and (cellvalue != 0)
+		if (not cellvalue) and (cellvalue != 0) and cell?
 			cellvalue = $('input', cell).attr('value')
 		Tent.Formatting.percent.unformat(cellvalue) or ""
 
 # Format the value of a Dom element
 jQuery.extend $.fn.fmatter.percent,
 	formatCell: (cellvalue, options, cell) ->
-		input = $('input', cell)
-		cellvalue = input.attr('value')
-		input.val(Tent.Formatting.percent.format(cellvalue) or "")
+		if cell?
+			input = $('input', cell)
+			cellvalue = input.attr('value')
+			input.val(Tent.Formatting.percent.format(cellvalue) or "")
 
 
 # Date Formatter
