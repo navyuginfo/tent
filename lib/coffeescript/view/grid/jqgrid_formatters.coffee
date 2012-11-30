@@ -83,7 +83,7 @@ jQuery.extend $.fn.fmatter.percent,
 		if cell?
 			input = $('input', cell)
 			cellvalue = input.attr('value')
-		input.val(Tent.Formatting.percent.format(cellvalue) or "")
+			input.val(Tent.Formatting.percent.format(cellvalue) or "")
 
 
 # Date Formatter
