@@ -7,7 +7,7 @@ Tent.RadioOption = Ember.SelectOption.extend
  			{{bindAttr value="view.value"}}
  			{{bindAttr name="view.name"}}
  			{{bindAttr checked="view.checked"}}/>
- 		{{loc view.label}}'
+	 		{{#if view.label}}{{loc view.label}}{{/if}}'
  	
  	name: (->
  		@get('parentView.elementId')

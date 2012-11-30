@@ -1,7 +1,7 @@
 <div class="controls">
     <label class="checkbox">
-    	{{loc view.label}}
-    	{{view Ember.Checkbox checkedBinding="view.checked" disabledBinding = "view.disabled" valueBinding= "view.value"}}
+		{{#if view.label}}{{loc view.label}}{{/if}}
+		{{view Ember.Checkbox checkedBinding="view.checked" disabledBinding = "view.disabled" valueBinding= "view.value"}}
     </label>
 
     {{#if view.hasWarnings}}

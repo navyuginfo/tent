@@ -1,4 +1,6 @@
-<label class="control-label" {{bindAttr for="view.forId"}}>{{loc view.label}}<span class='tent-required'/></label>
+<label class="control-label" {{bindAttr for="view.forId"}}>
+  {{#if view.label}}{{loc view.label}}{{/if}}
+<span class='tent-required'/></label>
 
 <div class="controls">
   <div class="input-prepend">
