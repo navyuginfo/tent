@@ -3,7 +3,7 @@
 		{{bindAttr data-toggle="view.dataToggle"}}
 		role="button"
 		>
-  <i {{bindAttr class="view.iconClass"}}></i>
+  {{#if view.iconClass}}<i {{bindAttr class="view.iconClass"}}></i>{{/if}}
   {{#if view.label}}{{loc view.label}}{{/if}}
   {{#if view.hasOptions}}
   	 <span class="caret"></span>
