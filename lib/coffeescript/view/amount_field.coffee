@@ -23,39 +23,65 @@
 require '../mixin/field_support'
 require '../template/text_field'
 
-Tent.AmountField = Tent.TextField.extend
+Tent.AmountField = Tent.NumericTextField.extend 
   hasPrefix: true
-  hasHelpBlock: true
+  hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
+  centesimalVal: null
+
   prefix: (->
     @get('currency')
   ).property('currency')
-  helpBlock: (->
-    @getFormatPattern()
-  ).property()
 
-  getFormatPattern: ->
-    '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
+  centisimalVal: (->
+    #More currencies need to be added whose cent value is not an idea
+    if @get('currency') && (@get('currency') in ['JPY', 'KWD', 'OMR']) 
+      3
+  ).property('currency')
+
+  # helpBlock: (->
+  #   @getFormatPattern()
+  # ).property()
+
+  # getFormatPattern: ->
+  #   '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
   
   validate: ->
     didOtherValidationPass = @_super()
-    formattedValue = @get('formattedValue')
-    isValidAmount = @isValidAmount(formattedValue)
-    @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
-    didOtherValidationPass && isValidAmount
+    if didOtherValidationPass
+      formattedValue = @get('formattedValue')
+      isValidAmount = @isValidAmount(@get('formattedValue'))
+      @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
+      isValidAmount
+    else
+      false
 
   isValidAmount: (value)->
-    # Let the formatter re-format the value for now
-    true
+    console.log value
+    if (value<0)
+      false
+    else
+      # Let the formatter re-format the value for now
+      true
 
   #Format for display
   format: (value)->
     # Convert from a number to a string
-    return Tent.Formatting.amount.format(value)
+    return Tent.Formatting.amount.format(value, @get('centisimalVal'))
 
   # Format for binding
   unFormat: (value)->
     return Tent.Formatting.amount.unformat(value)
+
+  #removes the formatting so user does not see commas while entering the amount 
+  focusIn: ->
+    if @get('isValid')
+      @set('formattedValue', @unFormat(@get('formattedValue')))
+
+  #formats the value when the input field is out of focus
+  focusOut: ->
+    if @get('isValid')
+      @set('formattedValue', @format(@get('formattedValue')))
 
   inputSizeClass: (->
     return Tent.AmountField.SIZE_CLASSES[@estimateSpan() - 1]
