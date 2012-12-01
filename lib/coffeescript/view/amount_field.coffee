@@ -23,11 +23,12 @@
 require '../mixin/field_support'
 require '../template/text_field'
 
-Tent.AmountField = Tent.NumericTextField.extend 
+Tent.AmountField = Tent.TextField.extend 
   hasPrefix: true
   hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
   centesimalVal: null
+  validAmountExp: /^([-+]?\d+\,?\d+)*\.?\d+$/
 
   prefix: (->
     @get('currency')
@@ -50,18 +51,21 @@ Tent.AmountField = Tent.NumericTextField.extend
     didOtherValidationPass = @_super()
     if didOtherValidationPass
       formattedValue = @get('formattedValue')
-      isValidAmount = @isValidAmount(@get('formattedValue'))
-      @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
-      isValidAmount
+      isValidNumber = @get('validAmountExp').test(formattedValue)
+      @addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber
+      if isValidNumber
+        isValidAmount = @isValidAmount(@get('formattedValue'))
+        @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
+        isValidAmount
+      else
+        false
     else
       false
 
   isValidAmount: (value)->
-    console.log value
     if (value<0)
       false
     else
-      # Let the formatter re-format the value for now
       true
 
   #Format for display
