@@ -21,23 +21,17 @@
 ###
 
 require '../mixin/field_support'
+require '../mixin/currency_support'
 require '../template/text_field'
 
-Tent.AmountField = Tent.TextField.extend 
+Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, 
   hasPrefix: true
   hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
-  centesimalVal: null
   validAmountExp: /^([-+]?\d+\,?\d+)*\.?\d+$/
 
   prefix: (->
     @get('currency')
-  ).property('currency')
-
-  centisimalVal: (->
-    #More currencies need to be added whose cent value is not an idea
-    if @get('currency') && (@get('currency') in ['JPY', 'KWD', 'OMR']) 
-      3
   ).property('currency')
 
   # helpBlock: (->
@@ -71,7 +65,7 @@ Tent.AmountField = Tent.TextField.extend
   #Format for display
   format: (value)->
     # Convert from a number to a string
-    return Tent.Formatting.amount.format(value, @get('centisimalVal'))
+    return Tent.Formatting.amount.format(value, @get('centesimalValue'))
 
   # Format for binding
   unFormat: (value)->
