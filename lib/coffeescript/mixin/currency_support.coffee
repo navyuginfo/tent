@@ -1,19 +1,21 @@
 ###*
  * @class Tent.CurrencySupport
- * Some docs here...
+ * To get the centesimal value of a currency use the property 'centesimalValue'
+ * To get the ISO name of a currency use the property 'name'
 ###
+require '../common/currencies'
+
 # Any computations related to currency can be added in this mixin
 Tent.CurrencySupport = Ember.Mixin.create
 
-
 	centesimalValue: (->
-		#More currencies need to be added
-		if @get('currency') && (@get('currency') in ['JPY', 'KWD', 'OMR']) 
-			3
-		else
-			# defaults to 2.
-			2
+		if @get('currency') 
+			Tent.CURRENCIES_ISO_4217[@get('currency')].cent
 	).property('currency')
 
+	name: (->
+		if @get('currency') 
+			Tent.CURRENCIES_ISO_4217[@get('currency')].name
+	).property('currency')
 
 
