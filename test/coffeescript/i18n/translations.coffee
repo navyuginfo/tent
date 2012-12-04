@@ -6,6 +6,7 @@ Tent.translations =
 	_focussedInput: 'Focussed Input'
 	_numericInput: 'Numeric Input'
 	_amountInput: 'Amount Input'
+	_invalidCurrency: 'Invalid Currency'
 	_state: 'State'
 	_emailInput: 'Email Input'
 	_agreeToPrivacyPolicy: 'Agree to privacy policy'

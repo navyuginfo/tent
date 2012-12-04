@@ -9,13 +9,17 @@ require '../common/currencies'
 Tent.CurrencySupport = Ember.Mixin.create
 
 	centesimalValue: (->
-		if @get('currency') 
-			Tent.CURRENCIES_ISO_4217[@get('currency')].cent
+		if @get('currency')
+			if @get('isValidCurrency')
+				Tent.CURRENCIES_ISO_4217[@get('currency')].cent
 	).property('currency')
 
 	name: (->
-		if @get('currency') 
-			Tent.CURRENCIES_ISO_4217[@get('currency')].name
+		if @get('currency')
+			if @get('isValidCurrency') 
+				Tent.CURRENCIES_ISO_4217[@get('currency')].name
 	).property('currency')
 
-
+	isValidCurrency: (->
+		(Tent.CURRENCIES_ISO_4217[@get('currency')])?
+	).property('currency')

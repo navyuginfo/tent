@@ -3,9 +3,6 @@
 # All rights reserved.
 #
 
-# Tent.Currency = Ember.Object.create
-
-
 Tent.CURRENCIES_ISO_4217 = Ember.Object.create
 	AED:
 		 cent:	2
@@ -283,9 +280,6 @@ Tent.CURRENCIES_ISO_4217 = Ember.Object.create
 	MDL:
 		 cent:	2
 		 name:	"Moldovan leu"
-	MGA:
-		 cent:	null
-		 name:	"Malagasy ariary"
 	MKD:
 		 cent:	0
 		 name:	"Macedonian denar"
@@ -298,9 +292,6 @@ Tent.CURRENCIES_ISO_4217 = Ember.Object.create
 	MOP:
 		 cent:	2
 		 name:	"Macanese pataca"
-	MRO:
-		 cent:	null
-		 name:	"Mauritanian ouguiya"
 	MUR:
 		 cent:	2
 		 name:	"Mauritian rupee"
@@ -487,51 +478,15 @@ Tent.CURRENCIES_ISO_4217 = Ember.Object.create
 	XAF:
 		 cent:	0
 		 name:	"CFA franc BEAC"
-	XAG:
-		 cent:	null
-		 name:	"Silver (one troy ounce)"
-	XAU:
-		 cent:	null
-		 name:	"Gold (one troy ounce)"
-	XBA:
-		 cent:	null
-		 name:	"European Composite Unit (EURCO) (bond market unit)"
-	XBB:
-		 cent:	null
-		 name:	"European Monetary Unit (E.M.U.-6) (bond market unit)"
-	XBC:
-		 cent:	null
-		 name:	"European Unit of Account 9 (E.U.A.-9) (bond market unit)"
-	XBD:
-		 cent:	null
-		 name:	"European Unit of Account 17 (E.U.A.-17) (bond market unit)"
 	XCD:
 		 cent:	2
 		 name:	"East Caribbean dollar"
-	XDR:
-		 cent:	null
-		 name:	"Special drawing rights"
-	XFU:
-		 cent:	null
-		 name:	"UIC franc (special settlement currency)"
 	XOF:
 		 cent:	0
 		 name:	"CFA franc BCEAO"
-	XPD:
-		 cent:	null
-		 name:	"Palladium (one troy ounce)"
 	XPF:
 		 cent:	0
 		 name:	"CFP franc"
-	XPT:
-		 cent:	null
-		 name:	"Platinum (one troy ounce)"
-	XTS:
-		 cent:	null
-		 name:	"Code reserved for testing purposes"
-	XXX:
-		 cent:	null
-		 name:	"No currency"
 	YER:
 		 cent:	2
 		 name:	"Yemeni rial"
