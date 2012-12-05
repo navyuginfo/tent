@@ -26,13 +26,19 @@ Tent.I18n = Ember.Namespace.create
 	###*
 	* Replace a key with its translation
 	* @param {String} key
-	* @param {String|Array} [vars] arguments to be interpolated in the translated string
+	* @param {String|[Array| Object]} [vars] arguments to be interpolated in the translated string
 	###
 	loc: (key, vars) ->
-		if key?
-			string = Ember.get(@language, key) || key
-			vars = [vars] if typeof vars == 'string'
-			return Ember.String.fmt(string, vars)
+    if key?
+      string = Ember.get(@language, key) || key
+      idx  = 0
+      vars = [vars] if(typeof vars == 'string')
+      string.replace(/%@([0-9]|[a-zA-Z]+)?/g,(s, argIndex)->
+        argIndex = if(argIndex? and isNaN(argIndex)) then argIndex else (if isNaN(parseInt(argIndex)) then idx++ else parseInt(argIndex)-1)
+        s = vars[argIndex]
+        if(s?) then s else ''
+      )
+
 
 Tent.translate = Tent.I18n.loc
 
@@ -100,6 +106,18 @@ Tent.I18n.loadTranslations(
 				year: 'Year'
 			}
 		}
+
+	}
+	error: {
+		generic: 'Error'
+		required: 'Field is required'
+		numeric: 'Value must be numbers only'
+		amount: 'Value must be in monetory terms'
+		email: 'Email format error'
+		date: 'Date format error'
+		dateBetween: 'Date should be between %@startDate and %@endDate'
+		dateFuture: 'You provided a date in the future'
+		maxLength: 'Length must be %@max characters or less'
 	}
  
 )

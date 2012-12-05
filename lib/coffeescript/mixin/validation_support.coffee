@@ -22,7 +22,7 @@ Tent.ValidationSupport = Ember.Mixin.create
   * @property {String} warnings A list of comma-separated custom validations which should be applied to the widget, but are interpreted
   * as warnings which may be ignored.
   ###
-  warnings=null
+  warnings: null
   
   init: ->
     @_super()
@@ -132,10 +132,12 @@ Tent.ValidationSupport = Ember.Mixin.create
 
   addValidationError: (error) ->
     # Do we need more than one error?
+    error =  Tent.I18n.loc(error) if (typeof error is "string")
     @get('validationErrors').pushObject(error)
     @set('isValid', false)
 
   addValidationWarning: (warning) ->
+    warning =  Tent.I18n.loc(warning) if (typeof warning is "string")
     @get('validationWarnings').pushObject(warning)
 
  

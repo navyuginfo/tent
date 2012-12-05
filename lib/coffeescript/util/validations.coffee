@@ -11,9 +11,7 @@ Tent.Validation = Ember.Object.extend
 		not (value? && value != '')
 
 	getErrorMessage: (value, options)->
-		optString = ""
-		optString = optString +  ",'#{val}'" for key,val of options
-		eval("this.get('ERROR_MESSAGE').fmt(value" + optString + " )")
+		Tent.I18n.loc(@get('ERROR_MESSAGE'),options || [])
 
 Tent.Validations.email = Tent.Validation.create
 	validate: (value, options, message)-> 
