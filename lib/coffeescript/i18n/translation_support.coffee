@@ -112,7 +112,7 @@ Tent.I18n.loadTranslations(
 		generic: 'Error'
 		required: 'Field is required'
 		numeric: 'Value must be numbers only'
-		amount: 'Value must be in monetory terms'
+		amount: 'Amount should be positive'
 		email: 'Email format error'
 		date: 'Date format error'
 		dateBetween: 'Date should be between %@startDate and %@endDate'
