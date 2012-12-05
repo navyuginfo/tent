@@ -13,6 +13,7 @@ Tent.messages.DATE_FORMAT_ERROR = "error.date"
 Tent.messages.DATE_BETWEEN_ERROR = "error.dateBetween"
 Tent.messages.DATE_FUTURE_ERROR = "error.dateFuture"
 Tent.messages.MAX_LENGTH = "error.maxLength"
+Tent.messages.CURRENCY_ERROR = "error.invalidCurrency"
 
 
 
