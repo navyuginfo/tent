@@ -2,6 +2,7 @@ require '../template/jqgrid'
 require '../mixin/grid/collection_support' 
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
+require '../mixin/grid/column_menu'
 
 ###*
 * @class Tent.JqGrid
@@ -10,6 +11,7 @@ require '../mixin/grid/editable_support'
 * @mixins Tent.Grid.CollectionSupport
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
+* @mixins Tent.Grid.ColumnMenu
 *
 * Create a jqGrid view which displays the data provided by its content property
 *
@@ -27,7 +29,7 @@ require '../mixin/grid/editable_support'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error']
@@ -253,59 +255,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@renderMaximizeButton()
 
-	addColumnDropdowns: ->
-		widget = this
-		for column in @get('columns')
-			template = Handlebars.compile "
-				{{#if column.groupable}}
-					<ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'>
-						{{#if column.groupable}}
-							<li class='group dropdown-submenu'>
-								<a tabindex='-1'>Group</a>
-							    <ul class='dropdown-menu'>
-							    	{{#each groupType}}
-							    		<li data-grouptype='{{name}}'><a tabindex='-1'>{{title}}</a></li>
-							    	{{/each}}
-							    </ul>
-							</li>
-						{{/if}}
-					</ul>
-				{{/if}}"
 
-			column.groupable = not (column.groupable? && column.groupable ==false)
-			context = 
-				column: column
-				groupType: Tent.JqGrid.Grouping.ranges[column.type]
-			
-			columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
-			@$(columnDivId).after template(context)
-			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
-
-		@$('.column-dropdown').click((e)->
-			target = $(e.target)
-			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
-			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			columnType = 'string'
-			for col in widget.get('columns')
-				if col.field == column then columnType= col.type
-			widget.groupByColumn(column, groupType, columnType)
-		)
-
-	groupByColumn: (column, groupType, columnType)->
-		@get('collection').sort(
-			fields: [
-				sortAsc: true
-				field: column
-			]
-		)
-
-		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
-		this.getTableDom().groupingGroupBy(column, {
-				groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
-				range: comparator
-			}
-		)
-		
 	renderColumnChooser: (tableDom)->
 		widget =  @
 		if @get('showColumnChooser')

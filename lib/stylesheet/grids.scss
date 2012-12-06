@@ -106,7 +106,15 @@ $error-background-color: rgba(255, 0, 0, 0.22);
 			padding: 0px;
 
 			.dropdown-menu {
-				min-width: 50px;
+				min-width: 50px;	
+			}
+
+			.rename.dropdown-submenu input[type="text"]{
+				border: none;
+				&:focus {
+					outline: none;
+					@include box-shadow(transparent 0px 0px 0px)
+				}
 			}
 		}
 	}
