@@ -31,16 +31,9 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/
 
   prefix: (->
-    @get('currency')
+    Tent.I18n.loc(@get('currency'))
   ).property('currency')
-
-  # helpBlock: (->
-  #   @getFormatPattern()
-  # ).property()
-
-  # getFormatPattern: ->
-  #   '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
-  
+ 
   validate: -> 
     didOtherValidationPass = @_super()
     formattedValue = @get('formattedValue')

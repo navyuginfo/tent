@@ -23,3 +23,7 @@ Tent.CurrencySupport = Ember.Mixin.create
 	isValidCurrency: (->
 		(Tent.CURRENCIES_ISO_4217[@get('currency')])?
 	).property('currency')
+
+	observeCurrencyForValidation: (->
+		@validate()
+	).observes('currency')
