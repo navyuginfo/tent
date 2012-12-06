@@ -71,6 +71,11 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
     if @get('isValid')
       @set('formattedValue', @format(@get('formattedValue')))
 
+  observeCurrencyForValidationAndFormatting: (->
+    if @validate()
+      @set('formattedValue', @format(@get('formattedValue')))
+  ).observes('currency')
+
   inputSizeClass: (->
     return Tent.AmountField.SIZE_CLASSES[@estimateSpan() - 1]
   ).property()
