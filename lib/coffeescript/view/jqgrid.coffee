@@ -254,7 +254,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@renderMaximizeButton()
 
 	addColumnDropdowns: ->
-		widget = this
 		for column in @get('columns')
 			template = Handlebars.compile "
 				{{#if column.groupable}}
@@ -293,6 +292,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$(columnDivId).after template(context)
 			@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
 
+		@groupByColumnBindings()
+		@renameColumnHeaderBindings()
+	
+	groupByColumnBindings: ->
+		widget = this
+
 		@$('.group.dropdown-submenu').click((e)->
 			target = $(e.target)
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
@@ -301,24 +306,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			for col in widget.get('columns')
 				if col.field == column then columnType= col.type
 			widget.groupByColumn(column, groupType, columnType)
-		)
-
-		@$('.rename.dropdown-submenu').hover((e)->
-			$('input',@).focus()
-		).click((e)->
-			target = $(e.target)
-			e.stopPropagation()
-			e.preventDefault()
-		)
-
-		@$('.rename.dropdown-submenu input').keyup((e)->
-			target = $(e.target)
-			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			if e.keyCode == 13	
-				columnDivId = '#jqgh_' + widget.get('elementId') + '_jqgrid_' + column
-				$(columnDivId).dropdown('toggle')
-			else
-				widget.changeColumnHeader(column, $(this).val())
 		)
 
 	groupByColumn: (column, groupType, columnType)->
@@ -336,7 +323,28 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			}
 		)
 
-	changeColumnHeader: (colname, value) ->
+	renameColumnHeaderBindings: ->
+		widget = this
+
+		@$('.rename.dropdown-submenu').hover((e)->
+			$('input',@).focus()
+		).click((e)->
+			target = $(e.target)
+			e.stopPropagation()
+			e.preventDefault()
+		)
+
+		@$('.rename.dropdown-submenu input').keyup((e)->
+			target = $(e.target)
+			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
+			if e.keyCode == 13	
+				columnDivId = '#jqgh_' + widget.get('elementId') + '_jqgrid_' + column
+				$(columnDivId).dropdown('toggle')
+			else
+				widget.renameColumnHeader(column, $(this).val())
+		)
+
+	renameColumnHeader: (colname, value) ->
 		# jqGrid ignores "" as a column header, so set it to a space.
 		if value == ""
 			value = " "
