@@ -31,16 +31,9 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/
 
   prefix: (->
-    @get('currency')
+    Tent.I18n.loc(@get('currency'))
   ).property('currency')
-
-  # helpBlock: (->
-  #   @getFormatPattern()
-  # ).property()
-
-  # getFormatPattern: ->
-  #   '(' + (@get('formatPattern') or accounting.settings.number.pattern) + ')'
-  
+ 
   validate: -> 
     didOtherValidationPass = @_super()
     formattedValue = @get('formattedValue')
@@ -77,6 +70,17 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   focusOut: ->
     if @get('isValid')
       @set('formattedValue', @format(@get('formattedValue')))
+
+  observeCurrencyForValidationAndFormatting: (->
+    # remove the error always and check add again if required
+    @get('validationErrors').removeObject(Tent.I18n.loc (Tent.messages.CURRENCY_ERROR))
+    if @get 'isValidCurrency'
+      @set('isValid', true) unless @get('validationErrors').length
+      @set('formattedValue', @format(@get('formattedValue')))
+    else
+      @addValidationError(Tent.messages.CURRENCY_ERROR)
+      
+  ).observes('currency')
 
   inputSizeClass: (->
     return Tent.AmountField.SIZE_CLASSES[@estimateSpan() - 1]

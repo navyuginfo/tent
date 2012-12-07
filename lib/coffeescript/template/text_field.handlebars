@@ -12,7 +12,7 @@
       <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
     {{else}}
       {{#if view.hasPrefix}}  
-        <span class="add-on">{{loc view.prefix}}</span>
+        <span class="add-on">{{view.prefix}}</span>
       {{/if}} 
       {{view Tent.TextFieldInput 
         valueBinding="view.formattedValue" 

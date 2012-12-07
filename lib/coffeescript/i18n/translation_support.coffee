@@ -118,6 +118,7 @@ Tent.I18n.loadTranslations(
 		dateBetween: 'Date should be between %@startDate and %@endDate'
 		dateFuture: 'You provided a date in the future'
 		maxLength: 'Length must be %@max characters or less'
+		invalidCurrency: 'Invalid currency'
 	}
  
 )
