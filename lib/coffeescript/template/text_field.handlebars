@@ -12,11 +12,11 @@
       <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
     {{else}}
       {{#if view.hasPrefix}}  
-        <span class="add-on">{{loc view.prefix}}</span>
+        <span class="add-on">{{view.prefix}}</span>
       {{/if}} 
       {{view Tent.TextFieldInput 
         valueBinding="view.formattedValue" 
-        placeholderBinding="view.placeholder"
+        placeholderBinding="view.translatedPlaceholder"
         classBinding="view.controlClass"
       }}
       {{#if view.hasHelpBlock}}
@@ -24,8 +24,12 @@
       {{/if}}
     {{/if}}
     {{#if view.hasErrors}}
-      <span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
+      <ul class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>
     {{/if}}  
+    {{#if view.hasWarnings}}
+      <ul class="help-inline warning" {{bindAttr id="view.warningId"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>
+    {{/if}}  
+
   </div>
   {{#if view.tooltip}}
     <a href="#" rel="tooltip" data-placement="right" {{bindAttr data-original-title="view.tooltipT"}}></a>

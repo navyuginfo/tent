@@ -22,17 +22,16 @@ Pad.DataStore = Ember.Object.extend
 
 	getColumnsForType: ->
 		[
-			{id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true},
-			{id: "title", name: "title", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
-			{id: "amount", name: "amount", title: "_hAmount", field: "amount", width:5, editable: true, hideable: false, sortable: true, formatter: "amount", align: 'right' },
-			{id: "calc", name: "calc", title: "calc", width:5, editable: true, formatter: "amount", align: 'right', editoptions:{dataInit: @calc} },
 
-			{id: "duration", name: "duration", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
-			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete", width:10},
-			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven", width:10},
-			{id: "start", name: "start", title: "_hStart",field: "start", width:10, formatter: "date"},
-			{id: "finish", name: "finish", title: "_hFinish",field: "finish", width:10, hideable: true}
-			{id: "completed", name: "completed", title: "_hCompleted",field: "completed", width:30, hideable: true, formatter: 'checkboxEdit', align: 'center', editable: false}
+			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false},
+			{id: "title", name: "title", type:"string", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
+			# {id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
+			{id: "duration", name: "duration", type:"string", title: "_hDuration",field: "duration", width:10, sortable: true, groupable:true, align: 'right'},
+			{id: "%", name: "percentcomplete", type:"number", title: "_hPercentComplete",field: "percentcomplete", width:10},
+			{id: "effortdriven", name: "effortdriven", type:"number", title: "_hEffortDriven", field: "effortdriven", groupable:true, width:10},
+			{id: "start", name: "start", type:"date", title: "_hStart", field: "start", groupable:true, width:10, formatter: "date"},
+			{id: "finish", name: "finish", type:"date", title: "_hFinish",field: "finish", groupable:true, width:10, hideable: true, formatter: "date"}
+			{id: "completed", name: "completed", type:"boolean", title: "_hCompleted",field: "completed", width:30, hideable: true, align: 'center', editable: false}
 		]
 
 	queryFixtures: (modelData, query) ->

@@ -17,6 +17,7 @@
     <script src="javascript/slick-grid.js" type="text/javascript"></script>
     <script src="javascript/jqGrid.js" type="text/javascript"></script>
     <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/date.js" type="text/javascript"></script>
     <script src="javascript/pubsub.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
@@ -114,7 +115,7 @@
       
         <div class="row">
         {{#view Tent.Panel span="7" }}
-          {{view Tent.MessagePanel collapsible=true collapsed=true}}
+          {{view Tent.MessagePanel collapsible=true collapsed=true type="primary"}}
           {{view Tent.Breadcrumb routerBinding="Pad.router"}}
 
           {{#view Tent.Form formStyle="inline" }}
@@ -126,7 +127,7 @@
           {{/view}}
 
           {{#view Tent.Form name="Fields" id="form-section"}}
-            
+
             {{view Tent.TextField 
               valueBinding="Pad.appName" 
               label="_focussedInput" 
@@ -139,12 +140,23 @@
               isFilterBinding="Pad.isFilter"
               filterValueBinding="Pad.filter"
               controlClass="input-small"
+              validations=""
+              warnings="email"
+              warningseverity="high"
             }}
 
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
-            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="EUR" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+            {{view Tent.Select listBinding="Pad.currencies" valueBinding="Pad.changingCurrency" selectionBinding="Pad.changingCurrency" label="_currency" optionLabelPath="content" optionValuePath="content" requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_pleaseSelect" }}
+
+            {{view Tent.AmountField valueBinding="Pad.amount2" label="_invalidCurrency" currencyBinding="Pad.changingCurrency" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+
+
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"}}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+
+            {{view Tent.AmountField valueBinding="Pad.amount1" label="_amountInput" currency="JPY" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
-            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+  
+            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_typeHere" }}
             
             
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
@@ -158,11 +170,41 @@
             {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
+            
 
-            {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"
+            {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
+            warnings="email"
             }}
 
-            {{view Tent.Button label="Submit" validate="true"}}
+            {{view Tent.Button label="Submit" validate=true warn=true}}
+
+            <h4>Validations</h4>
+            {{view Tent.TextField 
+              label="email validation" 
+              tooltip="_provide_some_info" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              disabledBinding="Pad.isDisabled"
+              textDisplayBinding="Pad.textDisplay"
+              isFilterBinding="Pad.isFilter"
+              filterValueBinding="Pad.filter"
+              controlClass="input-small"
+              validations="email"
+            }}
+
+            {{view Tent.DateField label="date range" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              tooltip="_tooltip"
+              disabledBinding="Pad.isDisabled" 
+              textDisplayBinding="Pad.textDisplay" 
+              validations="datebetween"
+              validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
+              warnings="futuredate"
+            }}
+
+
+            
 
             
           {{/view}}
@@ -208,7 +250,7 @@
                   selectionBinding="Pad.jqGridSelection"
                   fixedHeader=false
                   showMaximizeButton=true
-                  paged=false
+                  paged=true
                   pageSize=6
                   remotePaging=false
                   multiSelect=true
@@ -219,10 +261,47 @@
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
               }}
-              
+
+
+              <h5>Collection not provided</h5>
+ 
+              {{view Tent.JqGrid
+                  label="Tasks"                  
+                  contentBinding="Pad.jqGridContent"
+                  columnsBinding="Pad.gridColumnDescriptor"
+                  selectionBinding="Pad.jqGridSelectionNoCollection"
+                  fixedHeader=false
+                  showMaximizeButton=true
+                  multiSelect=true
+                  showColumnChooser=true
+                  required=true
+              }}
+      
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
+
+
+              <h5>Client-Side</h5>
+
+              {{view Tent.JqGrid
+                  label="Tasks"
+                  collectionBinding="Pad.clientSideCollection"
+                  contentBinding= "Pad.clientSideCollection.modelData"
+                  selectionBinding="Pad.jqClientSideGridSelection"
+                  fixedHeader=false
+                  showMaximizeButton=true
+                  paged=false
+                  multiSelect=true
+                  useColumnFilters=false
+                  showColumnChooser=true
+                  onEditRowBinding="Pad.jqOnEditRow"
+                  onRestoreRowBinding="Pad.jqOnRestoreRow"
+                  onSaveCellBinding="Pad.jqOnSaveCell"
+                  required=true
+                  grouping=true
+                  groupField="effortdriven"
+              }}
 
               {{view Tent.Button label="Submit" validate="true"}}
 
@@ -322,7 +401,7 @@
             <h5>Tabs</h5>
             
 
-            {{#view Tent.Tabs active="settings"}}
+            {{#view Tent.Tabs active="messages"}}
               {{#view Tent.TabPane id="profile" title="_profile"}}
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               {{/view}}
@@ -822,9 +901,10 @@
       </div>
     {{/view}} 
 
-    
+ 
+    <a id = "link_for_modalPane">Render Modal Pane</a>
     {{view Tent.ModalPane 
-          label="Click Me" 
+          customButton = "link_for_modalPane"
           text="_modalText" 
           header="_modalHeader" 
           primaryLabel="_ok" 
@@ -832,6 +912,73 @@
           primaryIcon="icon-save icon-white"
           secondaryIcon="icon-remove"
     }}
+
+    {{#view Tent.ModalPane 
+          label="Click Me"
+          autoLaunch=false
+          header="_modalHeader" 
+          primaryLabel="_ok" 
+          secondaryLabel="_cancel"
+          secondaryType="warning"
+          primaryType="success"
+          primaryIcon="icon-save icon-white"
+          secondaryIcon="icon-remove"
+    }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+    {{/view}}
+
+
+    {{#view Tent.ModalPane 
+          label="Modal within Modal"
+          autoLaunch=false
+          header="_modalHeader" 
+          primaryLabel="_ok" 
+          secondaryLabel="_cancel"
+          secondaryType="warning"
+          primaryType="success"
+          primaryIcon="icon-save icon-white"
+          secondaryIcon="icon-remove"
+          secondaryAction="clickCancelOuter"
+          secondaryTargetBinding="Pad"
+          warn=true
+    }}
+        <a id = "inner_modalPane">launch inner modal</a>
+        {{view Tent.ModalPane 
+              customButton = "inner_modalPane"
+              text="_modalText" 
+              header="_modalHeaderInner" 
+              primaryLabel="_ok" 
+              secondaryLabel="_cancel"
+              primaryIcon="icon-save icon-white"
+              secondaryIcon="icon-remove"
+              secondaryAction="clickCancelInner"
+              secondaryTargetBinding="Pad"
+        }}
+
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true warnings="email" warningseverity="high"}}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+
+    {{/view}}
+
+
+    {{#view Tent.ModalPane 
+          label="Custom Footer" 
+          header="_modalHeader" 
+          customContent=true
+    }}
+      {{#view Tent.ModalBody text="_modalText"}}
+        {{view Tent.TextField  label="_numericInput" currency="EUR" required=true warnings="email"}}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true warn=true}}
+      {{/view}}
+    {{/view}}
+
       
     </script>
       </row>

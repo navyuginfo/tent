@@ -1,70 +1,43 @@
 require '../template/jqgrid'
+require '../mixin/grid/collection_support' 
+require '../mixin/grid/export_support'
+require '../mixin/grid/editable_support'
+require '../mixin/grid/column_menu'
 
 ###*
 * @class Tent.JqGrid
-* @extends Ember.View
+* @mixins Tent.ValidationSupport
+* @mixins Tent.MandatorySupport
+* @mixins Tent.Grid.CollectionSupport
+* @mixins Tent.Grid.ExportSupport
+* @mixins Tent.Grid.EditableSupport
+* @mixins Tent.Grid.ColumnMenu
 *
-* Create a jqGrid view which displays the data provided by a Collection object
-* The grid will bind to the following properties of the collection:
-* 	
-* - columnsDescriptor: an array of descriptor objects defining the columns to be displayed
-* 			e.g. [
-				{id: "id", name: "id", title: "_hID", field: "id", sortable: true, hideable: false},
-				{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true},
-				{id: "amount", name: "amount", title: "_hAmount", field: "amount", sortable: true, formatter: "amount",  align: 'right'},
-			]
-* - totalRows: the total number of rows in the entire result set (including pages not visible)
-* - totalPages: The total number of pages of data available
-*
-* The collection should also provide the following methods:
-*
-* - sort(sortdata): Sort the collection according to the sortdata provided
-* 			e.g. 
-				{fields: [
-							sortAsc: true
-							field: 'title'
-					]
-				}
-*				
-* - goToPage(pageNumber): Navigate to the pagenumber provided (1 = first page)
+* Create a jqGrid view which displays the data provided by its content property
 *
 * ##Usage
 *		{{view Tent.JqGrid
                   label="Tasks"
-                  collectionBinding="Pad.tasksCollection"
+                  contentBinding="Pad.gridContent"
                   selectionBinding="Pad.selectedTasks"
-                  paged=true
-                  pageSize=6           
                   multiSelect=true             
               }}
 *
-*
+* - content: An array of objects, one for each row
+* - columns: An array of column descriptors
+* - selection: An array of selected objects. This will provide the initial selections, as well as 
+* contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error']
-	
-	###*
-	* @property {Object} collection The collection object providing the API to the data source
-	###
-	collection: null
 
 	###*
 	* @property {String} title The title caption to appear above the table
 	###
 	title: null
-
-	###*
-	* @property {Boolean} paged Boolean to indicate the data should be presented as a paged list
-	###
-	paged: true
-
-	###*
-	* @property {Number} pageSize The number of items in each page
-	###
-	pageSize: 12
 
 	###*
 	* @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
@@ -90,93 +63,47 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	showMaximizeButton: true
 
 	###*
-	* @property {Boolean} showExportButton Display a button in the header which allows the table data to 
-	* be exported a selected format.
+	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
 	###
-	showExportButton: true
+	grouping: false
 
 	###*
-	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	*  
+	* @property {String} groupField The name of the field by which to group the grid
 	###
-	onEditRow: null
+	groupField: null
 
-	###*
-	* @property {Function} onRestoreRow A callback function which will be called when editing of a row is cancelled,
-	* and the original values restored to the cells. 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	*  
+	###* 
+	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
-	onRestoreRow: null
-
-	###*
-	* @property {Function} onSaveCell A callback function which will be called when an editable cell is saved. (This 
-	* usually occurs on change or blur) 
-	* The context of the function is this JqGrid View, and it will accept the following parameters:
-	* 
-	* -rowId: the id of the selected row
-	* -grid: the jqGrid
-	* -cellName: the name of the edited cell
-	* -iCell: the position of the edited cell
-	*
-	###
-	onSaveCell: null
-
-
+	clearAction: null
 	fullScreen: false
-	pagingData: 
-		page: 1 
-	sortingData: {}
-	selectedIds: []
+
+	###*
+	* @property {Array} content The array of items to display in the grid.
+	* By default this will be retrieved from the collection, if provided
+	###
 	contentBinding: 'collection'
 
 	###*
-	* @property {Array} columnsBinding The array of column descriptors used to represent the data. 
-	* By default this will be retrieved from the collection
+	* @property {Array} columns The array of column descriptors used to represent the data. 
+	* By default this will be retrieved from the collection, if provided
 	###
 	columnsBinding: 'collection.columnsDescriptor'
-	totalRowsBinding: 'collection.totalRows'
-	totalPagesBinding: 'collection.totalPages'
+
+	###*
+	* @property {Array} selection The array of items selected in the list. This can be used as a setter
+	and a getter.
+	###
+	selection: []
 
 	init: ->
-		widget = @
 		@_super()
-		if not @get('collection')?
-			throw new Error("Collection must be provided for Tent.JqGrid")
-
-		if @get('paged')
-			@get('collection').set('pageSize', @get('pageSize'))
-
-		@setupInitialSelection()
+		
+		widget = @
 		$.subscribe("/ui/refresh", ->
 			widget.resizeToContainer()
 		)
-
-	setupInitialSelection: (->
-		if @get('selection')?
-			sel = []
-
-			for item in @get('selection')
-				id = "" + item.get('id')
-				sel.pushObject(id)
-				if not @get('selectedIds').contains(id)
-					@highlightRow(id)
-			@set('selectedIds', sel.uniq())
-
-		if @getTableDom()
-			@setSelectAllCheckbox(@getTableDom().get(0))
-	).observes('selection')
-
-	selectionDidChange: (->
-		@validate()
-	).observes('selection.@each')
+		@set('selection',[]) if not @get('selection')?
 
 	valueForMandatoryValidation: (->
 		@get('selection')
@@ -186,11 +113,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 		@getTableDom().focus()
 
 	didInsertElement: ->
+		@_super()
 		@setupDomIDs()
 		@buildGrid()
-		@get('collection').goToPage(1)
-		@gridDataDidChange()
-		@columnsDidChange()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -239,66 +164,24 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
+
+			grouping: @get('grouping')
+			groupingView: {
+				groupField: [@get('groupField')]
+				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
+				groupDataSorted: true
+			}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
-			,
-			loadComplete: () ->
-				widget.highlightRows(@)
-			#,
-			#jqGridInlineEditRow: (rowId, o) ->
-			#	console.log 'edit..'
 		})
 
 		@addNavigationBar()
+		@addColumnDropdowns()
 		@gridDataDidChange()
 
-	onPageOrSort: (postdata)->
-		#	postdata is of the form:
-		#       _search: false,	nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
-		if @shouldSort(postdata)
-			@get('collection').sort(
-				fields: [
-					sortAsc: postdata.sord=="asc"
-					field: postdata.sidx
-				])
-		else 
-			@get('pagingData').page = postdata.page
-			@get('collection').goToPage(postdata.page)
-
-		@get('sortingData').field = postdata.sidx
-		@get('sortingData').asc = postdata.sord
-
-	shouldSort: (postdata)->
-		postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
-
-	highlightRows: (grid)->
-		if @getTableDom()?
-			for item in @get('selectedIds')
-				@highlightRow(item)
-			@setSelectAllCheckbox(grid)
-
-	highlightRow: (item)->
-		if @getTableDom()?
-			@getTableDom().jqGrid('setSelection', item, false)
-			@editRow(item)
-
-	setSelectAllCheckbox: (grid) ->
-		if @allRowsAreSelected(grid)
-			grid.setHeadCheckBox(true)
-		else
-			grid.setHeadCheckBox(false)
-
-	allRowsAreSelected: (grid) ->
-		# Check for state of selectAll checkbox
-		selectedIds = @get('selectedIds')
-		allSelected = true
-		for id in $(grid).jqGrid('getDataIDs')
-			if !selectedIds.contains(id)
-				allSelected = false
-		allSelected
 
 	didSelectRow: (itemId, status, e)->
 		if not @get('multiSelect')
@@ -309,48 +192,30 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	selectItemSingleSelect: (itemId) ->
 		@clearSelection()
 		@selectItem(itemId)
-		@showEditableCellsSingleSelect(itemId)
 
 	selectItemMultiSelect: (itemId, status) ->
-		if status #status indicates whether the row is being selected or unselected
-				@selectItem(itemId)
-			else 
-				@deselectItem(itemId)
-		@showEditableCellsMultiSelect(itemId)
-
-	showEditableCellsSingleSelect: (itemId) ->
-		if itemId != @get('lastSelectedRowId')
-			if @get('lastSelectedRowId')?
-				@restoreRow(@get('lastSelectedRowId'))
-			@editRow(itemId)
-			@set('lastSelectedRowId', itemId)
-
-	showEditableCellsMultiSelect: (itemId)->
-		if @get('selectedIds').contains(itemId) 
-			@editRow(itemId)
-		else
-			@restoreRow(itemId)
+		if status!=false #status indicates whether the row is being selected or unselected
+			@selectItem(itemId)
+		else 
+			@deselectItem(itemId)
 
 	didSelectAll: (rowIds, status) ->
-		for id in rowIds
-			if status
+		originalRowsIds = rowIds.filter(-> true)
+		for id in originalRowsIds
+			if status!=false
 				if !@get('selectedIds').contains(id)
 					@selectItem(id)
-					@editRow(id)
 			else 
 				@deselectItem(id)
-				@restoreRow(id)
 
 	clearSelection: ->
 		@get('selectedIds').clear()
-		@get('selection').clear()
+		@get('selection').clear() if @get('selection')?
 
 	selectItem: (itemId) ->
-		@get('selectedIds').pushObject(itemId)
 		@get('selection').pushObject(@getItemFromModel(itemId))
 
 	deselectItem: (itemId) ->
-		@get('selectedIds').removeObject(itemId)
 		@removeItemFromSelection(itemId)
 
 	removeItemFromSelection: (id)->
@@ -359,62 +224,23 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			)
 		)
 
-	# When a row is deselected, revert to the previous value 
-	restoreRow: (rowId) ->
-		@getTableDom().jqGrid('restoreRow', rowId)
-		@saveEditedRow(rowId)
-		@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
-
-	# Make all editable cells editable
-	editRow: (rowId) ->
-		@getTableDom().jqGrid('editRow', rowId, false,  @onEditFunc())
-
-	onEditFunc: (rowId) ->
-		widget = @
-		(rowId) ->
-			widget.get('onEditRow').call(widget, rowId, widget.getTableDom()) if widget.get('onEditRow')?
-
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
 
-	# Called by a cell widget on blur or change
-	saveEditableCell: (element)->
-		rowId = $(element).parents('tr:first').attr('id')
-		cellpos = $(element).parents('tr').children().index($(element).parents('td'))
-		cellName = @getColModel()[cellpos].name
-		@saveEditedCell(rowId, cellName, null, null, null, $(element).parent())
-		@onSaveCell.call(@, rowId, @getTableDom(), cellName, cellpos) if @onSaveCell?
-
-	saveEditedRow: (rowId, status, options)->
-		rowData = @getTableDom().getRowData(rowId)
-		for col in @getColModel()
-			if col.editable
-				@saveEditedCell(rowId, col.name, rowData[col.name])
-
-	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
-		# Need to unformat/validate the value before saving 
-		formatter = @getTableDom().getColProp(cellName).formatter
-		#if formatter?
-		if $.fn.fmatter[formatter]?
-			if cell?
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
-			else
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
-		else 
-			@getItemFromModel(rowId).set(cellName, value)
-		#@getTableDom().triggerHandler()
 
 	markErrorCell: (rowId, iCell) ->
-		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
-		cell.addClass('error')
+		@getCell(rowId, iCell).addClass('error')
 
 	unmarkErrorCell: (rowId, iCell) ->
-		cell = @getTableDom().find('#'+rowId ).children().eq(iCell)
-		cell.removeClass('error')
+		@getCell(rowId, iCell).removeClass('error')
+
+	getCell: (rowId, iCell) ->
+		return @getTableDom().find('#'+rowId ).children().eq(iCell)
 
 	###*
-	* @method sendAction send and action to the router. This is called from the 'action' formatter
+	* @method sendAction send an action to the router. This is called from the 'action' formatter,
+	* which displays cell content as a link
 	###
 	sendAction: (action, element, rowId)->
 		view = @
@@ -425,13 +251,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
-		widget = @
-		#tableDom.jqGrid('navGrid', @getPagerId(), {add:false,edit:false,del:false,search:false,refresh:false})
-
 		@renderColumnChooser(tableDom)
-		@renderExportButton(tableDom)
+		@_super()
 		@renderMaximizeButton()
-		
+
+
 	renderColumnChooser: (tableDom)->
 		widget =  @
 		if @get('showColumnChooser')
@@ -439,10 +263,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			if not @get('title')?
 				tableDom.setCaption('&nbsp;')
 
-			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("jqGrid.hideShowCaption") + '</a>')
+			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("tent.jqGrid.hideShowCaption") + '</a>')
 			@$('a.column-chooser').click(() ->
 				tableDom.jqGrid('setColumns',{
-					caption: Tent.I18n.loc("jqGrid.hideShowTitle"),
+					caption: Tent.I18n.loc("tent.jqGrid.hideShowTitle"),
 					showCancel: false,
 					ShrinkToFit: true,
 					recreateForm: true,
@@ -463,68 +287,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	adjustHeightForFixedHeader: () ->
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
-
-
-	renderExportButton: (tableDom)->
-		if @get('showExportButton') 
-			# Ensure that the caption header is displayed
-			if not @get('title')?
-				tableDom.setCaption('&nbsp;')
-
-			button = """
-				<div class="btn-group export">
-					<a class="" data-toggle="dropdown" href="#">
-					Export
-					<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a class="export-json">#{Tent.I18n.loc("jqGrid.export.json")}</a></li>
-						<li><a class="export-xml">#{Tent.I18n.loc("jqGrid.export.xml")}</a></li>
-						<li><a class="export-csv">#{Tent.I18n.loc("jqGrid.export.csv")}</a></li>
-					</ul>
-				</div>
-			"""
-			@$(".ui-jqgrid-titlebar").append(button)
-
-			@$('a.export-json').click =>
-				ret = $.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
-				@clientDownload(ret)
-		 
-			@$('a.export-xml').click =>
-				ret = "<root>" + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-				@clientDownload(ret)
-
-			@$('a.export-csv').click =>
-				ret = @exportCSV(tableDom.getRowData(), @getColModel())
-				@clientDownload(ret)
-
-
-	clientDownload: (file) ->
-		# Allow the client to save the generated file.
-		# For no just print to a window
-		if navigator.appName != 'Microsoft Internet Explorer'
-			window.open('data:text/csv;charset=utf-8,' + escape(file))
-		else
-			popup = window.open('', 'csv', '')
-			popup.document.body.innerHTML = '<pre>' + file + '</pre>'
-
-	exportCSV: (data, keys)->
-
-		orderedData = [];
-		for obj in data
-		#for (var i = 0, iLen = data.length; i < iLen; i++) {
-		#	temp = data[i];
-			arr = []
-			for key, value of obj
-				arr.push(value)
-			orderedData.push(arr);
-
-		if @get('multiSelect')
-			keys = keys[1..]
-
-		str = ""
-		str += obj.name + ',' for obj in keys
-		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
 
 	renderMaximizeButton: ->
 		widget = @
@@ -551,6 +313,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 	resizeToContainer: ->
 		if @$()?
 			@getTableDom().setGridWidth(@$().width())
+
+	getTitleForColumn: (colName)->
+		for column in @get('columns')
+			return Tent.I18n.loc(column.title) if column.field==colName
 
 
 	# Adapter to get column names from current datastore columndescriptor version  
@@ -579,6 +345,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 				position: "right"
 				hidden: column.hidden
 				hidedlg: true if column.hideable == false
+				sortable: column.sortable
+				groupable: column.groupable
 			columns.pushObject(item)
 		columns
 	).property('columns')
@@ -608,12 +376,91 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport,
 			total: @get('totalPages')
 			records: @get('totalRows')
 			page: @get('pagingData').page
+		@resetGrouping()
 		@getTableDom()[0].addJSONData(data)
-		@highlightRows(@getTableDom().get(0))
-		#@showEditableCells()
+		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each')
 
+	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
+	# grouping so that they accumulate. We need to explicitly clear the grouping here.
+	#
+	resetGrouping: ->
+		this.getTableDom().groupingSetup()
+		#this.getTableDom()[0].p.groupingView.groups=[]
 
+	selectionDidChange: (->
+		@updateGrid()
+	).observes('selection.@each')
 
+	selectedIds: (->
+		#selectedIDs should observe selection
+		sel = []
+		if @get('selection')?
+			for item in @get('selection') 
+				id = "" + item.get('id')
+				sel.pushObject(id)
+		return sel
 
-		
+	).property('selection.@each')
+
+	updateGrid: ->
+		if @getTableDom()?
+			@highlightRows()
+			@showEditableCells()
+		@validate()
+
+	highlightRows: ()->
+		if @getTableDom()?
+			grid = @getTableDom().get(0)
+			if @getTableDom()?
+				for id in @getTableDom().jqGrid('getDataIDs')
+					if @get('multiSelect')
+						if (@isRowSelectedMultiSelect(id))
+							@getTableDom().jqGrid('setSelection', id, false)
+					else
+						if (@isRowSelectedSingleSelect(id))
+							@getTableDom().jqGrid('setSelection', id, false)
+					@$('#'+id).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"})
+				for item in @get('selectedIds')
+					@highlightRow(item)
+				@setSelectAllCheckbox(grid)
+
+	isRowSelectedMultiSelect: (id)->
+		# Is the row registered as selected within jqGrid
+		this.getTableDom().get(0).p.selarrrow.contains(id)
+
+	isRowSelectedSingleSelect: (id)->
+		# Is the row registered as selected within jqGrid
+		this.getTableDom().get(0).p.selrow == id
+	
+	highlightRow: (id)->
+		if @getTableDom()?
+			if @get('multiSelect')
+				if not @isRowSelectedMultiSelect(id)
+					@getTableDom().jqGrid('setSelection', id, false)
+			else
+				if not @isRowSelectedSingleSelect(id)
+					@getTableDom().jqGrid('setSelection', id, false)
+			@$('#'+id).addClass("ui-state-highlight").attr({"aria-selected":"true", "tabindex" : "0"});
+
+	unHighlightAllRows: (->
+		if (@get("clearAction") &&  @getTableDom()?)
+			@set('selection', [])
+			@set "clearAction", false
+	).observes("clearAction")
+
+	setSelectAllCheckbox: (grid) ->
+		if @allRowsAreSelected(grid)
+			grid.setHeadCheckBox(true)
+		else
+			grid.setHeadCheckBox(false)
+
+	allRowsAreSelected: (grid) ->
+		# Check for state of selectAll checkbox
+		selectedIds = @get('selectedIds')
+		allSelected = true
+		for id in $(grid).jqGrid('getDataIDs')
+			if !selectedIds.contains(id)
+				allSelected = false
+		allSelected
+

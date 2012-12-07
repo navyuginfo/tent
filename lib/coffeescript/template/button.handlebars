@@ -3,11 +3,35 @@
 		{{bindAttr data-toggle="view.dataToggle"}}
 		role="button"
 		>
-  <i {{bindAttr class="view.iconClass"}} /> {{loc view.label}}
+  <i {{bindAttr class="view.iconClass"}}></i> {{loc view.label}}
   {{#if view.hasOptions}}
   	 <span class="caret"></span>
   {{/if}}
 </div>
 {{#if view.hasOptions}}
 	{{collection contentBinding="view._options" tagName="ul" classNames="dropdown-menu" itemViewClass="Tent.ButtonOptions"}}
+{{/if}}
+
+{{#if view.warn}}
+
+	{{#view Tent.ModalPane 
+          autoLaunch=false
+          header="tent.warning.header" 
+          primaryLabel="tent.button.proceed" 
+          secondaryLabel="tent.button.dontProceed"
+          primaryType="warning"
+          primaryIcon="icon-ok icon-white"
+          secondaryIcon="icon-remove"
+          primaryAction="ignoreWarnings"
+          primaryTargetBinding="view"
+    }}
+    	{{loc tent.warning.warningsOnPage}}
+    	 
+  		{{#each view.parentView.messagePanel.warning}}
+  				<div class="alert">
+  					<strong>{{loc label}}:</strong>  {{messages}}
+  				</div>
+  		{{/each}}
+			 
+    {{/view}}
 {{/if}}

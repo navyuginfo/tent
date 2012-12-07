@@ -59,6 +59,14 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   validate: false
 
   ###*
+  * @property {Boolean} warn If warn is set to true, a dialog will be presented if there are any 
+  * warnings pending on the page. The user will be asked to either procede, ignoring the warnings, or to 
+  * cancel the button action and fix the warnings. {@link #validate} must also be set to true to 
+  * enable this property.
+  ###
+  warn: false
+
+  ###*
   * @property {String} iconClass The css class to assign an icon to the button e.g. 'icon-remove icon-white'
   ###
   iconClass: null
@@ -81,14 +89,19 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     target || @get('context.target') || @get('content') || @get('context') 
   ).property('target', 'content', 'context')
 
-  triggerAction: ->
-    if @get('validate')
+  triggerAction: (dontValidate)->
+    if @get('validate') and not dontValidate==false
       @doValidation()
-    if !@isDisabled 
+    if !@isDisabled
       if !@get('hasOptions')
-        @_super() 
+        if @get('warn')==true and @get('doWarningsExist')
+          @showWarningPanel()
+        else
+          @_super() 
       else 
         return @.$().toggleClass('open')
+    else 
+      return false
 
   classes: (->
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")
@@ -121,8 +134,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   # Cause validation to be triggered on widgets in the current form
   doValidation: ->
-    if not @get('messagePanel')?
-      @setupMessageBind()
+    @setupMessageBind()
     
     form = @findParentForm()
     if form?
@@ -131,7 +143,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   validateChildViews: (parentView)->
     for view in parentView.get('childViews')
         view.validate() if typeof view.validate == 'function'
-        @validateChildViews(view)
+        @validateChildViews(view) if view.get('childViews')?
 
   findParentForm: ->
     $form = @$().parents('.tent-form:first')
@@ -143,7 +155,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @set('messagePanel', mp)
 
   getMessagePanel: ->
-    mp = $('.tent-message-panel')
+    mp = $('.tent-message-panel.active')
     return view = Ember.View.views[mp.attr('id')] if mp.length > 0
   
   disableButtonIfErrorsExist: (->
@@ -152,6 +164,22 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @set('isDisabled', mp.get('hasErrors'))
   ).observes('messagePanel', 'messagePanel.hasErrors')
 
+  doWarningsExist: (->
+     @get('messagePanel.hasSevereWarnings')
+  ).property('messagePanel', 'messagePanel.hasSevereWarnings')
+
+  ignoreWarnings: ->
+    @get('messagePanel').clearWarnings()
+    @hideWarningPanel()
+    @triggerAction(false)
+
+  showWarningPanel: ->
+    modal = Ember.View.views[@$('.tent-modal').attr('id')]
+    modal.launch()
+
+  hideWarningPanel: ->
+    modal = Ember.View.views[@$('.tent-modal').attr('id')]
+    modal.hide()
 
 Tent.ButtonOptions = Ember.View.extend Ember.TargetActionSupport,
   template: Ember.Handlebars.compile '<a href="#">{{view.label}}</a>'

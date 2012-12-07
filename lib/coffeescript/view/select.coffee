@@ -72,6 +72,11 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @get('value')
   ).property('value', 'selection')
 
+  # A widget is expected to have a formatted value to apply to validation checks etc
+  formattedValue: (->
+    @get('currentSelectedLabel')
+  ).property('currentSelectedLabel')
+
   selectionDidChange: (->
     @set('content', @get('selection'))
   ).observes('selected')
@@ -93,7 +98,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
 
   _prompt: (-> 
     if !@get('multiple')
-      if prompt = @get('prompt') then prompt else "Please Select..." 
+      if prompt = Tent.I18n.loc(@get('prompt')) then prompt else "Please Select..." 
   ).property('prompt')
   
   change: ->

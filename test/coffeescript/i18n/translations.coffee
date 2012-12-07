@@ -6,6 +6,7 @@ Tent.translations =
 	_focussedInput: 'Focussed Input'
 	_numericInput: 'Numeric Input'
 	_amountInput: 'Amount Input'
+	_invalidCurrency: 'Invalid Currency'
 	_state: 'State'
 	_emailInput: 'Email Input'
 	_agreeToPrivacyPolicy: 'Agree to privacy policy'
@@ -46,6 +47,9 @@ Tent.translations =
 	_hStart: 'Start'
 	_hFinish: 'Finish'
 	_hEffortDriven: 'Effort Driven'
+	_hCompleted: 'Completed'
+	_typeHere: 'Please provide a value'
+	_enterEmail:'Please enter an email address'
 	formatting: {
 		number: 'Please provide a valid number.'
 	}

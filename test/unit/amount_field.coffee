@@ -67,17 +67,16 @@ test 'Ensure aria attributes are applied ', ->
   equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
   equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
   
-test 'Ensure formatting help is displayed', ->
+test 'Ensure formatting takes place as per currency', ->
   view = Ember.View.create
     template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="name" 
         labelBinding="label" currencyBinding="currency"}}'
     name: '111111'
     label: 'FooBar'
-    currency: 'USD'
+    currency: 'IQD'
   appendView()
   amountView = Ember.View.views[view.$('.tent-text-field').attr('id')]
-  equal view.$('.help-block').text(), amountView.getFormatPattern(), 'Format pattern was displayed'
-
+  equal view.$('input')[0].value, '111,111.000', 'formatted to 2 decimal places for IQD'
 
 test 'Formatting tests', ->
   amount = Tent.AmountField.create()
@@ -89,3 +88,9 @@ test 'Formatting tests', ->
   ok amount.unFormat('123') == 123.00, '123 number unformat'
   ok amount.unFormat('abc') == 0.00, 'Invalid string returns 0.00'
 
+test 'Currency validation tests', ->
+  amount = Tent.AmountField.create()
+  amount.set 'currency', 'XXX'
+  equal amount.get('isValidCurrency'), false, 'Invalid currency'
+  amount.set 'currency', 'JPY'
+  equal amount.get('isValidCurrency'), true, 'valid currency'

@@ -24,8 +24,6 @@ Tent.Tabs = Ember.View.extend
 	* @property {String} active The id of the tabpane which should be initially displayed
 	###
 	active: null
-	didInsertElement: ->
-		@.$("a[#" + @get("active") + "]").tab("show")
 
 ###*
 * @class Tent.TabPane

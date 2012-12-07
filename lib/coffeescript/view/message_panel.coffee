@@ -59,7 +59,17 @@ require '../template/message_panel'
 Tent.MessagePanel = Ember.View.extend
 	templateName: 'message_panel'
 	classNames: ['tent-message-panel']
+	classNameBindings: ['type','isActive:active']
+
 	title: null
+	
+
+	###*
+	* @property {String} type Defines the type of message panel. Typically there will be one 'primary'
+	* panel per application. Modal dialogues may also have 'secondary' panels which become active when the
+	* panels are displayed
+	###
+	type: 'primary'
 
 	###*
   	* @property {Boolean} collapsible A boolean indicating that the panel is collapsible
@@ -70,6 +80,14 @@ Tent.MessagePanel = Ember.View.extend
   	* @property {Boolean} collapsed A boolean indicating that the panel is collapsed by default
   	###
 	collapsed: true
+
+	###*
+	* @property {Boolean} isActive One message panel should be active at a time, usually the primary one.
+	* When a popup is displayed, it's message panel will usually become active, with the primary panel becoming
+	* inactive.
+	###
+	isActive: true
+
 	init: ->
 		@_super()
 		@clearAll()
@@ -84,13 +102,16 @@ Tent.MessagePanel = Ember.View.extend
 		$.unsubscribe('/message', @get('handler'))
 		@_super()
 
+	setActive: (isActive)->
+		@set('isActive', isActive)
+
 	handleNewMessage: (e, msg)->
-		if not msg.type?
-			throw new Error('Message must have a type')
-		if msg.type == 'clearAll'
-			@clearAll()
-		else 
-			errs = msg.messages
+		if @get('isActive')
+			if not msg.type?
+				throw new Error('Message must have a type')
+			if msg.type == 'clearAll'
+				@clearAll()
+ 
 			arrayWithMessageRemoved = []
 			if msg.messages? 
 				arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
@@ -98,8 +119,7 @@ Tent.MessagePanel = Ember.View.extend
 				)
 				if msg.messages.length > 0
 					arrayWithMessageRemoved.pushObject($.extend({}, msg))
-			newErrors = Ember.ArrayProxy.create({content: $.merge([], arrayWithMessageRemoved)})
-			@set(msg.type, newErrors)
+			@set(msg.type, arrayWithMessageRemoved)
 
 	getParentContainer: ->
 		header = @$('').parents('header.hideable:first')
@@ -115,6 +135,7 @@ Tent.MessagePanel = Ember.View.extend
 			else 
 				@get('parentContainer').hide()
 	).observes('hasErrors')
+ 
 
 	expandoClass: (->
 		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"
@@ -125,47 +146,83 @@ Tent.MessagePanel = Ember.View.extend
 	###
 	getErrorsForView: (viewId) ->
 		errors = []
-		for error in @get('error').get('content')
+		for error in @get('error')
 			if error.sourceId == viewId
 				$.merge(errors, error.messages)
 		return errors.uniq()
 
 	getInfosForView: (viewId) ->
 		infos = []
-		for info in @get('info').get('content')
+		for info in @get('info')
 			if info.sourceId == viewId
 				$.merge(infos, info.messages)
 		return infos.uniq()
 
-	hasErrors: (->
-		@get('error').toArray().length > 0
-	).property('error')
+	removeMessage: (type, id)->
+		msgArr = @get(type)
+		@set(type, msgArr.filter((item, index, enumerable) ->
+			item.sourceId != id
+			)
+		)
 
+	# Called from a button view
+	removeMessageCommand: (button) ->
+		type = button.bindingContext.get('type')
+		id = button.bindingContext.get('sourceId')
+		@removeMessage(type,id)
+		@stopProcessingWarnings(id)
+
+	stopProcessingWarnings: (id)->
+		view = Ember.View.views[id]
+		view.set('processWarnings', false)
+		view.flushValidationWarnings()
+
+
+	hasErrors: (->
+		@get('error').length > 0
+	).property('error','error.@each')
+	
 	hasInfos: (->
-		@get('info').toArray().length > 0
-	).property('info')
+		@get('info').length > 0
+	).property('info','info.@each')
+
+	hasWarnings: ((severity)->
+		@get('warning').length > 0
+	).property('warning','warning.@each')
+
+	hasSevereWarnings: (->
+		hasW = false
+		for w in @get('warning')
+			if w.severity == 'high'
+				return true
+		hasW
+	).property('warning','warning.@each')
 
 	hasMoreThanOneError: (->
-		@get('error').toArray().length > 1
-	).property('error')
+		@get('error').length > 1
+	).property('error','error.@each')
+	
 
 	clearAll: ->
 		@clearErrors()
 		@clearInfos()
+		@clearWarnings()
 	clearErrors: ->
-		@set('error', Ember.ArrayProxy.create({content: []}))
+		@set('error', [])
 	clearInfos: ->
-		@set('info', Ember.ArrayProxy.create({content: []}))
+		@set('info', [])
+	clearWarnings: ->
+		@set('warning', [])
 
 	click: (e) ->
 		target = $(e.target)
-
 		wrappingMessage = target.closest('.error-message', @$())
 		if wrappingMessage? and wrappingMessage.length > 0
 			#target.hasClass('error-message') 
 			targetId = wrappingMessage.attr('data-target')
 			Ember.View.views[targetId].focus() if Ember.View.views[targetId]?
-			
+	
+
 
 Tent.Message = Ember.Object.extend
 	messages: null
@@ -175,5 +232,6 @@ Tent.Message = Ember.Object.extend
 
 Tent.Message.ERROR_TYPE = 'error'
 Tent.Message.INFO_TYPE = 'info'
+Tent.Message.WARNING_TYPE = 'warning'
 
 #Tent.errorPanel = Tent.ErrorPanel.create()

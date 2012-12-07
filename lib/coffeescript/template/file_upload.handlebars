@@ -2,9 +2,3 @@
   <span>Drag &amp; Drop files here...</span>
   <input type="file" name="files[]" {{bindAttr data-url="view.dataUrl"}} multiple>
 </span>
-<span>
-  {{#if view.anyFiles}}
-    {{view Tent.Table listBinding="view.selectedFiles" columns="files.0.name" headers="filename"}}
-    {{view Tent.Button label="Upload" type="primary" action="upload" targetBinding="view"}}
-  {{/if}}
-</span>

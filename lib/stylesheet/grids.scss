@@ -72,16 +72,61 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 		}
 	}
 
+	.ui-jqgrid .ui-jqgrid-hdiv {
+		overflow: visible;
+	}
+
 	/* Ensure that headers wrap */
-	.ui-jqgrid .ui-jqgrid-htable th div {
-		height: auto;
+	.ui-jqgrid .ui-jqgrid-htable {
+		th div {
+			height: auto;
+		}
 	}
 
 	.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
 		white-space: normal;
+		overflow: visible;
+		position: relative;
+		.has-dropdown {
+			cursor: pointer;
+			div {
+				overflow: visible;
+			}
+		}
+		.column-dropdown {		
+			min-width: 60px;
+			margin: 0px;
+			cursor: pointer;
+			border-width: 2px;
+			border: 1px solid #A09F9F;
+			box-sizing: border-box;
+			@include border-radius(0px);
+			padding: 0px;
+
+			.dropdown-menu {
+				min-width: 50px;	
+			}
+
+			.rename.dropdown-submenu input[type="text"]{
+				border: none;
+				&:focus {
+					outline: none;
+					@include box-shadow(transparent 0px 0px 0px)
+				}
+			}
+		}
 	}
 	/****/
 
+	/* Make the drag bars wider */
+	.ui-jqgrid .ui-jqgrid-resize-ltr {
+		width: 6px;
+		background-color: rgba(65, 150, 255, 0.07);
+		margin: 0px -2px -2px 0px;
+
+	}
+
+	/* Export */
 	.column-chooser, .export {
 		float: right;
 		margin-right: 30px;
@@ -89,6 +134,38 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 		span.ui-icon {
 			float: left;
 			margin: 2px 2px;
+		}
+	}
+
+	/* Export */
+	.export {
+		.export-json {
+			background-image: url(images/export/)
+		}
+		.export-xml {
+			background-image: url(images/export/file_xml2.png)
+		}
+		.export-csv {
+			background-image: url(images/export/csv_text.png)
+		}
+		.export-excel {
+			background-image: url(images/export/page_excel.png)
+		}	
+	}	
+
+	.custom-export {
+		padding: 15px 5px;
+/*		width: 360px;*/
+		label {
+			font-size: 11px;
+			/*float: none;*/
+			padding-top: 5px;
+		}
+		.control-group {
+			margin-bottom: 5px;
+		}
+		.controls {
+			margin-left: 150px;
 		}
 	}
 
@@ -180,7 +257,6 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 		a {
 			font-size: 11px;
 			outline: 0px;
-
 			.caret {
 				vertical-align: middle;
 				border-top-color: white;
@@ -190,6 +266,8 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 
 		.dropdown-menu {
 			min-width: 70px;
+			color: #333;
+			font-size: 11px;
 			li > a {
 				color: #333;
 				font-size: 11px;
@@ -208,10 +286,11 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 			color: #B94A48;
 		}
 	}
-
-
 }
 
+.dropdown-submenu-left > .dropdown-menu.custom-export {
+	left: -305px;
+}
 
 /* Selected row in a Tent.Table */
 .tent-selected {

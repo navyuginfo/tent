@@ -34,7 +34,7 @@ test 'Ensure it gives error for non numeric values', ->
       view.$('input').val('newValue')
       view.$('input').trigger('change')
   equal view.$('.error').length, 1, 'Error reported for non-numeric value'
-  equal view.$('.help-inline').text(), Tent.messages.NUMERIC_ERROR, 'Received Tent.messages.NUMERIC_ERROR'  
+  equal view.$('.help-inline').text(), Tent.I18n.loc(Tent.messages.NUMERIC_ERROR), 'Received Tent.messages.NUMERIC_ERROR'
 
 test 'Ensure it gives no error for numeric values', ->
   view = Ember.View.create

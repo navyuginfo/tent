@@ -41,6 +41,8 @@
 	Pad.textDisplay = false
 	Pad.isFilter = false
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
+	Pad.currencies = ['USD','JPY','XXX','CNY', 'YYY']
+	Pad.changingCurrency = 'XXX'
 
 	Pad.modalSubmit = ->
 		console.log("Submit button clicked")
@@ -51,6 +53,18 @@
 	#Pad.gridRemoteSelection = Ember.Object.create({id: 52,title: "Task 2"})
 
 	Pad.jqGridSelection = [
+		Ember.Object.create
+			id: 53,
+			title: "Task 3",
+			amount: 123456.789,
+			duration: "7 days",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+	]
+
+	Pad.jqGridSelectionNoCollection = [
 		Ember.Object.create
 			id: 53,
 			title: "Task 3",
@@ -84,6 +98,7 @@
 			finish: new Date("01/05/2009"),
 			effortDriven: 1
 	})
+
 	Pad.gridRemoteSelection = Ember.Object.create({
 			id: 56,
 			title: "Task 6",
@@ -103,12 +118,94 @@
 			finish: new Date("01/05/2009"),
 			effortDriven: 1
 	})]
+ 
+	Pad.jqGridContent = [ 
+		Ember.Object.create({
+			id: 51
+			title: "Task 1"
+			amount: 123456.789
+			duration: "5"
+			percentcomplete: Math.round(Math.random() * 100)
+			start: new Date("01/01/2009")
+			finish: new Date("01/05/2009")
+			effortdriven: 1
+			completed: true
+		}),
+		Ember.Object.create({
+			id: 52,
+			title: "Task 2",
+			amount: 123456.789,
+			duration: "6",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: true
+		}),
+		Ember.Object.create({
+			id: 53,
+			title: "Task 3",
+			amount: 123456.789,
+			duration: "7",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: false
+		}),
+		Ember.Object.create({
+			id: 54,
+			title: "Task 4",
+			amount: 123456.789,
+			duration: "14",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: false
+		}),
+		Ember.Object.create({
+			id: 55,
+			title: "Task 5",
+			amount: 123456.789,
+			duration: "27",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: false
+		}),
+		Ember.Object.create({
+			id: 56,
+			title: "Task 6",
+			amount: 123456.789,
+			duration: "2",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: false
+		}),
+		Ember.Object.create({
+			id: 57,
+			title: "XTask 7",
+			amount: 123456.789,
+			duration: "75",
+			percentcomplete: Math.round(Math.random() * 100),
+			start: new Date("01/01/2009"),
+			finish: new Date("01/05/2009"),
+			effortdriven: 1
+			completed: false
+		})
+	]
 
 
 	Pad.jqRemoteCollection = Tent.Data.Collection.create
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
 		paged: true
+
+
 
 
 	Pad.remoteCollection = Tent.Data.Collection.create
@@ -125,6 +222,20 @@
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
 		paged: false
+
+	Pad.gridColumnDescriptor = [
+			{id: "id", name: "id", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true},
+			{id: "title", name: "title", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
+			{id: "amount", name: "amount", title: "_hAmount", field: "amount", width:5, editable: true, hideable: false, sortable: true, formatter: "amount", align: 'right' },
+			{id: "calc", name: "calc", title: "calc", width:5, editable: true, formatter: "amount", align: 'right', editoptions:{dataInit: @calc} },
+
+			{id: "duration", name: "duration", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
+			{id: "%", name: "percentcomplete", title: "_hPercentComplete",field: "percentcomplete", width:10},
+			{id: "effortdriven", name: "effortdriven", title: "_hEffortDriven", field: "effortdriven", width:10},
+			{id: "start", name: "start", title: "_hStart",field: "start", width:10, formatter: "date"},
+			{id: "finish", name: "finish", title: "_hFinish",field: "finish", width:10, hideable: true, formatter:"date"}
+			{id: "completed", name: "completed", title: "_hCompleted",field: "completed", width:30, hideable: true, formatter: 'checkboxEdit', align: 'center', editable: false}
+	]
 
 	Pad.people = [
 		Ember.Object.create({name: 'Matt', age: 22})
@@ -205,5 +316,10 @@
 			console.log('initializing ...');
 		 
 	)
+
+	Pad.clickCancelOuter = ->
+		#alert('cancel outer.')
+	Pad.clickCancelInner = ->
+		#alert('cancel inner.')
 
 )(minispade)

@@ -1,0 +1,7 @@
+<div class="modal-body">
+	{{view Tent.MessagePanel type="secondary" isActive=false collapsible=true collapsed=true}}
+	{{#if view.text}}
+  		<p>{{loc view.text}}</p>
+  	{{/if}}
+  	{{yield}}
+</div>

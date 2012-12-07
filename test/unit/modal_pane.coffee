@@ -39,6 +39,81 @@ test 'Ensure ModalPane renders ', ->
   ok view.$(".modal-footer .btn-primary").length > 0, 'footer rendered primary'
   ok view.$(".modal-footer .btn-secondary").length > 0, 'footer rendered primary'
 
+test 'Auto Launch: label and true', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      label="Click Me"
+      autoLaunch=true
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  ok not modalView.get('hidden'), "label and true"
+
+test 'Auto Launch: label and false', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      label="Click Me"
+      autoLaunch=false
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.get('hidden'), true, "label and false"
+
+test 'Auto Launch: no label and true', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      autoLaunch=true
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.get('hidden'), false, "no label and true"
+
+test 'Auto Launch: no label and false', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      autoLaunch=false
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.get('hidden'), true, "no label and false"
+
+test 'Auto Launch: label and null', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      label="Click Me"
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.get('hidden'), true, "label and null"
+
+test 'Auto Launch: no label and null', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+      
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.get('hidden'), false, "no label and null"
+
+test 'Primary and secondary types', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane textBinding="text" headerBinding="header" 
+      primaryLabelBinding="primary" 
+      secondaryLabelBinding="secondary"
+      primaryType="success"
+      secondaryType="warning"
+    }}'
+    text: 'Do you want to perform this action!!!'
+    header: 'My Heading'
+    primary: 'OK'
+    secondary: 'Cancel'
+
+  appendView()
+
+  equal view.$('.btn-success').length, 1, 'success button rendered'
+  equal view.$('.btn-warning').length, 1, 'warning button rendered'
+  equal view.$('.btn-primary').length, 0, 'primary button not rendered'
+  equal view.$('.btn-secondary').length, 0, 'secondary button not rendered'
 
 test 'Ensure close button defaults to secondary action', ->
   view = Ember.View.create
@@ -50,7 +125,7 @@ test 'Ensure close button defaults to secondary action', ->
     secondary: 'Cancel'
 
   appendView()
-  modalView = Ember.View.views[view.$('.modal').parent('.tent-widget').attr('id')]
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
   equal modalView.get('closeAction'), "saction", "Action has been transferred."
    
 
@@ -69,3 +144,95 @@ test 'Ensure cancel action is triggered on hide', ->
   view.$(".modal").trigger('hidden')
   
   ok didHide, 'hide action was called'
+
+test 'customContent blank', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.ModalPane 
+    }}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.$('.modal-footer').length, 1, 'Footer exists'
+
+  Ember.run ->
+    modalView.set('customContent', true)
+  equal modalView.$('.modal-footer').length, 0, 'Standard Footer removed'
+
+test 'customContent', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{#view Tent.ModalPane 
+        customContent=true
+    }}
+      {{#view Tent.ModalBody text="_modalText"}}
+        text goes here
+      {{/view}}
+      {{#view Tent.ModalFooter}}
+        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel"}}
+        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true}}
+      {{/view}}
+    {{/view}}'
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal').attr('id')]
+  equal modalView.$('.modal-body').length, 1, 'Body exists'
+  equal modalView.$('.modal-footer').length, 1, 'Footer exists'
+  equal modalView.get('hidden'), false, "Visible initially"
+  
+  Ember.run ->
+    modalView.$('.cancel').click()
+  
+  equal modalView.get('hidden'), true, "Cancel should hide the panel"
+
+test "Modal within modal", ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{#view Tent.ModalPane
+      primaryLabel="_ok" 
+      secondaryLabel="outerCancelButton"
+      secondaryType="warning"
+      primaryType="success"
+    }}
+       
+        <a id = "inner_modalPane">launch inner modal</a>
+        {{view Tent.ModalPane 
+              customButton = "inner_modalPane"
+              text="_modalText" 
+              header="_modalHeaderInner" 
+              primaryLabel="_ok" 
+              secondaryLabel="innerCancelButton"
+        }}
+       
+    {{/view}}'
+  appendView()
+
+  outerModalView = Ember.View.views[view.$('.tent-modal:first').attr('id')]
+  innerModalView = Ember.View.views[outerModalView.$('.tent-modal').attr('id')]
+
+  equal outerModalView.get('hidden'), false, "Outer modal is visible ["+outerModalView.get('elementId')+"]"
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'backdrop should display'
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden  ["+innerModalView.get('elementId')+"]"
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), undefined, 'inner backdrop should be hidden'
+  
+  Ember.run ->
+    $('#inner_modalPane').click()
+  equal innerModalView.get('hidden'), false, "Inner modal is visible"
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'inner backdrop should be visible'
+  
+
+  Ember.run ->
+    innerModalView.$('.cancel').click()
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden again"
+  equal outerModalView.get('hidden'), false, "Outer modal is still visible "
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "false", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'inner backdrop should be visible'
+  
+
+  Ember.run ->
+    outerModalView.$('.cancel.btn-warning').click()
+  equal innerModalView.get('hidden'), true, "Inner modal is hidden after outer closed"
+  equal outerModalView.get('hidden'), true, "Outer modal is now hidden "
+  equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'outer backdrop hidden'
+  equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'inner backdrop should be visible'
+  
+
+
+  
+

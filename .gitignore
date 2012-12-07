@@ -39,6 +39,13 @@ application.css
 # Generated stuff
 public/
 dist/
+temp/
+app/javascript/
+testpad/javascript/
+tests/unit/javascript/
+app/stylesheets/css/
+app/template/compiled/
+node_modules/
 
 # Asset pipeline filter
 .bundle

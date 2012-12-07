@@ -5,6 +5,7 @@
 
 require './namespace'
 require './i18n'
+require './common'
 require './util'
 require './view'
 require './controllers'

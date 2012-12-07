@@ -26,38 +26,99 @@ Tent.I18n = Ember.Namespace.create
 	###*
 	* Replace a key with its translation
 	* @param {String} key
-	* @param {String|Array} [vars] arguments to be interpolated in the translated string
+	* @param {String|[Array| Object]} [vars] arguments to be interpolated in the translated string
 	###
 	loc: (key, vars) ->
-		string = Ember.get(@language, key) || key
-		vars = [vars] if typeof vars == 'string'
-		Ember.String.fmt(string, vars)
+    if key?
+      string = Ember.get(@language, key) || key
+      idx  = 0
+      vars = [vars] if(typeof vars == 'string')
+      string.replace(/%@([0-9]|[a-zA-Z]+)?/g,(s, argIndex)->
+        argIndex = if(argIndex? and isNaN(argIndex)) then argIndex else (if isNaN(parseInt(argIndex)) then idx++ else parseInt(argIndex)-1)
+        s = vars[argIndex]
+        if(s?) then s else ''
+      )
 
-Tent.translate = Tent.I18n.translate
+
+Tent.translate = Tent.I18n.loc
 
 Tent.I18n.loadTranslations(
-	jqGrid: {
-		hideShowAlt: 'Hide/Show Columns'
-		hideShowCaption: 'Columns'
-		hideShowTitle: 'Hide/Show Columns'
-		export: {
-			xml: 'XML'
-			json: 'JSON'
-			csv: 'CSV'
+	tent: {
+		on: 'On'
+		off: 'Off'
+		pleaseSelect: 'Please Select'
+		button: {
+			ok: 'Ok'
+			yes: 'Yes'
+			cancel: 'Cancel'
+			no: 'No'
+			proceed: 'Ignore warnings and proceed'
+			dontProceed: 'No, return to page'
 		}
+		jqGrid: {
+			hideShowAlt: 'Hide/Show Columns'
+			hideShowCaption: 'Columns'
+			hideShowTitle: 'Hide/Show Columns'
+			export: {
+				xml: 'XML'
+				json: 'JSON'
+				csv: 'CSV'
+				xlsx: 'XLSX'
+				comma: 'COMMA'
+				pipe: 'PIPE'
+				semicolon:'SEMI COLON'
+				colon: 'COLON'
+				_or: 'or'
+				enterDelimiter: 'Enter Delimiter'
+				headers: 'Column Headers'
+				inclQuotes: 'Include Quotes'
+				export: 'Export'
+			}
+		}
+		filter: {
+			filter: 'Filter'
+			availableFilters: 'Available Filters'
+			selectedFilter: 'Selected Filter'
+			currentFilter: 'Current Filter'
+			saveFilter: 'Save Filter'
+			save: 'Save'
+			cancel: 'Cancel'
+			label: 'Label'
+			description: 'Description'
+			beginsWith: 'begins with'
+			contains: 'contains'
+			equal: 'equal'
+			nEqual: 'not equal' 
+		}
+		warning: {
+			header: 'Warnings Exist'
+			warningsOnPage: 'The following warnings exist on this page. Do you wish to ignore them and proceed?'
+		}
+ 
+		grouping: {
+			_groupBy: 'Group'
+			range: {
+				exact: 'Exact'
+				tens: 'Tens'
+				week: 'Week'
+				month: 'Month'
+				quarter: 'Quarter'
+				year: 'Year'
+			}
+		}
+
 	}
-	filter: {
-		availableFilters: 'Available Filters'
-		selectedFilter: 'Selected Filter'
-		currentFilter: 'Current Filter'
-		saveFilter: 'Save Filter'
-		save: 'Save'
-		cancel: 'Cancel'
-		label: 'Label'
-		description: 'Description'
-		beginsWith: 'begins with'
-		contains: 'contains'
-		equal: 'equal'
-		nEqual: 'not equal' 
+	error: {
+		generic: 'Error'
+		required: 'Field is required'
+		numeric: 'Value must be numbers only'
+		amount: 'Amount should be positive'
+		email: 'Email format error'
+		date: 'Date format error'
+		dateBetween: 'Date should be between %@startDate and %@endDate'
+		dateFuture: 'You provided a date in the future'
+		maxLength: 'Length must be %@max characters or less'
+		invalidCurrency: 'Invalid currency'
 	}
+ 
 )
