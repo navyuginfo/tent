@@ -72,8 +72,9 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
       @set('formattedValue', @format(@get('formattedValue')))
 
   observeCurrencyForValidationAndFormatting: (->
+    # remove the error always and check add again if required
+    @get('validationErrors').removeObject(Tent.I18n.loc (Tent.messages.CURRENCY_ERROR))
     if @get 'isValidCurrency'
-      @get('validationErrors').removeObject(Tent.I18n.loc (Tent.messages.CURRENCY_ERROR))
       @set('isValid', true) unless @get('validationErrors').length
       @set('formattedValue', @format(@get('formattedValue')))
     else
