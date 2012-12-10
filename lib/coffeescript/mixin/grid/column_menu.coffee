@@ -1,13 +1,13 @@
 Tent.Grid.ColumnMenu = Ember.Mixin.create
-	
-	addColumnDropdowns: ->
+	 
+	addColumnDropdowns: () ->
 		for column in @get('columns')
 			column.groupable = not (column.groupable? && column.groupable ==false)
 			column.renamable = not (column.renamable? && column.renamable ==false)
 
 			if column.groupable or column.renamable
 				template = Handlebars.compile "
-					 	<ul class='dropdown-menu column-dropdown' data-column='{{column.field}}' data-orig-title='{{title}}'>
+					 	<ul class='dropdown-menu column-dropdown' data-column='{{column.name}}' data-orig-title='{{title}}'>
 							{{#if column.groupable}}
 								<li class='group dropdown-submenu'>
 									<a tabindex='-1'>Group</a>
@@ -35,7 +35,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					title: Tent.I18n.loc column.title
 					groupType: Tent.JqGrid.Grouping.ranges[column.type]
 				
-				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.field
+				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 				@$(columnDivId).after template(context)
 				@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
 
@@ -55,7 +55,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
 			columnType = 'string'
 			for col in widget.get('columns')
-				if col.field == column then columnType= col.type
+				if col.name == column then columnType= col.type
 			widget.groupByColumn(column, groupType, columnType)
 		)
 
