@@ -38,6 +38,18 @@
 </section>
 {{/if}}
 
+{{#if view.hasSuccesses}}
+<section class="alert-success clearfix">
+	{{view Tent.Button label="x" type="link" action="clearSuccesses" targetBinding="view" class="close"}}
+	<h5>Success</h5>
+	<div class="info-expando">
+		{{#each view.success}}
+			<div class="success-message" {{bindAttr data-target="this.sourceId"}}>{{this.messages}}</div> 
+	  	{{/each}}
+	</div>
+</section>
+{{/if}}
+
 {{#if view.hasWarnings}}
 	{{#each view.warning}}
 		<section class="alert clearfix">
