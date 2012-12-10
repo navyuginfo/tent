@@ -170,6 +170,7 @@ a[rel=tooltip] {
 
 	.alert-success {
 		@extend .alert;
+		padding: 7px;
 		border: 1px solid #D6E9C6;
 	}
 
