@@ -143,7 +143,7 @@ a[rel=tooltip] {
 		position: relative;
  		/*margin: 0px 0px;*/
  		margin: 2px 0px 6px 0px;
- 		padding: 7px;
+ 		padding: 6px;
 		@include border-radius(4px);
 		border: 1px solid #EEDCB9;
 		.error-message {
@@ -166,6 +166,12 @@ a[rel=tooltip] {
 	.alert-info {
 		@extend .alert;
 		border: 1px solid #BCE8F1;
+	}
+
+	.alert-success {
+		@extend .alert;
+		padding: 7px;
+		border: 1px solid #D6E9C6;
 	}
 
 	.alert-block {
@@ -199,8 +205,8 @@ a[rel=tooltip] {
 		}
 	}
 
-	.info-message {
-		padding: 0px 50px;
+	.info-message, .success-message {
+		padding: 0px 70px;
 	}
 
 	.error-expando, .info-expando {
