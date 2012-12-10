@@ -1,4 +1,5 @@
 require '../../mixin/collapsible_support'
+require '../../mixin/hideable_support'
 
 ###*
 * @class Tent.Section
@@ -65,7 +66,7 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 * header and put the main body in the {@link Tent.Content} widget
 ###
 
-Tent.Header = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
+Tent.Header = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport, Tent.HideableSupport,
 	tagName: 'header'
 	classNameBindings: ['spanClass']
 
@@ -133,7 +134,7 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 
 	headerDidCollapse: (->
 		@resize()
-	).observes('headerView.collapsed')
+	).observes('headerView.collapsed', 'headerView.hidden')
 
 ###*
 * @class Tent.Footer

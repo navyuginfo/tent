@@ -92,7 +92,11 @@ Tent.MessagePanel = Ember.View.extend
 		@_super()
 		@clearAll()
 		@set('handler', $.proxy(@handleNewMessage, @))
+		@showContainerWhenVisible()
 		$.subscribe('/message', @get('handler') )
+
+	didInsertElement: ->
+		@getParentContainer()
 
 	willDestroy: ->
 		$.unsubscribe('/message', @get('handler'))
@@ -105,6 +109,9 @@ Tent.MessagePanel = Ember.View.extend
 		if @get('isActive')
 			if not msg.type?
 				throw new Error('Message must have a type')
+			if msg.type == 'clearAll'
+				@clearAll()
+ 
 			arrayWithMessageRemoved = []
 			if msg.messages? 
 				arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
@@ -113,6 +120,22 @@ Tent.MessagePanel = Ember.View.extend
 				if msg.messages.length > 0
 					arrayWithMessageRemoved.pushObject($.extend({}, msg))
 			@set(msg.type, arrayWithMessageRemoved)
+
+	getParentContainer: ->
+		header = @$('').parents('header.hideable:first')
+		if header.length > 0
+			@set('parentContainer', Ember.View.views[header.attr('id')])
+
+	# If a message panel is displayed in a container, it may wish to hide/show
+	# based on the existence of messages
+	showContainerWhenVisible: (->
+		if @get('parentContainer')?
+			if @get('hasErrors') or @get('hasInfos')
+				@get('parentContainer').show()
+			else 
+				@get('parentContainer').hide()
+	).observes('hasErrors')
+ 
 
 	expandoClass: (->
 		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"

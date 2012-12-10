@@ -58,6 +58,10 @@ $drag-bar-hover-color: #d6d6d6;
 		@include fixed-height(50px);
 		top: 0px;
 
+		&.hideable.hidden {
+			height: 0px;
+		}
+
 		&.collapsible.collapsed {
 			height: 20px;
 			.caret{
