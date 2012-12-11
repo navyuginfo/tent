@@ -59,3 +59,8 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 	display: none;
 	@include transition(all 0.3s ease);
 }
+
+/* Date Range Picker */
+.ui-daterangepickercontain {
+	font-size: 11px;
+}

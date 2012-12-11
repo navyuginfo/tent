@@ -75,10 +75,10 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				title: Tent.I18n.loc 'tent.grouping.range.week'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
-						(last.getFullYear() == value.getFullYear()) and (last.getWeek() == value.getWeek())
+						(last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
 					rowTitle: (value)->
 						date = Tent.Formatting.date.unformat(value)
-						'Week ' + date.getWeek() + ', ' + date.getFullYear()
+						'Week ' + date.getWeekOfYear() + ', ' + date.getFullYear()
 			}
 			{
 				###*

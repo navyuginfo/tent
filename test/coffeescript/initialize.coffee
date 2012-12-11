@@ -34,6 +34,7 @@
 	Pad.numeric = "qwe"
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
+	Pad.dateRange = "12/1/2012 - 12/5/2012"
 	Pad.amount = '1234567.67'
 	Pad.isRequired = true
 	Pad.isReadOnly = false

@@ -38,7 +38,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		buttonImage: "stylesheet/images/calendar.gif"
 		buttonImageOnly: true
 
-	init: ->		 
+	init: ->
 		@_super()
 	
 	didInsertElement: ->
