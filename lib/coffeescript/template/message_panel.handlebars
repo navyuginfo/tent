@@ -52,7 +52,7 @@
 
 {{#if view.hasWarnings}}
 	{{#each view.warning}}
-		<section class="alert clearfix">
+		<section class="alert clearfix" {{bindAttr data-target="this.sourceId"}} data-type="warning">
 			{{view Tent.Button label="x" type="link" action="removeMessageCommand" targetBinding="view" class="close"}}
 			<h5>Warning</h5>
 				<div>

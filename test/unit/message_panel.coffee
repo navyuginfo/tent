@@ -2,13 +2,18 @@
 #Ember.LOG_BINDINGS = true
 
 view = null
+dispatcher = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 startup = ->
+	Ember.run ->
+    	dispatcher = Ember.EventDispatcher.create()
+    	dispatcher.setup()
+
 teardown = ->
-	if view
-		Ember.run -> view.destroy()
-		view = null
+	Ember.run -> 
+		view.destroy() if view
+		dispatcher.destroy()
 
 module 'Tent.MessagePanel', startup, teardown
 
@@ -176,8 +181,24 @@ test 'hasWarnings', ->
 
 	ok view.get('hasWarnings'), 'there should be warnings'
 
-	#equal view.getErrorsForView('id1').length, 2, '2 errors returned'
+test 'RemoveMessageCommand for warnings', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.MessagePanel collapsible=true }}'
+		label: 'FooBar'
 
+	appendView()
+	equal view.$('.tent-message-panel').length, 1 , 'div exists'
+	Ember.run ->
+		$.publish('/message', {type:'warning', messages:['message1'], sourceId:'someid'})
+	equal view.$('[data-type="warning"]').length, 1, 'Should be one warning'
 
+	Ember.run ->
+		view.$('.btn-link').click()
+	equal view.$('[data-type="warning"]').length, 0, 'Message should be removed'
 
-	
+	Ember.run ->
+		$.publish('/message', {type:'warning', messages:['message1']})
+	equal view.$('[data-type="warning"]').length, 1, 'Should be one warning'
+	Ember.run ->
+		view.$('.btn-link').click()
+	equal view.$('[data-type="warning"]').length, 0, 'Message should be removed (no source id)'
