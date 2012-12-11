@@ -103,7 +103,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		$.subscribe("/ui/refresh", ->
 			widget.resizeToContainer()
 		)
-		@set('selection',[]) if not @get('selection')?
+		#@set('selection',[]) if not @get('selection')?
 
 	valueForMandatoryValidation: (->
 		@get('selection')
@@ -389,7 +389,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->
-		@updateGrid()
+		@updateGrid(true)
 	).observes('selection.@each')
 
 	selectedIds: (->
@@ -403,11 +403,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	).property('selection.@each')
 
-	updateGrid: ->
+	updateGrid: (doValidation)->
 		if @getTableDom()?
 			@highlightRows()
 			@showEditableCells()
-		@validate()
+		@validate() if doValidation
 
 	highlightRows: ()->
 		if @getTableDom()?

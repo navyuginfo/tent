@@ -122,7 +122,7 @@ a[rel=tooltip] {
 	}
 
 	a.close, .close .btn {
-		top: 15px;
+		top: 6px;
 		position: absolute;
 		right: 10px;
 		padding: 0px;
@@ -141,8 +141,9 @@ a[rel=tooltip] {
 
 	.alert {
 		position: relative;
-		margin: 2px 0px 6px 0px;
-		padding: 7px;
+ 		/*margin: 0px 0px;*/
+ 		margin: 2px 0px 6px 0px;
+ 		padding: 6px;
 		@include border-radius(4px);
 		border: 1px solid #EEDCB9;
 		.error-message {
@@ -167,6 +168,12 @@ a[rel=tooltip] {
 		border: 1px solid #BCE8F1;
 	}
 
+	.alert-success {
+		@extend .alert;
+		padding: 7px;
+		border: 1px solid #D6E9C6;
+	}
+
 	.alert-block {
 		 
 	}
@@ -175,6 +182,10 @@ a[rel=tooltip] {
 		cursor: pointer;
 		padding: 0px 50px;
 		font-size: 13px;
+
+		&:hover {
+			text-decoration: underline;
+		}
 
 		label {
 			display: inline-block;
@@ -194,8 +205,8 @@ a[rel=tooltip] {
 		}
 	}
 
-	.info-message {
-		padding: 0px 50px;
+	.info-message, .success-message {
+		padding: 0px 70px;
 	}
 
 	.error-expando, .info-expando {

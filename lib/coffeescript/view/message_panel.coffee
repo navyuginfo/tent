@@ -20,7 +20,7 @@ require '../template/message_panel'
  					label: 'Date'
  			})
  *
- * - **type**: The type of message, can be 'error' or 'info'
+ * - **type**: The type of message, can be 'error', 'info', 'success' or 'warning'
  * - **messages**: An array of messages to display
  * - **sourceId**: If the message refers to a Tent widget, provide the elementId of the widget
  * so that focus can be transferred to it when the error is clicked
@@ -92,7 +92,11 @@ Tent.MessagePanel = Ember.View.extend
 		@_super()
 		@clearAll()
 		@set('handler', $.proxy(@handleNewMessage, @))
+		@showContainerWhenVisible()
 		$.subscribe('/message', @get('handler') )
+
+	didInsertElement: ->
+		@getParentContainer()
 
 	willDestroy: ->
 		$.unsubscribe('/message', @get('handler'))
@@ -105,14 +109,33 @@ Tent.MessagePanel = Ember.View.extend
 		if @get('isActive')
 			if not msg.type?
 				throw new Error('Message must have a type')
-			arrayWithMessageRemoved = []
-			if msg.messages? 
-				arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
-					item.sourceId != msg.sourceId
-				)
-				if msg.messages.length > 0
-					arrayWithMessageRemoved.pushObject($.extend({}, msg))
-			@set(msg.type, arrayWithMessageRemoved)
+			if msg.type == 'clearAll'
+				@clearAll()
+			else
+				arrayWithMessageRemoved = []
+				if msg.messages? 
+					arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
+						item.sourceId != msg.sourceId
+					)
+					if msg.messages.length > 0
+						arrayWithMessageRemoved.pushObject($.extend({}, msg))
+				@set(msg.type, arrayWithMessageRemoved)
+
+	getParentContainer: ->
+		header = @$('').parents('header.hideable:first')
+		if header.length > 0
+			@set('parentContainer', Ember.View.views[header.attr('id')])
+
+	# If a message panel is displayed in a container, it may wish to hide/show
+	# based on the existence of messages
+	showContainerWhenVisible: (->
+		if @get('parentContainer')?
+			if @get('hasErrors') or @get('hasInfos') or @get('hasSuccesses') or @get('hasWarnings')
+				@get('parentContainer').show()
+			else 
+				@get('parentContainer').hide()
+	).observes('hasErrors', 'hasInfos', 'hasWarnings', 'hasSuccesses')
+ 
 
 	expandoClass: (->
 		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"
@@ -135,6 +158,13 @@ Tent.MessagePanel = Ember.View.extend
 				$.merge(infos, info.messages)
 		return infos.uniq()
 
+	getSuccessesForView: (viewId) ->
+		successes = []
+		for success in @get('success')
+			if success.sourceId == viewId
+				$.merge(successes, success.messages)
+		return successes.uniq()
+
 	removeMessage: (type, id)->
 		msgArr = @get(type)
 		@set(type, msgArr.filter((item, index, enumerable) ->
@@ -144,16 +174,19 @@ Tent.MessagePanel = Ember.View.extend
 
 	# Called from a button view
 	removeMessageCommand: (button) ->
-		type = button.bindingContext.get('type')
-		id = button.bindingContext.get('sourceId')
+		section = button.$().parent('section')
+		#type = button.bindingContext.get('type')
+		#id = button.bindingContext.get('sourceId')
+		type = section.attr('data-type')
+		id = section.attr('data-target') 
 		@removeMessage(type,id)
 		@stopProcessingWarnings(id)
 
 	stopProcessingWarnings: (id)->
 		view = Ember.View.views[id]
-		view.set('processWarnings', false)
-		view.flushValidationWarnings()
-
+		if view?
+			view.set('processWarnings', false)
+			view.flushValidationWarnings()
 
 	hasErrors: (->
 		@get('error').length > 0
@@ -162,6 +195,10 @@ Tent.MessagePanel = Ember.View.extend
 	hasInfos: (->
 		@get('info').length > 0
 	).property('info','info.@each')
+
+	hasSuccesses: (->
+		@get('success').length > 0
+	).property('success','success.@each')
 
 	hasWarnings: ((severity)->
 		@get('warning').length > 0
@@ -183,11 +220,14 @@ Tent.MessagePanel = Ember.View.extend
 	clearAll: ->
 		@clearErrors()
 		@clearInfos()
+		@clearSuccesses()
 		@clearWarnings()
 	clearErrors: ->
 		@set('error', [])
 	clearInfos: ->
 		@set('info', [])
+	clearSuccesses: ->
+		@set('success', [])
 	clearWarnings: ->
 		@set('warning', [])
 
@@ -209,6 +249,8 @@ Tent.Message = Ember.Object.extend
 
 Tent.Message.ERROR_TYPE = 'error'
 Tent.Message.INFO_TYPE = 'info'
+Tent.Message.SUCCESS_TYPE = 'success'
 Tent.Message.WARNING_TYPE = 'warning'
+
 
 #Tent.errorPanel = Tent.ErrorPanel.create()

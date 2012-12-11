@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="stylesheet/bootstrap.min.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
 
     <!-- Begin playing, "The March of the Dependencies!" -->
@@ -30,6 +31,10 @@
         minispade.require('tent');
         minispade.require('coffeescript/initialize');
       });
+
+      setTimeout(function() {
+        Ember.View.views['ember524'].show();
+      }, 5000);
     </script>
 
     <script type="text/x-handlebars">
@@ -43,7 +48,9 @@
           {{/view}}
           {{#view Tent.Content}}
               {{#view Tent.Section span="12" vspan="10"}}
-                  {{#view Tent.Header}}Title {{/view}}
+                  {{#view Tent.Header hideable=true hidden=true}}Title 
+                     
+                  {{/view}}
                   {{#view Tent.Content}}
                           {{#view Tent.Section span="4" vspan="10"}}
                             {{#view Tent.Header}}Top{{/view}}
