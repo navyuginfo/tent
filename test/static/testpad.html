@@ -174,7 +174,13 @@
             
 
             {{view Tent.DateRangeField label="_dateRange" 
-               
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              disabledBinding="Pad.isDisabled" 
+              textDisplayBinding="Pad.textDisplay" 
+              tooltip="_tooltip"
+              dateFormatBinding="Pad.dateFormat"
+              valueBinding="Pad.dateRange"
               startDateBinding="Pad.startDate"
               endDateBinding="Pad.endDate"
             }}
