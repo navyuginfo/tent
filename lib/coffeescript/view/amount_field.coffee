@@ -31,7 +31,7 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/
 
   prefix: (->
-    if @get('currency') then Tent.I18n.loc(this.get('currency')) else 'XXX'
+    if @get('currency') then Tent.I18n.loc(this.get('currency')) else '...'
   ).property('currency')
  
   validate: -> 
