@@ -173,7 +173,11 @@
             }}
             
 
-            {{view Tent.DateRangeField label="_dateRange" valueBinding="Pad.dateRange"}}
+            {{view Tent.DateRangeField label="_dateRange" 
+               
+              startDateBinding="Pad.startDate"
+              endDateBinding="Pad.endDate"
+            }}
             
 
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
@@ -231,7 +235,7 @@
             <p>Radio Value : {{Pad.radioValue}}</p>
             <p>email : {{Pad.email}}</p>
             <p>Signature Date : {{Pad.date}}</p>
-            <p>Range = {{Pad.dateRange}}</p>
+            <p>Range = {{Pad.dateRange}}:  {{Pad.startDate}} :: {{Pad.endDate}}</p>
             <p>Text Area : {{Pad.textarea}}</p>
             <p>Filter: {{Pad.filter}}<p>
           {{/view}}
