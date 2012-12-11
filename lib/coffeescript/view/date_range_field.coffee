@@ -1,6 +1,15 @@
 ###*
 * @class Tent.DateRangeField
 * @extends Tent.TextField
+* 
+* This widget wraps the Filament Date Range Picker control. The selected value will consist of
+* two dates which are bound to the {@link #startDate} and {@link #endDate} properties. 
+* The {@link #value} property is also bound with the string value of the range, as seen in the 
+* input control ('date1 - date2').
+*
+* The initial value can be sourced from the value property if provided. If no value is provided,
+* then the startDate and endDate properties will be used to initialize the control.
+* 
 * Usage
 *       {{view Tent.DateRangeField label="" 
 			valueBinding="" 
