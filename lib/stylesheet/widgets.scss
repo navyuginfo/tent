@@ -61,6 +61,21 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 }
 
 /* Date Range Picker */
+
 .ui-daterangepickercontain {
 	font-size: 11px;
+}
+
+.tent-date-range-field {
+	.ui-daterangepicker-arrows {
+		width: 218px;
+		input.ui-rangepicker-input {
+			width: 170px;
+			font-size: .8em;
+			height: 1.2em;
+		}
+		.ui-daterangepicker-prev, .ui-daterangepicker-next {
+			top: 4px;
+		}
+	}
 }

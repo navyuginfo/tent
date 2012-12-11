@@ -26,6 +26,28 @@ Tent.DateRangeField = Tent.TextField.extend
 	rangeSplitter: '-'
 
 	###*
+	* @property {Date} earliestDate The earliest date allowed in the system. e.g. the 'All Dates Before'
+	* range will use this as the first date in the range 
+	###
+	earliestDate: null
+
+	###*
+	* @property {Date} latestDate The latest date allowed in the system. e.g. the 'All Dates After'
+	* range will use this as the last date in the range 
+	###
+	latestDate: null
+
+	###*
+	* @property {Boolean} closeOnSelect will close the rangepicker when a full range is selected
+	###
+	closeOnSelect: false
+
+	###*
+	* @property {Boolean} arrows will add date range advancing arrows to input.
+	###
+	arrows: false
+
+	###*
 	* @property {Date} startDate The selected start date in the range
 	###
 	startDate: null
@@ -48,6 +70,12 @@ Tent.DateRangeField = Tent.TextField.extend
 		widget = @
 		@initializeWithStartAndEndDates()
 		@.$('input').daterangepicker({
+			rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
+			dateFormat: @get('dateFormat')
+			earliestDate: @get('earliestDate') if @get('earliestDate')?
+			latestDate: @get('latestDate') if @get('latestDate')?
+			closeOnSelect: @get('closeOnSelect')
+			arrows: @get('arrows')
 			onChange: ->
 				widget.change()
 		})
