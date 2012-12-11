@@ -361,6 +361,11 @@
             {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad"}}
             <p id="click-label"></p>
             <br/>
+
+            <h5>disabled button</h5>
+            {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad" isDisabled=true}}
+            <br/>
+
             {{view Tent.Button label="_buttonClickMe" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
             <br/>
             {{view Tent.Button label="_buttonOptions" type="info" optionsBinding="Pad.btnOptions"}}
