@@ -9,9 +9,7 @@ test 'getComparator', ->
 
 	ok group.getComparator('date', 'exact')?, 'fall back to default'
 
-	raises(-> 
-		group.getComparator('badxx', 'exact')
-	,'Exception should be thrown')
+	ok group.getComparator('badxx', 'exact')?, 'fall back to string comparator'
 
 	ok group.getComparator('date', 'xxxx')?, 'fall back to default with invalid groupType'
 
