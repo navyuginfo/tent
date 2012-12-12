@@ -5,7 +5,7 @@
 		<div {{bindAttr class="view.expandoClass"}}>
 			{{#each view.error}}
 				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
-	  				<label>{{loc this.label}}: </label> <ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>
+	  				{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>
 	  			</div> 
 		  	{{/each}}
 		  	{{#if view.hasMoreThanOneError}}
@@ -18,7 +18,7 @@
 		<div>
 			{{#each view.error}}
 				<div class="error-message" {{bindAttr data-target="this.sourceId"}}>
-	  				<label>{{loc this.label}}</label> : <ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>
+	  				{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>
 	  			</div> 
 		  	{{/each}}
 		</div>
