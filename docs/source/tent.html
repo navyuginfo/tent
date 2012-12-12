@@ -64,17 +64,26 @@
 <span id='Tent-I18n-method-loc'>    /**
 </span>    	* Replace a key with its translation
     	* @param {String} key
-    	* @param {String|Array} [vars] arguments to be interpolated in the translated string
+    	* @param {String|[Array| Object]} [vars] arguments to be interpolated in the translated string
     */
 
     loc: function(key, vars) {
-      var string;
+      var idx, string;
       if (key != null) {
         string = Ember.get(this.language, key) || key;
+        idx = 0;
         if (typeof vars === 'string') {
           vars = [vars];
         }
-        return Ember.String.fmt(string, vars);
+        return string.replace(/%@([0-9]|[a-zA-Z]+)?/g, function(s, argIndex) {
+          argIndex = (argIndex != null) &amp;&amp; isNaN(argIndex) ? argIndex : (isNaN(parseInt(argIndex)) ? idx++ : parseInt(argIndex) - 1);
+          s = vars[argIndex];
+          if ((s != null)) {
+            return s;
+          } else {
+            return '';
+          }
+        });
       }
     }
   });
@@ -83,6 +92,9 @@
 
   Tent.I18n.loadTranslations({
     tent: {
+      on: 'On',
+      off: 'Off',
+      pleaseSelect: 'Please Select',
       button: {
         ok: 'Ok',
         yes: 'Yes',
@@ -99,7 +111,16 @@
           xml: 'XML',
           json: 'JSON',
           csv: 'CSV',
-          xlsx: 'XLSX'
+          xlsx: 'XLSX',
+          comma: 'COMMA',
+          pipe: 'PIPE',
+          semicolon: 'SEMI COLON',
+          colon: 'COLON',
+          _or: 'or',
+          enterDelimiter: 'Enter Delimiter',
+          headers: 'Column Headers',
+          inclQuotes: 'Include Quotes',
+          &quot;export&quot;: 'Export'
         }
       },
       filter: {
@@ -132,6 +153,682 @@
           year: 'Year'
         }
       }
+    },
+    error: {
+      generic: 'Error',
+      required: 'Field is required',
+      numeric: 'Value must be numbers only',
+      amount: 'Amount should be positive',
+      email: 'Email format error',
+      date: 'Date format error',
+      dateBetween: 'Date should be between %@startDate and %@endDate',
+      dateFuture: 'You provided a date in the future',
+      maxLength: 'Length must be %@max characters or less',
+      invalidCurrency: 'Invalid currency'
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+}).call(this);
+
+
+(function() {
+
+  Tent.CURRENCIES_ISO_4217 = Ember.Object.create({
+    AED: {
+      cent: 2,
+      name: &quot;United Arab Emirates dirham&quot;
+    },
+    AFN: {
+      cent: 2,
+      name: &quot;Afghan afghani&quot;
+    },
+    ALL: {
+      cent: 2,
+      name: &quot;Albanian lek&quot;
+    },
+    AMD: {
+      cent: 2,
+      name: &quot;Armenian dram&quot;
+    },
+    ANG: {
+      cent: 2,
+      name: &quot;Netherlands Antillean guilder&quot;
+    },
+    AOA: {
+      cent: 2,
+      name: &quot;Angolan kwanza&quot;
+    },
+    ARS: {
+      cent: 2,
+      name: &quot;Argentine peso&quot;
+    },
+    AUD: {
+      cent: 2,
+      name: &quot;Australian dollar&quot;
+    },
+    AWG: {
+      cent: 2,
+      name: &quot;Aruban florin&quot;
+    },
+    AZN: {
+      cent: 2,
+      name: &quot;Azerbaijani manat&quot;
+    },
+    BAM: {
+      cent: 2,
+      name: &quot;Bosnia and Herzegovina convertible mark&quot;
+    },
+    BBD: {
+      cent: 2,
+      name: &quot;Barbados dollar&quot;
+    },
+    BDT: {
+      cent: 2,
+      name: &quot;Bangladeshi taka&quot;
+    },
+    BGN: {
+      cent: 2,
+      name: &quot;Bulgarian lev&quot;
+    },
+    BHD: {
+      cent: 3,
+      name: &quot;Bahraini dinar&quot;
+    },
+    BIF: {
+      cent: 0,
+      name: &quot;Burundian franc&quot;
+    },
+    BMD: {
+      cent: 2,
+      name: &quot;Bermudian dollar (customarily known as Bermuda dollar)&quot;
+    },
+    BND: {
+      cent: 2,
+      name: &quot;Brunei dollar&quot;
+    },
+    BOB: {
+      cent: 2,
+      name: &quot;Boliviano&quot;
+    },
+    BOV: {
+      cent: 2,
+      name: &quot;Bolivian Mvdol (funds code)&quot;
+    },
+    BRL: {
+      cent: 2,
+      name: &quot;Brazilian real&quot;
+    },
+    BSD: {
+      cent: 2,
+      name: &quot;Bahamian dollar&quot;
+    },
+    BTN: {
+      cent: 2,
+      name: &quot;Bhutanese ngultrum&quot;
+    },
+    BWP: {
+      cent: 2,
+      name: &quot;Botswana pula&quot;
+    },
+    BYR: {
+      cent: 0,
+      name: &quot;Belarusian ruble&quot;
+    },
+    BZD: {
+      cent: 2,
+      name: &quot;Belize dollar&quot;
+    },
+    CAD: {
+      cent: 2,
+      name: &quot;Canadian dollar&quot;
+    },
+    CDF: {
+      cent: 2,
+      name: &quot;Congolese franc&quot;
+    },
+    CHE: {
+      cent: 2,
+      name: &quot;WIR Euro (complementary currency)&quot;
+    },
+    CHF: {
+      cent: 2,
+      name: &quot;Swiss franc&quot;
+    },
+    CHW: {
+      cent: 2,
+      name: &quot;WIR Franc (complementary currency)&quot;
+    },
+    CLF: {
+      cent: 0,
+      name: &quot;Unidad de Fomento (funds code)&quot;
+    },
+    CLP: {
+      cent: 0,
+      name: &quot;Chilean peso&quot;
+    },
+    CNY: {
+      cent: 2,
+      name: &quot;Chinese yuan&quot;
+    },
+    COP: {
+      cent: 2,
+      name: &quot;Colombian peso&quot;
+    },
+    COU: {
+      cent: 2,
+      name: &quot;Unidad de Valor Real&quot;
+    },
+    CRC: {
+      cent: 2,
+      name: &quot;Costa Rican colon&quot;
+    },
+    CUC: {
+      cent: 2,
+      name: &quot;Cuban convertible peso&quot;
+    },
+    CUP: {
+      cent: 2,
+      name: &quot;Cuban peso&quot;
+    },
+    CVE: {
+      cent: 0,
+      name: &quot;Cape Verde escudo&quot;
+    },
+    CZK: {
+      cent: 2,
+      name: &quot;Czech koruna&quot;
+    },
+    DJF: {
+      cent: 0,
+      name: &quot;Djiboutian franc&quot;
+    },
+    DKK: {
+      cent: 2,
+      name: &quot;Danish krone&quot;
+    },
+    DOP: {
+      cent: 2,
+      name: &quot;Dominican peso&quot;
+    },
+    DZD: {
+      cent: 2,
+      name: &quot;Algerian dinar&quot;
+    },
+    EGP: {
+      cent: 2,
+      name: &quot;Egyptian pound&quot;
+    },
+    ERN: {
+      cent: 2,
+      name: &quot;Eritrean nakfa&quot;
+    },
+    ETB: {
+      cent: 2,
+      name: &quot;Ethiopian birr&quot;
+    },
+    EUR: {
+      cent: 2,
+      name: &quot;Euro&quot;
+    },
+    FJD: {
+      cent: 2,
+      name: &quot;Fiji dollar&quot;
+    },
+    FKP: {
+      cent: 2,
+      name: &quot;Falkland Islands pound&quot;
+    },
+    GBP: {
+      cent: 2,
+      name: &quot;Pound sterling&quot;
+    },
+    GEL: {
+      cent: 2,
+      name: &quot;Georgian lari&quot;
+    },
+    GHS: {
+      cent: 2,
+      name: &quot;Ghanaian cedi&quot;
+    },
+    GIP: {
+      cent: 2,
+      name: &quot;Gibraltar pound&quot;
+    },
+    GMD: {
+      cent: 2,
+      name: &quot;Gambian dalasi&quot;
+    },
+    GNF: {
+      cent: 0,
+      name: &quot;Guinean franc&quot;
+    },
+    GTQ: {
+      cent: 2,
+      name: &quot;Guatemalan quetzal&quot;
+    },
+    GYD: {
+      cent: 2,
+      name: &quot;Guyanese dollar&quot;
+    },
+    HKD: {
+      cent: 2,
+      name: &quot;Hong Kong dollar&quot;
+    },
+    HNL: {
+      cent: 2,
+      name: &quot;Honduran lempira&quot;
+    },
+    HRK: {
+      cent: 2,
+      name: &quot;Croatian kuna&quot;
+    },
+    HTG: {
+      cent: 2,
+      name: &quot;Haitian gourde&quot;
+    },
+    HUF: {
+      cent: 2,
+      name: &quot;Hungarian forint&quot;
+    },
+    IDR: {
+      cent: 2,
+      name: &quot;Indonesian rupiah&quot;
+    },
+    ILS: {
+      cent: 2,
+      name: &quot;Israeli new shekel&quot;
+    },
+    INR: {
+      cent: 2,
+      name: &quot;Indian rupee&quot;
+    },
+    IQD: {
+      cent: 3,
+      name: &quot;Iraqi dinar&quot;
+    },
+    IRR: {
+      cent: 0,
+      name: &quot;Iranian rial&quot;
+    },
+    ISK: {
+      cent: 0,
+      name: &quot;Icelandic króna&quot;
+    },
+    JMD: {
+      cent: 2,
+      name: &quot;Jamaican dollar&quot;
+    },
+    JOD: {
+      cent: 3,
+      name: &quot;Jordanian dinar&quot;
+    },
+    JPY: {
+      cent: 0,
+      name: &quot;Japanese yen&quot;
+    },
+    KES: {
+      cent: 2,
+      name: &quot;Kenyan shilling&quot;
+    },
+    KGS: {
+      cent: 2,
+      name: &quot;Kyrgyzstani som&quot;
+    },
+    KHR: {
+      cent: 2,
+      name: &quot;Cambodian riel&quot;
+    },
+    KMF: {
+      cent: 0,
+      name: &quot;Comoro franc&quot;
+    },
+    KPW: {
+      cent: 0,
+      name: &quot;North Korean won&quot;
+    },
+    KRW: {
+      cent: 0,
+      name: &quot;South Korean won&quot;
+    },
+    KWD: {
+      cent: 3,
+      name: &quot;Kuwaiti dinar&quot;
+    },
+    KYD: {
+      cent: 2,
+      name: &quot;Cayman Islands dollar&quot;
+    },
+    KZT: {
+      cent: 2,
+      name: &quot;Kazakhstani tenge&quot;
+    },
+    LAK: {
+      cent: 0,
+      name: &quot;Lao kip&quot;
+    },
+    LBP: {
+      cent: 0,
+      name: &quot;Lebanese pound&quot;
+    },
+    LKR: {
+      cent: 2,
+      name: &quot;Sri Lankan rupee&quot;
+    },
+    LRD: {
+      cent: 2,
+      name: &quot;Liberian dollar&quot;
+    },
+    LSL: {
+      cent: 2,
+      name: &quot;Lesotho loti&quot;
+    },
+    LTL: {
+      cent: 2,
+      name: &quot;Lithuanian litas&quot;
+    },
+    LVL: {
+      cent: 2,
+      name: &quot;Latvian lats&quot;
+    },
+    LYD: {
+      cent: 3,
+      name: &quot;Libyan dinar&quot;
+    },
+    MAD: {
+      cent: 2,
+      name: &quot;Moroccan dirham&quot;
+    },
+    MDL: {
+      cent: 2,
+      name: &quot;Moldovan leu&quot;
+    },
+    MKD: {
+      cent: 0,
+      name: &quot;Macedonian denar&quot;
+    },
+    MMK: {
+      cent: 0,
+      name: &quot;Myanma kyat&quot;
+    },
+    MNT: {
+      cent: 2,
+      name: &quot;Mongolian tugrik&quot;
+    },
+    MOP: {
+      cent: 2,
+      name: &quot;Macanese pataca&quot;
+    },
+    MUR: {
+      cent: 2,
+      name: &quot;Mauritian rupee&quot;
+    },
+    MVR: {
+      cent: 2,
+      name: &quot;Maldivian rufiyaa&quot;
+    },
+    MWK: {
+      cent: 2,
+      name: &quot;Malawian kwacha&quot;
+    },
+    MXN: {
+      cent: 2,
+      name: &quot;Mexican peso&quot;
+    },
+    MXV: {
+      cent: 2,
+      name: &quot;Mexican Unidad de Inversion (UDI) (funds code)&quot;
+    },
+    MYR: {
+      cent: 2,
+      name: &quot;Malaysian ringgit&quot;
+    },
+    MZN: {
+      cent: 2,
+      name: &quot;Mozambican metical&quot;
+    },
+    NAD: {
+      cent: 2,
+      name: &quot;Namibian dollar&quot;
+    },
+    NGN: {
+      cent: 2,
+      name: &quot;Nigerian naira&quot;
+    },
+    NIO: {
+      cent: 2,
+      name: &quot;Nicaraguan córdoba&quot;
+    },
+    NOK: {
+      cent: 2,
+      name: &quot;Norwegian krone&quot;
+    },
+    NPR: {
+      cent: 2,
+      name: &quot;Nepalese rupee&quot;
+    },
+    NZD: {
+      cent: 2,
+      name: &quot;New Zealand dollar&quot;
+    },
+    OMR: {
+      cent: 3,
+      name: &quot;Omani rial&quot;
+    },
+    PAB: {
+      cent: 2,
+      name: &quot;Panamanian balboa&quot;
+    },
+    PEN: {
+      cent: 2,
+      name: &quot;Peruvian nuevo sol&quot;
+    },
+    PGK: {
+      cent: 2,
+      name: &quot;Papua New Guinean kina&quot;
+    },
+    PHP: {
+      cent: 2,
+      name: &quot;Philippine peso&quot;
+    },
+    PKR: {
+      cent: 2,
+      name: &quot;Pakistani rupee&quot;
+    },
+    PLN: {
+      cent: 2,
+      name: &quot;Polish złoty&quot;
+    },
+    PYG: {
+      cent: 0,
+      name: &quot;Paraguayan guaraní&quot;
+    },
+    QAR: {
+      cent: 2,
+      name: &quot;Qatari riyal&quot;
+    },
+    RON: {
+      cent: 2,
+      name: &quot;Romanian new leu&quot;
+    },
+    RSD: {
+      cent: 2,
+      name: &quot;Serbian dinar&quot;
+    },
+    RUB: {
+      cent: 2,
+      name: &quot;Russian rouble&quot;
+    },
+    RWF: {
+      cent: 0,
+      name: &quot;Rwandan franc&quot;
+    },
+    SAR: {
+      cent: 2,
+      name: &quot;Saudi riyal&quot;
+    },
+    SBD: {
+      cent: 2,
+      name: &quot;Solomon Islands dollar&quot;
+    },
+    SCR: {
+      cent: 2,
+      name: &quot;Seychelles rupee&quot;
+    },
+    SDG: {
+      cent: 2,
+      name: &quot;Sudanese pound&quot;
+    },
+    SEK: {
+      cent: 2,
+      name: &quot;Swedish krona/kronor&quot;
+    },
+    SGD: {
+      cent: 2,
+      name: &quot;Singapore dollar&quot;
+    },
+    SHP: {
+      cent: 2,
+      name: &quot;Saint Helena pound&quot;
+    },
+    SLL: {
+      cent: 0,
+      name: &quot;Sierra Leonean leone&quot;
+    },
+    SOS: {
+      cent: 2,
+      name: &quot;Somali shilling&quot;
+    },
+    SRD: {
+      cent: 2,
+      name: &quot;Surinamese dollar&quot;
+    },
+    SSP: {
+      cent: 2,
+      name: &quot;South Sudanese pound&quot;
+    },
+    STD: {
+      cent: 0,
+      name: &quot;São Tomé and Príncipe dobra&quot;
+    },
+    SYP: {
+      cent: 2,
+      name: &quot;Syrian pound&quot;
+    },
+    SZL: {
+      cent: 2,
+      name: &quot;Swazi lilangeni&quot;
+    },
+    THB: {
+      cent: 2,
+      name: &quot;Thai baht&quot;
+    },
+    TJS: {
+      cent: 2,
+      name: &quot;Tajikistani somoni&quot;
+    },
+    TMT: {
+      cent: 2,
+      name: &quot;Turkmenistani manat&quot;
+    },
+    TND: {
+      cent: 3,
+      name: &quot;Tunisian dinar&quot;
+    },
+    TOP: {
+      cent: 2,
+      name: &quot;Tongan paʻanga&quot;
+    },
+    TRY: {
+      cent: 2,
+      name: &quot;Turkish lira&quot;
+    },
+    TTD: {
+      cent: 2,
+      name: &quot;Trinidad and Tobago dollar&quot;
+    },
+    TWD: {
+      cent: 2,
+      name: &quot;New Taiwan dollar&quot;
+    },
+    TZS: {
+      cent: 2,
+      name: &quot;Tanzanian shilling&quot;
+    },
+    UAH: {
+      cent: 2,
+      name: &quot;Ukrainian hryvnia&quot;
+    },
+    UGX: {
+      cent: 2,
+      name: &quot;Ugandan shilling&quot;
+    },
+    USD: {
+      cent: 2,
+      name: &quot;United States dollar&quot;
+    },
+    USN: {
+      cent: 2,
+      name: &quot;United States dollar (next day) (funds code)&quot;
+    },
+    USS: {
+      cent: 2,
+      name: &quot;United States dollar (same day) (funds code) (one source[who?] claims it is no longer used, but it is still on the ISO 4217-MA list)&quot;
+    },
+    UYI: {
+      cent: 0,
+      name: &quot;Uruguay Peso en Unidades Indexadas (URUIURUI) (funds code)&quot;
+    },
+    UYU: {
+      cent: 2,
+      name: &quot;Uruguayan peso&quot;
+    },
+    UZS: {
+      cent: 2,
+      name: &quot;Uzbekistan som&quot;
+    },
+    VEF: {
+      cent: 2,
+      name: &quot;Venezuelan bolívar fuerte&quot;
+    },
+    VND: {
+      cent: 0,
+      name: &quot;Vietnamese dong&quot;
+    },
+    VUV: {
+      cent: 0,
+      name: &quot;Vanuatu vatu&quot;
+    },
+    WST: {
+      cent: 2,
+      name: &quot;Samoan tala&quot;
+    },
+    XAF: {
+      cent: 0,
+      name: &quot;CFA franc BEAC&quot;
+    },
+    XCD: {
+      cent: 2,
+      name: &quot;East Caribbean dollar&quot;
+    },
+    XOF: {
+      cent: 0,
+      name: &quot;CFA franc BCEAO&quot;
+    },
+    XPF: {
+      cent: 0,
+      name: &quot;CFP franc&quot;
+    },
+    YER: {
+      cent: 2,
+      name: &quot;Yemeni rial&quot;
+    },
+    ZAR: {
+      cent: 2,
+      name: &quot;South African rand&quot;
     }
   });
 
@@ -240,21 +937,25 @@
     Tent.messages = {};
   }
 
-  Tent.messages.GENERIC_ERROR = 'Error';
+  Tent.messages.GENERIC_ERROR = 'error.generic';
 
-  Tent.messages.REQUIRED_ERROR = 'Required field';
+  Tent.messages.REQUIRED_ERROR = 'error.required';
 
-  Tent.messages.NUMERIC_ERROR = &quot;Numeric field required&quot;;
+  Tent.messages.NUMERIC_ERROR = &quot;error.numeric&quot;;
 
-  Tent.messages.AMOUNT_ERROR = &quot;Money field error&quot;;
+  Tent.messages.AMOUNT_ERROR = &quot;error.amount&quot;;
 
-  Tent.messages.EMAIL_FORMAT_ERROR = &quot;Email format error&quot;;
+  Tent.messages.EMAIL_FORMAT_ERROR = &quot;error.email&quot;;
 
-  Tent.messages.DATE_FORMAT_ERROR = &quot;Date format error&quot;;
+  Tent.messages.DATE_FORMAT_ERROR = &quot;error.date&quot;;
 
-  Tent.messages.DATE_BETWEEN_ERROR = &quot;Date should be between %@2 and %@3&quot;;
+  Tent.messages.DATE_BETWEEN_ERROR = &quot;error.dateBetween&quot;;
 
-  Tent.messages.DATE_FUTURE_ERROR = &quot;You provided a date in the future&quot;;
+  Tent.messages.DATE_FUTURE_ERROR = &quot;error.dateFuture&quot;;
+
+  Tent.messages.MAX_LENGTH = &quot;error.maxLength&quot;;
+
+  Tent.messages.CURRENCY_ERROR = &quot;error.invalidCurrency&quot;;
 
 }).call(this);
 
@@ -417,13 +1118,6 @@
   */
 
 
-<span id='Tent-Formatting-amount-property-divisor'>  /**
-</span>  * @property {Object} divisor A function to transform the value before formatting, and after unformatting.
-  * This may typically be provided to normalise values when stored as centesimal values
-  * The divisor is expected to have a 'func' property which returns a Numeric divisor
-  */
-
-
   Tent.Formatting.amount = Ember.Object.create({
 <span id='Tent-Formatting-amount-method-format'>    /**
 </span>    	* @method format
@@ -435,7 +1129,6 @@
 
     format: function(amount, settings) {
       if (amount != null) {
-        amount = this.divisor != null ? amount * this.divisor.func() : amount;
         if (settings != null) {
           settings = Tent.Formatting.amount.settingsFilter(settings);
           return accounting.formatNumber(amount, settings);
@@ -458,11 +1151,10 @@
       if (amount != null) {
         if (settings != null) {
           settings = Tent.Formatting.amount.settingsFilter(settings);
-          amount = accounting.unformat(amount, settings);
+          return accounting.unformat(amount, settings);
         } else {
-          amount = accounting.unformat(amount);
+          return accounting.unformat(amount);
         }
-        return amount = this.divisor != null ? amount / this.divisor.func() : amount;
       } else {
         return null;
       }
@@ -572,13 +1264,7 @@
       return !((value != null) &amp;&amp; value !== '');
     },
     getErrorMessage: function(value, options) {
-      var key, optString, val;
-      optString = &quot;&quot;;
-      for (key in options) {
-        val = options[key];
-        optString = optString + (&quot;,'&quot; + val + &quot;'&quot;);
-      }
-      return eval(&quot;this.get('ERROR_MESSAGE').fmt(value&quot; + optString + &quot; )&quot;);
+      return Tent.I18n.loc(this.get('ERROR_MESSAGE'), options || []);
     }
   });
 
@@ -624,6 +1310,16 @@
       return value;
     },
     ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
+  });
+
+  Tent.Validations.maxLength = Tent.Validation.create({
+    validate: function(value, options, message) {
+      if (!(options != null) || !(options.max != null)) {
+        return false;
+      }
+      return this.isValueEmpty(value) || value.length &lt;= options.max;
+    },
+    ERROR_MESSAGE: Tent.messages.MAX_LENGTH
   });
 
 }).call(this);
@@ -718,7 +1414,6 @@
 
 
 (function() {
-  var warnings;
 
   Tent.ValidationSupport = Ember.Mixin.create({
 <span id='Tent-ValidationSupport-property-validations'>    /**
@@ -729,13 +1424,13 @@
     isValid: true,
     validationErrors: [],
     validationWarnings: [],
-    processWarnings: true
+    processWarnings: true,
 <span id='Tent-ValidationSupport-property-warnings'>    /**
 </span>    * @property {String} warnings A list of comma-separated custom validations which should be applied to the widget, but are interpreted
     * as warnings which may be ignored.
     */
 
-  }, warnings = null, {
+    warnings: null,
     init: function() {
       return this._super();
     },
@@ -876,10 +1571,16 @@
       return this.set('validationWarnings', []);
     },
     addValidationError: function(error) {
+      if (typeof error === &quot;string&quot;) {
+        error = Tent.I18n.loc(error);
+      }
       this.get('validationErrors').pushObject(error);
       return this.set('isValid', false);
     },
     addValidationWarning: function(warning) {
+      if (typeof warning === &quot;string&quot;) {
+        warning = Tent.I18n.loc(warning);
+      }
       return this.get('validationWarnings').pushObject(warning);
     }
   });
@@ -903,14 +1604,14 @@ Tent.MandatorySupport = Ember.Mixin.create({
     required: false,
     requiredAsBoolean: Tent.computed.boolCoerceGently('required'),
     validate: function() {
-      var isValid, value;
+      var isRequired, isValid, value;
       isValid = this._super();
       value = this.get('valueForMandatoryValidation');
-      isValid = isValid &amp;&amp; ((!this.get('required') &amp;&amp; !this.get('isMandatory')) || (!this.isValueEmpty(value)));
-      if (!isValid) {
+      isRequired = (!this.get('required') &amp;&amp; !this.get('isMandatory')) || (!this.isValueEmpty(value));
+      if (!isRequired) {
         this.addValidationError(Tent.messages.REQUIRED_ERROR);
       }
-      return isValid;
+      return isValid &amp;&amp; isRequired;
     },
     isValueEmpty: function(value) {
       return !((value != null) &amp;&amp; value !== '' &amp;&amp; (value.length != null ? value.length &gt; 0 : true));
@@ -1150,6 +1851,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       return this._super(arguments);
     },
     didInsertElement: function() {
+      this._super();
       if (this.get('filter')) {
         return this.get('filter.values')[this.get('id')] = {};
       }
@@ -1290,7 +1992,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}&lt;li&gt;{{loc error}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  {{#if view.isFilter}}\n    {{view Tent.Select listBinding=\&quot;view.operators\&quot; class=\&quot;embed no-label\&quot; \n      optionLabelPath=\&quot;content.label\&quot;\n      optionValuePath=\&quot;content.operator\&quot;\n      valueBinding=\&quot;view.filterOp\&quot;\n    }}\n  {{/if}}\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{#if view.hasPrefix}}&lt;span class=\&quot;prefix\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;{{/if}}{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{#if view.hasPrefix}}  \n        &lt;span class=\&quot;add-on\&quot;&gt;{{view.prefix}}&lt;/span&gt;\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\&quot;view.formattedValue\&quot; \n        placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n        classBinding=\&quot;view.controlClass\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}&lt;li&gt;{{loc error}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      &lt;ul class=\&quot;help-inline warning\&quot; {{bindAttr id=\&quot;view.warningId\&quot;}}&gt;{{#each warning in view.validationWarnings}}&lt;li&gt;{{loc warning}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n\n  &lt;/div&gt;\n  {{#if view.tooltip}}\n    &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n  {{/if}}\n\n&lt;/div&gt;\n&quot;);
 
 
 <span id='Tent-TextField'>/**
@@ -1417,6 +2119,38 @@ Tent.NumericTextField = Tent.TextField.extend({
 
 
 
+<span id='Tent-CurrencySupport'>/**
+</span> * @class Tent.CurrencySupport
+ * To get the centesimal value of a currency use the property 'centesimalValue'
+ * To get the ISO name of a currency use the property 'name'
+*/
+
+
+(function() {
+Tent.CurrencySupport = Ember.Mixin.create({
+    centesimalValue: (function() {
+      if (this.get('currency')) {
+        if (this.get('isValidCurrency')) {
+          return Tent.CURRENCIES_ISO_4217[this.get('currency')].cent;
+        }
+      }
+    }).property('currency'),
+    name: (function() {
+      if (this.get('currency')) {
+        if (this.get('isValidCurrency')) {
+          return Tent.CURRENCIES_ISO_4217[this.get('currency')].name;
+        }
+      }
+    }).property('currency'),
+    isValidCurrency: (function() {
+      return Tent.CURRENCIES_ISO_4217[this.get('currency')] != null;
+    }).property('currency')
+  });
+
+}).call(this);
+
+
+
 <span id='Tent-AmountField'>/**
 </span>* @class Tent.AmountField
 * @extends Tent.TextField
@@ -1436,38 +2170,68 @@ Tent.NumericTextField = Tent.TextField.extend({
 
 
 (function() {
-Tent.AmountField = Tent.TextField.extend({
+Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, {
     hasPrefix: true,
-    hasHelpBlock: true,
+    hasHelpBlock: false,
     placeholder: accounting.settings.number.pattern,
+    validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/,
     prefix: (function() {
-      return this.get('currency');
+      return Tent.I18n.loc(this.get('currency'));
     }).property('currency'),
-    helpBlock: (function() {
-      return this.getFormatPattern();
-    }).property(),
-    getFormatPattern: function() {
-      return '(' + (this.get('formatPattern') || accounting.settings.number.pattern) + ')';
-    },
     validate: function() {
-      var didOtherValidationPass, formattedValue, isValidAmount;
+      var didOtherValidationPass, formattedValue, isValidAmount, isValidCurrency, isValidNumber;
       didOtherValidationPass = this._super();
       formattedValue = this.get('formattedValue');
-      isValidAmount = this.isValidAmount(formattedValue);
+      isValidNumber = this.get('validAmountExp').test(formattedValue);
+      isValidAmount = this.isValidAmount(this.get('formattedValue'));
+      isValidCurrency = this.get('isValidCurrency');
+      if (didOtherValidationPass) {
+        if (!isValidNumber) {
+          this.addValidationError(Tent.messages.NUMERIC_ERROR);
+        }
+      }
       if (!isValidAmount) {
         this.addValidationError(Tent.messages.AMOUNT_ERROR);
       }
-      return didOtherValidationPass &amp;&amp; isValidAmount;
+      if (!isValidCurrency) {
+        this.addValidationError(Tent.messages.CURRENCY_ERROR);
+      }
+      return isValidCurrency &amp;&amp; isValidAmount &amp;&amp; isValidNumber &amp;&amp; didOtherValidationPass;
     },
     isValidAmount: function(value) {
-      return true;
+      if (value &lt; 0) {
+        return false;
+      } else {
+        return true;
+      }
     },
     format: function(value) {
-      return Tent.Formatting.amount.format(value);
+      return Tent.Formatting.amount.format(value, this.get('centesimalValue'));
     },
     unFormat: function(value) {
       return Tent.Formatting.amount.unformat(value);
     },
+    focusIn: function() {
+      if (this.get('isValid')) {
+        return this.set('formattedValue', this.unFormat(this.get('formattedValue')));
+      }
+    },
+    focusOut: function() {
+      if (this.get('isValid')) {
+        return this.set('formattedValue', this.format(this.get('formattedValue')));
+      }
+    },
+    observeCurrencyForValidationAndFormatting: (function() {
+      this.get('validationErrors').removeObject(Tent.I18n.loc(Tent.messages.CURRENCY_ERROR));
+      if (this.get('isValidCurrency')) {
+        if (!this.get('validationErrors').length) {
+          this.set('isValid', true);
+        }
+        return this.set('formattedValue', this.format(this.get('formattedValue')));
+      } else {
+        return this.addValidationError(Tent.messages.CURRENCY_ERROR);
+      }
+    }).observes('currency'),
     inputSizeClass: (function() {
       return Tent.AmountField.SIZE_CLASSES[this.estimateSpan() - 1];
     }).property()
@@ -2797,7 +3561,7 @@ Tent.SlickGrid = Ember.View.extend(Tent.FieldSupport, Tent.GridPagingSupport, Te
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;grid-table\&quot;&gt;&lt;/table&gt;\n&lt;div class=\&quot;gridpager\&quot;&gt;&lt;/div&gt;\n{{#if view.hasErrors}}\n\t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n{{/if}}  &quot;);
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;grid-table\&quot;&gt;&lt;/table&gt;\n&lt;div class=\&quot;gridpager\&quot;&gt;&lt;/div&gt;\n{{#if view.hasErrors}}\n\t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{loc error}}{{/each}}&lt;/span&gt;\n{{/if}}&quot;);
 
 (function() {
 
@@ -2919,13 +3683,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       return this.renderExportButton(tableDom);
     },
     renderExportButton: function(tableDom) {
-      var button,
+      var button, xslxUrl,
         _this = this;
       if (this.get('showExportButton')) {
         if (!(this.get('title') != null)) {
           tableDom.setCaption('&amp;nbsp;');
         }
-        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n                        &lt;li&gt;&lt;a href=\&quot;&quot; + (this.get('collection') != null ? this.get('collection').getURL('xlsx') : void 0) + &quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;jqGrid.export.xlsx&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
+        xslxUrl = this.get('collection') != null ? this.get('collection').getURL('xlsx') : &quot;#&quot;;
+        button = &quot;&lt;div class=\&quot;btn-group export\&quot;&gt;\n	&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n	Export\n	&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n	&lt;/a&gt;\n	&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-json\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li&gt;&lt;a href=\&quot;&quot; + xslxUrl + &quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.xlsx&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n		&lt;li class=\&quot;divider\&quot;&gt;&lt;/li&gt;\n		&lt;li class=\&quot;dropdown-submenu-left\&quot;&gt;\n			&lt;a href=\&quot;#\&quot;&gt;Delimiter&lt;/a&gt;\n			&lt;ul class=\&quot;dropdown-menu custom-export\&quot;&gt;\n				&lt;li&gt;\n					&lt;form class=\&quot;form-horizontal well\&quot; id=\&quot;customExportForm\&quot;&gt;\n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;label class=\&quot;control-label\&quot;&gt;Delimiter&lt;/label&gt;\n							&lt;div class=\&quot;controls\&quot;&gt;\n									&lt;select name=\&quot;delimiter\&quot; class=\&quot;input-small\&quot; id=\&quot;delimiter\&quot;&gt;\n									&lt;option value=\&quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.pleaseSelect&quot;)) + &quot;&lt;/option&gt;  \n									&lt;option value=\&quot;,\&quot; selected&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.comma&quot;)) + &quot;&lt;/option&gt;\n									&lt;option value=\&quot;|\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.pipe&quot;)) + &quot;&lt;/option&gt;\n									&lt;option value=\&quot;;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.semicolon&quot;)) + &quot;&lt;/option&gt;\n									&lt;option value=\&quot;:\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.colon&quot;)) + &quot;&lt;/option&gt;\n								&lt;/select&gt;\n							&lt;/div&gt;\n						&lt;/div&gt;            \n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export._or&quot;)) + &quot;&lt;/label&gt;\n						&lt;/div&gt;                     \n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.enterDelimiter&quot;)) + &quot;&lt;/label&gt;\n							&lt;div class=\&quot;controls\&quot;&gt;\n								&lt;input type=\&quot;text\&quot; name=\&quot;customDelimiter\&quot; id=\&quot;customDelimiter\&quot;  maxlength=\&quot;1\&quot; class=\&quot;input-small\&quot;&gt;\n							&lt;/div&gt;\n						&lt;/div&gt;\n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.headers&quot;)) + &quot;&lt;/label&gt;\n							&lt;div class=\&quot;controls\&quot;&gt;\n								&lt;label class=\&quot;radio inline\&quot;&gt;\n									&lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;true\&quot; checked&gt;&quot; + (Tent.I18n.loc(&quot;tent.on&quot;)) + &quot;\n								&lt;/label&gt;\n								&lt;label class=\&quot;radio inline\&quot;&gt;\n									&lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;false\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.off&quot;)) + &quot;\n								&lt;/label&gt;  \n							&lt;/div&gt;\n						&lt;/div&gt;        \n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.inclQuotes&quot;)) + &quot;&lt;/label&gt;\n							&lt;div class=\&quot;controls\&quot;&gt;\n								&lt;label class=\&quot;radio inline\&quot;&gt;\n									&lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;true\&quot; checked&gt;&quot; + (Tent.I18n.loc(&quot;tent.on&quot;)) + &quot;\n								&lt;/label&gt;\n								&lt;label class=\&quot;radio inline\&quot;&gt;\n									&lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;false\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.off&quot;)) + &quot;\n								&lt;/label&gt;  \n							&lt;/div&gt;\n						&lt;/div&gt;                                  \n						&lt;div class=\&quot;control-group\&quot;&gt;\n							&lt;div class=\&quot;controls\&quot;&gt;\n								&lt;button type=\&quot;button\&quot; class=\&quot;btn\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.export&quot;)) + &quot;&lt;/button&gt;\n							&lt;/div&gt;\n						&lt;/div&gt;\n\n					&lt;/form&gt;\n				&lt;/li&gt;\n			&lt;/ul&gt;\n		&lt;/li&gt;              \n	&lt;/ul&gt;\n&lt;/div&gt;&quot;;
         this.$(&quot;.ui-jqgrid-titlebar&quot;).append(button);
         this.$('a.export-json').click(function() {
           var ret;
@@ -2937,10 +3702,55 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
           ret = &quot;&lt;root&gt;&quot; + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(), &quot;    &quot;) + &quot;&lt;/root&gt;&quot;;
           return _this.clientDownload(ret);
         });
-        return this.$('a.export-csv').click(function() {
+        this.$('a.export-csv').click(function() {
           var ret;
           ret = _this.exportCSV(tableDom.getRowData(), _this.getColModel());
           return _this.clientDownload(ret);
+        });
+        this.$('#customExportForm').click(function(e) {
+          return e.stopPropagation();
+        });
+        this.$('#customExportForm').find('button').click(function() {
+          var arry, columnHeaders, delimiter, extension, includeQuotes;
+          arry = $('#customExportForm').serializeArray();
+          extension = 'csv';
+          delimiter = ',';
+          columnHeaders = true;
+          includeQuotes = true;
+          $.each(arry, function(i, fd) {
+            if (fd.name === 'delimiter' &amp;&amp; fd.value !== ',') {
+              extension = 'txt';
+              delimiter = fd.value;
+            }
+            if (fd.name === 'customDelimiter') {
+              if (fd.value.length &gt; 0) {
+                delimiter = fd.value;
+              }
+            }
+            if (fd.name === 'columnHeaders') {
+              columnHeaders = fd.value;
+            }
+            if (fd.name === 'includeQuotes') {
+              return includeQuotes = fd.value;
+            }
+          });
+          return document.location.href = _this.get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes);
+        });
+        this.$('#delimiter').change(function() {
+          if ($('#delimiter').val().length &gt; 0) {
+            return $('#customDelimiter').val('');
+          } else {
+            if ($('#customDelimiter').val().length === 0) {
+              return $('#delimiter').val(',');
+            }
+          }
+        });
+        return this.$('#customDelimiter').blur(function() {
+          if ($('#customDelimiter').val().length &gt; 0) {
+            return $('#delimiter').val('');
+          } else {
+            return $('#delimiter').val(',');
+          }
         });
       }
     },
@@ -3103,6 +3913,125 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
 
 (function() {
+
+  Tent.Grid.ColumnMenu = Ember.Mixin.create({
+    addColumnDropdowns: function() {
+      var column, columnDivId, context, template, _i, _len, _ref;
+      _ref = this.get('columns');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        column.groupable = !((column.groupable != null) &amp;&amp; column.groupable === false);
+        column.renamable = !((column.renamable != null) &amp;&amp; column.renamable === false);
+        if (column.groupable || column.renamable) {
+          template = Handlebars.compile(&quot;					 	&lt;ul class='dropdown-menu column-dropdown' data-column='{{column.name}}' data-orig-title='{{title}}'&gt;							{{#if column.groupable}}								&lt;li class='group dropdown-submenu'&gt;									&lt;a tabindex='-1'&gt;Group&lt;/a&gt;								    &lt;ul class='dropdown-menu'&gt;								    	{{#each groupType}}								    		&lt;li data-grouptype='{{name}}'&gt;&lt;a tabindex='-1'&gt;{{title}}&lt;/a&gt;&lt;/li&gt;								    	{{/each}}								    &lt;/ul&gt;								&lt;/li&gt;							{{/if}}							{{#if column.renamable}}								&lt;li class='rename dropdown-submenu'&gt;									&lt;a tabindex='-1'&gt;Rename&lt;/a&gt;								    &lt;ul class='dropdown-menu'&gt;								    	&lt;li&gt;								    		&lt;input type='text' value='{{title}}'/&gt;								    	&lt;/li&gt;								    &lt;/ul&gt;								&lt;/li&gt;							{{/if}}						&lt;/ul&gt;&quot;);
+          context = {
+            column: column,
+            title: Tent.I18n.loc(column.title),
+            groupType: Tent.JqGrid.Grouping.ranges[column.type]
+          };
+          columnDivId = '#jqgh_' + this.get('elementId') + '_jqgrid_' + column.name;
+          this.$(columnDivId).after(template(context));
+          this.$(columnDivId).addClass('has-dropdown').attr('data-toggle', 'dropdown');
+        }
+      }
+      this.groupByColumnBindings();
+      return this.renameColumnHeaderBindings();
+    },
+    toggleColumnDropdown: function(columnField) {
+      var columnDivId;
+      columnDivId = '#jqgh_' + this.get('elementId') + '_jqgrid_' + columnField;
+      return $(columnDivId).dropdown('toggle');
+    },
+    groupByColumnBindings: function() {
+      var widget;
+      widget = this;
+      return this.$('.group.dropdown-submenu').click(function(e) {
+        var col, column, columnType, groupType, target, _i, _len, _ref;
+        target = $(e.target);
+        groupType = target.attr('data-grouptype') || target.parents('li[data-grouptype]:first').attr('data-grouptype');
+        column = target.attr('data-column') || target.parents('ul.column-dropdown:first').attr('data-column');
+        columnType = 'string';
+        _ref = widget.get('columns');
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          col = _ref[_i];
+          if (col.name === column) {
+            columnType = col.type;
+          }
+        }
+        return widget.groupByColumn(column, groupType, columnType);
+      });
+    },
+    groupByColumn: function(column, groupType, columnType) {
+      var comparator;
+      this.get('collection').sort({
+        fields: [
+          {
+            sortAsc: true,
+            field: column
+          }
+        ]
+      });
+      comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
+      return this.getTableDom().groupingGroupBy(column, {
+        groupText: ['&lt;b&gt;' + this.getTitleForColumn(column) + ':  {0}&lt;/b&gt;'],
+        range: comparator
+      });
+    },
+    renameColumnHeaderBindings: function() {
+      var widget;
+      widget = this;
+      this.$('.rename.dropdown-submenu').hover(function(e) {
+        return $('input', this).focus();
+      }).click(function(e) {
+        var target;
+        target = $(e.target);
+        e.stopPropagation();
+        return e.preventDefault();
+      });
+      return this.$('.rename.dropdown-submenu input').bind('keyup', (function(e) {
+        var columnField, dropdownMenu, originalTitle, target;
+        target = $(e.target);
+        dropdownMenu = target.parents('ul.column-dropdown:first');
+        columnField = dropdownMenu.attr('data-column');
+        if (e.keyCode === 13) {
+          return widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu);
+        } else if (e.keyCode === 27) {
+          originalTitle = dropdownMenu.attr('data-orig-title');
+          widget.renameGridColumnHeader(columnField, originalTitle);
+          $(this).val(originalTitle);
+          return widget.toggleColumnDropdown(columnField);
+        }
+      }));
+    },
+    renameColumnHeader: function(columnField, value, dropdownMenu) {
+      this.renameGridColumnHeader(columnField, value);
+      dropdownMenu.attr('data-orig-title', value);
+      return this.toggleColumnDropdown(columnField);
+    },
+    renameGridColumnHeader: function(colname, value) {
+      var column, _i, _len, _ref, _results;
+      if (value === &quot;&quot;) {
+        value = &quot; &quot;;
+      }
+      this.getTableDom().jqGrid('setLabel', colname, value);
+      _ref = this.get('columns');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        if (column.name === colname) {
+          _results.push(column.title = value);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }
+  });
+
+}).call(this);
+
+
+(function() {
 <span id='Tent-JqGrid'>/**
 </span>  * @class Tent.JqGrid
   * @mixins Tent.ValidationSupport
@@ -3110,6 +4039,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   * @mixins Tent.Grid.CollectionSupport
   * @mixins Tent.Grid.ExportSupport
   * @mixins Tent.Grid.EditableSupport
+  * @mixins Tent.Grid.ColumnMenu
   *
   * Create a jqGrid view which displays the data provided by its content property
   *
@@ -3128,7 +4058,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   */
 
 
-  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, {
+  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, {
     templateName: 'jqgrid',
     classNames: ['tent-jqgrid'],
     classNameBindings: ['fixedHeader', 'hasErrors:error'],
@@ -3198,12 +4128,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       var widget;
       this._super();
       widget = this;
-      $.subscribe(&quot;/ui/refresh&quot;, function() {
+      return $.subscribe(&quot;/ui/refresh&quot;, function() {
         return widget.resizeToContainer();
       });
-      if (!(this.get('selection') != null)) {
-        return this.set('selection', []);
-      }
     },
     valueForMandatoryValidation: (function() {
       return this.get('selection');
@@ -3374,54 +4301,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       this._super();
       return this.renderMaximizeButton();
     },
-    addColumnDropdowns: function() {
-      var column, columnDivId, context, template, widget, _i, _len, _ref;
-      widget = this;
-      _ref = this.get('columns');
-      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-        column = _ref[_i];
-        template = Handlebars.compile(&quot;				{{#if column.groupable}}					&lt;ul class='dropdown-menu column-dropdown' data-column='{{column.field}}'&gt;						{{#if column.groupable}}							&lt;li class='group dropdown-submenu'&gt;								&lt;a tabindex='-1'&gt;Group&lt;/a&gt;							    &lt;ul class='dropdown-menu'&gt;							    	{{#each groupType}}							    		&lt;li data-grouptype='{{name}}'&gt;&lt;a tabindex='-1'&gt;{{title}}&lt;/a&gt;&lt;/li&gt;							    	{{/each}}							    &lt;/ul&gt;							&lt;/li&gt;						{{/if}}					&lt;/ul&gt;				{{/if}}&quot;);
-        column.groupable = !((column.groupable != null) &amp;&amp; column.groupable === false);
-        context = {
-          column: column,
-          groupType: Tent.JqGrid.Grouping.ranges[column.type]
-        };
-        columnDivId = '#jqgh_' + this.get('elementId') + '_jqgrid_' + column.field;
-        this.$(columnDivId).after(template(context));
-        this.$(columnDivId).addClass('has-dropdown').attr('data-toggle', 'dropdown');
-      }
-      return this.$('.column-dropdown').click(function(e) {
-        var col, columnType, groupType, target, _j, _len1, _ref1;
-        target = $(e.target);
-        groupType = target.attr('data-grouptype') || target.parents('li[data-grouptype]:first').attr('data-grouptype');
-        column = target.attr('data-column') || target.parents('ul.column-dropdown:first').attr('data-column');
-        columnType = 'string';
-        _ref1 = widget.get('columns');
-        for (_j = 0, _len1 = _ref1.length; _j &lt; _len1; _j++) {
-          col = _ref1[_j];
-          if (col.field === column) {
-            columnType = col.type;
-          }
-        }
-        return widget.groupByColumn(column, groupType, columnType);
-      });
-    },
-    groupByColumn: function(column, groupType, columnType) {
-      var comparator;
-      this.get('collection').sort({
-        fields: [
-          {
-            sortAsc: true,
-            field: column
-          }
-        ]
-      });
-      comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
-      return this.getTableDom().groupingGroupBy(column, {
-        groupText: ['&lt;b&gt;' + this.getTitleForColumn(column) + ':  {0}&lt;/b&gt;'],
-        range: comparator
-      });
-    },
     renderColumnChooser: function(tableDom) {
       var widget;
       widget = this;
@@ -3574,7 +4453,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       return this.getTableDom().groupingSetup();
     },
     selectionDidChange: (function() {
-      return this.updateGrid();
+      return this.updateGrid(true);
     }).observes('selection.@each'),
     selectedIds: (function() {
       var id, item, sel, _i, _len, _ref;
@@ -3589,12 +4468,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
       }
       return sel;
     }).property('selection.@each'),
-    updateGrid: function() {
+    updateGrid: function(doValidation) {
       if (this.getTableDom() != null) {
         this.highlightRows();
         this.showEditableCells();
       }
-      return this.validate();
+      if (doValidation) {
+        return this.validate();
+      }
     },
     highlightRows: function() {
       var grid, id, item, _i, _j, _len, _len1, _ref, _ref1;
@@ -3701,7 +4582,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         cellvalue = $('input', cell).attr('value') || 0;
       }
       formattedVal = Tent.Formatting.amount.format(cellvalue);
-      if ((options != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
+      if ((options != null) &amp;&amp; (options.colModel.formatoptions != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
         return '&lt;span class=&quot;negative&quot;&gt;' + formattedVal + '&lt;/span&gt;';
       } else {
         return formattedVal;
@@ -3711,8 +4592,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter.amount, {
     unformat: function(cellvalue, options, cell) {
-      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
-        cellvalue = $('input', cell).attr('value');
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
+        cellvalue = $(&quot;input&quot;, cell).attr(&quot;value&quot;);
       }
       return Tent.Formatting.amount.unformat(cellvalue) || &quot;&quot;;
     }
@@ -3721,8 +4602,10 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   jQuery.extend($.fn.fmatter.amount, {
     formatCell: function(cellvalue, options, cell) {
       var input;
-      input = $('input', cell);
-      cellvalue = input.attr('value');
+      if (cell != null) {
+        input = $('input', cell);
+        cellvalue = $(&quot;input&quot;, cell).attr(&quot;value&quot;);
+      }
       return input.val(Tent.Formatting.amount.format(cellvalue) || &quot;&quot;);
     }
   });
@@ -3744,7 +4627,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         cellvalue = $('input', cell).attr('value') || 0;
       }
       formattedVal = Tent.Formatting.number.format(cellvalue);
-      if ((options != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
+      if ((options != null) &amp;&amp; (options.colModel.formatoptions != null) &amp;&amp; options.colModel.formatoptions.negative &amp;&amp; cellvalue &lt; 0) {
         return '&lt;span class=&quot;negative&quot;&gt;' + formattedVal + '&lt;/span&gt;';
       } else {
         return formattedVal;
@@ -3754,7 +4637,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter.number, {
     unformat: function(cellvalue, options, cell) {
-      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
         cellvalue = $('input', cell).attr('value');
       }
       return Tent.Formatting.number.unformat(cellvalue) || &quot;&quot;;
@@ -3770,7 +4653,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter, {
     percent: function(cellvalue, opts, cell) {
-      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
         cellvalue = $('input', cell).attr('value') || 0;
       }
       return Tent.Formatting.percent.format(cellvalue);
@@ -3779,7 +4662,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
 
   jQuery.extend($.fn.fmatter.percent, {
     unformat: function(cellvalue, options, cell) {
-      if ((!cellvalue) &amp;&amp; (cellvalue !== 0)) {
+      if ((!cellvalue) &amp;&amp; (cellvalue !== 0) &amp;&amp; (cell != null)) {
         cellvalue = $('input', cell).attr('value');
       }
       return Tent.Formatting.percent.unformat(cellvalue) || &quot;&quot;;
@@ -3789,9 +4672,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
   jQuery.extend($.fn.fmatter.percent, {
     formatCell: function(cellvalue, options, cell) {
       var input;
-      input = $('input', cell);
-      cellvalue = input.attr('value');
-      return input.val(Tent.Formatting.percent.format(cellvalue) || &quot;&quot;);
+      if (cell != null) {
+        input = $('input', cell);
+        cellvalue = input.attr('value');
+        return input.val(Tent.Formatting.percent.format(cellvalue) || &quot;&quot;);
+      }
     }
   });
 
@@ -4032,12 +4917,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;&lt;table class=\&quot;
         title: Tent.I18n.loc('tent.grouping.range.week'),
         comparator: Tent.JqGrid.Grouping.comparator.create({
           compare: function(last, value) {
-            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getWeek() === value.getWeek());
+            return (last.getFullYear() === value.getFullYear()) &amp;&amp; (last.getWeekOfYear() === value.getWeekOfYear());
           },
           rowTitle: function(value) {
             var date;
             date = Tent.Formatting.date.unformat(value);
-            return 'Week ' + date.getWeek() + ', ' + date.getFullYear();
+            return 'Week ' + date.getWeekOfYear() + ', ' + date.getFullYear();
           }
         })
       }, {
@@ -4266,6 +5151,46 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 
 
 (function() {
+
+  Tent.HideableSupport = Ember.Mixin.create({
+    classNameBindings: ['hideable'],
+<span id='Tent-Panel-property-hideable'>    /**
+</span>    	* @property {Boolean} hideable A boolean which determines whether the header is hideable.
+    */
+
+    hideable: false,
+<span id='Tent-Panel-property-hidden'>    /**
+</span>    	* @property {Boolean} hidden A boolean which determines whether the header is initially hidden
+    */
+
+    hidden: false,
+    didInsertElement: function() {
+      if (this.get('hideable')) {
+        if (this.get('hidden')) {
+          return this.hide();
+        }
+      }
+    },
+    hide: function() {
+      if (this.get('hideable')) {
+        this.$('').addClass('hidden');
+        this.set('hidden', true);
+        return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+      }
+    },
+    show: function() {
+      if (this.get('hideable')) {
+        this.$('').removeClass('hidden');
+        this.set('hidden', false);
+        return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+      }
+    }
+  });
+
+}).call(this);
+
+
+(function() {
 <span id='Tent-Section'>/**
 </span>  * @class Tent.Section
   *
@@ -4339,7 +5264,7 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
   */
 
 
-  Tent.Header = Ember.View.extend(Tent.SpanSupport, Tent.CollapsibleSupport, {
+  Tent.Header = Ember.View.extend(Tent.SpanSupport, Tent.CollapsibleSupport, Tent.HideableSupport, {
     tagName: 'header',
     classNameBindings: ['spanClass'],
 <span id='Tent-Header-property-title'>    /**
@@ -4415,7 +5340,7 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     },
     headerDidCollapse: (function() {
       return this.resize();
-    }).observes('headerView.collapsed')
+    }).observes('headerView.collapsed', 'headerView.hidden')
   });
 
 <span id='Tent-Footer'>  /**
@@ -4555,18 +5480,25 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['checkbox']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;controls\&quot;&gt;\n    &lt;label class=\&quot;checkbox\&quot;&gt;\n    \t{{loc view.label}}\n    \t{{view Ember.Checkbox checkedBinding=\&quot;view.checked\&quot; disabledBinding = \&quot;view.disabled\&quot; valueBinding= \&quot;view.value\&quot;}}\n    &lt;/label&gt;\n&lt;/div&gt; &quot;);
+Ember.TEMPLATES['checkbox']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;controls\&quot;&gt;\n    &lt;label class=\&quot;checkbox\&quot;&gt;\n    \t{{loc view.label}}\n    \t{{view Ember.Checkbox checkedBinding=\&quot;view.checked\&quot; disabledBinding = \&quot;view.disabled\&quot; valueBinding= \&quot;view.value\&quot;}}\n    &lt;/label&gt;\n\n    {{#if view.hasWarnings}}\n      &lt;ul class=\&quot;help-inline warning\&quot; {{bindAttr id=\&quot;view.warningId\&quot;}}&gt;{{#each warning in view.validationWarnings}}&lt;li&gt;{{loc warning}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}} \n&lt;/div&gt; &quot;);
 
 (function() {
 Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
     templateName: 'checkbox',
-    classNames: ['tent-checkbox', 'control-group']
+    classNames: ['tent-checkbox', 'control-group'],
+    change: function() {
+      this._super(arguments);
+      return this.set('isValid', this.validate());
+    },
+    formattedValue: (function() {
+      return this.get('checked');
+    }).property('checked')
   });
 
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{loc view.currentSelectedLabel}}&lt;/span&gt;\n    {{else}}\n      {{#if view.isRadioGroup}}\n        &lt;div class=\&quot;radio-group\&quot;&gt;\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               class=\&quot;tent-radio-group\&quot;\n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               valueBinding = \&quot;view.value\&quot;\n               tagName = \&quot;div\&quot;\n               templateName = \&quot;radio_group\&quot;\n        }} \n        &lt;/div&gt;\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               classBinding=\&quot;view.inputSizeClass\&quot; \n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               multipleBinding=\&quot;view.multiple\&quot;\n               promptBinding = \&quot;view._prompt\&quot; \n               valueBinding = \&quot;view.value\&quot;}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}\n  &lt;/div&gt;\n&lt;/div&gt;&quot;);
+Ember.TEMPLATES['select']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{loc view.currentSelectedLabel}}&lt;/span&gt;\n    {{else}}\n      {{#if view.isRadioGroup}}\n        &lt;div class=\&quot;radio-group\&quot;&gt;\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               class=\&quot;tent-radio-group\&quot;\n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               valueBinding = \&quot;view.value\&quot;\n               tagName = \&quot;div\&quot;\n               templateName = \&quot;radio_group\&quot;\n        }} \n        &lt;/div&gt;\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               classBinding=\&quot;view.inputSizeClass\&quot; \n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               multipleBinding=\&quot;view.multiple\&quot;\n               promptBinding = \&quot;view._prompt\&quot; \n               valueBinding = \&quot;view.value\&quot;}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasWarnings}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.warningId\&quot;}}&gt;{{#each warning in view.validationWarnings}}&lt;li&gt;{{loc warning}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n  &lt;/div&gt;\n&lt;/div&gt;&quot;);
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile(&quot;{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t&lt;label&gt;{{view Tent.RadioOption contentBinding=\&quot;this\&quot;}}&lt;/label&gt;\n{{/each}}&quot;);
 
@@ -4635,6 +5567,9 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
         return this.get('value');
       }
     }).property('value', 'selection'),
+    formattedValue: (function() {
+      return this.get('currentSelectedLabel');
+    }).property('currentSelectedLabel'),
     selectionDidChange: (function() {
       return this.set('content', this.get('selection'));
     }).observes('selected'),
@@ -5239,7 +6174,7 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['button']=Ember.Handlebars.compile(&quot;&lt;div \t{{bindAttr class=\&quot;view.classes view.buttonClass\&quot; disabled=\&quot;view.isDisabled\&quot;}} \n\t\t{{action triggerAction target=\&quot;view\&quot;}}\n\t\t{{bindAttr data-toggle=\&quot;view.dataToggle\&quot;}}\n\t\trole=\&quot;button\&quot;\n\t\t&gt;\n  &lt;i {{bindAttr class=\&quot;view.iconClass\&quot;}} /&gt; {{loc view.label}}\n  {{#if view.hasOptions}}\n  \t &lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n  {{/if}}\n&lt;/div&gt;\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\&quot;view._options\&quot; tagName=\&quot;ul\&quot; classNames=\&quot;dropdown-menu\&quot; itemViewClass=\&quot;Tent.ButtonOptions\&quot;}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          autoLaunch=false\n          header=\&quot;tent.warning.header\&quot; \n          primaryLabel=\&quot;tent.button.proceed\&quot; \n          secondaryLabel=\&quot;tent.button.dontProceed\&quot;\n          primaryType=\&quot;warning\&quot;\n          primaryIcon=\&quot;icon-ok icon-white\&quot;\n          secondaryIcon=\&quot;icon-remove\&quot;\n          primaryAction=\&quot;ignoreWarnings\&quot;\n          primaryTargetBinding=\&quot;view\&quot;\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t&lt;div class=\&quot;alert\&quot;&gt;\n  \t\t\t\t\t&lt;strong&gt;{{loc label}}:&lt;/strong&gt;  {{messages}}\n  \t\t\t\t&lt;/div&gt;\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}&quot;);
+Ember.TEMPLATES['button']=Ember.Handlebars.compile(&quot;&lt;div \t{{bindAttr class=\&quot;view.classes view.buttonClass\&quot; disabled=\&quot;view.isDisabled\&quot;}} \n\t\t{{action triggerAction target=\&quot;view\&quot;}}\n\t\t{{bindAttr data-toggle=\&quot;view.dataToggle\&quot;}}\n\t\trole=\&quot;button\&quot;\n\t\t&gt;\n  &lt;i {{bindAttr class=\&quot;view.iconClass\&quot;}}&gt;&lt;/i&gt; {{loc view.label}}\n  {{#if view.hasOptions}}\n  \t &lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n  {{/if}}\n&lt;/div&gt;\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\&quot;view._options\&quot; tagName=\&quot;ul\&quot; classNames=\&quot;dropdown-menu\&quot; itemViewClass=\&quot;Tent.ButtonOptions\&quot;}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          autoLaunch=false\n          header=\&quot;tent.warning.header\&quot; \n          primaryLabel=\&quot;tent.button.proceed\&quot; \n          secondaryLabel=\&quot;tent.button.dontProceed\&quot;\n          primaryType=\&quot;warning\&quot;\n          primaryIcon=\&quot;icon-ok icon-white\&quot;\n          secondaryIcon=\&quot;icon-remove\&quot;\n          primaryAction=\&quot;ignoreWarnings\&quot;\n          primaryTargetBinding=\&quot;view\&quot;\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t&lt;div class=\&quot;alert\&quot;&gt;\n  \t\t\t\t\t&lt;strong&gt;{{loc label}}:&lt;/strong&gt;  {{messages}}\n  \t\t\t\t&lt;/div&gt;\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n&quot;);
 
 
 <span id='Tent-Button'>/**
@@ -5738,6 +6673,169 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+
+<span id='Tent-DateRangeField'>/**
+</span>* @class Tent.DateRangeField
+* @extends Tent.TextField
+* 
+* This widget wraps the Filament Date Range Picker control. The selected value will consist of
+* two dates which are bound to the {@link #startDate} and {@link #endDate} properties. 
+* The {@link #value} property is also bound with the string value of the range, as seen in the 
+* input control ('date1 - date2').
+*
+* The initial value can be sourced from the value property if provided. If no value is provided,
+* then the startDate and endDate properties will be used to initialize the control.
+* 
+* Usage
+*       {{view Tent.DateRangeField label=&quot;&quot; 
+			valueBinding=&quot;&quot; 
+			startDateBinding=&quot;&quot;
+			endDateBinding=&quot;&quot;
+			showOtherMonths=true  
+			dateFormat=&quot;&quot;
+         }}
+*/
+
+
+(function() {
+Tent.DateRangeField = Tent.TextField.extend({
+    classNames: ['tent-date-range-field'],
+<span id='Tent-DateRangeField-property-presetRanges'>    /**
+</span>    	* @property {Array} presetRanges Array of objects to be made into menu range presets
+    */
+
+    presetRanges: [],
+<span id='Tent-DateRangeField-property-rangeSplitter'>    /**
+</span>    	* @property {String} rangeSplitter The character to use between two dates in the range
+    */
+
+    rangeSplitter: '-',
+<span id='Tent-DateRangeField-property-earliestDate'>    /**
+</span>    	* @property {Date} earliestDate The earliest date allowed in the system. e.g. the 'All Dates Before'
+    	* range will use this as the first date in the range
+    */
+
+    earliestDate: null,
+<span id='Tent-DateRangeField-property-latestDate'>    /**
+</span>    	* @property {Date} latestDate The latest date allowed in the system. e.g. the 'All Dates After'
+    	* range will use this as the last date in the range
+    */
+
+    latestDate: null,
+<span id='Tent-DateRangeField-property-closeOnSelect'>    /**
+</span>    	* @property {Boolean} closeOnSelect will close the rangepicker when a full range is selected
+    */
+
+    closeOnSelect: false,
+<span id='Tent-DateRangeField-property-arrows'>    /**
+</span>    	* @property {Boolean} arrows will add date range advancing arrows to input.
+    */
+
+    arrows: false,
+<span id='Tent-DateRangeField-property-startDate'>    /**
+</span>    	* @property {Date} startDate The selected start date in the range
+    */
+
+    startDate: null,
+<span id='Tent-DateRangeField-property-endDate'>    /**
+</span>    	* @property {Date} endDate The selected end date in the range
+    */
+
+    endDate: null,
+<span id='Tent-DateRangeField-property-dateFormat'>    /**
+</span>    	* @property {String} dateFormat The expected format for each date in the range
+    */
+
+    dateFormat: Tent.Formatting.date.getFormat(),
+    init: function() {
+      return this._super();
+    },
+    didInsertElement: function() {
+      var widget;
+      this._super(arguments);
+      widget = this;
+      this.initializeWithStartAndEndDates();
+      return this.$('input').daterangepicker({
+        rangeSplitter: this.get('rangeSplitter') != null ? this.get('rangeSplitter') : void 0,
+        dateFormat: this.get('dateFormat'),
+        earliestDate: this.get('earliestDate') != null ? this.get('earliestDate') : void 0,
+        latestDate: this.get('latestDate') != null ? this.get('latestDate') : void 0,
+        closeOnSelect: this.get('closeOnSelect'),
+        arrows: this.get('arrows'),
+        onChange: function() {
+          return widget.change();
+        }
+      });
+    },
+<span id='Tent-DateRangeField-method-getValue'>    /**
+</span>    	* @method getValue Return the current value of the input field
+    	* @return {String}
+    */
+
+    getValue: function() {
+      return this.$('input').val();
+    },
+<span id='Tent-DateRangeField-method-setValue'>    /**
+</span>    	* @method setValue Set the value of the input field
+    	* @param {String} value
+    */
+
+    setValue: function(value) {
+      return this.$('input').val(value);
+    },
+    initializeWithStartAndEndDates: function() {
+      var end, start;
+      if (!(this.get('value') != null)) {
+        if (this.get('startDate') != null) {
+          start = Tent.Formatting.date.format(this.get('startDate'), this.get('dateFormat'));
+        }
+        if (this.get('endDate') != null) {
+          end = Tent.Formatting.date.format(this.get('endDate'), this.get('dateFormat'));
+        }
+        return this.setValue(start + &quot; &quot; + this.get('rangeSplitter') + &quot; &quot; + end);
+      }
+    },
+    placeholder: (function() {
+      return this.get('dateFormat') + &quot; &quot; + this.get('rangeSplitter') + &quot; &quot; + this.get('dateFormat');
+    }).property('dateFormat'),
+    change: function() {
+      var unformatted;
+      this.set(&quot;formattedValue&quot;, this.format(this.getValue()));
+      this.set('isValid', this.validate());
+      if (this.get('isValid')) {
+        unformatted = this.unFormat(this.get('formattedValue'));
+        this.set('value', unformatted);
+        this.set('formattedValue', this.format(unformatted));
+        this.setStartDate();
+        return this.setEndDate();
+      }
+    },
+    setStartDate: function() {
+      var startString;
+      startString = this.getValue().split(this.get('rangeSplitter'))[0];
+      if (startString) {
+        return this.set('startDate', Tent.Formatting.date.unformat(startString.trim(), this.get('dateFormat')));
+      }
+    },
+    setEndDate: function() {
+      var endString;
+      endString = this.getValue().split(this.get('rangeSplitter'))[1];
+      if (endString != null) {
+        return this.set('endDate', Tent.Formatting.date.unformat(endString.trim(), this.get('dateFormat')));
+      }
+    },
+    format: function(value) {
+      return value;
+    },
+    unFormat: function(value) {
+      return value;
+    },
+    handleReadonly: (function() {}).observes('readOnly')
+  });
+
+}).call(this);
+
+
 Ember.TEMPLATES['textarea']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot;&gt;{{loc view.label}}&lt;span class='tent-required'/&gt;&lt;/label&gt;\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.hasPrefix}}  \n      &lt;span class=\&quot;add-on\&quot;&gt;{{loc view.prefix}}&lt;/span&gt;\n    {{/if}}     \n    {{#if view.textDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{view.formattedValue}}&lt;/span&gt;\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\&quot;view.inputSizeClass\&quot; \n          valueBinding=\&quot;view.formattedValue\&quot; \n          placeholderBinding=\&quot;view.translatedPlaceholder\&quot;\n          rowsBinding=\&quot;view.rows\&quot;\n          colsBinding=\&quot;view.cols\&quot;\n      }}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      &lt;span class=\&quot;help-block\&quot;&gt;{{loc view.helpBlock}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasErrors}}\n      &lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}  \n  &lt;/div&gt;\n\n&lt;/div&gt;\n&quot;);
 
 
@@ -5926,6 +7024,7 @@ Tent.FileUpload = Ember.View.extend({
       var _this = this;
       return this.$('input').fileupload({
         add: function(e, data) {
+          $('&lt;div class=&quot;modal-backdrop&quot; id=&quot;file-upload-wait&quot;&gt;&lt;/div&gt;').appendTo($('body'));
           return data.submit().success(_this.successWrapper(_this.get('parentView.controller')));
         }
       });
@@ -5933,6 +7032,7 @@ Tent.FileUpload = Ember.View.extend({
     successWrapper: function(context) {
       var success;
       success = this.get('uploadSuccessFunction');
+      $('#file-upload-wait').remove();
       if (context &amp;&amp; success) {
         return function(result, textStatus, jqXHR) {
           return success.apply(context, arguments);
@@ -5948,7 +7048,7 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasErrors}}\n&lt;section class=\&quot;alert-error clearfix\&quot;&gt;\n\t&lt;h5&gt;Errors&lt;/h5&gt;\n\t{{#if view.collapsible}}\n\t\t&lt;div {{bindAttr class=\&quot;view.expandoClass\&quot;}}&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}: &lt;/label&gt; &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t&lt;a href=\&quot;#\&quot; class=\&quot;dropdown-toggle pull-right close\&quot; data-toggle=\&quot;collapse\&quot; data-target=\&quot;.error-expando\&quot;&gt;\n\t\t\t\t\t&lt;b class=\&quot;caret\&quot;&gt;&lt;/b&gt;&lt;/a&gt;\n\t\t\t{{/if}}\n\t\t&lt;/div&gt;\n\t\t\n\t{{else}}\n\t\t&lt;div&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t&lt;/div&gt;\n\t{{/if}}\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasInfos}}\n&lt;section class=\&quot;alert-info clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearInfos\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;h5&gt;Info&lt;/h5&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.info}}\n\t\t\t&lt;div class=\&quot;info-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t&lt;section class=\&quot;alert clearfix\&quot;&gt;\n\t\t\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;removeMessageCommand\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t\t\t&lt;h5&gt;Warning&lt;/h5&gt;\n\t\t\t\t&lt;div&gt;\n\t\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t\t  \t\t\t\t&lt;label&gt;{{loc this.label}}:&lt;/label&gt; {{this.messages}}\n\t\t  \t\t\t&lt;/div&gt; \n\t\t\t \t&lt;/div&gt;\n\t\t&lt;/section&gt;\n\t{{/each}}\n{{/if}}\n\n&quot;);
+Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasErrors}}\n&lt;section class=\&quot;alert-error clearfix\&quot;&gt;\n\t&lt;h5&gt;Errors&lt;/h5&gt;\n\t{{#if view.collapsible}}\n\t\t&lt;div {{bindAttr class=\&quot;view.expandoClass\&quot;}}&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}: &lt;/label&gt; &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t&lt;a href=\&quot;#\&quot; class=\&quot;dropdown-toggle pull-right close\&quot; data-toggle=\&quot;collapse\&quot; data-target=\&quot;.error-expando\&quot;&gt;\n\t\t\t\t\t&lt;b class=\&quot;caret\&quot;&gt;&lt;/b&gt;&lt;/a&gt;\n\t\t\t{{/if}}\n\t\t&lt;/div&gt;\n\t\t\n\t{{else}}\n\t\t&lt;div&gt;\n\t\t\t{{#each view.error}}\n\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t  \t\t\t\t&lt;label&gt;{{loc this.label}}&lt;/label&gt; : &lt;ul&gt;{{#each this.messages}}&lt;li&gt;{{this}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n\t  \t\t\t&lt;/div&gt; \n\t\t  \t{{/each}}\n\t\t&lt;/div&gt;\n\t{{/if}}\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasInfos}}\n&lt;section class=\&quot;alert-info clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearInfos\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;h5&gt;Info&lt;/h5&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.info}}\n\t\t\t&lt;div class=\&quot;info-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasSuccesses}}\n&lt;section class=\&quot;alert-success clearfix\&quot;&gt;\n\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;clearSuccesses\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t&lt;h5&gt;Success&lt;/h5&gt;\n\t&lt;div class=\&quot;info-expando\&quot;&gt;\n\t\t{{#each view.success}}\n\t\t\t&lt;div class=\&quot;success-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;{{this.messages}}&lt;/div&gt; \n\t  \t{{/each}}\n\t&lt;/div&gt;\n&lt;/section&gt;\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t&lt;section class=\&quot;alert clearfix\&quot;&gt;\n\t\t\t{{view Tent.Button label=\&quot;x\&quot; type=\&quot;link\&quot; action=\&quot;removeMessageCommand\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close\&quot;}}\n\t\t\t&lt;h5&gt;Warning&lt;/h5&gt;\n\t\t\t\t&lt;div&gt;\n\t\t\t\t\t&lt;div class=\&quot;error-message\&quot; {{bindAttr data-target=\&quot;this.sourceId\&quot;}}&gt;\n\t\t  \t\t\t\t&lt;label&gt;{{loc this.label}}:&lt;/label&gt; {{this.messages}}\n\t\t  \t\t\t&lt;/div&gt; \n\t\t\t \t&lt;/div&gt;\n\t\t&lt;/section&gt;\n\t{{/each}}\n{{/if}}\n\n&quot;);
 
 (function() {
 <span id='Tent-MessagePanel'>/**
@@ -5971,7 +7071,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
    					label: 'Date'
    			})
    *
-   * - **type**: The type of message, can be 'error' or 'info'
+   * - **type**: The type of message, can be 'error', 'info', 'success' or 'warning'
    * - **messages**: An array of messages to display
    * - **sourceId**: If the message refers to a Tent widget, provide the elementId of the widget
    * so that focus can be transferred to it when the error is clicked
@@ -6042,7 +7142,11 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       this._super();
       this.clearAll();
       this.set('handler', $.proxy(this.handleNewMessage, this));
+      this.showContainerWhenVisible();
       return $.subscribe('/message', this.get('handler'));
+    },
+    didInsertElement: function() {
+      return this.getParentContainer();
     },
     willDestroy: function() {
       $.unsubscribe('/message', this.get('handler'));
@@ -6057,18 +7161,38 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
         if (!(msg.type != null)) {
           throw new Error('Message must have a type');
         }
-        arrayWithMessageRemoved = [];
-        if (msg.messages != null) {
-          arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
-            return item.sourceId !== msg.sourceId;
-          });
-          if (msg.messages.length &gt; 0) {
-            arrayWithMessageRemoved.pushObject($.extend({}, msg));
+        if (msg.type === 'clearAll') {
+          return this.clearAll();
+        } else {
+          arrayWithMessageRemoved = [];
+          if (msg.messages != null) {
+            arrayWithMessageRemoved = this.get(msg.type).filter(function(item, index, enumerable) {
+              return item.sourceId !== msg.sourceId;
+            });
+            if (msg.messages.length &gt; 0) {
+              arrayWithMessageRemoved.pushObject($.extend({}, msg));
+            }
           }
+          return this.set(msg.type, arrayWithMessageRemoved);
         }
-        return this.set(msg.type, arrayWithMessageRemoved);
       }
     },
+    getParentContainer: function() {
+      var header;
+      header = this.$('').parents('header.hideable:first');
+      if (header.length &gt; 0) {
+        return this.set('parentContainer', Ember.View.views[header.attr('id')]);
+      }
+    },
+    showContainerWhenVisible: (function() {
+      if (this.get('parentContainer') != null) {
+        if (this.get('hasErrors') || this.get('hasInfos') || this.get('hasSuccesses') || this.get('hasWarnings')) {
+          return this.get('parentContainer').show();
+        } else {
+          return this.get('parentContainer').hide();
+        }
+      }
+    }).observes('hasErrors', 'hasInfos', 'hasWarnings', 'hasSuccesses'),
     expandoClass: (function() {
       if (this.get('collapsed')) {
         return &quot;error-expando collapse&quot;;
@@ -6104,6 +7228,18 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       }
       return infos.uniq();
     },
+    getSuccessesForView: function(viewId) {
+      var success, successes, _i, _len, _ref;
+      successes = [];
+      _ref = this.get('success');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        success = _ref[_i];
+        if (success.sourceId === viewId) {
+          $.merge(successes, success.messages);
+        }
+      }
+      return successes.uniq();
+    },
     removeMessage: function(type, id) {
       var msgArr;
       msgArr = this.get(type);
@@ -6130,6 +7266,9 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     hasInfos: (function() {
       return this.get('info').length &gt; 0;
     }).property('info', 'info.@each'),
+    hasSuccesses: (function() {
+      return this.get('success').length &gt; 0;
+    }).property('success', 'success.@each'),
     hasWarnings: (function(severity) {
       return this.get('warning').length &gt; 0;
     }).property('warning', 'warning.@each'),
@@ -6151,6 +7290,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     clearAll: function() {
       this.clearErrors();
       this.clearInfos();
+      this.clearSuccesses();
       return this.clearWarnings();
     },
     clearErrors: function() {
@@ -6158,6 +7298,9 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
     },
     clearInfos: function() {
       return this.set('info', []);
+    },
+    clearSuccesses: function() {
+      return this.set('success', []);
     },
     clearWarnings: function() {
       return this.set('warning', []);
@@ -6185,6 +7328,8 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
   Tent.Message.ERROR_TYPE = 'error';
 
   Tent.Message.INFO_TYPE = 'info';
+
+  Tent.Message.SUCCESS_TYPE = 'success';
 
   Tent.Message.WARNING_TYPE = 'warning';
 

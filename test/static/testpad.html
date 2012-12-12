@@ -18,6 +18,7 @@
     <script src="javascript/jqGrid.js" type="text/javascript"></script>
     <script src="javascript/accounting.js" type="text/javascript"></script>
     <script src="javascript/date.js" type="text/javascript"></script>
+    <script src="javascript/date-range.js" type="text/javascript"></script>
     <script src="javascript/pubsub.js" type="text/javascript"></script>
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
@@ -172,6 +173,21 @@
             }}
             
 
+            {{view Tent.DateRangeField label="_dateRange" 
+              requiredBinding="Pad.isRequired" 
+              readOnlyBinding="Pad.isReadOnly" 
+              disabledBinding="Pad.isDisabled" 
+              textDisplayBinding="Pad.textDisplay" 
+              tooltip="_tooltip"
+              dateFormatBinding="Pad.dateFormat"
+              valueBinding="Pad.dateRange"
+              startDateBinding="Pad.startDate"
+              endDateBinding="Pad.endDate"
+              closeOnSelect=true
+              arrows=true
+            }}
+            
+
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
             warnings="email"
             }}
@@ -227,6 +243,7 @@
             <p>Radio Value : {{Pad.radioValue}}</p>
             <p>email : {{Pad.email}}</p>
             <p>Signature Date : {{Pad.date}}</p>
+            <p>Range = {{Pad.dateRange}}:  {{Pad.startDate}} :: {{Pad.endDate}}</p>
             <p>Text Area : {{Pad.textarea}}</p>
             <p>Filter: {{Pad.filter}}<p>
           {{/view}}
@@ -299,8 +316,7 @@
                   onRestoreRowBinding="Pad.jqOnRestoreRow"
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
-                  grouping=true
-                  groupField="effortdriven"
+
               }}
 
               {{view Tent.Button label="Submit" validate="true"}}
@@ -361,6 +377,11 @@
             {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad"}}
             <p id="click-label"></p>
             <br/>
+
+            <h5>disabled button</h5>
+            {{view Tent.Button label="_buttonClickMe" type="primary" action="clickEvent" target="Pad" isDisabled=true}}
+            <br/>
+
             {{view Tent.Button label="_buttonClickMe" type="success" optionsBinding="Pad.btnOptions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
             <br/>
             {{view Tent.Button label="_buttonOptions" type="info" optionsBinding="Pad.btnOptions"}}

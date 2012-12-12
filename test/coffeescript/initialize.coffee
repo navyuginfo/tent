@@ -34,6 +34,9 @@
 	Pad.numeric = "qwe"
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
+	 
+	Pad.startDate = new Date("12/6/2012")
+	Pad.endDate = new Date("12/21/2012")
 	Pad.amount = '1234567.67'
 	Pad.isRequired = true
 	Pad.isReadOnly = false
