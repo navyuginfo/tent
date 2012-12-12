@@ -26,9 +26,27 @@ require '../mixin/jquery_ui'
 Tent.DateRangeField = Tent.TextField.extend
 	classNames: ['tent-date-range-field']
 	###*
-	* @property {Array} presetRanges Array of objects to be made into menu range presets
+	* @property {Array} presetRanges Array of objects to be made into menu range presets. 
+	* 
+	* Each object requires 3 properties:
+	* - text: string, text for menu item
+	* - dateStart: date.js string, or function which returns a date object, start of date range
+	* - dateEnd: date.js string, or function which returns a date object, end of date range
 	###
-	presetRanges: []
+	presetRanges: null
+
+	###*
+	* @property {Array} 
+	* Available options are: 
+	* - 'specificDate'
+	* - 'allDatesBefore'
+	* - 'allDatesAfter'
+	* - 'dateRange'. 
+	*
+	* Each can be passed a string for link and label text. (example: presets: {specificDate: 'Pick a date'} )
+	###
+	presets: null
+	
 	###*
 	* @property {String} rangeSplitter The character to use between two dates in the range
 	###
@@ -79,12 +97,17 @@ Tent.DateRangeField = Tent.TextField.extend
 		widget = @
 		@initializeWithStartAndEndDates()
 		@.$('input').daterangepicker({
+			presetRanges: @get('presetRanges') if @get('presetRanges')?
+			presets: @get('presets') if @get('presets')?
 			rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
 			dateFormat: @get('dateFormat')
 			earliestDate: @get('earliestDate') if @get('earliestDate')?
 			latestDate: @get('latestDate') if @get('latestDate')?
 			closeOnSelect: @get('closeOnSelect')
 			arrows: @get('arrows')
+			datepickerOptions: {
+				dateFormat : @get('dateFormat')
+			}
 			onChange: ->
 				widget.change()
 		})
@@ -122,18 +145,31 @@ Tent.DateRangeField = Tent.TextField.extend
 			unformatted = @unFormat(@get('formattedValue'))
 			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
-			@setStartDate()
-			@setEndDate()
 
-	setStartDate: ->
-		startString = @getValue().split(@get('rangeSplitter'))[0]
-		if startString
-			@set('startDate', Tent.Formatting.date.unformat(startString.trim(), @get('dateFormat')))
+	validate: ->
+		isValid = @_super()
+		isValidStartDate = isValidEndDate = true
+		if @get('formattedValue')!=""
+			startString = @getValue().split(@get('rangeSplitter'))[0]
+			if startString?
+				try 
+					startDate = Tent.Formatting.date.unformat(startString.trim(), @get('dateFormat'))
+					@set('startDate', startDate)
+				catch e
+					isValidStartDate = false
+					@set('startDate', null)
 
-	setEndDate: ->
-		endString = @getValue().split(@get('rangeSplitter'))[1]
-		if endString?
-			@set('endDate', Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat')))
+			endString = @getValue().split(@get('rangeSplitter'))[1]
+			if endString?
+				try 
+					endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
+					@set('endDate', endDate)
+				catch e
+					isValidEndDate = false
+					@set('endDate', null)
+
+		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless (isValidStartDate and isValidEndDate)
+		isValid && isValidStartDate && isValidEndDate
 
 	#Format for display
 	format: (value)->

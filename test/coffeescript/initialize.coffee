@@ -46,6 +46,10 @@
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
 	Pad.currencies = ['USD','JPY','XXX','CNY', 'YYY']
 	Pad.changingCurrency = 'XXX'
+	#Pad.presetRanges = [
+    #	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
+  	#]
+  	#Pad.presets = {specificDate: 'Pick a date'}
 
 	Pad.modalSubmit = ->
 		console.log("Submit button clicked")
