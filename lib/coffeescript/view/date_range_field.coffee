@@ -111,6 +111,8 @@ Tent.DateRangeField = Tent.TextField.extend
 			onChange: ->
 				widget.change()
 		})
+		@handleReadonly()
+		@handleDisabled()
 
 	###*
 	* @method getValue Return the current value of the input field
@@ -193,5 +195,12 @@ Tent.DateRangeField = Tent.TextField.extend
 			@.$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
 			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('readOnly')
+
+	handleDisabled: (->
+		if @get('disabled')? && @get('disabled')
+			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
+		else 
+			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
+	).observes('disabled')
 
 		 
