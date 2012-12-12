@@ -179,9 +179,19 @@ Tent.DateRangeField = Tent.TextField.extend
 	unFormat: (value)->
 		value
 
+	readOnlyHandler: (e)->
+		e.preventDefault()
+		e.stopPropagation()
+		$('.ui-daterangepicker').hide()
+		return false
+	
 	handleReadonly: (->
-		#if @get('readOnly')
-
+		if @get('readOnly')? && @get('readOnly')
+			@.$('input').bind('click', @get('readOnlyHandler'))
+			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
+		else 
+			@.$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
+			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('readOnly')
 
 		 
