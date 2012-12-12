@@ -316,7 +316,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	getTitleForColumn: (colName)->
 		for column in @get('columns')
-			return Tent.I18n.loc(column.title) if column.field==colName
+			return Tent.I18n.loc(column.title) if column.name==colName
 
 
 	# Adapter to get column names from current datastore columndescriptor version  

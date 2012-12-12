@@ -74,6 +74,8 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			}
 		)
 
+		this.gridDataDidChange()
+
 	renameColumnHeaderBindings: ->
 		widget = this
 
