@@ -189,6 +189,8 @@ a[rel=tooltip] {
 
 		label {
 			display: inline-block;
+			vertical-align: top;
+			padding-right: 7px;
 			font-size: 13px;
 			font-weight: bold;
 			text-shadow: 0 1px 1px #FFEFEF;
@@ -202,6 +204,7 @@ a[rel=tooltip] {
 			display: inline-block;
 			list-style: none;
 			margin-left: 0px;
+			padding-top: 1px;
 		}
 	}
 
