@@ -16,7 +16,8 @@ Tent.JqGrid.Grouping = Ember.Object.extend
 Tent.JqGrid.Grouping.getComparator = (dataType, groupType)->
 		comparator = @ranges.default.comparator
 		if not @ranges[dataType]?
-			throw new Error('Invalid data type for grid grouping.')
+			dataType = "string"
+			#throw new Error('Invalid data type for grid grouping.')
 		for type in @ranges[dataType]
 			if type.name == groupType
 				comparator = type.comparator if type.comparator?
@@ -191,4 +192,9 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 			}
 		]
 
+ 
+###*
+* @class Tent.JqGrid.Grouping.ranges.amount
+###
 Tent.JqGrid.Grouping.ranges.amount = Tent.JqGrid.Grouping.ranges.number
+

@@ -30,10 +30,12 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 							{{/if}}
 						</ul>"
 
+
+				groupType = Tent.JqGrid.Grouping.ranges[column.type] || Tent.JqGrid.Grouping.ranges['string']
 				context = 
 					column: column
 					title: Tent.I18n.loc column.title
-					groupType: Tent.JqGrid.Grouping.ranges[column.type]
+					groupType: groupType
 				
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 				@$(columnDivId).after template(context)
