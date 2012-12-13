@@ -17,7 +17,7 @@ module "Tent.FileUpload Widget", ->
     @TemplateTests = undefined
 
 test(
-  'successWrapper should return a function callable with context',
+  'uploadResultFunctionWrapper should return a function callable with context',
   ->
     view = Ember.View.create
       template: Ember.Handlebars.compile '{{view Tent.FileUpload dataUrl="/fileupload"}}'
@@ -28,12 +28,14 @@ test(
 
     success = (result, textStatus, jqXHR) -> @
 
+    functionName = 'TestCallback'
+
     upload = Tent.FileUpload.create()
 
-    upload.set 'uploadSuccessFunction', success
+    upload.set 'upload' + functionName + 'Function', success
 
     ok(
-      upload.successWrapper(context)() == context,
-      "data should have been removed from array"
+      upload.uploadResultFunctionWrapper(context, functionName)() == context,
+      "uploadResultFunctionWrapper should have returned a function that returned its context when called"
     )
 )
