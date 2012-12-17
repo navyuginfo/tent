@@ -65,6 +65,10 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 		@include maximized();
 	}
 
+	&.dialog {
+		background-color: white;
+	}
+
 	.ui-jqgrid tr.jqgrow td {
 		white-space: normal;
 		&.error {
@@ -286,6 +290,17 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 			color: #B94A48;
 		}
 	}
+}
+
+#jqgrid-backdrop {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1040;
+	background-color: black;
+	opacity: 0.0;
 }
 
 .dropdown-submenu-left > .dropdown-menu.custom-export {
