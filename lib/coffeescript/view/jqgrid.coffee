@@ -177,7 +177,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
 		})
-
+		@addMarkupToHeaders()
 		@addNavigationBar()
 		@addColumnDropdowns()
 		@gridDataDidChange()
@@ -248,6 +248,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			view = view.get('parentView')
 		if view.get('controller')?
 			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+
+	# jqGrid-generated markup is not granular enough for the styling that we want.
+	# Here we add the markup rather than modifying the plugin code.
+	addMarkupToHeaders: ->
+		@$('.ui-th-column div').each(()->
+			$(this).contents().filter(()->
+				this.nodeType == 3
+			).replaceWith($('<span class="title">' + $(this).text() + '</span>'))
+		)
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
