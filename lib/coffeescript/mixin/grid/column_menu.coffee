@@ -102,6 +102,8 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				widget.renameGridColumnHeader(columnField, originalTitle)
 				$(this).val(originalTitle)
 				widget.toggleColumnDropdown(columnField)
+				e.preventDefault()
+				e.stopPropagation()
 			)
 		)
 
