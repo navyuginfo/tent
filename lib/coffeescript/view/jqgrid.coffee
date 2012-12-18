@@ -152,7 +152,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			sortable: true, #columns can be dragged
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
-			viewsortcols: [false,'vertical',false],
+			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: @get('pageSize') if @get('paged'),
@@ -180,7 +180,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
 		})
-
+		@addMarkupToHeaders()
 		@addNavigationBar()
 		@addColumnDropdowns()
 		@gridDataDidChange()
@@ -251,6 +251,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			view = view.get('parentView')
 		if view.get('controller')?
 			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+
+	# jqGrid-generated markup is not granular enough for the styling that we want.
+	# Here we add the markup rather than modifying the plugin code.
+	addMarkupToHeaders: ->
+		@$('.ui-th-column div').each(()->
+			$(this).contents().filter(()->
+				this.nodeType == 3
+			).replaceWith($('<span class="title">' + $(this).text() + '</span>'))
+		)
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
