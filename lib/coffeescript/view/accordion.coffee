@@ -75,7 +75,16 @@ Tent.AccordionGroup = Ember.View.extend
 	).property("elementId")
 
 
+###*
+* @class Tent.AccordionHeading
+* Used in the case where a custom header is required for an accordion group
+###
 Tent.AccordionHeading = Ember.View.extend
+	###*
+	* @property {String} title A title to display which acts as the link text to expand the group
+	* A title may alternatively be provided by a {@link Tent.AccordionTitle} within the body of the heading
+	###
+	title: null
 	classNames: ['accordion-heading']
 	layoutName: 'accordion_heading'
 	dataParent: (->
@@ -86,6 +95,11 @@ Tent.AccordionHeading = Ember.View.extend
 		"#" + @get('parentView.elementId') + " .accordion-body"
 	).property("elementId")
 
+###*
+* @class Tent.AccordionTitle
+* Generates a title link for use within the body of a header. This link will expand and 
+* contract the group 
+###
 Tent.AccordionTitle = Ember.View.extend
 	tagName: 'span'
 	layout: Ember.Handlebars.compile('<a class="accordion-toggle" data-toggle="collapse" 
@@ -93,6 +107,10 @@ Tent.AccordionTitle = Ember.View.extend
 		{{bindAttr href="view.href"}}>
 		{{loc view.title}}
 	</a>')
+	###*
+	* @property {String} title A title to display which acts as the link text to expand the group
+	###
+	title: null
 	dataParent: (->
 		"#" + @get("parentView.parentView.parentView.elementId")
 	).property("elementId")
@@ -100,6 +118,10 @@ Tent.AccordionTitle = Ember.View.extend
 		"#" + @get('parentView.parentView.elementId') + " .accordion-body"
 	).property("elementId")
 
+###*
+* @class Tent.AccordionBody
+* Contains the body part of an accordion group. This is used only when a {@link Tent.AccordionHeading} is required.
+###
 Tent.AccordionBody = Ember.View.extend
 	classNames: ['accordion-body','collapse']
 	layout: Ember.Handlebars.compile('<div class="accordion-inner">{{yield}}</div>')
