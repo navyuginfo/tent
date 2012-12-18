@@ -1,15 +1,15 @@
 {{#if view.title}}
-	<div class="accordion-heading">
+	<span>
 		<a class="accordion-toggle" data-toggle="collapse" 
 			{{bindAttr data-parent="view.dataParent"}}
 			{{bindAttr href="view.href"}}>
 			{{loc view.title}}
 		</a>
-	</div>
-	<div class="accordion-body collapse" {{bindAttr id="view.id"}}>
-		<div class="accordion-inner">{{yield}}</div>
-	</div>
+	</span>
+	<span>
+		{{yield}}
+	</span>
 {{else}}
-	{{yield}}
+	<span class="accordion-toggle accordion-head-content">{{yield}}</span>
 {{/if}}
- 
+	 

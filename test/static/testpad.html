@@ -411,7 +411,29 @@
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Containers" id="container-section"}}
             <h5>Accordion</h5>
+
+
             {{#view Tent.Accordion}}
+              {{#view Tent.AccordionGroup }}
+                {{#view Tent.AccordionHeading}}
+                  <b>more content</b>  <span class="pull-right">{{view Tent.AccordionTitle title="x"}}</span>
+                {{/view}}
+                {{#view Tent.AccordionBody}}
+                  body content
+                {{/view}}
+              {{/view}}
+
+
+              {{#view Tent.AccordionGroup }}
+                {{#view Tent.AccordionHeading title="hello"}}
+                  <b>auto title</b>   
+                {{/view}}
+                {{#view Tent.AccordionBody}}
+                  body content
+                {{/view}}
+              {{/view}}
+
+
               {{#view Tent.AccordionGroup title="_accordionTitle1"}}
                 {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
               {{/view}}

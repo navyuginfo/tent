@@ -79,3 +79,17 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 		}
 	}
 }
+
+/* Accordion */
+.accordion-heading {
+	.accordion-toggle {
+		display: inline-block;
+	}
+	.accordion-head-content {
+		cursor: default;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		box-sizing: border-box;
+		width: 100%;
+	}
+}
