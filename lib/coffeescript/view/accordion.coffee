@@ -1,8 +1,9 @@
 ###*
 * @class Tent.Accordion
 * 
-* ##Usage
-*
+* ##Usage 1
+* 
+* This format can be used when simple text links can be used in the headers
 *   	{{#view Tent.Accordion}}
 *	      {{#view Tent.AccordionGroup title="Title1"}}
 *	        {{view Tent.Button label="Button with options only" type="info" optionsBinding="Pad.btnOptions"}}
@@ -18,6 +19,32 @@
 *	          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
 *	      {{/view}}
 *	    {{/view}}
+*
+* Where more complex content needs to go in the headers, this format may be used:
+        {{#view Tent.Accordion}}
+          {{#view Tent.AccordionGroup }}
+            {{#view Tent.AccordionHeading title="Title1"}}
+              <b>Some header content</b>  
+            {{/view}}
+            {{#view Tent.AccordionBody}}
+              body content
+            {{/view}}
+          {{/view}}
+           ...
+        {{/view}}
+
+* Or where the title needs to be located other than in the default position:
+        {{#view Tent.Accordion}}
+          {{#view Tent.AccordionGroup }}
+            {{#view Tent.AccordionHeading}}
+              <b>more content</b>  <span class="pull-right">{{view Tent.AccordionTitle title="x"}}</span>
+            {{/view}}
+            {{#view Tent.AccordionBody}}
+              body content
+            {{/view}}
+          {{/view}}
+           ...
+        {{/view}}
 ###
 
 require '../template/accordion_group'
