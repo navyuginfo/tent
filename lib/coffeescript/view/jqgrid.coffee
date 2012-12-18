@@ -409,12 +409,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@getTableDom().setGridWidth(@$().width())
 
 	hideGrid: ->
-		@getTableDom().jqGrid('clearGridData')
+		#@getTableDom().jqGrid('clearGridData')
 		@$(".gridpager").hide()
+		@$(".grid-table").hide()
+
 	
 	showGrid: ->
-		@gridDataDidChange()
+		#@gridDataDidChange()
 		@$(".gridpager").show()
+		@$(".grid-table").show()
 
 	getTitleForColumn: (colName)->
 		for column in @get('columns')
