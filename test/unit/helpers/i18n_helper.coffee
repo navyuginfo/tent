@@ -21,6 +21,29 @@ test 'Basic translation', ->
 	
 	equal view.$().text(), 'testhelper', 'translate testhelper'
 
+test 'Basic translation of a string', ->
+	Tent.I18n.loadTranslations({
+		_test_helper: 'testhelper'
+	})
+
+	view = Ember.View.create
+    	template: Ember.Handlebars.compile '{{loc _test_helper}}' 
+	appendView()
+
+	equal view.$().text(), 'testhelper', 'translate testhelper'
+
+test 'Basic translation of a nested string', ->
+	Tent.I18n.loadTranslations({
+		root: 
+			_test_helper: 'testhelper'
+	})
+
+	view = Ember.View.create
+    	template: Ember.Handlebars.compile '{{loc root._test_helper}}' 
+	appendView()
+
+	equal view.$().text(), 'testhelper', 'translate testhelper'
+	
 test 'Translation with arg substitution', ->
 	Tent.I18n.loadTranslations({_test_helper: 'My name is %@ %@'})
 	application.key = "_test_helper"
