@@ -90,8 +90,10 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).property('target', 'content', 'context')
 
   triggerAction: (dontValidate)->
-    if @get('validate') and not dontValidate==false
+    if !@isDisabled and @get('validate') and not dontValidate==false
       @doValidation()
+
+    # validation may trigger change isDisabled
     if !@isDisabled
       if !@get('hasOptions')
         if @get('warn')==true and @get('doWarningsExist')

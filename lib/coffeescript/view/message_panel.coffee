@@ -91,7 +91,7 @@ Tent.MessagePanel = Ember.View.extend
 	init: ->
 		@_super()
 		@clearAll()
-		@set('handler', $.proxy(@handleNewMessage, @))
+		@set('handler', $.proxy(@handleNewMessage(), @))
 		@showContainerWhenVisible()
 		$.subscribe('/message', @get('handler') )
 
@@ -105,21 +105,24 @@ Tent.MessagePanel = Ember.View.extend
 	setActive: (isActive)->
 		@set('isActive', isActive)
 
-	handleNewMessage: (e, msg)->
-		if @get('isActive')
-			if not msg.type?
-				throw new Error('Message must have a type')
-			if msg.type == 'clearAll'
-				@clearAll()
-			else
-				arrayWithMessageRemoved = []
-				if msg.messages? 
-					arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
-						item.sourceId != msg.sourceId
-					)
-					if msg.messages.length > 0
-						arrayWithMessageRemoved.pushObject($.extend({}, msg))
-				@set(msg.type, arrayWithMessageRemoved)
+	handleNewMessage: ->
+		# Return a function so that it is unique to this messagepanel instance.
+		# Otherwise all subscriptions will be unsubscribed rather than one. 
+		return (e, msg)->
+			if @get('isActive')
+				if not msg.type?
+					throw new Error('Message must have a type')
+				if msg.type == 'clearAll'
+					@clearAll()
+				else
+					arrayWithMessageRemoved = []
+					if msg.messages? 
+						arrayWithMessageRemoved = @get(msg.type).filter((item, index, enumerable) ->
+							item.sourceId != msg.sourceId
+						)
+						if msg.messages.length > 0
+							arrayWithMessageRemoved.pushObject($.extend({}, msg))
+					@set(msg.type, arrayWithMessageRemoved)
 
 	getParentContainer: ->
 		header = @$('').parents('header.hideable:first')
