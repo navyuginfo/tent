@@ -71,6 +71,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 			#	postdata is of the form:
 			#       _search: false,	nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
 			if @shouldSort(postdata)
+				@getTableDom().jqGrid('groupingRemove', true);
 				@get('collection').sort(
 					fields: [
 						sortDir: postdata.sord
