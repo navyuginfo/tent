@@ -87,7 +87,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 	shouldSort: (postdata)->
 		sortable = false
 		for columnDef in @get('columns')
-			if columnDef.name == postdata.sidx and columnDef.sortable? and columnDef.sortable
+			if postdata.sidx.indexOf(columnDef.name) > -1 and columnDef.sortable? and columnDef.sortable
+				postdata.sidx = columnDef.name
 				sortable = true
 
 		sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
