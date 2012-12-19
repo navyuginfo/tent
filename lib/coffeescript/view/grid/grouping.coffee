@@ -78,6 +78,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
 					rowTitle: (value)->
+						if (typeof value == "string")
+							value = Tent.Formatting.date.unformat(value)
 						'Week ' + value.getWeekOfYear() + ', ' + value.getFullYear()
 			}
 			{
@@ -90,6 +92,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					compare: (last, value)->
 						(last.getFullYear() == value.getFullYear()) and (last.getMonth() == value.getMonth())
 					rowTitle: (value)->
+						if (typeof value == "string")
+							value = Tent.Formatting.date.unformat(value)
 						Tent.Formatting.date.format(value,'MM') + ' ' + value.getFullYear()
 			}
 			{
@@ -104,6 +108,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 						(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
 						
 					rowTitle: (value)->
+						if (typeof value == "string")
+							value = Tent.Formatting.date.unformat(value)
 						quarter = Math.floor(value.getMonth()/3) + 1
 						'Quarter ' + quarter + ', ' + value.getFullYear()
 			}
@@ -117,6 +123,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					compare: (last, value)->
 						last.getFullYear() == value.getFullYear()
 					rowTitle: (value)->
+						if (typeof value == "string")
+							value = Tent.Formatting.date.unformat(value)
 						'Year = ' + value.getFullYear()
 			}
 		]
@@ -159,7 +167,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 						return @get('lower') <= value <= @get('upper')
 
 					rowTitle: (value)->
-						value = parseFloat(value)
+						if (typeof value == "string")
+							value = Tent.Formatting.number.unformat(value)
 						@calculateRange(value)
 						return @get('lower') + ' - ' + @get('upper')
 

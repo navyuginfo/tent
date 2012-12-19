@@ -200,7 +200,13 @@
             warnings="email"
             }}
 
-            {{view Tent.Button label="Submit" validate=true warn=true}}
+
+            <div class="control-group">
+              <label class="control-label"></label>
+              <div class="controls">{{view Tent.Button label="Submit" validate=true warn=true}}</div>
+            </div>
+
+            
 
             <h4>Validations</h4>
             {{view Tent.TextField 
