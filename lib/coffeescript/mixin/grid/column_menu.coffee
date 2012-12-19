@@ -64,6 +64,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 	groupByColumn: (column, groupType, columnType)->
 		for columnDef in @get('columns')
 			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
+				@getTableDom().sortGrid(column)
 				@get('collection').sort(
 					fields: [
 						sortDir: 'asc'
