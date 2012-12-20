@@ -27,6 +27,11 @@ Tent.Formatting = {} unless Tent.Formatting?
 
 
 Tent.Formatting.amount = Ember.Object.create
+	cleanup: (value) ->
+		if value? and value!=''
+			Tent.Formatting.amount.format(accounting.unformat(value))
+		else
+			""
 
 	###*
 	* @method format

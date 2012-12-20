@@ -36,15 +36,16 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
  
   validate: -> 
     didOtherValidationPass = @_super()
+    @set('formattedValue', Tent.Formatting.amount.cleanup(@get('formattedValue')))
     formattedValue = @get('formattedValue')
-    isValidNumber = @get('validAmountExp').test(formattedValue)
+    #isValidNumber = @get('validAmountExp').test(formattedValue)
     isValidAmount = @isValidAmount(@get('formattedValue'))
     isValidCurrency = @get('isValidCurrency')
-    if didOtherValidationPass
-      @addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber    
+    #if didOtherValidationPass
+    #  @addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber    
     @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
     @addValidationError(Tent.messages.CURRENCY_ERROR) unless isValidCurrency   
-    (isValidCurrency and isValidAmount and isValidNumber and didOtherValidationPass)
+    (isValidCurrency and isValidAmount and didOtherValidationPass)
 
   isValidAmount: (value)->
     if (value<0)
@@ -60,11 +61,7 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   # Format for binding
   unFormat: (value)->
     return Tent.Formatting.amount.unformat(value)
-
-  #removes the formatting so user does not see commas while entering the amount 
-  focusIn: ->
-    if @get('isValid')
-      @set('formattedValue', @unFormat(@get('formattedValue')))
+  
 
   #formats the value when the input field is out of focus
   focusOut: ->

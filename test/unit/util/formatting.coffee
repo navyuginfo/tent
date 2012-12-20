@@ -60,6 +60,22 @@ test 'Amount unformatting with divisor', ->
 	equal formatter.unformat(undefined), null, 'undefined'
 	equal formatter.unformat(""), 0, 'empty string'
 
+test 'Amount cleanup', ->
+	formatter = Tent.Formatting.amount
+
+	equal formatter.cleanup('123,456.00'), '123,456.00', 'clean'
+	equal formatter.cleanup('12sd3,abc456.00'), '123,456.00', 'alph-numerics'
+	equal formatter.cleanup('1,2,3,4,5,6.00'), '123,456.00', 'invalid commas'
+	equal formatter.cleanup('3456.78.9'), '3,456.78', 'two decimals'
+	equal formatter.cleanup('123,456..09'), '123,456.00', 'two adjacent decimals'
+	equal formatter.cleanup('123,456.011'), '123,456.01', '3 decimal places'
+	equal formatter.cleanup('-12s3,4s56.00'), '-123,456.00', 'negative'
+	equal formatter.cleanup('ss.09'), '0.09', 'fraction only'
+	equal formatter.cleanup(123456.02), '123,456.02', 'number'
+	equal formatter.cleanup(null), '', 'null'
+	equal formatter.cleanup(undefined), '', 'undefined'
+	equal formatter.cleanup(''), '', 'empty'
+
 test 'Number formatting', ->
 	formatter = Tent.Formatting.number
 
