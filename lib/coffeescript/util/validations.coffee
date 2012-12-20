@@ -55,3 +55,13 @@ Tent.Validations.maxLength = Tent.Validation.create
     @isValueEmpty(value) or value.length <= options.max
 
   ERROR_MESSAGE: Tent.messages.MAX_LENGTH
+
+Tent.Validations.regExp = Tent.Validation.create
+  validate: (value, options, message)->
+    if not options? or not options.regexp?
+      return false
+    message = if not message? and options.message? then Tent.messages.REG_EXP
+    @set('ERROR_MESSAGE', message) if options.message?
+    @isValueEmpty(value) or options.regexp.test(value)
+
+  ERROR_MESSAGE: Tent.messages.REG_EXP
