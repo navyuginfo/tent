@@ -1,4 +1,3 @@
-
 # APi for validation
 #Tent.Validations.get('Capitalize').validate(value, options, message)
 
@@ -55,3 +54,13 @@ Tent.Validations.maxLength = Tent.Validation.create
     @isValueEmpty(value) or value.length <= options.max
 
   ERROR_MESSAGE: Tent.messages.MAX_LENGTH
+
+Tent.Validations.regExp = Tent.Validation.create
+  validate: (value, options, message)->
+    if not options? or not options.regexp?
+      return false
+    message = if(not message? and options.message?) then options.message else Tent.messages.REG_EXP
+    @set('ERROR_MESSAGE', message) if message?
+    @isValueEmpty(value) or options.regexp.test(value)
+
+  ERROR_MESSAGE: Tent.messages.REG_EXP

@@ -39,24 +39,31 @@ Tent.ValidationSupport = Ember.Mixin.create
     valid = true
     if @get('validations')? and @get('validations') != ""
       for vName in @get('validations').split(',')
+        isValid = true
         validator = Tent.Validations.get(vName.trim())
         if not validator?
           throw new Error('Validator ['+vName+'] cannot be found')
         options = @parseCustomValidationOptions(vName)
-        valid = valid and validator.validate(@get('formattedValue'), options)
-        @addValidationError(validator.getErrorMessage(@get('formattedValue'), options)) unless valid
+        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        unless isValid
+          @addValidationError(validator.getErrorMessage(@get('formattedValue'), options))
+          valid =isValid
     return valid
 
   executeCustomWarnings:->
     valid = true
     if @get('warnings')?  and @get('warnings') != ""
       for wName in @get('warnings').split(',')
+        isValid = true
         validator = Tent.Validations.get(wName.trim())
         if not validator?
           throw new Error('Validator ['+wName+'] cannot be found')
         options = @parseCustomValidationOptions(wName)
-        valid = valid and validator.validate(@get('formattedValue'), options)
-        @addValidationWarning(validator.getErrorMessage(@get('formattedValue'), options)) unless valid
+        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        unless isValid
+          @addValidationWarning(validator.getErrorMessage(@get('formattedValue'), options))
+          valid = isValid
+    return valid
 
   parseCustomValidationOptions:(vName) ->
     if @get('validationOptions')? 

@@ -14,5 +14,7 @@ Tent.messages.DATE_BETWEEN_ERROR = "error.dateBetween"
 Tent.messages.DATE_FUTURE_ERROR = "error.dateFuture"
 Tent.messages.MAX_LENGTH = "error.maxLength"
 Tent.messages.CURRENCY_ERROR = "error.invalidCurrency"
+Tent.messages.REG_EXP = "error.regexp"
+
 
 
