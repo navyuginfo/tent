@@ -184,6 +184,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@addNavigationBar()
 		@addColumnDropdowns()
 		@gridDataDidChange()
+		@columnsDidChange()
 
 
 	didSelectRow: (itemId, status, e)->
