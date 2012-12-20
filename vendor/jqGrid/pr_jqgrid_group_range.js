@@ -210,5 +210,35 @@ $.jgrid.extend({
 			// free up memory
 			str = null;
 		});
-	}
+	},
+
+	groupingGroupBy : function (name, options ) {
+		return this.each(function(){
+			var $t = this;
+			if(typeof(name) === "string") {
+				name = [name];
+			}
+			var grp = $t.p.groupingView;
+			$t.p.grouping = true;
+
+			//Set default, in case visibilityOnNextGrouping is undefined 
+			if (typeof grp.visibiltyOnNextGrouping === "undefined") {
+				grp.visibiltyOnNextGrouping = [];
+			}
+			var i;
+			// show previous hidden groups if they are hidden and weren't removed yet
+			for(i=0;i<grp.groupField.length;i++) {
+				if(!grp.groupColumnShow[i] && grp.visibiltyOnNextGrouping[i]) {
+				$($t).jqGrid('showCol',grp.groupField[i]);
+				}
+			}
+			// set visibility status of current group columns on next grouping
+			for(i=0;i<name.length;i++) {
+				grp.visibiltyOnNextGrouping[i] = $("#"+$.jgrid.jqID($t.p.id)+"_"+$.jgrid.jqID(name[i])).is(":visible");
+			}
+			$t.p.groupingView = $.extend($t.p.groupingView, options || {});
+			grp.groupField = name;
+			/*$($t).trigger("reloadGrid");*/
+		});
+	},
 })

@@ -65,12 +65,6 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		for columnDef in @get('columns')
 			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
 				@getTableDom().sortGrid(column)
-				@get('collection').sort(
-					fields: [
-						sortDir: 'asc'
-						field: column
-					]
-				)
 
 		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
 		this.getTableDom().groupingGroupBy(column, {
