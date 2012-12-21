@@ -13,6 +13,12 @@ test 'getComparator', ->
 
 	ok group.getComparator('date', 'xxxx')?, 'fall back to default with invalid groupType'
 
+test 'Row Title',->
+	c = Tent.JqGrid.Grouping.comparator.create()
+	equal c.rowTitle('title1'), 'title1', 'Identity'
+	equal c.rowTitle(null), '', 'null'
+	equal c.rowTitle(undefined), '', 'undefined'
+
 
 test 'Boolean Ranges', ->
 	group = Tent.JqGrid.Grouping
