@@ -42,7 +42,7 @@ Tent.JqGrid.Grouping.comparator = Ember.Object.extend
 	* @param {Object} value the value which is used to determine the range
 	###
 	rowTitle: (value)->
-		value
+		if value? then value else ''
 
 ###*
 * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
