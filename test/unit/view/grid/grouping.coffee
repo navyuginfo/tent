@@ -22,7 +22,7 @@ test 'Boolean Ranges', ->
 	ok not comparator.compare(true, false), 'true/false'
 	ok comparator.compare(false, false), 'false/false'
 
-test 'Number Ranges', ->
+test 'Number Ranges - 10s', ->
 	group = Tent.JqGrid.Grouping
 	comparator = group.getComparator('number','10s')
 	ok comparator.compare(2, 6), '2/6'
@@ -36,6 +36,36 @@ test 'Number Ranges', ->
 	equal comparator.rowTitle('97'), '90 - 99','97'
 	equal comparator.rowTitle('-5'), '-10 - -1','-5'
 	equal comparator.rowTitle('-10'), '-10 - -1','-5'
+
+test 'Number Ranges - 100s', ->
+	group = Tent.JqGrid.Grouping
+	comparator = group.getComparator('number','100s')
+	ok comparator.compare(2, 60), '2/6'
+	ok comparator.compare(0, 60), '0/6'
+	ok not comparator.compare(0, 100), '0/100'
+	ok not comparator.compare(2, 106), '2/106'
+	ok comparator.compare(-199, -101), '-199/-101'
+	ok comparator.compare(-500, -450), '-500/-450'
+
+	equal comparator.rowTitle('9'), '0 - 99','9'
+	equal comparator.rowTitle('97'), '0 - 99','97'
+	equal comparator.rowTitle('-5'), '-100 - -1','-5'
+	equal comparator.rowTitle('-100'), '-100 - -1','-5'
+
+test 'Number Ranges - 1000s', ->
+	group = Tent.JqGrid.Grouping
+	comparator = group.getComparator('number','1000s')
+	ok comparator.compare(200, 600), '200/600'
+	ok comparator.compare(0, 600), '0/600'
+	ok not comparator.compare(0, 1000), '0/1000'
+	ok not comparator.compare(2, 1006), '2/1006'
+	ok comparator.compare(-999, -101), '-999/-101'
+	ok comparator.compare(-5000, -4500), '-5000/-4500'
+
+	equal comparator.rowTitle('650'), '0 - 999','650'
+	equal comparator.rowTitle('470'), '0 - 999','97'
+	equal comparator.rowTitle('-500'), '-1000 - -1','-5'
+	equal comparator.rowTitle('-1000'), '-1000 - -1','-5'
 
 test 'Date Ranges', ->
 	group = Tent.JqGrid.Grouping
