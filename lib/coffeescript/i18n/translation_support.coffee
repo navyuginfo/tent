@@ -108,6 +108,7 @@ Tent.I18n.loadTranslations(
 				year: 'Year'
 			}
 			no_grouping: 'None'
+			revert: 'Revert to Original'
 		}
 
 	}

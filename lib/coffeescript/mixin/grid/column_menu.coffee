@@ -7,14 +7,14 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 
 			if column.groupable or column.renamable
 				template = Handlebars.compile '
-					 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-orig-title="{{title}}">
+					 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">
 							{{#if column.groupable}}
 								<li class="group dropdown-submenu">
 									<a tabindex="-1">Group</a>
 								    <ul class="dropdown-menu">
 								    	<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>
 								    	{{#each groupType}}
-								    		<li data-grouptype="{{name}}"><a tabindex="-1">{{title}}</a></li>
+								    		<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>
 								    	{{/each}}
 								    </ul>
 								</li>
@@ -23,9 +23,8 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 								<li class="rename dropdown-submenu">
 									<a tabindex="-1">Rename</a>
 								    <ul class="dropdown-menu">
-								    	<li>
-								    		<input type="text" value="{{title}}"/>
-								    	</li>
+								    	<li><input type="text" value="{{title}}"/></li>
+								    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>
 								    </ul>
 								</li>
 							{{/if}}
@@ -38,6 +37,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					title: Tent.I18n.loc column.title
 					groupType: groupType
 					none: Tent.I18n.loc ("tent.grouping.no_grouping")
+					revert: Tent.I18n.loc ("tent.grouping.revert")
 				
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 				@$(columnDivId).after template(context)
@@ -100,18 +100,29 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu)
 			else if e.keyCode == 27 # escape key
 				# reset to the original title
-				originalTitle = dropdownMenu.attr('data-orig-title')
-				widget.renameGridColumnHeader(columnField, originalTitle)
-				$(this).val(originalTitle)
+				lastTitle = dropdownMenu.attr('data-last-title')
+				widget.renameGridColumnHeader(columnField, lastTitle)
+				$(this).val(lastTitle)
 				widget.toggleColumnDropdown(columnField)
 				e.preventDefault()
 				e.stopPropagation()
 			)
 		)
 
+
+		@$('.rename.dropdown-submenu .revert').click((e)->
+			target = $(e.target)
+			dropdownMenu = target.parents('ul.column-dropdown:first')
+			columnField = dropdownMenu.attr('data-column')
+
+			originalTitle = dropdownMenu.attr('data-orig-title')
+			widget.renameColumnHeader(columnField, originalTitle, dropdownMenu)
+			$('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle)
+		)
+
 	renameColumnHeader: (columnField, value, dropdownMenu)->
 		@renameGridColumnHeader(columnField, value)
-		dropdownMenu.attr('data-orig-title', value)
+		dropdownMenu.attr('data-last-title', value)
 		@toggleColumnDropdown(columnField)
 
 	renameGridColumnHeader: (colname, value) ->
