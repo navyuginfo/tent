@@ -105,6 +105,7 @@ Tent.I18n.loadTranslations(
 				quarter: 'Quarter'
 				year: 'Year'
 			}
+			no_grouping: 'None'
 		}
 
 	}
