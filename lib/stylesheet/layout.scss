@@ -3,6 +3,30 @@
 $drag-bar-color: #ddd;
 $drag-bar-hover-color: #d6d6d6;
 
+/* Standard Panel, with expandable */
+
+.section {
+	.panel-header {
+		h3 {
+			display: inline-block;
+			font-size: 1em;
+			padding: 0px 15px;
+			float: left;
+			width: 80%;
+			margin: 0px;
+		}
+		a:hover span{
+			border-top-color: #005580;
+		}
+		.caret {
+			margin: 18px 15px;
+		}
+	}
+	.panel-content {
+		padding: 9px 15px;
+	}
+}
+
 
 .scrollable {
 	position: absolute;
