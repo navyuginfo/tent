@@ -6,7 +6,7 @@
 *
 ###
 
-Tent.JqGrid.Grouping = Ember.Object.extend
+Tent.JqGrid.Grouping = Ember.Object.extend()
 
 ###*
 * @method getComparator returns a comparator to use for a combination of datatype and grouping type
@@ -43,6 +43,32 @@ Tent.JqGrid.Grouping.comparator = Ember.Object.extend
 	###
 	rowTitle: (value)->
 		if value? then value else ''
+
+
+Tent.JqGrid.Grouping.helper = Ember.Object.create
+	numeric: 
+		rowTitle: (value)->
+			if (typeof value == "string")
+				value = Tent.Formatting.number.unformat(value)
+			@calculateRange(value)
+			return @get('lower') + ' - ' + @get('upper')
+		compare: (last, value) ->
+			@calculateRange(last)
+			return @get('lower') <= value <= @get('upper')
+		calculateRange: (range)->
+			return (value)->
+				if value >= 0
+					lower = value - (value%range)
+					upper = lower + (range-1)
+				else 
+					if value%range == 0
+						lower = value
+						upper = value + (range - 1)
+					else
+						upper = -1 + value - (value%range) 
+						lower = upper - (range - 1)
+				@set('lower',lower)
+				@set('upper', upper)
 
 ###*
 * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
@@ -162,29 +188,36 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
 					upper: null
-					compare: (last, value) ->
-						@calculateRange(last)
-						return @get('lower') <= value <= @get('upper')
-
-					rowTitle: (value)->
-						if (typeof value == "string")
-							value = Tent.Formatting.number.unformat(value)
-						@calculateRange(value)
-						return @get('lower') + ' - ' + @get('upper')
-
-					calculateRange: (value)->
-						if value >= 0
-							lower = value - (value%10)
-							upper = lower + 9
-						else 
-							if value%10 == 0
-								lower = value
-								upper = value + 9
-							else
-								upper = -1 + value - (value%10) 
-								lower = upper - 9
-						@set('lower',lower)
-						@set('upper', upper)
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.numeric.rowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(10)
+					 
+			}
+			{
+				###*
+				* @property {Object} 100s group numbers in ranges of hundreds
+				###
+				name: '100s'
+				title: Tent.I18n.loc 'tent.grouping.range.hundreds'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.numeric.rowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(100)
+			}
+			{
+				###*
+				* @property {Object} 100s group numbers in ranges of hundreds
+				###
+				name: '1000s'
+				title: Tent.I18n.loc 'tent.grouping.range.thousands'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.numeric.rowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(1000)
 			}
 		]
 		###*

@@ -6,29 +6,29 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			column.renamable = not (column.renamable? && column.renamable ==false)
 
 			if column.groupable or column.renamable
-				template = Handlebars.compile "
-					 	<ul class='dropdown-menu column-dropdown' data-column='{{column.name}}' data-orig-title='{{title}}'>
+				template = Handlebars.compile '
+					 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">
 							{{#if column.groupable}}
-								<li class='group dropdown-submenu'>
-									<a tabindex='-1'>Group</a>
-								    <ul class='dropdown-menu'>
+								<li class="group dropdown-submenu">
+									<a tabindex="-1">Group</a>
+								    <ul class="dropdown-menu">
+								    	<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>
 								    	{{#each groupType}}
-								    		<li data-grouptype='{{name}}'><a tabindex='-1'>{{title}}</a></li>
+								    		<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>
 								    	{{/each}}
 								    </ul>
 								</li>
 							{{/if}}
 							{{#if column.renamable}}
-								<li class='rename dropdown-submenu'>
-									<a tabindex='-1'>Rename</a>
-								    <ul class='dropdown-menu'>
-								    	<li>
-								    		<input type='text' value='{{title}}'/>
-								    	</li>
+								<li class="rename dropdown-submenu">
+									<a tabindex="-1">Rename</a>
+								    <ul class="dropdown-menu">
+								    	<li><input type="text" value="{{title}}"/></li>
+								    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>
 								    </ul>
 								</li>
 							{{/if}}
-						</ul>"
+						</ul>'
 
 
 				groupType = Tent.JqGrid.Grouping.ranges[column.type] || Tent.JqGrid.Grouping.ranges['string']
@@ -36,17 +36,20 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					column: column
 					title: Tent.I18n.loc column.title
 					groupType: groupType
+					none: Tent.I18n.loc ("tent.grouping.no_grouping")
+					revert: Tent.I18n.loc ("tent.grouping.revert")
 				
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
-				@$(columnDivId).after template(context)
-				@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
+				@$(columnDivId).addClass('dropdown')
+				$(columnDivId + ' .title').after template(context)
+				$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown')
 
 		@groupByColumnBindings()
 		@renameColumnHeaderBindings()
 	
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
-		$(columnDivId).dropdown('toggle')
+		$(columnDivId + ' .title' ).dropdown('toggle')
 
 	groupByColumnBindings: ->
 		widget = this
@@ -54,17 +57,22 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@$('.group.dropdown-submenu').click((e)->
 			target = $(e.target)
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
-			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-			columnType = 'string'
-			for col in widget.get('columns')
-				if col.name == column then columnType= col.type
-			widget.groupByColumn(column, groupType, columnType)
+			if groupType == 'none'
+				widget.getTableDom().jqGrid('groupingRemove', true)
+			else
+				column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
+				columnType = 'string'
+				for col in widget.get('columns')
+					if col.name == column then columnType= col.type
+				widget.groupByColumn(column, groupType, columnType)
 		)
 
 	groupByColumn: (column, groupType, columnType)->
+		lastSort = @getTableDom()[0].p.sortname
 		for columnDef in @get('columns')
 			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
-				@getTableDom().sortGrid(column)
+				if (not lastSort?) or not (lastSort == column)
+					@getTableDom().sortGrid(column)
 
 		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
 		this.getTableDom().groupingGroupBy(column, {
@@ -95,19 +103,29 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu)
 			else if e.keyCode == 27 # escape key
 				# reset to the original title
-				originalTitle = dropdownMenu.attr('data-orig-title')
-				widget.renameGridColumnHeader(columnField, originalTitle)
-				$(this).val(originalTitle)
+				lastTitle = dropdownMenu.attr('data-last-title')
+				widget.renameGridColumnHeader(columnField, lastTitle)
+				$(this).val(lastTitle)
 				widget.toggleColumnDropdown(columnField)
 				e.preventDefault()
 				e.stopPropagation()
 			)
 		)
 
+		@$('.rename.dropdown-submenu .revert').click((e)->
+			target = $(e.target)
+			dropdownMenu = target.parents('ul.column-dropdown:first')
+			columnField = dropdownMenu.attr('data-column')
+
+			originalTitle = dropdownMenu.attr('data-orig-title')
+			widget.renameColumnHeader(columnField, originalTitle, dropdownMenu)
+			$('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle)
+		)
+
 	renameColumnHeader: (columnField, value, dropdownMenu)->
-		@renameGridColumnHeader(columnField, value)
-		dropdownMenu.attr('data-orig-title', value)
 		@toggleColumnDropdown(columnField)
+		@renameGridColumnHeader(columnField, value)
+		dropdownMenu.attr('data-last-title', value)
 
 	renameGridColumnHeader: (colname, value) ->
 		# jqGrid ignores "" as a column header, so set it to a space.
@@ -116,3 +134,5 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@getTableDom().jqGrid('setLabel', colname, value);
 		for column in @get('columns')
 			column.title = value if column.name == colname
+
+		@columnsDidChange()
