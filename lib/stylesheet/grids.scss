@@ -335,6 +335,20 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 			color: #B94A48;
 		}
 	}
+
+	.wait {
+	  background-image: url(/images/wait.gif);
+	  background-repeat: no-repeat;
+	  background-position: 50%;
+	  position: absolute;
+	  top: 0px;
+	  bottom: 0px;
+	  left: 0px;
+	  right: 0px;
+	  background-color: rgba(255, 255, 255, 0.35);
+	  z-index: 3000;
+	}
+
 }
 
 #jqgrid-backdrop {
