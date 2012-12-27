@@ -109,7 +109,6 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			)
 		)
 
-
 		@$('.rename.dropdown-submenu .revert').click((e)->
 			target = $(e.target)
 			dropdownMenu = target.parents('ul.column-dropdown:first')
@@ -132,3 +131,5 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@getTableDom().jqGrid('setLabel', colname, value);
 		for column in @get('columns')
 			column.title = value if column.name == colname
+
+		@columnsDidChange()

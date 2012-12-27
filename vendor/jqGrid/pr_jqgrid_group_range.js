@@ -240,5 +240,5 @@ $.jgrid.extend({
 			grp.groupField = name;
 			/*$($t).trigger("reloadGrid");*/
 		});
-	},
-})
+	}
+});
