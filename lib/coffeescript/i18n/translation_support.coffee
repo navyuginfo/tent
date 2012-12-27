@@ -100,11 +100,15 @@ Tent.I18n.loadTranslations(
 			range: {
 				exact: 'Exact'
 				tens: 'Tens'
+				hundreds: 'Hundreds'
+				thousands: 'Thousands'
 				week: 'Week'
 				month: 'Month'
 				quarter: 'Quarter'
 				year: 'Year'
 			}
+			no_grouping: 'None'
+			revert: 'Revert to Original'
 		}
 
 	}
