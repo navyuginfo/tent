@@ -36,7 +36,7 @@ test 'basic functionality', ->
 	equal v.get('validationErrors').length, 0, '0 errors'
 	equal v.get('hasErrors'), false, 'hasErrors is false'
 
-test 'Update error panel', ->
+###test 'Update error panel', ->
 	 
 	updated = false
 	v.updateErrorPanel = ->
@@ -53,6 +53,8 @@ test 'Classnames', ->
 	v.flushValidationErrors()
 	equal v.classNames.contains('error'), false, 'Error removed'
 
+###
+	
 test 'Custom Validations', ->
 	v.set('validations', 'email')
 	v.set('formattedValue','billy@bob.com')

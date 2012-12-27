@@ -25,7 +25,7 @@ test 'Basic functionality', ->
 		sourceId: 'id1'
 		messages: ['error1', 'error2']
 
-	view.handleNewMessage(null, message)
+	view.handleNewMessage().call(view, null, message)
 
 	equal view.getErrorsForView('id1').length, 2, '2 errors returned'
 
@@ -34,7 +34,7 @@ test 'Basic functionality', ->
 		sourceId: 'id1'
 		messages: ['info1', 'info2']
 
-	view.handleNewMessage(null, message)
+	view.handleNewMessage().call(view, null, message)
 	equal view.getInfosForView('id1').length, 2, '2 infos returned'
 
 	view.clearErrors()
@@ -57,8 +57,9 @@ test 'Removing messages', ->
 		sourceId: 'id2'
 		messages: ['error4', 'error5', 'error6']
 
-	view.handleNewMessage(null, message)
-	view.handleNewMessage(null, message2)
+	view.handleNewMessage().call(view, null, message)
+	view.handleNewMessage().call(view, null, message2)
+	
 	equal view.getErrorsForView('id1').length, 3, '3 errors for id1 returned'
 	equal view.get('error').length, 2, '2 errors in total'
 
@@ -73,14 +74,14 @@ test 'Test auto clearing of errors for source', ->
 		sourceId: 'id1'
 		messages: ['error1', 'error2']
 
-	view.handleNewMessage(null, message)
+	view.handleNewMessage().call(view, null, message)
 	equal view.getErrorsForView('id1').length, 2, '2 errors returned'
 
 	message = Tent.Message.create
 		type: Tent.Message.ERROR_TYPE
 		sourceId: 'id1'
 		messages: []
-	view.handleNewMessage(null, message)
+	view.handleNewMessage().call(view, null, message)
 	equal view.getErrorsForView('id1').length, 0, 'Errors should have been cleared'
 
 
@@ -131,7 +132,7 @@ test 'Exception thrown when no type specified', ->
 	view = Tent.MessagePanel.create()
 	message = Tent.Message.create()
 	raises(-> 
-			view.handleNewMessage(null, message)
+			view.handleNewMessage().call(view, null, message)
 		,'Exception should be thrown')
 	 
 
@@ -177,8 +178,7 @@ test 'hasWarnings', ->
 		sourceId: 'id1'
 		messages: ['warning1', 'warning2']
 
-	view.handleNewMessage(null, message)
-
+	view.handleNewMessage().call(view, null, message)
 	ok view.get('hasWarnings'), 'there should be warnings'
 
 test 'RemoveMessageCommand for warnings', ->
