@@ -51,6 +51,28 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
     "#" + @get('elementId') + " .collapse"
   ).property("elementId")
 
+###*
+* @class Tent.PanelHead
+* Used in the case where a custom header is required for a panel
+###
+Tent.PanelHead = Ember.View.extend
+  classNames: ['accordion-heading']
+  layout: Ember.Handlebars.compile '<div class="panel-header clearfix">
+        <span class="content">{{yield}}</span>
+        <a class="pull-right" data-toggle="collapse" {{bindAttr href="view.parentView.href"}}>
+          <span class="caret" ></span>
+        </a>
+      </div>'
+
+
+Tent.PanelBody = Ember.View.extend
+  layout: Ember.Handlebars.compile '<div {{bindAttr class="view.parentView.collapsedClass"}}>
+        <div class="panel-content">
+          {{yield}}
+        </div>
+      </div>'
+
+
 Tent.Form = Tent.Panel.extend
   tagName: 'form'
   staticClasses: ''

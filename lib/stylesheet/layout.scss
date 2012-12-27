@@ -3,7 +3,21 @@
 $drag-bar-color: #ddd;
 $drag-bar-hover-color: #d6d6d6;
 
+
+
 /* Standard Panel, with expandable */
+
+.tent-panel {
+	.panel-header {
+		position: relative;
+		.content {
+			width: 80%;
+			display: block;
+			float: left;
+			padding-top: 5px;
+		}
+	}
+}
 
 .section {
 	.panel-header {

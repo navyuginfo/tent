@@ -1,6 +1,8 @@
-{{#unless view.content.isLoaded}}
-  <div class="wait"></div>
-{{/unless}}
+{{#if view.content.isLoadable}}
+	{{#unless view.content.isLoaded}}
+  		<div class="wait"></div>
+  	{{/unless}}
+{{/if}}
 
 <table class="grid-table"></table>
 <div class="gridpager"></div>
