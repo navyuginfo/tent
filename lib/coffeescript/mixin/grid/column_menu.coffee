@@ -40,15 +40,16 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					revert: Tent.I18n.loc ("tent.grouping.revert")
 				
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
-				@$(columnDivId).after template(context)
-				@$(columnDivId).addClass('has-dropdown').attr('data-toggle','dropdown')
+				@$(columnDivId).addClass('dropdown')
+				$(columnDivId + ' .title').after template(context)
+				$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown')
 
 		@groupByColumnBindings()
 		@renameColumnHeaderBindings()
 	
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
-		$(columnDivId).dropdown('toggle')
+		$(columnDivId + ' .title' ).dropdown('toggle')
 
 	groupByColumnBindings: ->
 		widget = this
@@ -67,9 +68,11 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		)
 
 	groupByColumn: (column, groupType, columnType)->
+		lastSort = @getTableDom()[0].p.sortname
 		for columnDef in @get('columns')
 			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
-				@getTableDom().sortGrid(column)
+				if (not lastSort?) or not (lastSort == column)
+					@getTableDom().sortGrid(column)
 
 		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
 		this.getTableDom().groupingGroupBy(column, {
@@ -120,9 +123,9 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		)
 
 	renameColumnHeader: (columnField, value, dropdownMenu)->
+		@toggleColumnDropdown(columnField)
 		@renameGridColumnHeader(columnField, value)
 		dropdownMenu.attr('data-last-title', value)
-		@toggleColumnDropdown(columnField)
 
 	renameGridColumnHeader: (colname, value) ->
 		# jqGrid ignores "" as a column header, so set it to a space.
