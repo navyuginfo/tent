@@ -52,10 +52,17 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 
 	# When a row is deselected, revert to the previous value 
 	restoreRow: (rowId) ->
-		#@getTableDom().jqGrid('saveRow', rowId)
-		@getTableDom().jqGrid('restoreRow', rowId)
-		@saveEditedRow(rowId)
-		@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
+		if @isRowCurrentlyEditing(rowId)
+			@getTableDom().jqGrid('restoreRow', rowId)
+			@saveEditedRow(rowId)
+			@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
+
+	isRowCurrentlyEditing: (rowId)->
+		isEditing = false
+		for row in @getTableDom()[0].p.savedRow
+			if row.id == rowId
+				isEditing = true
+		isEditing
 
 	onEditFunc: (rowId) ->
 		widget = @
