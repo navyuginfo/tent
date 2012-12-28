@@ -21,7 +21,7 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
   #layout: Ember.Handlebars.compile '{{#if view.name}}<h3>{{loc view.name}}</h3>{{/if}}{{yield}}'
   layoutName: 'panel'
   classNames: ['tent-panel']
-  classNameBindings: ['spanClass', 'collapsible']
+  classNameBindings: ['spanClass', 'collapsible', 'collapsed']
   nameBinding: 'title'
 
   ###*
@@ -51,17 +51,33 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
     "#" + @get('elementId') + " .collapse"
   ).property("elementId")
 
+  didInsertElement: ->
+    if @get('collapsible')
+      @$('.collapse').on('hidden', ()=>
+        @set('collapsed', true)
+      )
+      @$('.collapse').on('shown', ()=>
+        @set('collapsed', false)
+      )
+
 ###*
 * @class Tent.PanelHead
 * Used in the case where a custom header is required for a panel
 ###
 Tent.PanelHead = Ember.View.extend
   classNames: ['accordion-heading']
+
+  didInsertElement: ->
+    if @$('.panel-link').length > 0
+      @set('hasLink', true)
+
   layout: Ember.Handlebars.compile '<div class="panel-header clearfix">
         <span class="content">{{yield}}</span>
+        {{#unless view.hasLink}}
         <a class="pull-right" data-toggle="collapse" {{bindAttr href="view.parentView.href"}}>
           <span class="caret" ></span>
         </a>
+        {{/unless}}
       </div>'
 
 
@@ -71,6 +87,40 @@ Tent.PanelBody = Ember.View.extend
           {{yield}}
         </div>
       </div>'
+
+
+###*
+* @class Tent.PanelLink
+* Generates a link for use within the body of a header. This link will expand and 
+* contract the group 
+###
+Tent.PanelLink = Ember.View.extend
+  tagName: 'span'
+  classNames: ['panel-link']
+  classNameBindings: ['hidden']
+
+  collapsedDidChange: (->
+    @calculateVisibility()
+  ).observes('parentView.parentView.collapsed')
+
+  didInsertElement: ->
+    @set('hidden', @get('parentView.parentView.collapsed'))
+    @calculateVisibility()
+
+  calculateVisibility: ->
+    hidden = false
+    if @get('whenCollapsed')?
+       hidden = true if @get('whenCollapsed') != @get('parentView.parentView.collapsed') 
+    @set('hidden', hidden)
+
+  layout: Ember.Handlebars.compile('<a class="accordion-toggle" data-toggle="collapse" 
+    {{bindAttr href="view.parentView.parentView.href"}}>
+    {{#if view.title}}{{loc view.title}}{{/if}}{{yield}}
+  </a>')
+  ###*
+  * @property {String} title A title to display which acts as the link text to expand the group
+  ###
+  title: ""
 
 
 Tent.Form = Tent.Panel.extend

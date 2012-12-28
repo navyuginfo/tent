@@ -11,11 +11,28 @@ $drag-bar-hover-color: #d6d6d6;
 	.panel-header {
 		position: relative;
 		.content {
-			width: 80%;
 			display: block;
 			float: left;
 			padding-top: 5px;
+			.panel-link {
+				 
+				.caret {
+					margin: 9px;
+				}
+			}
+			.tent-widget {
+				float: left;
+			}
 		}
+	}
+
+	&.collapsed .caret {
+		border-bottom: 0px;
+		border-top: 4px solid;
+	}
+	.caret {
+		border-top: 0px;
+		border-bottom: 4px solid;
 	}
 }
 
