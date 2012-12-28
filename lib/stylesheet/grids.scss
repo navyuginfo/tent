@@ -76,6 +76,10 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 		}
 	}
 
+	.ui-jqgrid .ui-jqgrid-hbox {
+		padding-right: 0px;
+	}
+
 	.ui-jqgrid .ui-jqgrid-hdiv {
 		overflow: visible;
 	}
@@ -115,11 +119,16 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 			padding: 0px;
 
 			.dropdown-menu {
-				min-width: 50px;	
+				min-width: 110px;	
 			}
 
 			.rename.dropdown-submenu input[type="text"]{
 				margin: 4px;
+			}
+			&.last {
+				// The last column should expand left
+				right: 0px;
+  				left: auto;
 			}
 		}
 	}
