@@ -34,8 +34,18 @@ $drag-bar-hover-color: #d6d6d6;
 		border-top: 0px;
 		border-bottom: 4px solid;
 	}
-}
 
+	.panel-slider {
+		position: relative;
+		overflow: hidden;
+		padding-left: 15px;
+		.content {
+			padding-bottom: 10px;
+			padding-top: 10px;
+			box-sizing: border-box;
+		}
+	}
+}
 .section {
 	.panel-header {
 		h3 {
