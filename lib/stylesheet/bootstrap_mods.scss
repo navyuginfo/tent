@@ -64,6 +64,25 @@
 	border-right-color: white;
 }
 
+// Alternative approach
+
+
+.dropdown-submenu.pull-left {
+  float: none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+  left: -120px;
+  margin-left: 10px;
+  -webkit-border-radius: 6px 0 6px 6px;
+     -moz-border-radius: 6px 0 6px 6px;
+          border-radius: 6px 0 6px 6px;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu.wide {
+  left: -180%;
+}
+
 
 .custom-export .form-horizontal .control-label {
   width : 0px;

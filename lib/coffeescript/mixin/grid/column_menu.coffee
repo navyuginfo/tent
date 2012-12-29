@@ -1,5 +1,7 @@
 Tent.Grid.ColumnMenu = Ember.Mixin.create
-	 
+	columnsDidChange: ->
+		@leftAlignLastDropdown()
+
 	addColumnDropdowns: () ->
 		for column in @get('columns')
 			column.groupable = not (column.groupable? && column.groupable ==false)
@@ -22,8 +24,8 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 							{{#if column.renamable}}
 								<li class="rename dropdown-submenu">
 									<a tabindex="-1">Rename</a>
-								    <ul class="dropdown-menu">
-								    	<li><input type="text" value="{{title}}"/></li>
+								    <ul class="dropdown-menu wide">
+								    	<li><input type="text" value="{{title}}" class="input-medium"/></li>
 								    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>
 								    </ul>
 								</li>
@@ -44,12 +46,29 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				$(columnDivId + ' .title').after template(context)
 				$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown')
 
+		@leftAlignLastDropdown()
 		@groupByColumnBindings()
 		@renameColumnHeaderBindings()
 	
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
 		$(columnDivId + ' .title' ).dropdown('toggle')
+
+	leftAlignLastDropdown: ->
+		@$('.column-dropdown .dropdown-submenu').removeClass('pull-left')
+		@$('.ui-th-column: .column-dropdown').removeClass('last')
+
+		table = @$('.ui-jqgrid-htable')
+		tableRight = $(window).width() - (table.offset().left + table.outerWidth())
+		
+		@$('.ui-th-column:visible').each(->
+			columnLeft = $(window).width() - $(this).offset().left
+			if (columnLeft - 250) < tableRight
+				$('.dropdown-submenu', $(this)).addClass('pull-left')
+			if (columnLeft - 120) < tableRight
+				$('.column-dropdown', $(this)).addClass('last')
+		)
+		#@$('.ui-th-column:visible .column-dropdown:last').addClass('last')
 
 	groupByColumnBindings: ->
 		widget = this

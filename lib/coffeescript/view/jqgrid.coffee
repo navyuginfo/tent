@@ -149,7 +149,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			multiselect: @get('multiSelect'),
 			caption: Tent.I18n.loc(@get('title')) if @get('title')?, 
 			autowidth: true,
-			sortable: true, #columns can be dragged
+			#sortable: true, #columns can be dragged
+			sortable: { 
+				update: (permutation) =>
+					@columnsDidChange()
+			}
+			resizeStop: =>
+				@columnsDidChange()
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -294,6 +300,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			)
 
 	columnsDidChange: ->
+		@_super()
 		if (@get('fixedHeader'))
 			@adjustHeightForFixedHeader()
 
