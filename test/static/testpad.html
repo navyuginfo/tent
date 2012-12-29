@@ -201,6 +201,17 @@
             warnings="email"
             }}
 
+            {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true hasChildViews=true}}
+              {{#view Tent.PanelHead}}
+                {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+              {{/view}}
+              {{#view Tent.PanelBody}}
+                {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+                {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+                {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+              {{/view}}
+            {{/view}}
+
 
             <div class="control-group">
               <label class="control-label"></label>
@@ -419,8 +430,24 @@
           {{#view Tent.Form name="Containers" id="container-section"}}
 
             <h5>Panel</h5>
+
             {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true}}
-              Some content inside
+               
+                Some content inside
+               
+            {{/view}}
+
+
+            {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true collapsed=false hasChildViews=true}}
+              {{#view Tent.PanelHead}}
+                {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
+                {{#view Tent.PanelLink whenCollapsed=true}}<span class='pull-left'>more<span class="caret" ></span></span>{{/view}}
+                {{#view Tent.PanelLink whenCollapsed=false}}<span class='pull-left'>less<span class="caret" ></span></span>{{/view}}
+
+              {{/view}}
+              {{#view Tent.PanelBody}}
+                Body content inside
+              {{/view}}
             {{/view}}
 
 

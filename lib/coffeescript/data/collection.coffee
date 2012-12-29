@@ -16,6 +16,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	serverPaging: false
 	liveStreaming: false
 	store: null
+	isLoadable: false #Does the collection have a 'isLoaded' state
 	REQUEST_TYPE: {'ALL': 'all'}
 
 	# This is currently returning a plain array of the stripped down model (only displayed columns are included)

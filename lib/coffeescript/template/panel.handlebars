@@ -1,17 +1,24 @@
-{{#if view.collapsible}}
+{{#if view.hasChildViews}}
 	<div class="section accordion-group">
-	   	<div class="panel-header clearfix">
-	    	<h3>{{loc view.name}}</h3>
-	    	<a class="pull-right" data-toggle="collapse" {{bindAttr href="view.href"}}>
-		      <span class="caret" ></span>
-		    </a>
-	    </div>
-	    <div {{bindAttr class="view.collapsedClass"}}>
-	      <div class="panel-content">
-	        {{yield}}
-	      </div>
-	    </div>
+		{{yield}}
 	</div>
 {{else}}
-	{{#if view.name}}<h3>{{loc view.name}}</h3>{{/if}}{{yield}}
+	{{#if view.collapsible}}
+		<div class="section accordion-group">
+		   	<div class="panel-header clearfix">
+		    	<h3>{{loc view.name}}</h3>
+		    	<a class="pull-right" data-toggle="collapse" {{bindAttr href="view.href"}}>
+			      <span class="caret" ></span>
+			    </a>
+		    </div>
+		    <div {{bindAttr class="view.collapsedClass"}}>
+		      <div class="panel-content">
+		        {{yield}}
+		      </div>
+		    </div>
+		</div>
+	 
+	{{else}}
+		{{#if view.name}}<h3>{{loc view.name}}</h3>{{/if}}{{yield}}
+	{{/if}}
 {{/if}}
