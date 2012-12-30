@@ -86,8 +86,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 	shouldSort: (postdata)->
 		sortable = false
+		sortBy = postdata.sidx.split(',')
+		newSort = sortBy[sortBy.length-1].trim()
 		for columnDef in @get('columns')
-			if postdata.sidx.indexOf(columnDef.name) > -1 and columnDef.sortable? and columnDef.sortable
+			if newSort.indexOf(columnDef.name) > -1 and columnDef.sortable? and columnDef.sortable
 				postdata.sidx = columnDef.name
 				sortable = true
 
