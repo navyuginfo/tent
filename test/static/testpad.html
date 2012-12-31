@@ -433,12 +433,19 @@
 
             {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true}}
                
-                Some content inside
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Header content ----  Some more</div>
                
             {{/view}}
 
 
-            {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true collapsed=false hasChildViews=true}}
+            {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true collapsed=false hasChildViews=true hideHeaderWhenExpanded=true}}
               {{#view Tent.PanelHead}}
                 {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
                 {{#view Tent.PanelLink whenCollapsed=true}}<span class='pull-left'>more<span class="caret" ></span></span>{{/view}}
@@ -448,6 +455,21 @@
               {{#view Tent.PanelBody}}
                 Body content inside
               {{/view}}
+            {{/view}}
+
+            {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true collapsed=false hasChildViews=true }}
+              {{#view Tent.PanelSlider minHeight=40}}
+               
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Body content ----  Some more</div>
+                <div>Header content ----  Some more</div>
+              {{/view}}
+             
             {{/view}}
 
 
