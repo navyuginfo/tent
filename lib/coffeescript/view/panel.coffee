@@ -94,14 +94,28 @@ Tent.PanelBody = Ember.View.extend
         </div>
       </div>'
 
+###*
+* @class Tent.PanelSlider
+*
+* Used where the content is expected to slide down (rather than be revealed down)
+* Effectively, the bottom row of the content becomes the header content when the 
+* panel is collapsed
+*
+* Usage: 
+*           {{#view Tent.Panel span="10" collapsible=true collapsed=false hasChildViews=true }}
+              {{#view Tent.PanelSlider minHeight=40}}
+               
+                ... content here ...
+              {{/view}}
+            {{/view}}
+* 
+###
 Tent.PanelSlider = Ember.View.extend
   layout: Ember.Handlebars.compile '<div class="panel-slider panel-header clearfix">
         <span class="content"><span>{{yield}}</span></span>
-        
         <a class="pull-right">
           <span class="caret" ></span>
         </a>
-       
       </div>'
   minHeight: 30
 
