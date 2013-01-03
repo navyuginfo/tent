@@ -117,7 +117,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 						yesterday = value
 						while week == yesterday.getWeekOfYear()
 							yesterday.add(-1).day()
-						"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{Tent.Formatting.date.format(yesterday.add(1).day())} (#{Tent.I18n.loc('tent.grouping.range.week')} #{week})"						
+						"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{Tent.Formatting.date.format(yesterday.add(1).day())}"						
 			}
 			{
 				###*
