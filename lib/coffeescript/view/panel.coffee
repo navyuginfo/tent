@@ -43,6 +43,8 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
   ###
   collapsed: false
 
+  hideHeaderWhenExpanded: false
+
   collapsedClass: (->
     "collapse " + if not @get('collapsed') then "in" else ""
   ).property('collapsed')
@@ -53,10 +55,10 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
 
   didInsertElement: ->
     if @get('collapsible')
-      @$('.collapse').on('hidden', ()=>
+      @$('.collapse').on('hide', ()=>
         @set('collapsed', true)
       )
-      @$('.collapse').on('shown', ()=>
+      @$('.collapse').on('show', ()=>
         @set('collapsed', false)
       )
 
@@ -71,8 +73,12 @@ Tent.PanelHead = Ember.View.extend
     if @$('.panel-link').length > 0
       @set('hasLink', true)
 
+  hideHeaderContent: (->
+    @get('parentView.hideHeaderWhenExpanded') and not @get('parentView.collapsed')
+  ).property('parentView.collapsed')
+
   layout: Ember.Handlebars.compile '<div class="panel-header clearfix">
-        <span class="content">{{yield}}</span>
+        <span class="content">{{#unless view.hideHeaderContent}}{{yield}}{{/unless}}</span>
         {{#unless view.hasLink}}
         <a class="pull-right" data-toggle="collapse" {{bindAttr href="view.parentView.href"}}>
           <span class="caret" ></span>
@@ -87,6 +93,34 @@ Tent.PanelBody = Ember.View.extend
           {{yield}}
         </div>
       </div>'
+
+Tent.PanelSlider = Ember.View.extend
+  layout: Ember.Handlebars.compile '<div class="panel-slider panel-header clearfix">
+        <span class="content"><span>{{yield}}</span></span>
+        
+        <a class="pull-right">
+          <span class="caret" ></span>
+        </a>
+       
+      </div>'
+  minHeight: 30
+
+  didInsertElement: ->
+    content = @$('.content')
+    @set('height', @$('.content').outerHeight())
+    @$('.content').css('min-height', '30px').css('position', 'absolute').css('bottom','0px')
+
+    @$('a').click(=>
+      if @get('parentView.collapsed')
+        @$('.panel-slider').animate({height: @get('height') + 'px'})
+        @set('parentView.collapsed', false)
+      else
+        @$('.panel-slider').animate({height: @get('minHeight') + 'px'})
+        @set('parentView.collapsed', true)
+    )
+
+    if not @get('parentView.collapsed')
+      @$('.panel-slider').css('height', @get('height') + 'px')
 
 
 ###*
