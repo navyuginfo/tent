@@ -103,6 +103,7 @@ Tent.I18n.loadTranslations(
 				hundreds: 'Hundreds'
 				thousands: 'Thousands'
 				week: 'Week'
+				weekStarting: 'Week starting'
 				month: 'Month'
 				quarter: 'Quarter'
 				year: 'Year'
