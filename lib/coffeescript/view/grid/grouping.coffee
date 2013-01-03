@@ -102,11 +102,23 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				title: Tent.I18n.loc 'tent.grouping.range.week'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value)->
-						(last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
+						if (last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
+							return true
+						if (last.compareTo(value) == -1) #ascending
+							if (last.getFullYear()+1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 11) and (value.getMonth() == 0)
+								return true
+						if (last.compareTo(value) == 1) #descending
+							if (last.getFullYear()-1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 0) and (value.getMonth() == 11)
+								return true
 					rowTitle: (value)->
 						if (typeof value == "string")
 							value = Tent.Formatting.date.unformat(value)
-						'Week ' + value.getWeekOfYear() + ', ' + value.getFullYear()
+						week = value.getWeekOfYear()
+						yesterday = value
+						while week == yesterday.getWeekOfYear()
+							yesterday.add(-1).day()
+
+						Tent.I18n.loc('tent.grouping.range.weekStarting') + Tent.Formatting.date.format(yesterday.add(1).day()) + ' (' + Tent.I18n.loc('tent.grouping.range.week') + ' ' + week + ')'
 			}
 			{
 				###*
