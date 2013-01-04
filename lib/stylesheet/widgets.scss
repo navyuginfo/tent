@@ -55,10 +55,40 @@ $required-icon-color: red;
 body>.modal-backdrop, body>.modal-backdrop.fade.in {
 	opacity: .01
 }
-.tent-modal .modal-backdrop {
-	display: none;
-	@include transition(all 0.3s ease);
+.tent-modal {
+	.modal-backdrop {
+		display: none;
+		@include transition(all 0.3s ease);
+	}
+
+	/* A little wider than default */
+	&.width2 .modal {
+    	width: 620px;
+    	margin-left: -310px;
+	}
+
+	&.height2 {
+		.modal {
+			top: 10%;
+    		margin-top: 0px
+		}
+		.modal-body {
+			max-height: 500px;
+		}
+	}
+
+	&.height3 {
+		.modal {
+			top: 5%;
+    		margin-top: 0px
+		}
+		.modal-body {
+			max-height: 600px;
+		}
+	}
+
 }
+
 
 /* Date Range Picker */
 
