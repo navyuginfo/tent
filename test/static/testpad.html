@@ -112,6 +112,9 @@
           <li>
             <a href="#layout-section"><i class="icon-chevron-right"></i> Layouts</a>
           </li>
+          <li>
+            <a href="#modal-section"><i class="icon-chevron-right"></i> Modals</a>
+          </li>
         </ul>
       {{/view}}
 
@@ -1014,86 +1017,122 @@
 
         
         {{/view}}
+
+
+        {{#view Tent.Panel span="10" }}
+          {{#view Tent.Form name="Tables and Grids" id="modal-section"}}
+              <a id = "link_for_modalPane">Render Modal Pane</a>
+                {{view Tent.ModalPane 
+                      customButton = "link_for_modalPane"
+                      text="_modalText" 
+                      header="_modalHeader" 
+                      primaryLabel="_ok" 
+                      secondaryLabel="_cancel"
+                      primaryIcon="icon-save icon-white"
+                      secondaryIcon="icon-remove"
+                }}
+
+                {{#view Tent.ModalPane 
+                      class="width3 height3"
+                      label="Click Me"
+                      autoLaunch=false
+                      header="_modalHeader" 
+                      primaryLabel="_ok" 
+                      secondaryLabel="_cancel"
+                      secondaryType="warning"
+                      primaryType="success"
+                      primaryIcon="icon-save icon-white"
+                      secondaryIcon="icon-remove"
+                }}
+                  {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+                  {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+                  {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+                  {{#view Tent.Panel title="Tent Panel" collapsible=true}}
+               
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Body content ----  Some more</div>
+                      <div>Header content ----  Some more</div>
+                     
+                  {{/view}}
+                {{/view}}
+
+
+                {{#view Tent.ModalPane 
+                      label="Modal within Modal"
+                      autoLaunch=false
+                      header="_modalHeader" 
+                      primaryLabel="_ok" 
+                      secondaryLabel="_cancel"
+                      secondaryType="warning"
+                      primaryType="success"
+                      primaryIcon="icon-save icon-white"
+                      secondaryIcon="icon-remove"
+                      secondaryAction="clickCancelOuter"
+                      secondaryTargetBinding="Pad"
+                      warn=true
+                }}
+                    <a id = "inner_modalPane">launch inner modal</a>
+                    {{view Tent.ModalPane 
+                          customButton = "inner_modalPane"
+                          text="_modalText" 
+                          header="_modalHeaderInner" 
+                          primaryLabel="_ok" 
+                          secondaryLabel="_cancel"
+                          primaryIcon="icon-save icon-white"
+                          secondaryIcon="icon-remove"
+                          secondaryAction="clickCancelInner"
+                          secondaryTargetBinding="Pad"
+                    }}
+
+                    {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true warnings="email" warningseverity="high"}}
+                    {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+
+                {{/view}}
+
+
+                {{#view Tent.ModalPane 
+                      label="Custom Footer" 
+                      header="_modalHeader" 
+                      customContent=true
+                }}
+                  {{#view Tent.ModalBody text="_modalText"}}
+                    {{view Tent.TextField  label="_numericInput" currency="EUR" required=true warnings="email"}}
+                    {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+                    {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
+                  {{/view}}
+                  {{#view Tent.ModalFooter}}
+                    {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
+                    {{view Tent.Button buttonClass="" label="go" type="primary" validate=true warn=true}}
+                  {{/view}}
+                {{/view}}
+          {{/view}}
+        {{/view}}
+
       </div>
     {{/view}} 
 
  
-    <a id = "link_for_modalPane">Render Modal Pane</a>
-    {{view Tent.ModalPane 
-          customButton = "link_for_modalPane"
-          text="_modalText" 
-          header="_modalHeader" 
-          primaryLabel="_ok" 
-          secondaryLabel="_cancel"
-          primaryIcon="icon-save icon-white"
-          secondaryIcon="icon-remove"
-    }}
-
-    {{#view Tent.ModalPane 
-          label="Click Me"
-          autoLaunch=false
-          header="_modalHeader" 
-          primaryLabel="_ok" 
-          secondaryLabel="_cancel"
-          secondaryType="warning"
-          primaryType="success"
-          primaryIcon="icon-save icon-white"
-          secondaryIcon="icon-remove"
-    }}
-      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-      {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-    {{/view}}
-
-
-    {{#view Tent.ModalPane 
-          label="Modal within Modal"
-          autoLaunch=false
-          header="_modalHeader" 
-          primaryLabel="_ok" 
-          secondaryLabel="_cancel"
-          secondaryType="warning"
-          primaryType="success"
-          primaryIcon="icon-save icon-white"
-          secondaryIcon="icon-remove"
-          secondaryAction="clickCancelOuter"
-          secondaryTargetBinding="Pad"
-          warn=true
-    }}
-        <a id = "inner_modalPane">launch inner modal</a>
-        {{view Tent.ModalPane 
-              customButton = "inner_modalPane"
-              text="_modalText" 
-              header="_modalHeaderInner" 
-              primaryLabel="_ok" 
-              secondaryLabel="_cancel"
-              primaryIcon="icon-save icon-white"
-              secondaryIcon="icon-remove"
-              secondaryAction="clickCancelInner"
-              secondaryTargetBinding="Pad"
-        }}
-
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true warnings="email" warningseverity="high"}}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-
-    {{/view}}
-
-
-    {{#view Tent.ModalPane 
-          label="Custom Footer" 
-          header="_modalHeader" 
-          customContent=true
-    }}
-      {{#view Tent.ModalBody text="_modalText"}}
-        {{view Tent.TextField  label="_numericInput" currency="EUR" required=true warnings="email"}}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-        {{view Tent.NumericTextField  label="_numericInput" currency="EUR" required=true  }}
-      {{/view}}
-      {{#view Tent.ModalFooter}}
-        {{view Tent.Button buttonClass="close-dialog pull-left cancel" label="cancel" type="secondary"}}
-        {{view Tent.Button buttonClass="" label="go" type="primary" validate=true warn=true}}
-      {{/view}}
-    {{/view}}
+    
 
       
     </script>
