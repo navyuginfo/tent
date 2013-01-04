@@ -10,7 +10,7 @@ $drag-bar-hover-color: #d6d6d6;
 .tent-panel {
 	.panel-header {
 		position: relative;
-		.content {
+		> .content {
 			display: block;
 			float: left;
 			padding-top: 5px;
@@ -156,7 +156,7 @@ $drag-bar-hover-color: #d6d6d6;
 		min-height: 30px;
 	}
 	
-	.content {
+	> .content {
 		overflow-y: auto; 
 		@include transition(all 0s ease);
 		position: absolute;
