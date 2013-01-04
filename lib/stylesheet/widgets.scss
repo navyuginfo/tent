@@ -67,6 +67,11 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
     	margin-left: -310px;
 	}
 
+	&.width3 .modal {
+    	width: 740px;
+    	margin-left: -370px;
+	}
+	
 	&.height2 {
 		.modal {
 			top: 10%;

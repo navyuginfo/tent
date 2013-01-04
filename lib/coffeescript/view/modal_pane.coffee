@@ -231,6 +231,10 @@ Tent.ModalPane = Ember.View.extend
         widget.launch()
       )
   
+    @$(".modal:first").on("shown", (e)=>
+      $.publish("/ui/refresh", ['resize'])
+    )
+    
     @$(".modal:first").on("hidden", (e)=>
       if not @get('hidden') and @targetIsMessagePanel(e.target)
         @triggerCancelAction(e)
