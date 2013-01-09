@@ -105,7 +105,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
-				ret = 'exportDate \n'+@exportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
+				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
 				@clientDownload(ret)
 
 			@$('#customExportForm').click (e) =>
