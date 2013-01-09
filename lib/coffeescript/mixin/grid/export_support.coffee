@@ -20,7 +20,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			if not @get('title')?
 				tableDom.setCaption('&nbsp;')
 
-			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@exportDate()) else "#"
+			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
 
 			button = """
 				<div class="btn-group export">
@@ -97,11 +97,11 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			@$(".ui-jqgrid-titlebar").append(button)
 
 			@$('a.export-json').click =>
-        ret = '{ "exportDate": "'+@exportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+        ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
         @clientDownload(ret)
 
 			@$('a.export-xml').click =>
-				ret = "<root>    <exportDate>"+@exportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
@@ -127,7 +127,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 						columnHeaders = fd.value
 					if fd.name == 'includeQuotes'
 						includeQuotes = fd.value
-				document.location.href =  @get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes,@exportDate())
+				document.location.href =  @get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes,@generateExportDate())
 
 			@$('#delimiter').change =>
 				if $('#delimiter').val().length > 0
@@ -166,7 +166,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 		str += obj.name + ',' for obj in keys
 		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
 	
-	exportDate: ->
+	generateExportDate: ->
 		d = new Date()
 		ampm = if d.getHours() >= 12 then 'pm' else 'am'
 		hours = if ampm is 'pm' then (d.getHours() - 12) else d.getHours()
