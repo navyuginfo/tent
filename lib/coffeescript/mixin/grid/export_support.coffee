@@ -20,7 +20,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			if not @get('title')?
 				tableDom.setCaption('&nbsp;')
 
-			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx') else "#"
+			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
 
 			button = """
 				<div class="btn-group export">
@@ -97,18 +97,18 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			@$(".ui-jqgrid-titlebar").append(button)
 
 			@$('a.export-json').click =>
-				ret = $.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)
-				@clientDownload(ret)
-		 
+        ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+        @clientDownload(ret)
+
 			@$('a.export-xml').click =>
-				ret = "<root>" + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
-				ret = @exportCSV(tableDom.getRowData(), @getColModel())
+				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
 				@clientDownload(ret)
-			
-			@$('#customExportForm').click (e) => 
+
+			@$('#customExportForm').click (e) =>
 				e.stopPropagation()
 
 			@$('#customExportForm').find('button').click  =>
@@ -116,30 +116,30 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 				extension = 'csv'
 				delimiter = ','
 				columnHeaders = true
-				includeQuotes = true 
-				$.each arry, (i, fd) -> 
+				includeQuotes = true
+				$.each arry, (i, fd) ->
 					if fd.name == 'delimiter' && fd.value != ','
 						extension = 'txt'
 						delimiter = fd.value
 					if fd.name == 'customDelimiter'
-						delimiter = fd.value  if fd.value.length > 0 
+						delimiter = fd.value  if fd.value.length > 0
 					if fd.name == 'columnHeaders'
 						columnHeaders = fd.value
 					if fd.name == 'includeQuotes'
-						includeQuotes = fd.value   
-				document.location.href =  @get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes)     
+						includeQuotes = fd.value
+				document.location.href =  @get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes,@generateExportDate())
 
-			@$('#delimiter').change => 
-				if $('#delimiter').val().length > 0 
-					$('#customDelimiter').val('')  
+			@$('#delimiter').change =>
+				if $('#delimiter').val().length > 0
+					$('#customDelimiter').val('')
 				else
-					$('#delimiter').val(',') if $('#customDelimiter').val().length == 0                
+					$('#delimiter').val(',') if $('#customDelimiter').val().length == 0
 
-			@$('#customDelimiter').blur => 
-				if $('#customDelimiter').val().length > 0 
+			@$('#customDelimiter').blur =>
+				if $('#customDelimiter').val().length > 0
 					$('#delimiter').val('')
 				else
-					$('#delimiter').val(',') 
+					$('#delimiter').val(',')
 
 
 	clientDownload: (file) ->
@@ -165,5 +165,14 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 		str = ""
 		str += obj.name + ',' for obj in keys
 		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
+	
+	generateExportDate: ->
+		d = new Date()
+		ampm = if d.getHours() >= 12 then 'pm' else 'am'
+		hours = if ampm is 'pm' then (d.getHours() - 12) else d.getHours()
+		hours = if hours < 10 then hours = "0"+hours else hours
+		minutes = if(minutes = d.getMinutes())<10 then minutes = "0"+minutes else minutes
+		Tent.Formatting.date.format(d,"dd-M-yy")+' '+hours+':'+minutes+ampm
+
 
 
