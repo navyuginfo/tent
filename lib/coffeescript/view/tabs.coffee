@@ -25,6 +25,11 @@ Tent.Tabs = Ember.View.extend
 	###
 	active: null
 
+	didInsertElement: ->
+		@$().on("shown", 'a[data-toggle="tab"]', (e)=>
+			$.publish("/ui/refresh", ['tab-shown'])
+		)
+
 ###*
 * @class Tent.TabPane
 * An individual tab pane to be displayed as part of a {@link Tent.Tabs}
@@ -55,4 +60,5 @@ Tent.TabPane = Ember.View.extend
 			@getTabWithHref(@get("parentView.active")).tab("show")
 
 	getTabWithHref: (href) ->
-		@get('parentView').$("a[href=#" + href + "]")		
+		@get('parentView').$("a[href=#" + href + "]")
+
