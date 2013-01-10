@@ -47,6 +47,14 @@ Tent.Validations.futuredate = Tent.Validation.create
 
 	ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
 
+Tent.Validations.minLength = Tent.Validation.create
+  validate: (value, options, message)->
+    if not options? or not options.min?
+      return false
+    @isValueEmpty(value) or value.length >= options.min
+
+  ERROR_MESSAGE: Tent.messages.MIN_LENGTH
+
 Tent.Validations.maxLength = Tent.Validation.create
   validate: (value, options, message)->
     if not options? or not options.max?
