@@ -51,6 +51,7 @@ Tent.Validations.minLength = Tent.Validation.create
   validate: (value, options, message)->
     if not options? or not options.min?
       return false
+    value=value.trim() if value?
     @isValueEmpty(value) or value.length >= options.min
 
   ERROR_MESSAGE: Tent.messages.MIN_LENGTH
@@ -59,6 +60,7 @@ Tent.Validations.maxLength = Tent.Validation.create
   validate: (value, options, message)->
     if not options? or not options.max?
       return false
+    value=value.trim() if value?
     @isValueEmpty(value) or value.length <= options.max
 
   ERROR_MESSAGE: Tent.messages.MAX_LENGTH
