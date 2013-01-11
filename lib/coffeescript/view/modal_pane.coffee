@@ -275,20 +275,21 @@ Tent.ModalPane = Ember.View.extend
     Ember.View.views[@$('.tent-message-panel:first').attr('id')]
 
   triggerCancelAction: (e)->
-    cancelButton = @$('.cancel:last') #don't get child modal cancel button
-    if cancelButton.length > 0
-      id = cancelButton.parent('.tent-button').attr('id')
+    # Make sure to get the correct cancel button
+    modal = this
+    selectedCancel = null
+    @$('.cancel').each(->
+      if $(this).parents('.tent-modal:first').attr('id') == modal.get('elementId')
+        selectedCancel = $(this)
+    )
+
+    if selectedCancel.length > 0
+      id = selectedCancel.parent('.tent-button').attr('id')
       buttonView = Ember.View.views[id]
       buttonView.triggerAction()
 
   willDestroyElement: ->
     @hide()
-
-  ###click: (event)->
-    target = event.target
-    if $(target).hasClass('close-dialog')
-      @hide()
-  ###
 
   launch: ->
     @set('hidden', false)
