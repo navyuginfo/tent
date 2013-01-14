@@ -181,6 +181,9 @@
             {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
+
+            {{view Tent.Spinner label="_spinner" valueBinding="Pad.spinner" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
+              disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay"}}
             
 
             {{view Tent.DateRangeField label="_dateRange" 
