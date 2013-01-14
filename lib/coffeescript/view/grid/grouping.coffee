@@ -41,17 +41,21 @@ Tent.JqGrid.Grouping.comparator = Ember.Object.extend
 	* @method rowTitle Returns the text to display as the first interpolation of the group row text
 	* @param {Object} value the value which is used to determine the range
 	###
-	rowTitle: (value)->
-		if value? then value else ''
+	rowTitle: (value, formatter)->
+		if value? 
+			if formatter? then formatter(value) else value	 
+		else 
+			''	
 
 
 Tent.JqGrid.Grouping.helper = Ember.Object.create
 	numeric: 
-		rowTitle: (value)->
+		rowTitle: (value, formatter)->
+			if not formatter? then formatter = Tent.Formatting.number.format
 			if (typeof value == "string")
 				value = Tent.Formatting.number.unformat(value)
 			@calculateRange(value)
-			return @get('lower') + ' - ' + @get('upper')
+			return formatter(@get('lower')) + ' - ' + formatter(@get('upper'))
 		compare: (last, value) ->
 			@calculateRange(last)
 			return @get('lower') <= value <= @get('upper')
@@ -70,14 +74,18 @@ Tent.JqGrid.Grouping.helper = Ember.Object.create
 				@set('lower',lower)
 				@set('upper', upper)
 	amount: 
-		rowTitle: (value)->
-			if value? then Tent.Formatting.amount.format(value) else ''
+		rowTitle: (value, formatter)->
+			if value? 
+				if formatter? then formatter(value) else Tent.Formatting.amount.format(value) 
+			else 
+				''
 
-		rangeRowTitle: (value)->
+		rangeRowTitle: (value, formatter)->
+			if not formatter? then formatter = Tent.Formatting.amount.format
 			if (typeof value == "string")
 				value = Tent.Formatting.amount.unformat(value)
 			@calculateRange(value)
-			return Tent.Formatting.amount.format(@get('lower')) + ' - ' + Tent.Formatting.amount.format(@get('upper'))
+			return formatter(@get('lower')) + ' - ' + formatter(@get('upper'))
 
 ###*
 * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
@@ -101,7 +109,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				title: Tent.I18n.loc  'tent.grouping.range.exact'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					compare: (last, value) ->
-						return last.compareTo(value) == 0
+						return last.compareTo(value) == 0	
 			}
 			{
 				###*
@@ -119,14 +127,17 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 						if (last.compareTo(value) == 1) #descending
 							if (last.getFullYear()-1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 0) and (value.getMonth() == 11)
 								return true
-					rowTitle: (value)->
+					rowTitle: (value, formatter)->
+						if not formatter? then formatter = Tent.Formatting.date.format
+
 						if (typeof value == "string")
-							value = Tent.Formatting.date.unformat(value)
-						week = value.getWeekOfYear()
-						yesterday = value
-						while week == yesterday.getWeekOfYear()
-							yesterday.add(-1).day()
-						"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{Tent.Formatting.date.format(yesterday.add(1).day())}"						
+								value = Tent.Formatting.date.unformat(value)
+							week = value.getWeekOfYear()
+							yesterday = value
+							while week == yesterday.getWeekOfYear()
+								yesterday.add(-1).day()
+
+						"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{formatter(yesterday.add(1).day())}"
 			}
 			{
 				###*
@@ -312,8 +323,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 
  
 ###*
-* @class Tent.JqGrid.Grouping.ranges.amount
+* @class Tent.JqGrid.Grouping.ranges.utcdate
 ###
-#Tent.JqGrid.Grouping.ranges.amount = Tent.JqGrid.Grouping.ranges.number
+Tent.JqGrid.Grouping.ranges.utcdate = Tent.JqGrid.Grouping.ranges.date
 
 

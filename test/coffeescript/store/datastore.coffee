@@ -29,7 +29,7 @@ Pad.DataStore = Ember.Object.extend
 			{id: "duration", name: "duration", type:"string", title: "_hDuration",field: "duration", width:10, sortable: true, groupable:true, align: 'right'},
 			{id: "%", name: "percentcomplete", type:"amount", title: "_hPercentComplete",field: "percentcomplete", formatter: "amount", width:10, sortable:true},
 			{id: "effortdriven", name: "effortdriven", type:"number", title: "_hEffortDriven", field: "effortdriven", groupable:true, width:10, sortable:true},
-			{id: "start", name: "start", type:"date", title: "_hStart", field: "start", groupable:true, width:10, formatter: "date", sortable:true},
+			{id: "start", name: "start", type:"date", formatter:'date', formatoptions:{dateFormat: "dd-M-yy"}, title: "_hStart", field: "start", groupable:true, width:10, sortable:true},
 			{id: "finish", name: "finish", type:"date", title: "_hFinish",field: "finish", groupable:true, width:10, hideable: true, formatter: "date", sortable:true}
 			{id: "completed", name: "completed", type:"boolean", title: "_hCompleted",field: "completed", width:30, hideable: true, align: 'center', editable: false, sortable:true}
 		]
