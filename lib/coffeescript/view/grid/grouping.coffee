@@ -69,6 +69,15 @@ Tent.JqGrid.Grouping.helper = Ember.Object.create
 						lower = upper - (range - 1)
 				@set('lower',lower)
 				@set('upper', upper)
+	amount: 
+		rowTitle: (value)->
+			if value? then Tent.Formatting.amount.format(value) else ''
+
+		rangeRowTitle: (value)->
+			if (typeof value == "string")
+				value = Tent.Formatting.amount.unformat(value)
+			@calculateRange(value)
+			return Tent.Formatting.amount.format(@get('lower')) + ' - ' + Tent.Formatting.amount.format(@get('upper'))
 
 ###*
 * @property {Object} Tent.JqGrid.Grouping.ranges A collection of range definitions which provide titles, comparators etc for particular types
@@ -219,7 +228,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 			}
 			{
 				###*
-				* @property {Object} 100s group numbers in ranges of hundreds
+				* @property {Object} 100s group numbers in ranges of thousands
 				###
 				name: '1000s'
 				title: Tent.I18n.loc 'tent.grouping.range.thousands'
@@ -231,6 +240,62 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(1000)
 			}
 		]
+
+		###*
+		* @class Tent.JqGrid.Grouping.ranges.amount
+		###
+		amount: [
+			{
+				###*
+				* @property {Object} exact group amounts which are the same
+				###
+				name: 'exact'
+				title: Tent.I18n.loc 'tent.grouping.range.exact'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					rowTitle: Tent.JqGrid.Grouping.helper.amount.rowTitle
+			}
+			{
+				###*
+				* @property {Object} 10s group amounts in ranges of ten
+				###
+				name: '10s'
+				title: Tent.I18n.loc 'tent.grouping.range.tens'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.amount.rangeRowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(10)
+					 
+			}
+			{
+				###*
+				* @property {Object} 100s group amounts in ranges of hundreds
+				###
+				name: '100s'
+				title: Tent.I18n.loc 'tent.grouping.range.hundreds'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.amount.rangeRowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(100)
+			}
+			{
+				###*
+				* @property {Object} 100s group amounts in ranges of thousands
+				###
+				name: '1000s'
+				title: Tent.I18n.loc 'tent.grouping.range.thousands'
+				comparator: Tent.JqGrid.Grouping.comparator.create
+					lower: null
+					upper: null
+					compare: Tent.JqGrid.Grouping.helper.numeric.compare
+					rowTitle: Tent.JqGrid.Grouping.helper.amount.rangeRowTitle
+					calculateRange: Tent.JqGrid.Grouping.helper.numeric.calculateRange(1000)
+			}
+		]
+
 		###*
 		* @class Tent.JqGrid.Grouping.ranges.boolean
 		###
@@ -249,5 +314,6 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 ###*
 * @class Tent.JqGrid.Grouping.ranges.amount
 ###
-Tent.JqGrid.Grouping.ranges.amount = Tent.JqGrid.Grouping.ranges.number
+#Tent.JqGrid.Grouping.ranges.amount = Tent.JqGrid.Grouping.ranges.number
+
 
