@@ -181,8 +181,5 @@ Tent.Form = Tent.Panel.extend
 
 
 Tent.Fieldset = Tent.Panel.extend
-  name: (->
-    Tent.I18n.loc(@get('legendName'))
-  ).property('legendName'),
-  layout: Ember.Handlebars.compile '{{#if view.name}}<legend>{{view.name}}</legend>{{/if}}{{yield}}'
+  layout: Ember.Handlebars.compile '{{#if view.legendName}}<legend>{{loc view.legendName}}</legend>{{/if}}{{yield}}'
   tagName: 'fieldset'
