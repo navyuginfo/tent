@@ -425,6 +425,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	resizeToContainer: ->
 		if @$()?
 			@getTableDom().setGridWidth(@$().width())
+			@columnsDidChange()
 
 	hideGrid: ->
 		#@getTableDom().jqGrid('clearGridData')
