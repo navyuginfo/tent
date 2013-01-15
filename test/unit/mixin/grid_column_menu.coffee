@@ -88,14 +88,14 @@ test 'rename column', ->
 	e.keyCode = 13
 	inputControl.trigger(e)
 	
-	equal gridView.$('.column-dropdown').attr('data-orig-title'), 'newtitle', 'orig title has changed'
+	equal gridView.$('.column-dropdown').attr('data-last-title'), 'newtitle', 'last title has changed'
 	equal gridView.get('columns')[1].title, 'newtitle', 'Column should display new title'
 
 	inputControl.val('newtitlexxx')
 	e = $.Event('keyup')
 	e.keyCode = 27
 	inputControl.trigger(e)
-	equal gridView.$('.column-dropdown').attr('data-orig-title'), 'newtitle', 'orig title has not changed'
+	equal gridView.$('.column-dropdown').attr('data-last-title'), 'newtitle', 'last title has not changed'
 	equal gridView.get('columns')[1].title, 'newtitle', 'Column should display orig title'
 	equal inputControl.val(), 'newtitle', 'input control should revert back to stored value'
 

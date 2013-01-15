@@ -19,6 +19,10 @@ test 'Row Title',->
 	equal c.rowTitle(null), '', 'null'
 	equal c.rowTitle(undefined), '', 'undefined'
 
+	formatter = (value)->
+		'_' + value
+	equal c.rowTitle('title3', formatter), '_title3', 'formatter applied'
+	
 
 test 'Boolean Ranges', ->
 	group = Tent.JqGrid.Grouping
@@ -76,6 +80,10 @@ test 'Number Ranges - 1000s', ->
 test 'Date Ranges', ->
 	group = Tent.JqGrid.Grouping
 	comparator = group.getComparator('date','exact')
+	equal comparator.rowTitle('5/5/2012'), '5/5/2012', 'exact title'
+	formatter = (value)->
+		$.datepicker.formatDate('mm/dd/yy', value)
+	equal comparator.rowTitle(new Date('5/5/2012'), formatter), '05/05/2012', 'date value'
 
 	###comparator = group.getComparator('date','week')
 	ok comparator.compare(new Date('5/5/2012'), new Date('5/5/2012')), 'exact equal'
