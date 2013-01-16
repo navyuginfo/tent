@@ -4,7 +4,9 @@
     <link rel="stylesheet" href="stylesheet/bootstrap.min.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/ui.jqgrid.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" />
+    <link rel="stylesheet" href="stylesheet/jquery-ui-1.9.2.custom.css" type="text/css" media="screen" />
+    
+    <!-- link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" / -->
 
     <!-- Begin playing, "The March of the Dependencies!" -->
     <script src="javascript/minispade.js" type="text/javascript"></script> 
@@ -181,6 +183,9 @@
             {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
+
+            {{view Tent.Spinner label="_spinner" valueBinding="Pad.spinner" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
+              disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay"}}
             
 
             {{view Tent.DateRangeField label="_dateRange" 
