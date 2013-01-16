@@ -55,20 +55,21 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		$(columnDivId + ' .title' ).dropdown('toggle')
 
 	leftAlignLastDropdown: ->
-		@$('.column-dropdown .dropdown-submenu').removeClass('pull-left')
-		@$('.ui-th-column: .column-dropdown').removeClass('last')
+		if @.$('.ui-jqgrid-htable').length > 0
+			@$('.column-dropdown .dropdown-submenu').removeClass('pull-left')
+			@$('.ui-th-column: .column-dropdown').removeClass('last')
 
-		table = @$('.ui-jqgrid-htable')
-		tableRight = $(window).width() - (table.offset().left + table.outerWidth())
-		
-		@$('.ui-th-column:visible').each(->
-			columnLeft = $(window).width() - $(this).offset().left
-			if (columnLeft - 250) < tableRight
-				$('.dropdown-submenu', $(this)).addClass('pull-left')
-			if (columnLeft - 120) < tableRight
-				$('.column-dropdown', $(this)).addClass('last')
-		)
-		#@$('.ui-th-column:visible .column-dropdown:last').addClass('last')
+			table = @$('.ui-jqgrid-htable')
+			tableRight = $(window).width() - (table.offset().left + table.outerWidth())
+			
+			@$('.ui-th-column:visible').each(->
+				columnLeft = $(window).width() - $(this).offset().left
+				if (columnLeft - 250) < tableRight
+					$('.dropdown-submenu', $(this)).addClass('pull-left')
+				if (columnLeft - 120) < tableRight
+					$('.column-dropdown', $(this)).addClass('last')
+			)
+			#@$('.ui-th-column:visible .column-dropdown:last').addClass('last')
 
 	groupByColumnBindings: ->
 		widget = this
