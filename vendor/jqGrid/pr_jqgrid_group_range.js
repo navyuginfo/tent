@@ -4,7 +4,7 @@ $.extend($.jgrid,{
 		var args = $.makeArray(arguments).slice(1), j = 1;
 		if(format===undefined) { format = ""; }
 		if (args[3] && args[3].range && args[3].range.rowTitle) {
-			args[0] = args[3].range.rowTitle(args[4])
+			args[0] = args[3].range.rowTitle(args[4], args[5])
 		}
 		return format.replace(/\{([\w\-]+)(?:\:([\w\.]*)(?:\((.*?)?\))?)?\}/g, function(m,i){
 			if(!isNaN(parseInt(i,10))) {
@@ -150,7 +150,13 @@ $.jgrid.extend({
 				} catch (egv) {
 					gv = n.value;
 				}
-				str += "<tr id=\""+hid+"\" role=\"row\" class= \"ui-widget-content jqgroup ui-row-"+$t.p.direction+" "+clid+"\"><td style=\"padding-left:"+(n.idx * 12) + "px;"+"\" colspan=\""+colspans+"\">"+icon+$.jgrid.template(grp.groupText[n.idx], gv, n.cnt, n.summary, grp, n.value)+"</td></tr>";
+
+				/* Create a formatter by currying the current values */
+				formatter = function(value) {
+					return $t.formatter(hid, value, cp[n.idx], value );
+				}
+
+				str += "<tr id=\""+hid+"\" role=\"row\" class= \"ui-widget-content jqgroup ui-row-"+$t.p.direction+" "+clid+"\"><td style=\"padding-left:"+(n.idx * 12) + "px;"+"\" colspan=\""+colspans+"\">"+icon+$.jgrid.template(grp.groupText[n.idx], gv, n.cnt, n.summary, grp, n.value, formatter)+"</td></tr>";
 				var leaf = len-1 === n.idx; 
 				if( leaf ) {
 					var gg = grp.groups[i+1];
