@@ -25,7 +25,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   messagePanel: null
 
   localizedLabel: (->
-    loc @get('label')
+    Tent.I18n.loc @get('label')
   ).property('label')
 
   ###*
