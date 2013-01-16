@@ -234,4 +234,8 @@ a[rel=tooltip] {
 	display: none!important;
 }
 
-
+.tent-spinner.error{
+	.ui-spinner{
+		border: #E9322D 1px solid;
+	}
+}

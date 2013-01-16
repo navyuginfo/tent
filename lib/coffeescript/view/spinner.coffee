@@ -34,15 +34,5 @@ Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget,
 			@.$('input').spinner({'min':@get('min')})
 	).observes('min')
 
-	validate: ->
-		isValid = @_super()
-		isValidValue = true
-		# try
-		# 	isValidValue = !(@get('options').min > @get('value') )
-		# catch e
-		# 	isValidValue = false
-		# @addValidationError(Tent.messages.MIN_VALUE_ERROR) unless isValidValue
-		isValid && isValidValue
-
 	stop: (event,ui)->
 		@set 'value', @.$('input').spinner('value')
