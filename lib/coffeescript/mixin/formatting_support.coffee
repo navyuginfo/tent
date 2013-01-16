@@ -19,6 +19,7 @@ Tent.FormattingSupport = Ember.Mixin.create
 
 	valueDidChange: (->
 		@set("formattedValue", @format(@get('value')))
+		@set('isValid', @validate())
 	).observes('value')
 
 	format: (value)->
