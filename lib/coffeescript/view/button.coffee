@@ -24,6 +24,10 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   label: 'Button'
   messagePanel: null
 
+  localizedLabel: (->
+    Tent.I18n.loc @get('label')
+  ).property('label')
+
   ###*
   * @property {String} type The type of button.
   * Valid types are:
