@@ -126,6 +126,7 @@ Tent.I18n.loadTranslations(
     minLength: 'Length must be %@min characters or more'
     invalidCurrency: 'Invalid currency'
     regexp: 'Value must pass the regular expression %@regexp'
+    minValue: 'Value must be greater than %@min'
 	}
  
 )
