@@ -74,3 +74,14 @@ Tent.Validations.regExp = Tent.Validation.create
     @isValueEmpty(value) or options.regexp.test(value)
 
   ERROR_MESSAGE: Tent.messages.REG_EXP
+
+Tent.Validations.minValue = Tent.Validation.create
+  validate: (value, options, message)->
+    if not options? or not options.min?
+      return false
+    message = if(not message? and options.message?) then options.message else Tent.messages.MIN_VALUE_ERROR
+    @set('ERROR_MESSAGE', message) if message?
+    options.min <= value 
+
+  ERROR_MESSAGE: Tent.messages.MIN_VALUE_ERROR
+
