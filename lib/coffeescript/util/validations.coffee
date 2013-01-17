@@ -81,7 +81,7 @@ Tent.Validations.minValue = Tent.Validation.create
       return false
     message = if(not message? and options.message?) then options.message else Tent.messages.MIN_VALUE_ERROR
     @set('ERROR_MESSAGE', message) if message?
-    options.min <= value 
+    if value then options.min<=value else true
 
   ERROR_MESSAGE: Tent.messages.MIN_VALUE_ERROR
 
