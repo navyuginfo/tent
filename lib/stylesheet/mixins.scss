@@ -33,7 +33,7 @@
 @mixin collapsed {
 	width: 10px;			
 	.panel-content {
-		opacity: 0;
+		@include opacity(0);
 	}
 	overflow: hidden;
 }

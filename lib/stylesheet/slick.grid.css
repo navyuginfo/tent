@@ -137,8 +137,7 @@ classes should alter those!
 .slick-reorder-proxy {
   display: inline-block;
   background: blue;
-  opacity: 0.15;
-  filter: alpha(opacity = 15);
+  @include opacity(.15);
   cursor: move;
 }
 
@@ -146,8 +145,7 @@ classes should alter those!
   display: inline-block;
   height: 2px;
   background: blue;
-  opacity: 0.7;
-  filter: alpha(opacity = 70);
+  @include opacity(0.7);
 }
 
 .slick-selection {

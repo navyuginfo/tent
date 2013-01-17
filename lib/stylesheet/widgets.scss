@@ -53,7 +53,7 @@ $required-icon-color: red;
 /* ModalPane */
 
 body>.modal-backdrop, body>.modal-backdrop.fade.in {
-	opacity: .01
+	@include opacity(.01);
 }
 .tent-modal {
 	.modal-backdrop {
