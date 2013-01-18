@@ -85,3 +85,13 @@ Tent.Validations.minValue = Tent.Validation.create
 
   ERROR_MESSAGE: Tent.messages.MIN_VALUE_ERROR
 
+Tent.Validations.maxValue = Tent.Validation.create
+  validate: (value, options, message)->
+    if not options? or not options.min?
+      return false
+    message = if(not message? and options.message?) then options.message else Tent.messages.MAX_VALUE_ERROR
+    @set('ERROR_MESSAGE', message) if message?
+    if value then options.min>=value else true
+
+  ERROR_MESSAGE: Tent.messages.MAX_VALUE_ERROR
+
