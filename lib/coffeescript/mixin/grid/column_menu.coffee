@@ -6,13 +6,23 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		for column in @get('columns')
 			column.groupable = not (column.groupable? && column.groupable ==false)
 			column.renamable = not (column.renamable? && column.renamable ==false)
+			column.sortable = not (column.sortable? && column.sortable ==false)
 
-			if column.groupable or column.renamable
+			if column.groupable or column.renamable or column.sortable
 				template = Handlebars.compile '
 					 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">
+							{{#if column.sortable}}
+								<li class="sort dropdown-submenu">
+									<a tabindex="-1">{{sort}}</a>
+								    <ul class="dropdown-menu wide">
+								    	<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>
+								    	<li><a tabindex="-1" class="descending">{{descending}}</a></li>
+								    </ul>
+								</li>
+							{{/if}}
 							{{#if column.groupable}}
 								<li class="group dropdown-submenu">
-									<a tabindex="-1">Group</a>
+									<a tabindex="-1">{{group}}</a>
 								    <ul class="dropdown-menu">
 								    	<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>
 								    	{{#each groupType}}
@@ -23,7 +33,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 							{{/if}}
 							{{#if column.renamable}}
 								<li class="rename dropdown-submenu">
-									<a tabindex="-1">Rename</a>
+									<a tabindex="-1">{{rename}}</a>
 								    <ul class="dropdown-menu wide">
 								    	<li><input type="text" value="{{title}}" class="input-medium"/></li>
 								    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>
@@ -40,6 +50,11 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					groupType: groupType
 					none: Tent.I18n.loc ("tent.grouping.no_grouping")
 					revert: Tent.I18n.loc ("tent.grouping.revert")
+					sort: Tent.I18n.loc ("tent.sorting.main")
+					ascending: Tent.I18n.loc ("tent.sorting.ascending")
+					descending: Tent.I18n.loc ("tent.sorting.descending")
+					group: Tent.I18n.loc ("tent.grouping._groupBy")
+					rename: Tent.I18n.loc ("tent.rename.main")
 				
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 				@$(columnDivId).addClass('dropdown')
@@ -49,6 +64,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@leftAlignLastDropdown()
 		@groupByColumnBindings()
 		@renameColumnHeaderBindings()
+		@sortingBindings()
 	
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
@@ -69,7 +85,26 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				if (columnLeft - 120) < tableRight
 					$('.column-dropdown', $(this)).addClass('last')
 			)
-			#@$('.ui-th-column:visible .column-dropdown:last').addClass('last')
+
+	# We hide the standard sort buttons using css.
+	# When a dropdown sort button is selected, send a click event 
+	# to the standard sort buttons and let jqGrid handle it.
+	sortingBindings: ->
+		widget = this
+		@$('.dropdown-menu .sort .ascending').click((e)->
+			target = $(e.target)
+			widget.findAscendingButton(target).click()
+		)
+		@$('.dropdown-menu .sort .descending').click((e)->
+			target = $(e.target)
+			widget.findDescendingButton(target).click()
+		)
+
+	findAscendingButton: (target) ->
+		target.parents('.ui-th-column:first').find('.ui-icon-asc').eq(0)
+
+	findDescendingButton: (target) ->
+		target.parents('.ui-th-column:first').find('.ui-icon-desc').eq(0)
 
 	groupByColumnBindings: ->
 		widget = this

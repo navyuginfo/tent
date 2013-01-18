@@ -178,6 +178,7 @@ $error-background-color: rgba(255, 0, 0, 0.10);
 
 	.s-ico {
 		height: 100%;
+		display: none!important; // Sorting is controlled from dropdown options
 	}
 
 	.ui-icon-triangle-1-n {
