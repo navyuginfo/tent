@@ -44,7 +44,11 @@ Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget,
 	optionsDidChange: (->
 		@.$('input').spinner({'min':@get('min')}) if @get('min')
 		@.$('input').spinner({'max':@get('max')}) if @get('max')
-	).observes('min','max')
+		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
+			@.$('input').spinner('disable')
+		else
+			@.$('input').spinner('enable')
+	).observes('min','max','disabled', 'readOnly', 'isReadOnly')
 
 	stop: (event,ui)->
 		@set 'value', @.$('input').spinner('value')
