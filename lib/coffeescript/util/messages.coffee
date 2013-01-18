@@ -18,5 +18,6 @@ Tent.messages.CURRENCY_ERROR = "error.invalidCurrency"
 Tent.messages.REG_EXP = "error.regexp"
 Tent.messages.MIN_VALUE_ERROR = "error.minValue"
 Tent.messages.MAX_VALUE_ERROR = "error.maxValue"
+Tent.messages.VALUE_BETWEEN_ERROR = "error.valueBetween"
 
 

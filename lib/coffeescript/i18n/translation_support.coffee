@@ -128,6 +128,7 @@ Tent.I18n.loadTranslations(
     regexp: 'Value must pass the regular expression %@regexp'
     minValue: 'Value must be greater than or equal to %@min'
     maxValue: 'Value must be less than or equal to %@max'
+    valueBetween: 'Value must be between %@min and %@max'
 	}
  
 )

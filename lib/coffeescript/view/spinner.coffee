@@ -9,12 +9,15 @@
 					maxBinding=""
          }}
   value can be entered maually in the spinner. 
-  To put restrictions on that use custom validations: minValue and maxValue
+  To put restrictions on that use custom validation: valueBetween
 			  {{view Tent.Spinner label="" 
-						valueBinding="" minBinding="" 
+						valueBinding="" 
+						minBinding="" 
 						maxBinding="" 
-						validations="minValue"
-			      validationOptions="{minValue:{min:2}}"}}
+						validations="valueBetween"
+			      validationOptions="{valueBetween:{min:2, max:20}}"}}
+  To restrict only one min/max value, give the other as null   
+  			eg: validationOptions = "{valueBetween:{min:null, max:20}}"
 ###
 
 require '../template/text_field'
