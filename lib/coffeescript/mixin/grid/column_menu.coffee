@@ -14,7 +14,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 							{{#if column.sortable}}
 								<li class="sort dropdown-submenu">
 									<a tabindex="-1">{{sort}}</a>
-								    <ul class="dropdown-menu wide">
+								    <ul class="dropdown-menu">
 								    	<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>
 								    	<li><a tabindex="-1" class="descending">{{descending}}</a></li>
 								    </ul>
