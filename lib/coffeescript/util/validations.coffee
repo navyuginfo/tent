@@ -75,13 +75,24 @@ Tent.Validations.regExp = Tent.Validation.create
 
   ERROR_MESSAGE: Tent.messages.REG_EXP
 
-Tent.Validations.minValue = Tent.Validation.create
+Tent.Validations.valueBetween = Tent.Validation.create
   validate: (value, options, message)->
-    if not options? or not options.min?
+    if not options? or not (options.min? or options.max?)
       return false
-    message = if(not message? and options.message?) then options.message else Tent.messages.MIN_VALUE_ERROR
-    @set('ERROR_MESSAGE', message) if message?
-    if value then options.min<=value else true
+    message = if(not message? and options.message?) then options.message
+    if value
+      if options.min? and options.min>value
+        message = Tent.messages.MIN_VALUE_ERROR unless message
+        @set('ERROR_MESSAGE', message) if message?
+        false
+      else if options.max? and options.max<value
+        message = Tent.messages.MAX_VALUE_ERROR unless message
+        @set('ERROR_MESSAGE', message) if message?
+        false
+      else
+        true
+    else 
+      true
 
-  ERROR_MESSAGE: Tent.messages.MIN_VALUE_ERROR
+  ERROR_MESSAGE: Tent.messages.VALUE_BETWEEN_ERROR
 

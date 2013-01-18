@@ -184,8 +184,8 @@
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
 
-            {{view Tent.Spinner label="_spinner" valueBinding="Pad.spinner" requiredBinding="Pad.isRequired" min=2 validations="minValue"
-              validationOptions="{minValue:{min:2}}" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
+            {{view Tent.Spinner label="_spinner" valueBinding="Pad.spinner" requiredBinding="Pad.isRequired" min=2 max=100 validations="valueBetween"
+              validationOptions="{valueBetween:{min:2,max:100}}" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay"}}
             
 

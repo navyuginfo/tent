@@ -4,8 +4,20 @@
 * @extends Tent.TextField
 * Usage
 *       {{view Tent.Spinner label="" 
-			valueBinding="" minBinding=""
+					valueBinding="" 
+					minBinding="" 
+					maxBinding=""
          }}
+  value can be entered maually in the spinner. 
+  To put restrictions on that use custom validation: valueBetween
+			  {{view Tent.Spinner label="" 
+						valueBinding="" 
+						minBinding="" 
+						maxBinding="" 
+						validations="valueBetween"
+			      validationOptions="{valueBetween:{min:2, max:20}}"}}
+  To restrict only one min/max value, give the other as null   
+  			eg: validationOptions = "{valueBetween:{min:null, max:20}}"
 ###
 
 require '../template/text_field'
@@ -30,9 +42,9 @@ Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget,
 
 	#add other options in this as and when required
 	optionsDidChange: (->
-		if @get('min')
-			@.$('input').spinner({'min':@get('min')})
-	).observes('min')
+		@.$('input').spinner({'min':@get('min')}) if @get('min')
+		@.$('input').spinner({'max':@get('max')}) if @get('max')
+	).observes('min','max')
 
 	stop: (event,ui)->
 		@set 'value', @.$('input').spinner('value')
