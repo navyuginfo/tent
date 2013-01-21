@@ -283,7 +283,7 @@ Tent.ModalPane = Ember.View.extend
         selectedCancel = $(this)
     )
 
-    if selectedCancel.length > 0
+    if selectedCancel? and selectedCancel.length > 0
       id = selectedCancel.parent('.tent-button').attr('id')
       buttonView = Ember.View.views[id]
       buttonView.triggerAction()
