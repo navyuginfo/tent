@@ -313,9 +313,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		if @get('showMaximizeButton')
 			@$(".ui-jqgrid-titlebar").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
-			#@$(".ui-jqgrid-titlebar").append('<a href="#'+@get('elementId')+'" class="top_up" toptions="type=dom, shaded=1, overlayClose=1, width=1200px, height=90%, x=10px, y=10px"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
-			#@$(".ui-jqgrid-titlebar").append('<a href="#'+@get('elementId')+'" rel="prettyPhoto" ><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
-
+			
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
 			)
@@ -414,13 +412,14 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			)
 
 			@set('resizeEscapeHandler', @get('generateResizeEscapeHandler')(widget))
-			$('body').bind('keyup', @get('resizeEscapeHandler'))	
+			$('body').bind('keyup click', @get('resizeEscapeHandler'))	
 
 
 	generateResizeEscapeHandler: (widget)->
 		return (e)->
-			if e.keyCode==27
+			if e.keyCode==27 or ($(e.target).attr('id') == 'jqgrid-backdrop')
 				widget.toggleFullScreen()
+				return
 
 	resizeToContainer: ->
 		if @$()?

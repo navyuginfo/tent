@@ -17,3 +17,10 @@ Ember.mixin String.prototype,
 
   toBoolean: ->
     @toLowerCase() == 'true' 
+
+
+# Add string.trim() if not available  
+if not String.prototype.trim? 
+  String.prototype.trim = () ->
+    return @replace(/^\s+|\s+$/g,'')
+
