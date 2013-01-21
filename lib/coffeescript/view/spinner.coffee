@@ -25,13 +25,13 @@ require '../mixin/jquery_ui'
 
 Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget, 
 	uiType: 'spinner'
-	uiEvents: ['stop']
+	uiEvents: ['change']
 	uiOptions: ['max','min','icons','culture','disabled','incremental','numberFormat','step','page']
 	classNames: ['tent-spinner']
 	
 	defaultOptions: 
 		min: 0
-		stop: @stop
+		change: @change
 
 	init: ->
 		@_super()
@@ -44,7 +44,11 @@ Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget,
 	optionsDidChange: (->
 		@.$('input').spinner({'min':@get('min')}) if @get('min')
 		@.$('input').spinner({'max':@get('max')}) if @get('max')
-	).observes('min','max')
+		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
+			@.$('input').spinner('disable')
+		else
+			@.$('input').spinner('enable')
+	).observes('min','max','disabled', 'readOnly', 'isReadOnly')
 
-	stop: (event,ui)->
+	change: (event,ui)->
 		@set 'value', @.$('input').spinner('value')
