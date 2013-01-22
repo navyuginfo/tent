@@ -1,58 +1,5 @@
 $error-background-color: rgba(255, 0, 0, 0.10);
 
-/* Slickgrid Overrides */
-
-.slickgrid {
-
-	.grid {
-		border-left: 1px solid #aaa;
-		border-right: 1px solid #aaa;
-	}
-
-	.slick-row {
-		&:hover {
-			background: #D7E0FC;
-		}
-	}
-	.slick-cell {
-		&.selected {
-			background-color: #ccc;
-		}
-	}
-
-	.grid-header {
-		@include box-sizing(border-box);
-		color: #333;
-		padding: 3px;
-
-		label {
-			display: inline;
-			margin-bottom: 0px;
-		}
-		.button-bar {
-			float: right;
-			.ui-icon {
-				float: right;
-			}
-		}
-	}
-
-	.slick-pager {
-		border: 1px solid #aaa;
-	}
-
-	.slick-headerrow {
-		input, select {
-			height: 8px;
-			width: 5em;
-			font-size: 0.8em;
-		}
-	}
-}
-
-
-
-
 /* jqGrid */
 
 .tent-jqgrid {

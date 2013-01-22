@@ -24,7 +24,7 @@
 
 	Pad.dataStore = Pad.DataStore.create()
 
-	loader.require('coffeescript/view/task_list')
+	#loader.require('coffeescript/view/task_list')
 	loader.require('coffeescript/controllers/task_list_controller')
 	loader.require('coffeescript/controllers/task_multiselect_list_controller')
 
