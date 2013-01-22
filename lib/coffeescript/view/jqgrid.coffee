@@ -154,8 +154,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				update: (permutation) =>
 					@columnsDidChange()
 			}
-			resizeStop: =>
+			resizeStop: (width, index)=>
 				@columnsDidChange()
+				if @isLastColumn(index)
+					@resizeToContainer() #Need this to deal with last column resizing
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -300,6 +302,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				})
 			)
 
+	isLastColumn: (index)->
+		cols = @get('columns')
+		for i in [cols.length-1..0] by -1
+			if not cols[i].hidden
+				if index-1 == i
+					return true
+				else
+					return false
+
 	columnsDidChange: ->
 		@_super()
 		if (@get('fixedHeader'))
@@ -423,7 +434,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	resizeToContainer: ->
 		if @$()?
-			@getTableDom().setGridWidth(@$().width())
+			@getTableDom().setGridWidth(@$().width(), true)
 			@columnsDidChange()
 
 	hideGrid: ->
@@ -470,6 +481,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				hidedlg: true if column.hideable == false
 				sortable: column.sortable
 				groupable: column.groupable
+				resizable: true
 			columns.pushObject(item)
 		columns
 	).property('columns')

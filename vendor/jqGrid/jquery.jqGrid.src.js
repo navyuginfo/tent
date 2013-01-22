@@ -2219,6 +2219,11 @@ $.fn.jqGrid = function( pin ) {
 		var thead = "<thead><tr class='ui-jqgrid-labels' role='rowheader'>",
 		tdc, idn, w, res, sort,
 		td, ptr, tbody, imgs,iac="",idc="";
+
+		/* 
+			PR We need the last column to include a resize handle
+			as it can be dragged to another position
+		
 		if(ts.p.shrinkToFit===true && ts.p.forceFit===true) {
 			for (i=ts.p.colModel.length-1;i>=0;i--){
 				if(!ts.p.colModel[i].hidden) {
@@ -2227,6 +2232,10 @@ $.fn.jqGrid = function( pin ) {
 				}
 			}
 		}
+		*/
+		
+
+
 		if(ts.p.viewsortcols[1] == 'horizontal') {iac=" ui-i-asc";idc=" ui-i-desc";}
 		tdc = isMSIE ?  "class='ui-th-div-ie'" :"";
 		imgs = "<span class='s-ico' style='display:none'><span sort='asc' class='ui-grid-ico-sort ui-icon-asc"+iac+" ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-"+dir+"'></span>";
