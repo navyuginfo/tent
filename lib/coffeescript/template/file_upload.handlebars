@@ -1,4 +1,7 @@
 <span>
   <span>Drag &amp; Drop files here...</span>
   <input type="file" name="files[]" {{bindAttr data-url="view.dataUrl"}} multiple>
+  {{#if view.applyWait}}
+     {{view Tent.WaitIcon}}
+  {{/if}}
 </span>
