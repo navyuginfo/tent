@@ -322,7 +322,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 
 		if @get('fullScreen')
-			$('body').unbind('keyup', @get('resizeEscapeHandler'))
+			$('body').unbind('keyup click', @get('resizeEscapeHandler'))
 			if not @get('resizeGridSteps')
 				@hideGrid()
 			
