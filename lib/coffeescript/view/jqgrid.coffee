@@ -32,7 +32,7 @@ require '../mixin/grid/column_menu'
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
 
 	###*
 	* @property {String} title The title caption to appear above the table
@@ -163,7 +163,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
-			rowNum: @get('pageSize') if @get('paged'),
+			rowNum: if @get('paged') then @get('pageSize') else -1,
 			gridview: true,
 			toppager:false,
 			cloneToTop:false,

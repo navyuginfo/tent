@@ -111,6 +111,14 @@ Tent.I18n.loadTranslations(
 			no_grouping: 'None'
 			revert: 'Revert to Original'
 		}
+		rename: {
+			main: 'Rename'
+		}
+		sorting: {
+			main: 'Sort'
+			ascending: 'Ascending'
+			descending: 'Descending'
+		}
 
 	}
 	error: {

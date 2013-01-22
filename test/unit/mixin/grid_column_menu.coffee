@@ -36,8 +36,8 @@ module 'Tent.Grid.ColumnMenu', setup, teardown
 
 test 'no column menus', ->
 	column_data = [
-		{id: "id", name: "id", title: "_hID", field: "id", sortable: true, groupable: false, renamable: false},
-		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true, groupable: false, renamable: false}
+		{id: "id", name: "id", title: "_hID", field: "id", sortable: false, groupable: false, renamable: false},
+		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: false, groupable: false, renamable: false}
 	]
 
 	view = Ember.View.create
@@ -58,8 +58,8 @@ test 'no column menus', ->
 
 test 'rename column', ->
 	column_data = [
-		{id: "id", name: "id", title: "_hID", field: "id", sortable: true, groupable: false, renamable: false},
-		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true, groupable: false}
+		{id: "id", name: "id", title: "_hID", field: "id", sortable: false, groupable: false, renamable: false},
+		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: false, groupable: false}
 	]
 
 	view = Ember.View.create

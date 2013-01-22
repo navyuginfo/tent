@@ -25,7 +25,6 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	).observes('modelData')
 
 	# Convert Ember model to deep Object
-	# maybe move this into the SlickGrid
 	gridData: (->
 		grid = []
 		for model in @get('modelData')
