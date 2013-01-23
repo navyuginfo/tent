@@ -154,8 +154,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				update: (permutation) =>
 					@columnsDidChange()
 			}
-			resizeStop: =>
-				@columnsDidChange()
+			resizeStop: (width, index)=>
+				@columnsDidChange(index)
+				
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -300,12 +301,22 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				})
 			)
 
-	columnsDidChange: ->
-		@_super()
-		if (@get('fixedHeader'))
-			@adjustHeightForFixedHeader()
+	getLastColumn: ->
+		@$('.ui-th-column').filter(->
+			$(this).css('display') != 'none'
+		).last()
 
-	adjustHeightForFixedHeader: () ->
+	columnsDidChange: (colChangedIndex)->
+		@_super()
+		if @get('fixedHeader')
+			@adjustHeightForFixedHeader()
+		@removeLastDragBar()
+
+	removeLastDragBar: ->
+		@$('.ui-th-column .ui-jqgrid-resize').show()
+		@getLastColumn().find('.ui-jqgrid-resize').hide()
+
+	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
 
@@ -423,7 +434,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	resizeToContainer: ->
 		if @$()?
-			@getTableDom().setGridWidth(@$().width())
+			@getTableDom().setGridWidth(@$().width(), true)
 			@columnsDidChange()
 
 	hideGrid: ->
@@ -470,6 +481,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				hidedlg: true if column.hideable == false
 				sortable: column.sortable
 				groupable: column.groupable
+				resizable: true
 			columns.pushObject(item)
 		columns
 	).property('columns')
