@@ -211,6 +211,12 @@ Tent.ModalPane = Ember.View.extend
 
   hidden: true
 
+  ###*
+  * @property {Boolean} clickOutsideToClose A boolean indicating that the ModalPane should hide when
+  * click outside of modal pane..
+  ###
+  clickOutsideToClose:true
+
   init: ->
     @_super(arguments)
     if not @get('closeAction')?
@@ -319,7 +325,13 @@ Tent.ModalPane = Ember.View.extend
       @$('.modal-backdrop:first').fadeOut(0).attr('data-hidden', true)
     else
       @$('.modal-backdrop:first').fadeOut(200).attr('data-hidden', true)
-    
+
+  backdrop: (->
+    if not @get('clickOutsideToClose')
+      'static'
+    else
+      'true'
+  ).property('clickOutsideToClose')
 
 Tent.ModalHeader = Ember.View.extend
   tagName: 'h3'

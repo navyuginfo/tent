@@ -1037,6 +1037,15 @@
                       primaryIcon="icon-save icon-white"
                       secondaryIcon="icon-remove"
                 }}
+              <a id = "click_to_close_outside_for_modalPane">Render Modal Pane Click Disable Outside</a>
+                {{view Tent.ModalPane
+                customButton = "click_to_close_outside_for_modalPane"
+                text="_modalText"
+                header="_modalHeader"
+                primaryLabel="_ok"
+                clickOutsideToClose=false
+                primaryIcon="icon-save icon-white"
+                }}
 
                 {{#view Tent.ModalPane 
                       class="width3 height3"
