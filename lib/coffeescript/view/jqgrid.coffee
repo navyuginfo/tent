@@ -155,9 +155,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@columnsDidChange()
 			}
 			resizeStop: (width, index)=>
-				@columnsDidChange()
-				if @isLastColumn(index)
-					@resizeToContainer() #Need this to deal with last column resizing
+				@columnsDidChange(index)
+				
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -302,21 +301,22 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				})
 			)
 
-	isLastColumn: (index)->
-		cols = @get('columns')
-		for i in [cols.length-1..0] by -1
-			if not cols[i].hidden
-				if index-1 == i
-					return true
-				else
-					return false
+	getLastColumn: ->
+		@$('.ui-th-column').filter(->
+			$(this).css('display') != 'none'
+		).last()
 
-	columnsDidChange: ->
+	columnsDidChange: (colChangedIndex)->
 		@_super()
-		if (@get('fixedHeader'))
+		if @get('fixedHeader')
 			@adjustHeightForFixedHeader()
+		@removeLastDragBar()
 
-	adjustHeightForFixedHeader: () ->
+	removeLastDragBar: ->
+		@$('.ui-th-column .ui-jqgrid-resize').show()
+		@getLastColumn().find('.ui-jqgrid-resize').hide()
+
+	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
 
