@@ -29,6 +29,14 @@ Tent.RadioOption = Ember.SelectOption.extend
   	@set('inputIdentifier', @$('input[type="radio"]').attr('id'))
   	if @get('parentView.selection') is @get('content') then @set 'checked', true
 
+  selectionDidChange: (->
+    if @get('parentView.selection') is @get('content') 
+      @set 'checked', true
+    else
+      @set 'checked', false
+  ).observes('parentView.selection')
+
+
   labelPathDidChange: Ember.observer(-> 
   	labelPath = Ember.get(@, 'parentView.optionLabelPath')
   	if !labelPath
