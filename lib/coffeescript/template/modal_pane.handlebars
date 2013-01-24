@@ -5,7 +5,7 @@
 		{{/unless}}
 	{{/if}}
 	<div class="modal-backdrop fade in"></div>
-	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" {{bindAttr data-backdrop="view.backdrop"}}>
 		<div class="modal-header">
 			{{view Tent.Button buttonClass="close-dialog close" label="&times;" actionBinding="view.closeAction" targetBinding="view.closeTarget" type="link"}}
 
