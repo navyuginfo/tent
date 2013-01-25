@@ -122,21 +122,22 @@ Tent.I18n.loadTranslations(
 
 	}
 	error: {
-    generic: 'Error'
-    required: 'Field is required'
-    numeric: 'Value must be numbers only'
-    amount: 'Amount should be positive'
-    email: 'Email format error'
-    date: 'Date format error'
-    dateBetween: 'Date should be between %@startDate and %@endDate'
-    dateFuture: 'You provided a date in the future'
-    maxLength: 'Length must be %@max characters or less'
-    minLength: 'Length must be %@min characters or more'
-    invalidCurrency: 'Invalid currency'
-    regexp: 'Value must pass the regular expression %@regexp'
-    minValue: 'Value must be greater than or equal to %@min'
-    maxValue: 'Value must be less than or equal to %@max'
-    valueBetween: 'Value must be between %@min and %@max'
+	    generic: 'Error'
+	    required: 'Field is required'
+	    numeric: 'Value must be numbers only'
+	    amount: 'Amount should be positive'
+	    positive: 'Value should be positive'
+	    email: 'Email format error'
+	    date: 'Date format error'
+	    dateBetween: 'Date should be between %@startDate and %@endDate'
+	    dateFuture: 'You provided a date in the future'
+	    maxLength: 'Length must be %@max characters or less'
+	    minLength: 'Length must be %@min characters or more'
+	    invalidCurrency: 'Invalid currency'
+	    regexp: 'Value must pass the regular expression %@regexp'
+	    minValue: 'Value must be greater than or equal to %@min'
+	    maxValue: 'Value must be less than or equal to %@max'
+	    valueBetween: 'Value must be between %@min and %@max'
 	}
  
 )

@@ -50,6 +50,13 @@ test 'Maximum length validations with params', ->
   options = {max: 20}
   ok Tent.Validations.maxLength.validate(value, options), '12 caracters string validated succesfully'
 
+test "Positive Validations", ->
+	equal Tent.Validations.positive.validate(2), true, 'Success'
+	equal Tent.Validations.positive.validate(-2), false, '-1'
+	equal Tent.Validations.positive.validate(0), true, 'zero'
+	equal Tent.Validations.positive.validate(null), true, 'null'
+	equal Tent.Validations.positive.validate(undefined), true, 'undefined'
+	equal Tent.Validations.positive.validate(-.000072), false, 'fraction'
 
 
 
