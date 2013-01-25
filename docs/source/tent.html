@@ -172,6 +172,7 @@
       required: 'Field is required',
       numeric: 'Value must be numbers only',
       amount: 'Amount should be positive',
+      positive: 'Value should be positive',
       email: 'Email format error',
       date: 'Date format error',
       dateBetween: 'Date should be between %@startDate and %@endDate',
@@ -991,6 +992,8 @@
 
   Tent.messages.VALUE_BETWEEN_ERROR = &quot;error.valueBetween&quot;;
 
+  Tent.messages.POSITIVE_ERROR = &quot;error.positive&quot;;
+
 }).call(this);
 
 
@@ -1295,6 +1298,13 @@
 }).call(this);
 
 
+
+<span id='Tent-Validations'>/**
+</span>* @class Tent.Validations
+* Validations that can be applied to tent fields
+*/
+
+
 (function() {
 
   Tent.Validations = Ember.Object.create();
@@ -1309,6 +1319,18 @@
     }
   });
 
+<span id='Tent-Validations-email'>  /**
+</span>  * @class Tent.Validations.email Validates that the value conforms to an email format
+  */
+
+
+<span id='Tent-Validations-email-method-validate'>  /**
+</span>  * @method validate
+  * @param {String} value the value to test
+  * @return {Boolean} the result of the validation
+  */
+
+
   Tent.Validations.email = Tent.Validation.create({
     validate: function(value, options, message) {
       var isValid, pattern;
@@ -1318,7 +1340,20 @@
     ERROR_MESSAGE: Tent.messages.EMAIL_FORMAT_ERROR
   });
 
+<span id='Tent-Validations-datebetween'>  /**
+</span>  * @class Tent.Validations.datebetween Validates that the date is between two specified dates
+  */
+
+
   Tent.Validations.datebetween = Tent.Validation.create({
+<span id='Tent-Validations-datebetween-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain a 
+    * 'startDate' and an 'endDate' property
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       var isValid;
       if (!(options != null) || !(options.startDate != null) || !(options.endDate != null)) {
@@ -1331,11 +1366,24 @@
         return new Date(value);
       }
       return value;
-    },
+    }
+  });
+
+  ({
     ERROR_MESSAGE: Tent.messages.DATE_BETWEEN_ERROR
+<span id='Tent-Validations-futuredate'>    /**
+</span>    * @class Tent.Validations.futuredate Validates that the date value is not later than today
+    */
+
   });
 
   Tent.Validations.futuredate = Tent.Validation.create({
+<span id='Tent-Validations-futuredate-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       var today;
       today = new Date();
@@ -1343,7 +1391,10 @@
         return false;
       }
       return true;
-    },
+    }
+  });
+
+  ({
     convertToDate: function(value) {
       if (!(value instanceof Date)) {
         return Tent.Formatting.date.unformat(value);
@@ -1351,9 +1402,22 @@
       return value;
     },
     ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
+<span id='Tent-Validations-minLength'>    /**
+</span>    * @class Tent.Validations.minLength Validates that the value is greater than or equal to a defined length
+    */
+
   });
 
   Tent.Validations.minLength = Tent.Validation.create({
+<span id='Tent-Validations-minLength-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain a 
+    * 'min' value
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       if (!(options != null) || !(options.min != null)) {
         return false;
@@ -1366,7 +1430,21 @@
     ERROR_MESSAGE: Tent.messages.MIN_LENGTH
   });
 
+<span id='Tent-Validations-maxLength'>  /**
+</span>  * @class Tent.Validations.maxLength Validates that the value is less than or equal to a defined length
+  */
+
+
   Tent.Validations.maxLength = Tent.Validation.create({
+<span id='Tent-Validations-maxLength-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain a 
+    * 'max' value
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       if (!(options != null) || !(options.max != null)) {
         return false;
@@ -1379,7 +1457,20 @@
     ERROR_MESSAGE: Tent.messages.MAX_LENGTH
   });
 
+<span id='Tent-Validations-regExp'>  /**
+</span>  * @class Tent.Validations.regExp Validates that the value matches a regular expression
+  */
+
+
   Tent.Validations.regExp = Tent.Validation.create({
+<span id='Tent-Validations-regExp-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain a 'regexp' property
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       if (!(options != null) || !(options.regexp != null)) {
         return false;
@@ -1393,7 +1484,21 @@
     ERROR_MESSAGE: Tent.messages.REG_EXP
   });
 
+<span id='Tent-Validations-valueBetween'>  /**
+</span>  * @class Tent.Validations.valueBetween Validates that the value is between two numbers
+  */
+
+
   Tent.Validations.valueBetween = Tent.Validation.create({
+<span id='Tent-Validations-valueBetween-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain either a 
+    * 'min' or a 'max' value or both
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
     validate: function(value, options, message) {
       if (!(options != null) || !((options.min != null) || (options.max != null))) {
         return false;
@@ -1424,6 +1529,32 @@
       }
     },
     ERROR_MESSAGE: Tent.messages.VALUE_BETWEEN_ERROR
+  });
+
+<span id='Tent-Validations-positive'>  /**
+</span>  * @class Tent.Validations.positive Validates that the value is positive (&gt;= 0)
+  */
+
+
+  Tent.Validations.positive = Tent.Validation.create({
+<span id='Tent-Validations-positive-method-validate'>    /**
+</span>    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain either a 
+    * 'min' or a 'max' value or both
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
+    validate: function(value, options, message) {
+      message = !(message != null) &amp;&amp; (options != null) &amp;&amp; (options.message != null) ? options.message : void 0;
+      if (this.isValueEmpty(value) || value &gt;= 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    ERROR_MESSAGE: Tent.messages.POSITIVE_ERROR
   });
 
 }).call(this);
@@ -2288,6 +2419,7 @@ Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, {
     hasHelpBlock: false,
     placeholder: accounting.settings.number.pattern,
     validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/,
+    validations: 'positive',
     prefix: (function() {
       if (this.get('currency')) {
         return Tent.I18n.loc(this.get('currency'));
@@ -2296,26 +2428,15 @@ Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, {
       }
     }).property('currency'),
     validate: function() {
-      var didOtherValidationPass, formattedValue, isValidAmount, isValidCurrency;
-      didOtherValidationPass = this._super();
+      var didOtherValidationPass, formattedValue, isValidCurrency;
       this.set('formattedValue', Tent.Formatting.amount.cleanup(this.get('formattedValue')));
+      didOtherValidationPass = this._super();
       formattedValue = this.get('formattedValue');
-      isValidAmount = this.isValidAmount(this.get('formattedValue'));
       isValidCurrency = this.get('isValidCurrency');
-      if (!isValidAmount) {
-        this.addValidationError(Tent.messages.AMOUNT_ERROR);
-      }
       if (!isValidCurrency) {
         this.addValidationError(Tent.messages.CURRENCY_ERROR);
       }
-      return isValidCurrency &amp;&amp; isValidAmount &amp;&amp; didOtherValidationPass;
-    },
-    isValidAmount: function(value) {
-      if (value &lt; 0) {
-        return false;
-      } else {
-        return true;
-      }
+      return isValidCurrency &amp;&amp; didOtherValidationPass;
     },
     format: function(value) {
       return Tent.Formatting.amount.format(value, this.get('centesimalValue'));
@@ -3310,8 +3431,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
             return _this.columnsDidChange();
           }
         },
-        resizeStop: function() {
-          return _this.columnsDidChange();
+        resizeStop: function(width, index) {
+          return _this.columnsDidChange(index);
         },
         forceFit: true,
         shrinkToFit: true,
@@ -3474,11 +3595,21 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         });
       }
     },
-    columnsDidChange: function() {
+    getLastColumn: function() {
+      return this.$('.ui-th-column').filter(function() {
+        return $(this).css('display') !== 'none';
+      }).last();
+    },
+    columnsDidChange: function(colChangedIndex) {
       this._super();
       if (this.get('fixedHeader')) {
-        return this.adjustHeightForFixedHeader();
+        this.adjustHeightForFixedHeader();
       }
+      return this.removeLastDragBar();
+    },
+    removeLastDragBar: function() {
+      this.$('.ui-th-column .ui-jqgrid-resize').show();
+      return this.getLastColumn().find('.ui-jqgrid-resize').hide();
     },
     adjustHeightForFixedHeader: function() {
       var top;
@@ -3500,7 +3631,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         _this = this;
       widget = this;
       if (this.get('fullScreen')) {
-        $('body').unbind('keyup', this.get('resizeEscapeHandler'));
+        $('body').unbind('keyup click', this.get('resizeEscapeHandler'));
         if (!this.get('resizeGridSteps')) {
           this.hideGrid();
         }
@@ -3591,7 +3722,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
     },
     resizeToContainer: function() {
       if (this.$() != null) {
-        this.getTableDom().setGridWidth(this.$().width());
+        this.getTableDom().setGridWidth(this.$().width(), true);
         return this.columnsDidChange();
       }
     },
@@ -3644,7 +3775,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
           hidden: column.hidden,
           hidedlg: column.hideable === false ? true : void 0,
           sortable: column.sortable,
-          groupable: column.groupable
+          groupable: column.groupable,
+          resizable: true
         };
         columns.pushObject(item);
       }
@@ -6739,7 +6871,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;\n\n{{view E
 }).call(this);
 
 
-Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n&lt;/span&gt;\n&quot;);
+Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile(&quot;&lt;span&gt;\n  &lt;span&gt;Drag &amp;amp; Drop files here...&lt;/span&gt;\n  &lt;input type=\&quot;file\&quot; name=\&quot;files[]\&quot; {{bindAttr data-url=\&quot;view.dataUrl\&quot;}} multiple&gt;\n  {{#if view.applyWait}}\n     {{view Tent.WaitIcon}}\n  {{/if}}\n&lt;/span&gt;\n&quot;);
 
 (function() {
 Tent.FileUpload = Ember.View.extend({
@@ -6749,21 +6881,23 @@ Tent.FileUpload = Ember.View.extend({
       var _this = this;
       return this.$('input').fileupload({
         add: function(e, data) {
-          $('&lt;div class=&quot;modal-backdrop&quot; id=&quot;file-upload-wait&quot;&gt;&lt;/div&gt;').appendTo($('body'));
+          _this.set('applyWait', true);
           return data.submit().success(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Success')).error(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Error'));
         }
       });
     },
     uploadResultFunctionWrapper: function(context, name) {
-      var resultFunction;
+      var resultFunction, self;
       resultFunction = this.get('upload' + name + 'Function');
-      $('#file-upload-wait').remove();
+      self = this;
       if (context &amp;&amp; resultFunction) {
         return function(result, textStatus, jqXHR) {
+          self.set('applyWait', false);
           return resultFunction.apply(context, arguments);
         };
       } else {
         return function(result, textStatus, jqXHR) {
+          self.set('applyWait', false);
           return void 0;
         };
       }
@@ -7385,6 +7519,242 @@ GridController
       return Ember.String.htmlSafe(Tent.I18n.loc(key, args[0]));
     }
     return path;
+  });
+
+}).call(this);
+
+
+(function() {
+}).call(this);
+
+
+(function() {
+
+  Tent.Data.Pager = Ember.Mixin.create({
+    paged: false,
+    pageSize: 12,
+    _page: 1,
+    _totalRows: 27,
+    init: function() {
+      this._super();
+      return this.REQUEST_TYPE.PAGE = 'paging';
+    },
+    currentPage: (function(key, value) {
+      if (arguments.length === 1) {
+        if (this.isValidPage(this.get('_page'))) {
+          return this.get('_page');
+        } else {
+          return 1;
+        }
+      } else {
+        if (!!this.isValidPage(value)) {
+          this.set('_page', value);
+        }
+        return this.get('_page');
+      }
+    }).property('data'),
+    isValidPage: function(page) {
+      return true;
+    },
+    totalPages: (function() {
+      return this.get('_totalPages') || (Math.max(1, Math.ceil(this.get('totalRows') / this.get('pageSize')))) || 1;
+    }).property('_totalPages', 'totalRows', 'pageSize'),
+    totalRows: (function() {
+      return this.get('_totalRows') || this.get('_totalPages') * this.get('pagesize') || 1;
+    }).property('_totalRows', '_totalPages', 'pageSize'),
+    goToPage: function(page) {
+      this.set('currentPage', page);
+      return this.update(this.REQUEST_TYPE.PAGE);
+    },
+    nextPage: function() {
+      var newPage;
+      newPage = this.get('currentPage') + 1;
+      if (!!this.isValidPage(newPage)) {
+        this.set('currentPage', newPage);
+      }
+      return this.update(this.REQUEST_TYPE.PAGE);
+    },
+    prevPage: function() {
+      var newPage;
+      newPage = this.get('currentPage') - 1;
+      if (!!this.isValidPage(newPage)) {
+        this.set('currentPage', newPage);
+      }
+      return this.update(this.REQUEST_TYPE.PAGE);
+    },
+    getPagingInfo: function() {
+      if (this.get('paged')) {
+        return {
+          pageSize: this.get('pageSize'),
+          pageNum: this.get('currentPage'),
+          totalPages: this.get('totalPages')
+        };
+      } else {
+        return {};
+      }
+    },
+    updatePagingInfo: function(info) {
+      this.set('_totalRows', info.totalRows);
+      return this.set('_page', info.pageNum);
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+
+  Tent.Data.Sorter = Ember.Mixin.create({
+    columnFilters: {},
+    init: function() {
+      this._super();
+      return this.REQUEST_TYPE.SORT = 'sorting';
+    },
+    sort: function(args) {
+      this.set('sortFields', args);
+      return this.update(this.REQUEST_TYPE.SORT);
+    },
+    getSortingInfo: function() {
+      return this.get('sortFields');
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+
+  Tent.Data.Filter = Ember.Mixin.create({
+    init: function() {
+      this._super();
+      this.REQUEST_TYPE.FILTER = 'filtering';
+      return this.set('filters', [
+        {
+          name: &quot;task1&quot;,
+          label: &quot;Task 1&quot;,
+          description: &quot;Select the first task&quot;,
+          values: {
+            id: {
+              op: &quot;equal&quot;,
+              data: &quot;51&quot;
+            },
+            title: {
+              op: &quot;equal&quot;,
+              data: &quot;Task 1&quot;
+            }
+          }
+        }, {
+          name: &quot;task2&quot;,
+          label: &quot;Task 2&quot;,
+          description: &quot;Select all tasks 50-59&quot;,
+          values: {
+            id: {
+              op: &quot;equal&quot;,
+              data: &quot;5&quot;
+            }
+          }
+        }
+      ]);
+    },
+    availableFilters: (function() {
+      return this.get('filters');
+    }).property('filters', 'filters.@each'),
+    filter: function(selectedFilter) {
+      if (selectedFilter != null) {
+        this.set('selectedFilter', selectedFilter);
+      }
+      return this.update(this.REQUEST_TYPE.FILTER);
+    },
+    filterTrigger: function() {
+      return this.filter();
+    },
+    getFilteringInfo: function() {
+      return this.get('selectedFilter');
+    },
+    saveFilter: function(filterDef) {
+      return this.get('filters').pushObject(filterDef);
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+
+  Tent.Data.ExportSupport = Ember.Mixin.create({
+    getURL: function(type) {
+      return '#';
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+<span id='Tent-Data-Collection'>/**
+</span>  * @class Tent.Data.Collection
+  * An object used to wrap an array of objects, with a facade for paging, sorting and filtering,
+  */
+
+
+  Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, Tent.Data.ExportSupport, {
+    content: null,
+    dataType: null,
+    data: [],
+    serverPaging: false,
+    liveStreaming: false,
+    store: null,
+    isLoadable: false,
+    REQUEST_TYPE: {
+      'ALL': 'all'
+    },
+    dataChanged: (function() {
+      return this.set('content', this.get('gridData'));
+    }).observes('modelData'),
+    gridData: (function() {
+      var column, grid, item, model, _i, _j, _len, _len1, _ref, _ref1;
+      grid = [];
+      _ref = this.get('modelData');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        model = _ref[_i];
+        item = {
+          &quot;id&quot;: model.get('id')
+        };
+        _ref1 = this.get('columnsDescriptor');
+        for (_j = 0, _len1 = _ref1.length; _j &lt; _len1; _j++) {
+          column = _ref1[_j];
+          if (column.field) {
+            item[column.field] = model.get(column.field);
+          }
+        }
+        grid.push(item);
+      }
+      return grid;
+    }).property('modelData'),
+    columnsDescriptor: (function() {
+      return this.get('store').getColumnsForType(this.get('dataType'));
+    }).property('dataType').cacheable(),
+    init: function() {
+      this._super();
+      return this.update(this.REQUEST_TYPE.ALL);
+    },
+    update: function(requestType) {
+      var query, response;
+      if ((this.get('dataType') != null) &amp;&amp; (this.get('store') != null)) {
+        query = $.extend({}, {
+          type: requestType
+        }, {
+          paging: this.getPagingInfo()
+        }, {
+          sorting: this.getSortingInfo()
+        }, {
+          filtering: this.getFilteringInfo()
+        });
+        response = this.get('store').findQuery(eval(this.get('dataType')), query);
+        this.set('modelData', response.modelData);
+        return this.updatePagingInfo(response.pagingInfo);
+      }
+    }
   });
 
 }).call(this);
