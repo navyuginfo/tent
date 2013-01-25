@@ -29,29 +29,20 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
   validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/
+  validations: 'positive'
 
   prefix: (->
     if @get('currency') then Tent.I18n.loc(this.get('currency')) else '...'
   ).property('currency')
  
   validate: -> 
-    didOtherValidationPass = @_super()
     @set('formattedValue', Tent.Formatting.amount.cleanup(@get('formattedValue')))
+    didOtherValidationPass = @_super()
+   
     formattedValue = @get('formattedValue')
-    #isValidNumber = @get('validAmountExp').test(formattedValue)
-    isValidAmount = @isValidAmount(@get('formattedValue'))
     isValidCurrency = @get('isValidCurrency')
-    #if didOtherValidationPass
-    #  @addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber    
-    @addValidationError(Tent.messages.AMOUNT_ERROR) unless isValidAmount
     @addValidationError(Tent.messages.CURRENCY_ERROR) unless isValidCurrency   
-    (isValidCurrency and isValidAmount and didOtherValidationPass)
-
-  isValidAmount: (value)->
-    if (value<0)
-      false
-    else
-      true
+    (isValidCurrency and didOtherValidationPass)
 
   #Format for display
   format: (value)->

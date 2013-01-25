@@ -96,3 +96,13 @@ Tent.Validations.valueBetween = Tent.Validation.create
 
   ERROR_MESSAGE: Tent.messages.VALUE_BETWEEN_ERROR
 
+Tent.Validations.positive = Tent.Validation.create
+  validate: (value, options, message) ->
+    message = if(not message? and options? and options.message?) then options.message
+    if @isValueEmpty(value) or value >= 0
+      true
+    else
+      false
+
+  ERROR_MESSAGE: Tent.messages.POSITIVE_ERROR
+
