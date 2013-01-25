@@ -49,7 +49,7 @@ Tent.Validations.datebetween = Tent.Validation.create
       return new Date(value)
     value
 
-	ERROR_MESSAGE: Tent.messages.DATE_BETWEEN_ERROR
+  ERROR_MESSAGE: Tent.messages.DATE_BETWEEN_ERROR
 
 ###*
 * @class Tent.Validations.futuredate Validates that the date value is not later than today
@@ -66,12 +66,12 @@ Tent.Validations.futuredate = Tent.Validation.create
       return false
     true
 
-	convertToDate: (value) ->
-		if not (value instanceof Date)
-			return Tent.Formatting.date.unformat(value)
-		value
+  convertToDate: (value) ->
+    if not (value instanceof Date)
+      return Tent.Formatting.date.unformat(value)
+    value
 
-	ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
+  ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
 
 ###*
 * @class Tent.Validations.minLength Validates that the value is greater than or equal to a defined length
@@ -179,6 +179,7 @@ Tent.Validations.positive = Tent.Validation.create
   ###
   validate: (value, options, message) ->
     message = if(not message? and options? and options.message?) then options.message
+    value = Tent.Formatting.amount.unformat(value)
     if @isValueEmpty(value) or value >= 0
       true
     else

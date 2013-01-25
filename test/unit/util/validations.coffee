@@ -57,6 +57,11 @@ test "Positive Validations", ->
 	equal Tent.Validations.positive.validate(null), true, 'null'
 	equal Tent.Validations.positive.validate(undefined), true, 'undefined'
 	equal Tent.Validations.positive.validate(-.000072), false, 'fraction'
+	equal Tent.Validations.positive.validate("2"), true, '2 string'
+	equal Tent.Validations.positive.validate("-2"), false, '-2 string'
+	equal Tent.Validations.positive.validate("2,456,555.99"), true, 'string formatted'
+	equal Tent.Validations.positive.validate("-2,456.55"), false, 'string formatted fail'
+
 
 
 
