@@ -44,6 +44,17 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   type: 'primary'
 
   isDisabled: false
+
+  ###*
+  * @property disabled {Boolean} A boolean to indicate that the button is disabled
+  ###
+  disabled: null
+
+  ###*
+  * @property enabled {Boolean} A boolean to indicate that the button is enabled
+  * This is used as a convenience property for avoiding having to use negative handlebars bindings
+  ###
+  enabled: null
   
   ###*
   * @property {String} action The action to be invoked on the target when the button is clicked
@@ -82,6 +93,10 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   init: ->
     @_super()
     @set('_options', Ember.ArrayProxy.create({content:  @get('optionList')}) || [] )
+    if @get('disabled')?
+      @set('isDisabled', @get('disabled'))
+    if @get('enabled')?
+      @set('isDisabled', not @get('enabled'))
 
   targetObject: (->
     target = @get('target')
@@ -94,11 +109,11 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).property('target', 'content', 'context')
 
   triggerAction: (dontValidate)->
-    if !@isDisabled and @get('validate') and not dontValidate==false
+    if !@get('isDisabled') and @get('validate') and not dontValidate==false
       @doValidation()
 
     # validation may trigger change isDisabled
-    if !@isDisabled
+    if !@get('isDisabled')
       if !@get('hasOptions')
         if @get('warn')==true and @get('doWarningsExist')
           @showWarningPanel()
@@ -114,7 +129,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     classes = classes.concat(" dropdown-toggle") if @get("hasOptions")
     classes = classes.concat(" disabled") if @get("isDisabled")
     return classes
-  ).property('type','hasOptions')   
+  ).property('type','hasOptions', 'isDisabled')   
 
   hasOptions: (->
     options = @get "optionList"
@@ -169,6 +184,18 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     if mp?
       @set('isDisabled', mp.get('hasErrors'))
   ).observes('messagePanel', 'messagePanel.hasErrors')
+
+  disabledDidChange: (->
+    @set('isDisabled', @get('disabled'))
+  ).observes('disabled')
+
+  enabledDidChange: (->
+    @set('isDisabled', not @get('enabled'))
+  ).observes('enabled')
+
+  isDisabledDidChange: (->
+    d = @get('isDisabled')
+  ).observes('isDisabled')
 
   doWarningsExist: (->
      @get('messagePanel.hasSevereWarnings')
