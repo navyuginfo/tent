@@ -48,3 +48,41 @@
 	z-index: 2000;
 	background: white;
 }
+
+
+/* 
+	Mixin to allow a modal panel to flex in height according to the viewport height .
+	The $margin argument defines the percentage offset from the top and bottom of the viewport.
+*/
+@mixin flex-modal ($margin){
+	top: $margin;
+	bottom: $margin;
+	margin-top: 0px;
+
+	.modal-header {
+		box-sizing: border-box;
+		height: $modal-header-height;
+	}
+
+	.modal-body {
+		box-sizing: border-box;
+		top: $modal-header-height;
+		position: absolute;
+		bottom: $modal-footer-height;
+		width: 100%;
+		max-height: none;
+	}
+
+	.modal-footer {
+		box-sizing: border-box;
+    	position: absolute;
+    	bottom: 0px;
+    	width: 100%;
+    	height: $modal-footer-height;
+  	}
+
+  	.tent-form, .tent-panel, .tent-jqgrid .ui-jqgrid  {
+    	height: auto; // Was 100%, doesn't play well in an absolutely positioned container
+    	overflow: visible;
+  	}
+}

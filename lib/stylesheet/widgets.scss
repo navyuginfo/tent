@@ -1,6 +1,3 @@
-$error-color: red;
-$error-background-color: rgba(255, 0, 0, 0.22);
-$required-icon-color: red;
 
 .tent-widget {
 	/* embed : embed a widget within another. We expect it to be inlined */
@@ -89,6 +86,23 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 		}
 		.modal-body {
 			max-height: 600px;
+		}
+	}
+
+	/* Flexible Modals */
+	&.flex10 {
+		.modal {
+			@include flex-modal(10%)
+		}
+	}
+	&.flex20 {
+		.modal {
+			@include flex-modal(20%)
+		}
+	}
+	&.flex30 {
+		.modal {
+			@include flex-modal(30%)
 		}
 	}
 
