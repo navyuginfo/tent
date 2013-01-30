@@ -1,6 +1,7 @@
 
 require './mixins/pager'
 require './mixins/sorter'
+require './mixins/columninfo'
 require './mixins/filter'
 require './mixins/export_support'
 ###*
@@ -9,7 +10,7 @@ require './mixins/export_support'
 ###
 
 
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, Tent.Data.ExportSupport,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.Filter, Tent.Data.ExportSupport,
 	content: null
 	dataType: null
 	data: []
@@ -48,7 +49,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			query = $.extend(
 				{}, 
 				{type: requestType}, 
-				{paging: @getPagingInfo()},
+				{paging: @get('pagingInfo')},
 				{sorting: @getSortingInfo()},
 				{filtering: @getFilteringInfo()}
 			)

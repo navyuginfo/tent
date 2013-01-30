@@ -55,7 +55,7 @@ Tent.TabPane = Ember.View.extend
 
 	didInsertElement: ->
 		title = Tent.I18n.loc(@get('title'))
-		@get('parentView').$('ul').append('<li><a href="#' + @get('elementId')+ '" data-toggle="tab">' + title + '</a></li>')
+		@get('parentView').$('ul:first').append('<li><a href="#' + @get('elementId')+ '" data-toggle="tab">' + title + '</a></li>')
 		if @get('parentView.active') == @get('elementId')
 			@getTabWithHref(@get("parentView.active")).tab("show")
 

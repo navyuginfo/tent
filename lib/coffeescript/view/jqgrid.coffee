@@ -508,9 +508,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().jqGrid('clearGridData')
 		data = 
 			rows: @get('gridData')
-			total: @get('totalPages')
-			records: @get('totalRows')
-			page: @get('pagingData').page
+			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+			records: @get('pagingInfo.totalRows') if @get('pagingInfo')? 
+			page: @get('pagingInfo').page if @get('pagingInfo')? 
 		@resetGrouping()
 		@getTableDom()[0].addJSONData(data)
 		@updateGrid()

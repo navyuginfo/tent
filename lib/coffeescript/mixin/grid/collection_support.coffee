@@ -47,23 +47,37 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 	* @property {Number} pageSize The number of items in each page
 	###
 	pageSize: 12
-
-	pagingData: 
-		page: 1 
 	
-	totalRowsBinding: 'collection.totalRows'
-	totalPagesBinding: 'collection.totalPages'
-
-	sortingData: {}
+	pagingInfoBinding: 'collection.pagingInfo'
+	sortingInfoBinding: 'collection.sortingInfo'
+	columnInfoBinding: 'collection.columnInfo'
 
 	init: ->
 		@_super(arguments)
 		if @get('collection')?
-			if @get('paged')
-				@get('collection').set('pageSize', @get('pageSize'))
+			@setupCustomizedProperties()
+
+	setupCustomizedProperties: ->
+		@setupPagingProperties()
+		@setupSortingProperties()
+		@setupColumnNameProperties()
+
+	setupPagingProperties: ->
+		@setPageSize()
+
+	setPageSize: ->
+		if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
+			@set('pagingInfo.pageSize', @get('pageSize'))
+
+	setupSortingProperties: ->
+
+	setupColumnNameProperties: ->
+
+
 
 	didInsertElement: ->
 		if @get('collection')?
+			@setupCustomizedProperties()
 			@get('collection').goToPage(1)
 
 	onPageOrSort: (postdata)->
@@ -78,11 +92,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 						field: postdata.sidx
 					])
 			else 
-				@get('pagingData').page = postdata.page
 				@get('collection').goToPage(postdata.page)
-
-			@get('sortingData').field = postdata.sidx
-			@get('sortingData').asc = postdata.sord
 
 	shouldSort: (postdata)->
 		sortable = false
@@ -93,6 +103,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 				postdata.sidx = columnDef.name
 				sortable = true
 
-		sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
+		sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.field') or postdata.sord != @get('sortingInfo.asc'))
 		
 
