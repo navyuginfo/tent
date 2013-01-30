@@ -60,7 +60,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 	setupCustomizedProperties: ->
 		@setupPagingProperties()
 		@setupSortingProperties()
-		@setupColumnNameProperties()
 
 	setupPagingProperties: ->
 		@setPageSize()
@@ -72,9 +71,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 	setupSortingProperties: ->
 
-	setupColumnNameProperties: ->
-
-
+	setupColumnTitleProperties: ->
+		# Copy any column titles provided by the collection
+		for name, title of @get('columnInfo.titles')
+			for column in @get('columns')
+				column.title = title if column.name == name
 
 	didInsertElement: ->
 		if @get('collection')?

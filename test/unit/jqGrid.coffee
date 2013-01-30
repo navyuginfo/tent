@@ -29,6 +29,10 @@ setup = ->
 		sortingInfo: 
 			field: 'title'
 			asc: 'desc'
+		columnInfo: 
+			titles: 
+				'title': 'New Title'
+			
 		getURL: ->
 
 teardown = ->
@@ -362,7 +366,32 @@ test 'Sorting data collection binding', ->
 	equal gridView.sortingInfo.asc, 'desc', 'sorting dir is desc on the controller'
 
 	 
+test 'Column info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
 
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.columnInfo.titles.title, 'New Title', 'Title read from controller'
+	equal gridView.get('columns')[1].title, 'New Title', 'Columns Descriptor has been updated with new title'
+
+	gridView.renameColumnHeader('title', 'jabberwocky', gridView.$())
+	equal collection.get('columnInfo.titles.title'), 'jabberwocky', 'Changed column title propagated to collection'
+	gridView.renameColumnHeader('id', '6655', gridView.$())
+	equal collection.get('columnInfo.titles.id'), '6655', 'Changed column id propagated to collection'
 
 
 ###

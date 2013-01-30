@@ -118,6 +118,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	didInsertElement: ->
 		@_super()
 		@setupDomIDs()
+		@setupColumnTitleProperties()
 		@buildGrid()
 
 	setupDomIDs: ->
@@ -193,6 +194,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
+
 
 
 	didSelectRow: (itemId, status, e)->

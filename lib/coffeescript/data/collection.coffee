@@ -2,6 +2,7 @@
 require './mixins/pager'
 require './mixins/sorter'
 require './mixins/columninfo'
+require './mixins/groupinginfo'
 require './mixins/filter'
 require './mixins/export_support'
 ###*
@@ -10,7 +11,7 @@ require './mixins/export_support'
 ###
 
 
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.Filter, Tent.Data.ExportSupport,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.GroupingInfo, Tent.Data.Filter, Tent.Data.ExportSupport,
 	content: null
 	dataType: null
 	data: []
@@ -57,3 +58,15 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			response = @get('store').findQuery(eval(@get('dataType')), query)
 			@set('modelData', response.modelData)
 			@updatePagingInfo(response.pagingInfo)
+
+	saveState: ->
+		state = @gatherGridData()
+
+	gatherGridData: ->
+		state = $.extend(
+			{},
+			{paging: @get('pagingInfo')},
+			{sorting: @get('sortingInfo')},
+			{filtering: @getFilteringInfo()}
+			{columns: @get('columnInfo')}
+		)
