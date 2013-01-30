@@ -1,7 +1,7 @@
 
 Tent.Data.Pager = Ember.Mixin.create
 	paged: false
-	pageSize: 12
+	pageSize: null
 	_page: 1
 	_totalRows: 27
 

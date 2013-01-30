@@ -66,6 +66,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		@setPageSize()
 
 	setPageSize: ->
+		# If the collection has a pageSize specified, use that.
 		if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
 			@set('pagingInfo.pageSize', @get('pageSize'))
 

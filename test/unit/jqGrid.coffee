@@ -18,6 +18,19 @@ setup = ->
 		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true}
 	]
 
+	@collection = Ember.ArrayController.create
+		paged: true
+		content: row_data
+		goToPage: ->
+		pagingInfo: 
+			pageSize: 1
+			page: 1
+			totalPages: 3
+		sortingInfo: 
+			field: 'title'
+			asc: 'desc'
+		getURL: ->
+
 teardown = ->
 	
 	if view
@@ -32,6 +45,7 @@ teardown = ->
 	@dispatcher.destroy()
 	@row_data = null
 	@column_data = null
+	@collection = null
 
 module 'Tent.JqGrid', setup, teardown
 
@@ -50,17 +64,15 @@ module 'Tent.JqGrid', setup, teardown
 ###
 
 test 'Collection data set up', ->
-	mockCollection = Ember.Object.create
-		goToPage: ->
 
 	grid = Tent.JqGrid.create
-		collection: mockCollection
+		collection: collection
 
-	equal grid.pagingData.page, 1, 'Paging data'
+	equal grid.pagingInfo.page, 1, 'Paging data'
 
 test 'Collection not provided', ->
 	grid = Tent.JqGrid.create()
-	equal grid.pagingData.page, 1, 'Paging data'
+	equal grid.pagingInfo, undefined, 'No paging info'
 
 
 test 'Initial Selection should be populated', ->
@@ -282,6 +294,75 @@ test 'Error Cell', ->
 	ok gridView.getCell(52,2).hasClass('error'), 'Error class added'
 	gridView.unmarkErrorCell(52, 2)
 	ok not gridView.getCell(52,2).hasClass('error'), 'Error class removed'
+
+
+test 'Paging data collection binding', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+	appendView()
+
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.pagingInfo.pageSize, 1, 'PageSize should be 1 - from the controller'
+	equal gridView.pagingInfo.page, 1, 'Page should be 1 - from the controller'
+	equal gridView.pagingInfo.totalPages, 3, 'Total pages should be 3 - from the controller'
+
+test 'Paging data collection binding: no data on collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('pagingInfo.pageSize', null) 
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	equal gridView.pagingInfo.pageSize, 6, 'PageSize should be 6 - from the view'
+
+
+test 'Sorting data collection binding', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.sortingInfo.field, 'title', 'sorting field is title on the controller'
+	equal gridView.sortingInfo.asc, 'desc', 'sorting dir is desc on the controller'
+
+	 
+
 
 
 ###
