@@ -11,6 +11,7 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 	collapsed: false
 
 	didInsertElement: ->
+		@_super()
 		if @get('collapsible') and Modernizr.csstransitions
 			widget = @
 			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
