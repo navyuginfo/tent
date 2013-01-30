@@ -12,6 +12,7 @@ Tent.HideableSupport = Ember.Mixin.create
 	hidden: false
 
 	didInsertElement: ->
+		@_super()
 		if @get('hideable')
 			if @get('hidden')
 				@hide()
