@@ -119,6 +119,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@setupDomIDs()
 		@setupColumnTitleProperties()
+		@setupColumnVisibilityProperties()
 		@buildGrid()
 
 	setupDomIDs: ->
@@ -313,6 +314,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('fixedHeader')
 			@adjustHeightForFixedHeader()
 		@removeLastDragBar()
+		@storeColumnDataToCollection()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -321,6 +323,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
+
 
 	renderMaximizeButton: ->
 		widget = @

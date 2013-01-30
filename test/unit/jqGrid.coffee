@@ -32,6 +32,7 @@ setup = ->
 		columnInfo: 
 			titles: 
 				'title': 'New Title'
+			hidden: {}
 			
 		getURL: ->
 
@@ -382,9 +383,13 @@ test 'Column info bound to collection', ->
 		columns: column_data
 		selection: []
 
+	collection.set('columnInfo.hidden.title', true)
+	collection.set('columnInfo.hidden.id', false)
+
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 
+	# Title Renaming
 	equal gridView.columnInfo.titles.title, 'New Title', 'Title read from controller'
 	equal gridView.get('columns')[1].title, 'New Title', 'Columns Descriptor has been updated with new title'
 
@@ -393,10 +398,11 @@ test 'Column info bound to collection', ->
 	gridView.renameColumnHeader('id', '6655', gridView.$())
 	equal collection.get('columnInfo.titles.id'), '6655', 'Changed column id propagated to collection'
 
+	# Column Visibility
+	equal gridView.get('columns')[1].hidden, true, 'Title should be hidden initially'
+	equal gridView.get('columns')[0].hidden, false, 'ID should be not hidden initially'
 
-###
-test 'Export', ->
-test 'Collection Support', ->
-###
-
+	gridView.getColModel()[2].hidden = false
+	gridView.columnsDidChange()
+	equal collection.get('columnInfo.hidden.title'), false, 'Title should no longer be hidden'
 

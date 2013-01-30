@@ -77,6 +77,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 			for column in @get('columns')
 				column.title = title if column.name == name
 
+	setupColumnVisibilityProperties: ->
+		# Copy any hidden column information provided by the collection
+		for name, hidden of @get('columnInfo.hidden')
+			for column in @get('columns')
+				column.hidden = hidden if column.name == name
+
+	storeColumnDataToCollection: ->
+		# Store hidden column data
+		if  @get('collection')?
+			for col in @getColModel()
+				@set('columnInfo.hidden.' + col.name, col.hidden)
+
 	didInsertElement: ->
 		if @get('collection')?
 			@setupCustomizedProperties()
