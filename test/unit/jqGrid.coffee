@@ -35,6 +35,9 @@ setup = ->
 			titles: 
 				'title': 'New Title'
 			hidden: {}
+			widths:
+				id: 20
+				title: 80
 		groupingInfo:
 			columnName: ''
 			type: ''
@@ -451,4 +454,36 @@ test 'Grouping info bound to collection', ->
 
 	equal collection.get('groupingInfo.columnName'), 'id', 'Changing the grouping column name reflects in the collection: no grouping'
 	equal collection.get('groupingInfo.type'), 'exact', 'Changing the grouping type reflects in the collection: no grouping'
+
+
+test 'Column Width info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	#equal gridView.columnInfo.widths.title, '80','Collection width has been bound in the grid'
+	equal gridView.get('columns')[0].width, '20', 'Collection width values have been applied to the columns: id'
+	equal gridView.get('columns')[1].width, '80', 'Collection width values have been applied to the columns: title'
+
+	# Change width and see if it gets copied to the collection
+	gridView.getTableDom().get(0).p.colModel[1].width = 40
+	gridView.columnsDidChange()
+
+	equal collection.get('columnInfo.widths.id'), 40, 'Changed width on grid'
+
+
 

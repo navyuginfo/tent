@@ -84,6 +84,12 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 			for column in @get('columns')
 				column.hidden = hidden if column.name == name
 
+	setupColumnWidthProperties: ->
+		# Copy any column width information provided by the collection
+		for name, width of @get('columnInfo.widths')
+			for column in @get('columns')
+				column.width = width if column.name == name
+
 	setupColumnGroupingProperties: ->
 		if @get('groupingInfo.columnName')? and @get('groupingInfo.type')? 
 			@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
@@ -94,6 +100,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		if  @get('collection')?
 			for col in @getColModel()
 				@set('columnInfo.hidden.' + col.name, col.hidden)
+
+		# Store column widths 
+		if @get('collection')?
+			for col in @getTableDom().get(0).p.colModel
+				@set('columnInfo.widths.' + col.name, col.width)
 
 	didInsertElement: ->
 		if @get('collection')?
