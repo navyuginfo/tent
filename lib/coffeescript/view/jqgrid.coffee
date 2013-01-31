@@ -121,6 +121,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupColumnTitleProperties()
 		@setupColumnVisibilityProperties()
 		@buildGrid()
+		@setupColumnGroupingProperties()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')

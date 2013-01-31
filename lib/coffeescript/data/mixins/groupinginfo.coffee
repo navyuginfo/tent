@@ -1,4 +1,4 @@
 Tent.Data.GroupingInfo = Ember.Mixin.create
 	groupingInfo:
-		column: ''
-		groupingType: ''
+		columnName: null
+		type: null

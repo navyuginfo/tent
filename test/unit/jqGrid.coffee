@@ -22,6 +22,8 @@ setup = ->
 		paged: true
 		content: row_data
 		goToPage: ->
+		sort: ->
+		getURL: ->
 		pagingInfo: 
 			pageSize: 1
 			page: 1
@@ -33,8 +35,11 @@ setup = ->
 			titles: 
 				'title': 'New Title'
 			hidden: {}
+		groupingInfo:
+			columnName: ''
+			type: ''
 			
-		getURL: ->
+		
 
 teardown = ->
 	
@@ -405,4 +410,45 @@ test 'Column info bound to collection', ->
 	gridView.getColModel()[2].hidden = false
 	gridView.columnsDidChange()
 	equal collection.get('columnInfo.hidden.title'), false, 'Title should no longer be hidden'
+
+
+test 'Grouping info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('groupingInfo.columnName', 'title')
+	collection.set('groupingInfo.type', 'exact')
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.groupingInfo.columnName, 'title','Collection column name has been reflected in the grid'
+	equal gridView.groupingInfo.type, 'exact','Collection id has been reflected in the grid'
+
+	equal gridView.getTableDom().get(0).p.groupingView.groupField, 'title','Grid grouping column name has been set on load'
+
+	Ember.run ->
+		# Click id/none
+		gridView.$('.group.dropdown-submenu').eq(0).find('li:first a').click()
+
+	equal collection.get('groupingInfo.columnName'), null, 'Changing the grouping column name reflects in the collection: no grouping'
+	equal collection.get('groupingInfo.type'), null, 'Changing the grouping type reflects in the collection: no grouping'
+
+	Ember.run ->
+		# Click title/exact
+		gridView.$('.group.dropdown-submenu').eq(0).find('li:eq(1) a').click()
+
+	equal collection.get('groupingInfo.columnName'), 'id', 'Changing the grouping column name reflects in the collection: no grouping'
+	equal collection.get('groupingInfo.type'), 'exact', 'Changing the grouping type reflects in the collection: no grouping'
 

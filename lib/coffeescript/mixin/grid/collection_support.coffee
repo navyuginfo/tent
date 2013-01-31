@@ -51,6 +51,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 	pagingInfoBinding: 'collection.pagingInfo'
 	sortingInfoBinding: 'collection.sortingInfo'
 	columnInfoBinding: 'collection.columnInfo'
+	groupingInfoBinding: 'collection.groupingInfo'
 
 	init: ->
 		@_super(arguments)
@@ -82,6 +83,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		for name, hidden of @get('columnInfo.hidden')
 			for column in @get('columns')
 				column.hidden = hidden if column.name == name
+
+	setupColumnGroupingProperties: ->
+		if @get('groupingInfo.columnName')? and @get('groupingInfo.type')? 
+			@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
+
 
 	storeColumnDataToCollection: ->
 		# Store hidden column data

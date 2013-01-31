@@ -114,29 +114,37 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
 			if groupType == 'none'
 				widget.getTableDom().jqGrid('groupingRemove', true)
+				widget.set('groupingInfo.columnName', null)
+				widget.set('groupingInfo.type', null)
 			else
 				column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-				columnType = 'string'
-				for col in widget.get('columns')
-					if col.name == column then columnType= col.type
-				widget.groupByColumn(column, groupType, columnType)
+				#widget.groupByColumn(column, groupType)
+				widget.set('groupingInfo.columnName', column)
+				widget.set('groupingInfo.type', groupType)
 		)
 
-	groupByColumn: (column, groupType, columnType)->
-		lastSort = @getTableDom()[0].p.sortname
-		for columnDef in @get('columns')
-			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
-				if (not lastSort?) or not (lastSort == column)
-					@getTableDom().sortGrid(column)
+	groupByColumn: (->
+		column = @get('groupingInfo.columnName')
+		groupType = @get('groupingInfo.type')
+		if column? and groupType?
+			for col in @get('columns')
+				if col.name == column then columnType= col.type
+			lastSort = @getTableDom()[0].p.sortname
+			for columnDef in @get('columns')
+				if columnDef.name == column and columnDef.sortable? and columnDef.sortable
+					if (not lastSort?) or not (lastSort == column)
+						@getTableDom().sortGrid(column)
 
-		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
-		this.getTableDom().groupingGroupBy(column, {
-				groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
-				range: comparator
-			}
-		)
+			comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
+			this.getTableDom().groupingGroupBy(column, {
+					groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
+					range: comparator
+				}
+			)
+			#this.storeGroupingDataToCollection(column, groupType)
+			this.gridDataDidChange()
 
-		this.gridDataDidChange()
+	).observes('groupingInfo.columnName', 'groupingInfo.type')
 
 	renameColumnHeaderBindings: ->
 		widget = this
@@ -183,7 +191,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		# set the column title in the collection for storage
 		@set('columnInfo.titles.' + columnField, value)
 		dropdownMenu.attr('data-last-title', value)
-	
+
 
 	renameGridColumnHeader: (colname, value) ->
 		# jqGrid ignores "" as a column header, so set it to a space.
