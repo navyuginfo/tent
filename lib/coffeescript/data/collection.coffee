@@ -5,19 +5,21 @@ require './mixins/columninfo'
 require './mixins/groupinginfo'
 require './mixins/filter'
 require './mixins/export_support'
+require './mixins/customizable'
 ###*
 * @class Tent.Data.Collection
 * An object used to wrap an array of objects, with a facade for paging, sorting and filtering, 
 ###
 
 
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.GroupingInfo, Tent.Data.Filter, Tent.Data.ExportSupport,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.GroupingInfo, Tent.Data.Filter, Tent.Data.ExportSupport, Tent.Data.Customizable,
 	content: null
 	dataType: null
 	data: []
 	serverPaging: false
 	liveStreaming: false
 	store: null
+
 	isLoadable: false #Does the collection have a 'isLoaded' state
 	REQUEST_TYPE: {'ALL': 'all'}
 
@@ -59,14 +61,4 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			@set('modelData', response.modelData)
 			@updatePagingInfo(response.pagingInfo)
 
-	saveState: ->
-		state = @gatherGridData()
-
-	gatherGridData: ->
-		state = $.extend(
-			{},
-			{paging: @get('pagingInfo')},
-			{sorting: @get('sortingInfo')},
-			{filtering: @getFilteringInfo()}
-			{columns: @get('columnInfo')}
-		)
+	

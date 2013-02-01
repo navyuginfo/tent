@@ -133,8 +133,17 @@
 		background-position: -65px -18px;
 	}
 
+
+	/* Save UI State Button */
+	.save-ui-state li {
+		padding: 4px;
+		a {
+			clear: none;
+		}
+	}
+
 	/* Export */
-	.column-chooser, .export {
+	.column-chooser, .jqgrid-title-button {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -258,7 +267,7 @@
 		}
 	}
 
-	.ui-widget-header .export {
+	.ui-widget-header .jqgrid-title-button {
 		a {
 			font-size: 11px;
 			outline: 0px;
