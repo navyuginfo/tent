@@ -81,10 +81,20 @@ Tent.Formatting.date = Ember.Object.create
 		return @get('options').dateFormat
 
 	format: (value, dateFormat) ->
-		$.datepicker.formatDate(dateFormat or @getFormat(), value)
+		if dateFormat is "dd-M-yy hh-mm tz"
+			hours = value.getHours()
+			hours = "0" + hours if hours < 10
+			minutes = value.getMinutes()
+			minutes = "0" + minutes if minutes < 10
+			Tent.Formatting.date.format(value, "dd-M-yy") + ' ' + hours + ':' + minutes + value.toLongDateString().substring(33)
+		else
+			$.datepicker.formatDate(dateFormat or @getFormat(), value)
 	
 	unformat: (value, dateFormat) ->
-		$.datepicker.parseDate(dateFormat or @getFormat(), value)
+		if dateFormat is "dd-M-yy hh-mm tz"
+			$.datepicker.parseDate("dd-M-yy", value.substring(0,11))
+		else
+			$.datepicker.parseDate(dateFormat or @getFormat(), value)
 
 	cssClass: ->
 		"date"
