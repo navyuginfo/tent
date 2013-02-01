@@ -189,7 +189,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@toggleColumnDropdown(columnField)
 		@renameGridColumnHeader(columnField, value)
 		# set the column title in the collection for storage
-		@set('columnInfo.titles.' + columnField, value)
+		@set('columnInfo.titles.' + columnField, value) if @get('columnInfo.titles')
 		dropdownMenu.attr('data-last-title', value)
 
 

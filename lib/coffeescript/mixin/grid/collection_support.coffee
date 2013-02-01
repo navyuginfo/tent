@@ -90,10 +90,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 			for column in @get('columns')
 				column.width = width if column.name == name
 
+	setupColumnOrderingProperties: ->
+		if @get('columnInfo.order')? 
+			permutation = [0]
+			for column, position in @get('columns')
+				newPosition = @get('columnInfo.order')[column.name]
+				permutation[newPosition] = position+1 if newPosition?
+			if permutation.length > 1
+				@getTableDom().remapColumns(permutation, true, false)
+
 	setupColumnGroupingProperties: ->
 		if @get('groupingInfo.columnName')? and @get('groupingInfo.type')? 
 			@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
-
 
 	storeColumnDataToCollection: ->
 		# Store hidden column data
@@ -105,6 +113,20 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		if @get('collection')?
 			for col in @getTableDom().get(0).p.colModel
 				@set('columnInfo.widths.' + col.name, col.width)
+
+	storeColumnOrderingToCollection: (permutation)->
+		oldOrder = @get('columnInfo.order.old')
+		if oldOrder?
+			for col, position in permutation
+				#what was at position 'col' now equals 'position'
+				for field of oldOrder
+					if oldOrder[field] == col
+						match = field
+				if match?
+					@set('columnInfo.order.' + match, position)
+
+		@set('columnInfo.order.old', Ember.copy(@get('columnInfo.order')))
+		console.log("Ordering = " + @get('columnInfo.order'))
 
 	didInsertElement: ->
 		if @get('collection')?

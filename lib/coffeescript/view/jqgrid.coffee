@@ -123,7 +123,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupColumnVisibilityProperties()
 		@buildGrid()
 		@setupColumnGroupingProperties()
-
+		@setupColumnOrderingProperties()
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
 		@$('.grid-table').attr('id', @get('tableId'))
@@ -159,8 +159,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@columnsDidChange()
 			}
 			resizeStop: (width, index)=>
+				# Fires when a column is finished resizing
 				@columnsDidChange(index)
-				
+
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -198,7 +199,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@resizeToContainer()
 		@columnsDidChange()
 
-
+		@getTableDom().bind('jqGridRemapColumns', (e, permutation)=>
+			@storeColumnOrderingToCollection(permutation)
+		)
 
 	didSelectRow: (itemId, status, e)->
 		if not @get('multiSelect')

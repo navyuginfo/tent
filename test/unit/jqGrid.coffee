@@ -38,10 +38,8 @@ setup = ->
 			widths:
 				id: 20
 				title: 80
-		groupingInfo:
-			columnName: ''
-			type: ''
-			
+			order: {}
+		groupingInfo: {}
 		
 
 teardown = ->
@@ -485,5 +483,47 @@ test 'Column Width info bound to collection', ->
 
 	equal collection.get('columnInfo.widths.id'), 40, 'Changed width on grid'
 
+test 'Column Ordering bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
 
+	collection.set('columnInfo.order.id', 2)
+	collection.set('columnInfo.order.title', 1)
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	
+	equal gridView.columnInfo.order.id, 2,'Collection order has been reflected in the grid info: id'
+	equal gridView.columnInfo.order.title, 1,'Collection order has been reflected in the grid info: title'	
+
+	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'values made it to the grid colmodel'
+	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'values made it to the grid colmodel'
+	
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,1,2], true, false)
+		# the remap defines the position of the item that was at the current index previously
+	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,2,1], true, false)
+	equal gridView.columnInfo.order.id, 1,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 2,'grid order has been reflected in the collection info: title'
+
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,2,1], true, false)
+	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+	 
 
