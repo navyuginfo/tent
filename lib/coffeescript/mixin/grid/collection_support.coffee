@@ -65,11 +65,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		widget = @
 		button = """
 				<div class="btn-group jqgrid-title-button save-ui-state">
-					<a data-toggle="dropdown" >Save<span class="caret"></span></a>
+					<a data-toggle="dropdown" >#{Tent.I18n.loc("tent.button.save")}<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li>Save current settings as:</li>
+						<li>#{Tent.I18n.loc("tent.jqGrid.saveUi.message")}</li>
 						<li class='keep-open'><input type="text" class="input-medium"/></li>
-						<li><a class='btn pull-left cancel'>Cancel</a><a class='btn pull-right save'>Save</a></li>
+						<li><a class='btn pull-left cancel'>#{Tent.I18n.loc("tent.button.cancel")}</a><a class='btn pull-right save'>#{Tent.I18n.loc("tent.button.save")}</a></li>
 					</ul>
 				</div>
 		"""
@@ -86,7 +86,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		)
 		@$('.save-ui-state .save').click(->
 			widget.toggleUIStatePanel()
-			widget.saveUiState()
+			customizationName = $(this).parents('.save-ui-state').find('input').val()
+			widget.saveUiState(customizationName)
 		)
 
 		$('.keep-open').click((e)->
@@ -98,9 +99,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 		panel = @$('.save-ui-state')
 		@$('.save-ui-state').toggleClass('open')				
 
-	saveUiState: (button) ->
-		alert('saving')
-		@get('collection').saveUIState() if @get('collection')?
+	saveUiState: (name) ->
+		alert('saving ' + name)
+		@get('collection').saveUIState(name) if @get('collection')?
 
 	setupCustomizedProperties: ->
 		@setupPagingProperties()

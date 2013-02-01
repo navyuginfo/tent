@@ -50,13 +50,13 @@ grouping: {
 
 Tent.Data.Customizable = Ember.Mixin.create
 	isCustomizable: true  #Allows the user to storer and retrieve the current state of the collection (and UI properties such as grouping/column visibility etc)
-	saveUIState: ->
-		uiState = @gatherGridData()
+	saveUIState: (name)->
+		uiState = @gatherGridData(name)
 		response = @get('store').findQuery(eval(@get('dataType')), uiState)
 
-	gatherGridData: ->
+	gatherGridData: (name)->
 		state = $.extend(
-			{},
+			{saveName: name},
 			{paging: @get('pagingInfo')},
 			{sorting: @get('sortingInfo')},
 			{filtering: @getFilteringInfo()}

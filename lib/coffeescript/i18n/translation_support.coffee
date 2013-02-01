@@ -51,6 +51,7 @@ Tent.I18n.loadTranslations(
 			ok: 'Ok'
 			yes: 'Yes'
 			cancel: 'Cancel'
+			save: 'Save'
 			no: 'No'
 			proceed: 'Ignore warnings and proceed'
 			dontProceed: 'No, return to page'
@@ -73,6 +74,9 @@ Tent.I18n.loadTranslations(
 				headers: 'Column Headers'
 				inclQuotes: 'Include Quotes'
 				export: 'Export'
+			}
+			saveUi: {
+				message: 'Save current settings as:'
 			}
 		}
 		filter: {
