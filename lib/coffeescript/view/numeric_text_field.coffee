@@ -21,8 +21,11 @@ Tent.NumericTextField = Tent.TextField.extend
 		value = @get('formattedValue')
 		isValidNumber = @isValueEmpty(value) or Tent.Formatting.number.isValidNumber(value)
 		@addValidationError(Tent.messages.NUMERIC_ERROR) unless isValidNumber
+		@validateWarnings() if didOtherValidationPass and isValidNumber
 		didOtherValidationPass && isValidNumber
 
+	validateWarnings: ->
+		@_super()
 	isValueEmpty: (value) ->
 		not (value? && value != '')
 

@@ -31,11 +31,12 @@ Tent.ValidationSupport = Ember.Mixin.create
     @flushValidationErrors()
     @flushValidationWarnings()
     valid = @executeCustomValidations()
-    @executeCustomWarnings() if @get('processWarnings')
+    # @executeCustomWarnings() if @get('processWarnings')
     @set('isValid', valid)
     return valid
 
   validateWarnings: ->
+    @executeCustomValidations()
     @flushValidationWarnings()
     @executeCustomWarnings() if @get('processWarnings')
 
@@ -48,7 +49,7 @@ Tent.ValidationSupport = Ember.Mixin.create
         if not validator?
           throw new Error('Validator ['+vName+'] cannot be found')
         options = @parseCustomValidationOptions(vName)
-        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        isValid = isValid and validator.validate(@get('formattedValue'), options, null, @)
         unless isValid
           @addValidationError(validator.getErrorMessage(@get('formattedValue'), options))
           valid =isValid
@@ -63,9 +64,7 @@ Tent.ValidationSupport = Ember.Mixin.create
         if not validator?
           throw new Error('Validator ['+wName+'] cannot be found')
         options = @parseCustomValidationOptions(wName)
-        if wName is 'futuredate'
-          if options then options.dateFormat = @get('dateFormat') else options = {dateFormat:@get('dateFormat')}
-        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        isValid = isValid and validator.validate(@get('formattedValue'), options, null, @)
         unless isValid
           @addValidationWarning(validator.getErrorMessage(@get('formattedValue'), options))
           valid = isValid
