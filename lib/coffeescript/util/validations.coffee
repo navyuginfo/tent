@@ -62,13 +62,13 @@ Tent.Validations.futuredate = Tent.Validation.create
   ###
   validate: (value, options, message) ->
     today = new Date()
-    if not @isValueEmpty(value) and @convertToDate(value) > today
+    if not @isValueEmpty(value) and @convertToDate(value, options) > today
       return false
     true
 
-  convertToDate: (value) ->
+  convertToDate: (value, options) ->
     if not (value instanceof Date)
-      return Tent.Formatting.date.unformat(value)
+      return Tent.Formatting.date.unformat(value, options.dateFormat)
     value
 
   ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR

@@ -61,7 +61,11 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch e
 			isValidDate = false
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless isValidDate
+		@validateWarnings() if isValid and isValidDate
 		isValid && isValidDate
+
+	validateWarnings: ->
+		@_super()
 
 	#Format for display
 	format: (value)->
