@@ -62,6 +62,16 @@ Tent.Panel = Ember.View.extend Tent.SpanSupport,
         @set('collapsed', false)
       )
 
+  show: ->
+    @$('.collapse').collapse('show')
+    @set('collapsed', false)
+
+  hide: ->
+    @$('.collapse').collapse('hide')
+    @set('collapsed', true)
+
+
+
 ###*
 * @class Tent.PanelHead
 * Used in the case where a custom header is required for a panel

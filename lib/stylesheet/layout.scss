@@ -20,7 +20,7 @@
 	}
 
 	&.collapsed .panel-header .caret {
-		@include rotate(-90deg);
+		@include rotate(90deg);
 	}
 	.panel-header .caret {
 		border-bottom: 0px;
