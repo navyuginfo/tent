@@ -35,7 +35,6 @@ Tent.ValidationSupport = Ember.Mixin.create
     return valid
 
   validateWarnings: ->
-    @executeCustomValidations()
     @flushValidationWarnings()
     @executeCustomWarnings() if @get('processWarnings')
 
