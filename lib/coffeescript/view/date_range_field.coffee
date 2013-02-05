@@ -171,7 +171,11 @@ Tent.DateRangeField = Tent.TextField.extend
 					@set('endDate', null)
 
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless (isValidStartDate and isValidEndDate)
+		@validateWarnings() if (isValid and isValidStartDate and isValidEndDate)
 		isValid && isValidStartDate && isValidEndDate
+
+	validateWarnings: ->
+		@_super()
 
 	#Format for display
 	format: (value)->

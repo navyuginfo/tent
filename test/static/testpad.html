@@ -179,7 +179,7 @@
             
             {{view Tent.Checkbox label="_agreeToPrivacyPolicy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
 
-            {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip"
+            {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip" warnings="futuredate" warningseverity="high"
               disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" 
             }}
 

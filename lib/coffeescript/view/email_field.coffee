@@ -26,7 +26,11 @@ Tent.EmailTextField = Tent.TextField.extend
 		pattern = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/i;
 		isValidEmail = (@isValueEmpty(value) or pattern.test(value))
 		@addValidationError(Tent.messages.EMAIL_FORMAT_ERROR) unless isValidEmail
+		@validateWarnings() if didOtherValidationPass and isValidEmail
 		didOtherValidationPass && isValidEmail
+
+	validateWarnings: ->
+		@_super()
 
 	isValueEmpty: (value) ->
 		not (value? && value != '')

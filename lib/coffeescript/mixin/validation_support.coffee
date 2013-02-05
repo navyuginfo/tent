@@ -31,9 +31,12 @@ Tent.ValidationSupport = Ember.Mixin.create
     @flushValidationErrors()
     @flushValidationWarnings()
     valid = @executeCustomValidations()
-    @executeCustomWarnings() if @get('processWarnings')
     @set('isValid', valid)
     return valid
+
+  validateWarnings: ->
+    @flushValidationWarnings()
+    @executeCustomWarnings() if @get('processWarnings')
 
   executeCustomValidations: ->
     valid = true
@@ -44,7 +47,7 @@ Tent.ValidationSupport = Ember.Mixin.create
         if not validator?
           throw new Error('Validator ['+vName+'] cannot be found')
         options = @parseCustomValidationOptions(vName)
-        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        isValid = isValid and validator.validate(@get('formattedValue'), options, null, @)
         unless isValid
           @addValidationError(validator.getErrorMessage(@get('formattedValue'), options))
           valid =isValid
@@ -59,7 +62,7 @@ Tent.ValidationSupport = Ember.Mixin.create
         if not validator?
           throw new Error('Validator ['+wName+'] cannot be found')
         options = @parseCustomValidationOptions(wName)
-        isValid = isValid and validator.validate(@get('formattedValue'), options)
+        isValid = isValid and validator.validate(@get('formattedValue'), options, null, @)
         unless isValid
           @addValidationWarning(validator.getErrorMessage(@get('formattedValue'), options))
           valid = isValid
