@@ -283,6 +283,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@renderColumnChooser(tableDom)
 		@_super()
 		@renderMaximizeButton()
+		@renderCollectionName()
 
 	renderColumnChooser: (tableDom)->
 		widget =  @
@@ -337,6 +338,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
 			)
+
+	renderCollectionName: (->
+		if @get('collection')? and @get('collection.isCustomizable')
+			@$(".ui-jqgrid-titlebar .custom-name").remove()
+			@$(".ui-jqgrid-titlebar").append('<span class="custom-name">' + @get('collection.customizationName') + '</span>')
+	).observes('collection.customizationName')
+
 
 	toggleFullScreen: (a)->
 		widget = @

@@ -133,10 +133,11 @@
 		background-position: -65px -18px;
 	}
 
-
 	/* Save UI State Button */
 	.save-ui-state li {
-		padding: 4px;
+		.save-as-panel {
+			padding: 4px;
+		}
 		a {
 			clear: none;
 			&:hover {
@@ -271,28 +272,34 @@
 		}
 	}
 
-	.ui-widget-header .jqgrid-title-button {
-		a {
-			font-size: 11px;
-			outline: 0px;
-			.caret {
-				vertical-align: middle;
-				border-top-color: white;
-				border-bottom-color: white;
-			}
-		}
-
-		.dropdown-menu {
-			min-width: 70px;
-			color: #333;
-			font-size: 11px;
-			li > a {
-				color: #333;
+	.ui-widget-header {
+		 
+			a {
 				font-size: 11px;
-				&:hover {
-					color: white;
+				outline: 0px;
+				.caret {
+					vertical-align: middle;
+					border-top-color: white;
+					border-bottom-color: white;
 				}
 			}
+
+			.dropdown-menu {
+				min-width: 70px;
+				color: #333;
+				font-size: 11px;
+				li > a {
+					color: #333;
+					font-size: 11px;
+					&:hover {
+						color: white;
+					}
+				}
+			}
+		 
+
+		.dropdown-menu a {
+			color: #222;
 		}
 	}
 
@@ -320,6 +327,10 @@
 
 .dropdown-submenu-left > .dropdown-menu.custom-export {
 	left: -305px;
+}
+
+.dropdown-submenu-left  .save-as-panel {
+	left: -14em;
 }
 
 /* Selected row in a Tent.Table */

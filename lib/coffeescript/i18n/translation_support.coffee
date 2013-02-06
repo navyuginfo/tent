@@ -52,6 +52,7 @@ Tent.I18n.loadTranslations(
 			yes: 'Yes'
 			cancel: 'Cancel'
 			save: 'Save'
+			saveAs: 'Save As...'
 			no: 'No'
 			proceed: 'Ignore warnings and proceed'
 			dontProceed: 'No, return to page'
