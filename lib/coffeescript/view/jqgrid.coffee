@@ -340,7 +340,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			)
 
 	renderCollectionName: (->
-		if @get('collection')? and @get('collection.isCustomizable')
+		if @get('collection')? and @get('collection.isCustomizable') and @get('collection.customizationName')?
 			@$(".ui-jqgrid-titlebar .custom-name").remove()
 			@$(".ui-jqgrid-titlebar").append('<span class="custom-name">' + @get('collection.customizationName') + '</span>')
 	).observes('collection.customizationName')

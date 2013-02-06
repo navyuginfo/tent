@@ -54,7 +54,7 @@ Tent.Data.Customizable = Ember.Mixin.create
 
 	init: ->
 		@_super()
-		@set('customizationName', 'test')
+		@set('customizationName', null)
 
 	saveUIState: (name)->
 		if name?
