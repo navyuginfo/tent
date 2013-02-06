@@ -120,6 +120,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupDomIDs()
 		@buildGrid()
 
+	willDestroyElement: ->
+		if @get('fullScreen')
+			@removeBackdrop()
+
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
 		@$('.grid-table').attr('id', @get('tableId'))
@@ -333,98 +337,105 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 
 		if @get('fullScreen')
-			$('body').unbind('keyup click', @get('resizeEscapeHandler'))
-			if not @get('resizeGridSteps')
-				@hideGrid()
-			
-			@$().animate({
-					width: @get('currentWidth') + 'px',
-					height: @get('currentHeight') + 'px',
-					top: @get('currentTop') + 'px', 
-					left: @get('currentLeft') + 'px', 
-					right: @get('currentRight') + 'px', 
-					bottom: @get('currentBottom') + 'px'
-				}, 
-				{
-					duration: @get('resizeSpeed'),
-					complete: =>
-						@$('.maximize > span').removeClass('ui-icon-arrow-1-se')
-						@$('.maximize > span').addClass('ui-icon-arrow-4-diag')
-						@set('fullScreen', false)
-						@resizeToContainer() 
-						@$().removeClass('dialog')
-						if not @get('resizeGridSteps')
-							@showGrid()
-						
-						$('#jqgrid-backdrop').animate(
-							{
-								opacity: '0.0'
-							},
-							900,
-							=>
-								$('#jqgrid-backdrop').remove()
-								@$().css('position', 'static')
-						)
-					,
-					step: =>
-						@resizeToContainer()
-				} 
-			)
-			
+			@restoreSize()
 		else 
-			@set('currentTop', @$().offset().top - $(window).scrollTop())
-			@set('currentLeft', @$().offset().left)
-			@set('currentWidth', @$().outerWidth())
-			@set('currentHeight', @$().outerHeight())
-			@set('currentRight', $(window).width() - (@$().offset().left + @$().outerWidth()))
-			@set('currentBottom', $(window).height() - (@$().offset().top + @$().outerHeight()))
+			@maximize()
 
-			newWidth = $(window).width() - 60
-			newHeight = $(window).height() - 120
+	maximize: () -> 
+		widget = @
+		@set('currentTop', @$().offset().top - $(window).scrollTop())
+		@set('currentLeft', @$().offset().left)
+		@set('currentWidth', @$().outerWidth())
+		@set('currentHeight', @$().outerHeight())
+		@set('currentRight', $(window).width() - (@$().offset().left + @$().outerWidth()))
+		@set('currentBottom', $(window).height() - (@$().offset().top + @$().outerHeight()))
 
-			@$().css('top', @get('currentTop') + 'px')
-			@$().css('left', @get('currentLeft') + 'px')
-			@$().css('height', @get('currentHeight') + 'px')
-			@$().css('z-index', '2000')
-			@$().css('position', 'fixed')
-			@$().addClass('dialog')
-			if not @get('resizeGridSteps')
-				@hideGrid()
+		newWidth = $(window).width() - 60
+		newHeight = $(window).height() - 120
 
-			$('body').append('<div id="jqgrid-backdrop" class=""></div>')
-			$('#jqgrid-backdrop').animate(
-				{
-					opacity: '0.6'
-				},
-				200,
-				=>
-					@$().animate({
-							width: newWidth + 'px', 
-							height: if $(window).height() - 60 - @get('currentHeight') > 60 then 'auto' else newHeight + 'px', 
-							top: '60px', 
-							left: '30px', 
-							right: '30px', 
-							bottom: '60px'
-						},
-						{
-							duration: @get('resizeSpeed'),
-							complete: =>
-								$('span', a).removeClass('ui-icon-arrow-4-diag')
-								$('span', a).addClass('ui-icon-arrow-1-se')
-								@set('fullScreen', true)
-								@resizeToContainer()
-								if not @get('resizeGridSteps')
-									@showGrid()
-							,
-							step: =>
-								@resizeToContainer()
-						}
-					)
-			)
+		@$().css('top', @get('currentTop') + 'px')
+		@$().css('left', @get('currentLeft') + 'px')
+		@$().css('height', @get('currentHeight') + 'px')
+		@$().css('z-index', '2000')
+		@$().css('position', 'fixed')
+		@$().addClass('dialog')
+		if not @get('resizeGridSteps')
+			@hideGrid()
 
-			@set('resizeEscapeHandler', @get('generateResizeEscapeHandler')(widget))
-			$('body').bind('keyup click', @get('resizeEscapeHandler'))	
+		$('body').append('<div id="jqgrid-backdrop" class=""></div>')
+		$('#jqgrid-backdrop').animate(
+			{
+				opacity: '0.6'
+			},
+			200,
+			=>
+				@$().animate({
+						width: newWidth + 'px', 
+						height: if $(window).height() - 60 - @get('currentHeight') > 60 then 'auto' else newHeight + 'px', 
+						top: '60px', 
+						left: '30px', 
+						right: '30px', 
+						bottom: '60px'
+					},
+					{
+						duration: @get('resizeSpeed'),
+						complete: =>
+							$('span', widget).removeClass('ui-icon-arrow-4-diag')
+							$('span', widget).addClass('ui-icon-arrow-1-se')
+							@set('fullScreen', true)
+							@resizeToContainer()
+							if not @get('resizeGridSteps')
+								@showGrid()
+						,
+						step: =>
+							@resizeToContainer()
+					}
+				)
+		)
 
+		@set('resizeEscapeHandler', @get('generateResizeEscapeHandler')(@))
+		$('body').bind('keyup click', @get('resizeEscapeHandler'))	
+
+	restoreSize: ->
+		$('body').unbind('keyup click', @get('resizeEscapeHandler'))
+		if not @get('resizeGridSteps')
+			@hideGrid()
+		
+		@$().animate({
+				width: @get('currentWidth') + 'px',
+				height: @get('currentHeight') + 'px',
+				top: @get('currentTop') + 'px', 
+				left: @get('currentLeft') + 'px', 
+				right: @get('currentRight') + 'px', 
+				bottom: @get('currentBottom') + 'px'
+			}, 
+			{
+				duration: @get('resizeSpeed'),
+				complete: =>
+					@$('.maximize > span').removeClass('ui-icon-arrow-1-se')
+					@$('.maximize > span').addClass('ui-icon-arrow-4-diag')
+					@set('fullScreen', false)
+					@resizeToContainer() 
+					@$().removeClass('dialog')
+					if not @get('resizeGridSteps')
+						@showGrid()
+					@removeBackdrop()
+				,
+				step: =>
+					@resizeToContainer()
+			} 
+		)
+
+	removeBackdrop: ->
+		$('#jqgrid-backdrop').animate(
+			{
+				opacity: '0.0'
+			},
+			900,
+			=>
+				$('#jqgrid-backdrop').remove()
+				@$().css('position', 'static')
+		)
 
 	generateResizeEscapeHandler: (widget)->
 		return (e)->
