@@ -20,7 +20,7 @@
 	}
 
 	&.collapsed .panel-header .caret {
-		@include rotate(-90deg);
+		@include rotate(90deg);
 	}
 	.panel-header .caret {
 		border-bottom: 0px;
@@ -140,7 +140,7 @@
 			}
 			 
 		}
-		@include transition(all 0.3s ease);
+		@include transition(all 0.3s ease-in);
 	}
 
 	> footer {

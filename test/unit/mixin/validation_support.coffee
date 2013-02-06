@@ -134,7 +134,7 @@ test 'Warnings', ->
 	textView = Ember.View.views[view.$('.tent-text-field').attr('id')]
 	textView.set('warnings','blah')
 	raises(-> 
-			textView.validate()
+			textView.validateWarnings()
 		,'Should have thrown exception: warning validator doesnt exist')
 
 	v.set('warnings', '')	
@@ -142,23 +142,23 @@ test 'Warnings', ->
 
 	textView.set('warnings','email')
 	textView.set('formattedValue', 'not_an_email')
-	textView.validate()
+	textView.validateWarnings()
 	equal textView.get('validationWarnings').length, 1, '1 warning added'
 	textView.set('formattedValue', 'aa@bb.com')
-	textView.validate()
+	textView.validateWarnings()
 	equal textView.get('validationWarnings').length, 0, 'no more warnings'
 
 	textView.set('processWarnings', false)
 	textView.set('formattedValue', 'not_an_email')
-	textView.validate()
+	textView.validateWarnings()
 	equal textView.get('validationWarnings').length, 0, 'stopped processing warnings'
 	textView.set('processWarnings', true)
-	textView.validate()
+	textView.validateWarnings()
 	equal textView.get('validationWarnings').length, 1, 'processing again'
 
 	textView.set('warnings',' email ')
 	textView.set('formattedValue', 'aa@bb.com')
-	ok textView.validate(), 'Check for trim'
+	ok textView.validateWarnings(), 'Check for trim'
 
 
 ###

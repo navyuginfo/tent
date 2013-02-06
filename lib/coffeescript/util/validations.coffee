@@ -22,7 +22,7 @@ Tent.Validation = Ember.Object.extend
 * @return {Boolean} the result of the validation
 ###
 Tent.Validations.email = Tent.Validation.create
-  validate: (value, options, message)-> 
+  validate: (value, options, message, view)-> 
     pattern = /^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$/i
     isValid = (@isValueEmpty(value) or pattern.test(value))
 
@@ -39,7 +39,7 @@ Tent.Validations.datebetween = Tent.Validation.create
   * 'startDate' and an 'endDate' property
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message)->
+  validate: (value, options, message, view)->
     if not options? or not options.startDate? or not options.endDate?
       return false
     isValid = @isValueEmpty(value) or (@convertToDate(value) > @convertToDate(options.startDate) and @convertToDate(value) < @convertToDate(options.endDate))
@@ -60,15 +60,15 @@ Tent.Validations.futuredate = Tent.Validation.create
   * @param {String} value the value to test
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message) ->
+  validate: (value, options, message, view) ->
     today = new Date()
-    if not @isValueEmpty(value) and @convertToDate(value) > today
+    if not @isValueEmpty(value) and @convertToDate(value, view.get('dateFormat')) > today
       return false
     true
 
-  convertToDate: (value) ->
+  convertToDate: (value, dateFormat) ->
     if not (value instanceof Date)
-      return Tent.Formatting.date.unformat(value)
+      return Tent.Formatting.date.unformat(value, dateFormat)
     value
 
   ERROR_MESSAGE: Tent.messages.DATE_FUTURE_ERROR
@@ -85,7 +85,7 @@ Tent.Validations.minLength = Tent.Validation.create
   * @param {String} message an optional message to display if the validation fails
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message)->
+  validate: (value, options, message, view)->
     if not options? or not options.min?
       return false
     value=value.trim() if value?
@@ -105,7 +105,7 @@ Tent.Validations.maxLength = Tent.Validation.create
   * @param {String} message an optional message to display if the validation fails
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message)->
+  validate: (value, options, message, view)->
     if not options? or not options.max?
       return false
     value=value.trim() if value?
@@ -124,7 +124,7 @@ Tent.Validations.regExp = Tent.Validation.create
   * @param {String} message an optional message to display if the validation fails
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message)->
+  validate: (value, options, message, view)->
     if not options? or not options.regexp?
       return false
     message = if(not message? and options.message?) then options.message else Tent.messages.REG_EXP
@@ -145,7 +145,7 @@ Tent.Validations.valueBetween = Tent.Validation.create
   * @param {String} message an optional message to display if the validation fails
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message)->
+  validate: (value, options, message, view)->
     if not options? or not (options.min? or options.max?)
       return false
     message = if(not message? and options.message?) then options.message
@@ -177,7 +177,7 @@ Tent.Validations.positive = Tent.Validation.create
   * @param {String} message an optional message to display if the validation fails
   * @return {Boolean} the result of the validation
   ###
-  validate: (value, options, message) ->
+  validate: (value, options, message, view) ->
     message = if(not message? and options? and options.message?) then options.message
     value = Tent.Formatting.amount.unformat(value)
     if @isValueEmpty(value) or value >= 0

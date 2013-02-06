@@ -34,5 +34,6 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 			unformatted = @unFormat(@get('formattedValue'))
 			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
+			@validateWarnings()
 
 Tent.TextareaInput = Ember.TextArea.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport

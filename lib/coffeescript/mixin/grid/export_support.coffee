@@ -168,11 +168,6 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 		str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
 	
 	generateExportDate: ->
-		d = new Date()
-		hours = d.getHours()
-		hours = if hours < 10 then hours = "0"+hours else hours
-		minutes = if(minutes = d.getMinutes())<10 then minutes = "0"+minutes else minutes
-		Tent.Formatting.date.format(d,"dd-M-yy")+' '+hours+':'+minutes
-
+		Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
 
 
