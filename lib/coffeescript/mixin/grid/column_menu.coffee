@@ -59,7 +59,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 				@$(columnDivId).addClass('dropdown')
 				$(columnDivId + ' .title').after template(context)
-				$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown')
+				$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown').append('<span class="dropdown-mask"><i class="icon-chevron-down"></i></span>')
 
 		@leftAlignLastDropdown()
 		@groupByColumnBindings()
