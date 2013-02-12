@@ -57,6 +57,28 @@
 			div {
 				overflow: visible;
 			}
+			&:hover {
+				.dropdown-mask {
+					opacity: .6;
+				}
+				
+			}
+			.dropdown-mask {
+				position: absolute;
+				opacity: 0;
+				left: 0px;
+				right: 0px;
+				background-color: white;
+				height: 100%;
+				top: 0px;
+				i {
+					bottom: 0px;
+					color: #030303;
+					font-size: 1.1em;
+					font-weight: bold;
+					position: absolute;
+				}
+			}
 		}
 		.column-dropdown {		
 			min-width: 60px;
