@@ -3,7 +3,11 @@ Tent.Breadcrumb = Ember.View.extend
 	homeState: 'home'
 	classNames: ['tent-breadcrumb']
 	template: Ember.Handlebars.compile('{{#collection tagName="ul" contentBinding="view.content"}}
-				<button class="btn btn-link" {{bindAttr data-state="view.content.name"}}>{{loc view.content.title}} <i class="icon-chevron-right"></i></button>
+					{{#if view.content.isTopLevel}}
+						<button class="btn btn-link disabled">{{loc view.content.title}} <i class="icon-chevron-right"></i></button>
+					{{else}}
+						<button class="btn btn-link" {{bindAttr data-state="view.content.name"}}>{{loc view.content.title}} <i class="icon-chevron-right"></i></button>
+					{{/if}}
 			{{/collection}}')
 	init: ->
 		@_super()
@@ -28,6 +32,9 @@ Tent.Breadcrumb = Ember.View.extend
 			arr.push Ember.Object.create
 				name: state.get('name')
 				title: state.get('title')
+				isCurrentState: (-> return state == @get('router').get('currentState'))
+				isTopLevel: (-> return  state.get('parentState') == 'root') 
+
 		return arr
 
 	click: (e)->
