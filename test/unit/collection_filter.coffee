@@ -5,6 +5,7 @@ setup = ->
 		goToPage: ->
 		sort: ->
 		getURL: ->
+		saveFilter: ->
 		columnsDescriptor: [
 			{id: "id", name: "id", title: "_hID", field: "id", sortable: true},
 			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true}
@@ -44,6 +45,8 @@ test 'Create filter', ->
 	equal filter.get('currentFilter').description, "", 'description'
 	ok filter.get('currentFilter').values, 'values'
 
+test 'Initial population from collection', ->
+	filter = Tent.CollectionFilter.create()
 	filter.set('collection', collection)
 	filter.init()
 	equal filter.get('currentFilter').name, "task1", 'name'
@@ -67,6 +70,26 @@ test 'Clear filter', ->
 	equal filter.get('currentFilter').description, "", 'description'
 	for value in filter.get('currentFilter').values
 		throw new Error('Should be no values')
+
+test 'Filter', ->
+	sinon.spy(collection, "filter")
+	filter = Tent.CollectionFilter.create
+		collection: collection
+	filter.closeFilterPanel = ->
+		
+	filter.filter()
+	ok collection.filter.calledOnce
+	equal collection.filter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
+
+test 'Save Filter', ->
+	sinon.spy(collection, "saveFilter")
+	filter = Tent.CollectionFilter.create
+		collection: collection
+	filter.closeSaveFilterDialog = ->
+
+	filter.saveFilter()
+	ok collection.saveFilter.calledOnce, 'saveFilter was called on collection'
+	equal collection.saveFilter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
 
 	
 

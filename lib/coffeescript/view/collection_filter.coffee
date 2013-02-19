@@ -47,7 +47,6 @@ Tent.CollectionFilter = Ember.View.extend
           selectedFilter = filter
       @set('currentFilter', Ember.copy(selectedFilter, true))
       
-
   clearFilter: ->
     currentFilter = @get('currentFilter')
     @set('currentFilter.name', "")
@@ -57,11 +56,11 @@ Tent.CollectionFilter = Ember.View.extend
       @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
 
   didInsertElement: ->
-    @$('.filter-details').collapse('hide')
+    @closeFilterPanel()
 
   filter: ->
     @get('collection').filter(@get('currentFilter'))
-    @$('.filter-details').collapse('hide')
+    @closeFilterPanel()
     #@$('.summary-panel .toggle').click()
 
   selectedFilterDidChange: (->
@@ -72,20 +71,18 @@ Tent.CollectionFilter = Ember.View.extend
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
-    @set('selectedFilter', @get('currentFilter'))
     @closeSaveFilterDialog()
     return true
+
+  closeFilterPanel: ->
+    @$('.filter-details').collapse('hide')
 
   closeSaveFilterDialog: ->
     Ember.View.views[@$('.filter-details .tent-modal').attr('id')].hide()
 
-  currentFilterDidChange: (->
-    console.log @get('currentFilter.values.id.data')
-  ).observes('currentFilter', 'currentFilter.@each')
-
-  collapsiblePanel: (->
-    "#" + @get('elementId') + ' .filter-details'
-  ).property()
+  #collapsiblePanel: (->
+  #  "#" + @get('elementId') + ' .filter-details'
+  #).property()
 
   doSearch: ->
     @get('collection').search(@get('searchValue'))
