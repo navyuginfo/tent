@@ -2,7 +2,7 @@
 	{{view Tent.Select span="4"
 			label="tent.filter.currentFilter" 
 			listBinding="view.availableFilters" 
-			selectionBinding="view.selectedFilter" 
+			selectionBinding="view.selectedDropdownFilter" 
 			optionLabelPath="content.label" 
 			optionValuePath="content.name"
 			prompt="tent.filter.noFilter"
@@ -12,24 +12,14 @@
 		<span class="caret"></span>
 	</a>
 
-	{{view Tent.Button label="tent.filter.search" type="link" class="pull-right" action="doSearch" targetBinding="view"}}
-	{{view Tent.TextField label="" type="search" class="pull-right no-label" valueBinding="view.searchValue"}}
 </div>
 
 <div class="filter-details collapse in">
 
-	{{#if view.filterTemplate}}
-		{{view Ember.View 
-			templateNameBinding="view.filterTemplate" 
-			collectionBinding="view.collection"
-			filterBinding="view.currentFilter"
-		}}
-	{{else}}
-		{{view Tent.FilterFieldsView
-			collectionBinding="view.collection"
-		}}
-	{{/if}}
-
+	{{view Tent.FilterFieldsView
+		collectionBinding="view.collection"
+	}}
+	
 	<div class="form-inline">
 		    {{#view Tent.ModalPane 
 		    	label="tent.filter.saveFilter"

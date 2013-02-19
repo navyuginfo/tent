@@ -184,7 +184,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					rowTitle: (value)->
 						if (typeof value == "string")
 							value = Tent.Formatting.date.unformat(value)
-
+						'Year = ' + value.getFullYear()
 			}
 		]
 		###*

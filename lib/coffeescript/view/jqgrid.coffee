@@ -120,7 +120,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	didInsertElement: ->
 		@_super()
 		@setupDomIDs()
+		@setupColumnTitleProperties()
+		@setupColumnWidthProperties()
+		@setupColumnVisibilityProperties()
 		@buildGrid()
+		@setupColumnGroupingProperties()
+		@setupColumnOrderingProperties()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -161,14 +166,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@columnsDidChange()
 			}
 			resizeStop: (width, index)=>
+				# Fires when a column is finished resizing
 				@columnsDidChange(index)
-				
+
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
-			rowNum: if @get('paged') then @get('pageSize') else -1,
+			rowNum: if @get('paged') then @get('pagingInfo.pageSize') else -1,
 			gridview: true,
 			toppager:false,
 			cloneToTop:false,
@@ -203,6 +209,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@resizeToContainer()
 		@columnsDidChange()
 
+		@getTableDom().bind('jqGridRemapColumns', (e, permutation)=>
+			@storeColumnOrderingToCollection(permutation)
+		)
 
 	didSelectRow: (itemId, status, e)->
 		if not @get('multiSelect')
@@ -284,6 +293,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@renderColumnChooser(tableDom)
 		@_super()
 		@renderMaximizeButton()
+		@renderCollectionName()
 
 	renderColumnChooser: (tableDom)->
 		widget =  @
@@ -319,6 +329,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('fixedHeader')
 			@adjustHeightForFixedHeader()
 		@removeLastDragBar()
+		@storeColumnDataToCollection()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -328,6 +339,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
 
+
 	renderMaximizeButton: ->
 		widget = @
 		if @get('showMaximizeButton')
@@ -336,6 +348,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
 			)
+
+	renderCollectionName: (->
+		if @get('collection')? and @get('collection.isCustomizable') and @get('collection.customizationName')?
+			@$(".ui-jqgrid-titlebar .custom-name").remove()
+			@$(".ui-jqgrid-titlebar").append('<span class="custom-name">' + @get('collection.customizationName') + '</span>')
+	).observes('collection.customizationName')
+
 
 	toggleFullScreen: (a)->
 		widget = @
@@ -523,9 +542,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().jqGrid('clearGridData')
 		data = 
 			rows: @get('gridData')
-			total: @get('totalPages')
-			records: @get('totalRows')
-			page: @get('pagingData').page
+			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+			records: @get('pagingInfo.totalRows') if @get('pagingInfo')? 
+			page: @get('pagingInfo').page if @get('pagingInfo')? 
 		@resetGrouping()
 		@getTableDom()[0].addJSONData(data)
 		@updateGrid()

@@ -47,23 +47,156 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 	* @property {Number} pageSize The number of items in each page
 	###
 	pageSize: 12
-
-	pagingData: 
-		page: 1 
 	
-	totalRowsBinding: 'collection.totalRows'
-	totalPagesBinding: 'collection.totalPages'
-
-	sortingData: {}
+	pagingInfoBinding: 'collection.pagingInfo'
+	sortingInfoBinding: 'collection.sortingInfo'
+	columnInfoBinding: 'collection.columnInfo'
+	groupingInfoBinding: 'collection.groupingInfo'
 
 	init: ->
 		@_super(arguments)
 		if @get('collection')?
-			if @get('paged')
-				@get('collection').set('pageSize', @get('pageSize'))
+			@setupCustomizedProperties()
+
+	addNavigationBar: ->
+		@renderSaveUIStateButton() if this.get('collection')?
+
+	renderSaveUIStateButton: ->
+		widget = @
+		button = """
+				<div class="btn-group jqgrid-title-button save-ui-state">
+					<a data-toggle="dropdown" >#{Tent.I18n.loc("tent.button.save")}<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a class="save">#{Tent.I18n.loc("tent.button.save")}</a></li>
+						<li class="dropdown-submenu-left">
+							<a>#{Tent.I18n.loc("tent.button.saveAs")}</a>
+							<ul class="dropdown-menu save-as-panel">
+								 
+									<p>#{Tent.I18n.loc("tent.jqGrid.saveUi.message")}</p>
+									<p><input type="text" class="input-medium keep-open" value="#{widget.get('collection.customizationName')}"/></p>
+									<div><a class='btn pull-left cancel'>#{Tent.I18n.loc("tent.button.cancel")}</a><a class='btn pull-right saveas'>#{Tent.I18n.loc("tent.button.save")}</a></div>
+								 
+							</ul>
+						</li>	
+					</ul>
+				</div>
+		"""
+		@$(".ui-jqgrid-titlebar").append(button)
+
+		@$('.save-ui-state').bind('keyup', ((e)->
+			if e.keyCode == 27 # escape key
+				widget.toggleUIStatePanel()
+			)
+		)
+
+		@$('.save-ui-state input').bind('keyup', ((e)->
+			if e.keyCode == 13 # escape key
+				widget.saveAs($(@))
+		))
+
+		@$('.save-ui-state .cancel').click(->
+			widget.toggleUIStatePanel()
+		)
+
+		@$('.save-ui-state .save').click(->
+			widget.toggleUIStatePanel()
+			widget.saveUiState(widget.get('collection.customizationName'))
+		)
+
+		@$('.save-ui-state .saveas').click(->
+			widget.saveAs($(@))
+		)
+
+		$('.keep-open').click((e)->
+			e.stopPropagation()
+		)
+
+	saveAs: (el) ->
+		@toggleUIStatePanel()
+		customizationName = el.parents('.save-ui-state').find('input').val()
+		@saveUiState(customizationName)
+
+	toggleUIStatePanel: ->
+		widget = this
+		panel = @$('.save-ui-state')
+		@$('.save-ui-state').toggleClass('open')				
+
+	saveUiState: (name) ->
+		@get('collection').saveUIState(name) if @get('collection')?
+
+	setupCustomizedProperties: ->
+		@setupPagingProperties()
+		@setupSortingProperties()
+
+	setupPagingProperties: ->
+		@setPageSize()
+
+	setPageSize: ->
+		# If the collection has a pageSize specified, use that.
+		if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
+			@set('pagingInfo.pageSize', @get('pageSize'))
+
+	setupSortingProperties: ->
+
+	setupColumnTitleProperties: ->
+		# Copy any column titles provided by the collection
+		for name, title of @get('columnInfo.titles')
+			for column in @get('columns')
+				column.title = title if column.name == name
+
+	setupColumnVisibilityProperties: ->
+		# Copy any hidden column information provided by the collection
+		for name, hidden of @get('columnInfo.hidden')
+			for column in @get('columns')
+				column.hidden = hidden if column.name == name
+
+	setupColumnWidthProperties: ->
+		# Copy any column width information provided by the collection
+		for name, width of @get('columnInfo.widths')
+			for column in @get('columns')
+				column.width = width if column.name == name
+
+	setupColumnOrderingProperties: ->
+		if @get('columnInfo.order')? 
+			permutation = [0]
+			for column, position in @get('columns')
+				newPosition = @get('columnInfo.order')[column.name]
+				permutation[newPosition] = position+1 if newPosition?
+			if permutation.length > 1
+				@getTableDom().remapColumns(permutation, true, false)
+
+	setupColumnGroupingProperties: ->
+		if @get('groupingInfo.columnName')? and @get('groupingInfo.type')? 
+			@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
+
+	storeColumnDataToCollection: ->
+		# Store hidden column data
+		if  @get('collection')?
+			for col in @getColModel()
+				@set('columnInfo.hidden.' + col.name, col.hidden)
+
+		# Store column widths 
+		if @get('collection')?
+			for col in @getTableDom().get(0).p.colModel
+				@set('columnInfo.widths.' + col.name, col.width)
+
+	storeColumnOrderingToCollection: (permutation)->
+		oldOrder = @get('columnInfo.order.old')
+		if oldOrder?
+			for col, position in permutation
+				#what was at position 'col' now equals 'position'
+				for field of oldOrder
+					if oldOrder[field] == col
+						match = field
+				if match?
+					@set('columnInfo.order.' + match, position)
+
+		@set('columnInfo.order.old', Ember.copy(@get('columnInfo.order')))
+		console.log("Ordering = " + @get('columnInfo.order'))
 
 	didInsertElement: ->
 		if @get('collection')?
+			@setupCustomizedProperties()
 			@get('collection').goToPage(1)
 
 	onPageOrSort: (postdata)->
@@ -78,11 +211,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 						field: postdata.sidx
 					])
 			else 
-				@get('pagingData').page = postdata.page
 				@get('collection').goToPage(postdata.page)
-
-			@get('sortingData').field = postdata.sidx
-			@get('sortingData').asc = postdata.sord
 
 	shouldSort: (postdata)->
 		sortable = false
@@ -93,6 +222,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 				postdata.sidx = columnDef.name
 				sortable = true
 
-		sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingData').field or postdata.sord != @get('sortingData').asc)
+		sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.field') or postdata.sord != @get('sortingInfo.asc'))
 		
 

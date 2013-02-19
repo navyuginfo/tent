@@ -1,9 +1,4 @@
 Tent.Grid.FilterSupport = Ember.Mixin.create
-	###*
-	* @property {Template} filterTemplate The name of a template which is used to display the filter fields.
-	* See {@link Tent.CollectionFilter#filterTemplate}
-	###
-	filterTemplate: null
 
 	filtering: true
 

@@ -4,12 +4,15 @@
 ###
 
 Tent.Data.Filter = Ember.Mixin.create
+	filteringInfo: {}
+
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
 
-		###@set('filters', 
-			[
+		@set('filteringInfo', 
+			selectedFilter: 'task1'
+			availableFilters: [
 				{
 					name: "task1"
 					label: "Task 1"
@@ -32,14 +35,43 @@ Tent.Data.Filter = Ember.Mixin.create
 					values: {id: {field:"id",op: "equal", data: "5"}}
 				}
 			])
-		###
-	availableFilters: (->
-		return @get('filters')
-	).property('filters', 'filters.@each')
 
-	filter: (selectedFilter) ->
+	selectedFilter: ( ->
+		@getSelectedFilter()
+	).property('filteringInfo', 'filteringInfo.selectedFilter')
+	
+	getSelectedFilter: ->
+		if @get('filteringInfo')? and @get('filteringInfo.selectedFilter')?
+			for filter in @get('filteringInfo.availableFilters')
+				if filter.name == @get('filteringInfo.selectedFilter')
+					return filter
+
+	setSelectedFilter: (name) ->
+		@set('filteringInfo.selectedFilter', name)
+
+	updateCurrentFilter: (currentFilter)->
+		replacedExisting = false
+		if @get('filteringInfo')?
+			filters = @get('filteringInfo.availableFilters').map((item)->
+				if item.name == currentFilter.name 
+					if item.label == currentFilter.label
+						replacedExisting = true
+						currentFilter
+					else
+						currentFilter.name = currentFilter.label.split(" ").join('')
+						item
+				else 
+					item
+			)
+			@set('filteringInfo.availableFilters', filters)
+
+			if not replacedExisting
+				@addNewFilter(currentFilter)
+
+	filter: (selectedFilter) -> 
 		#if selectedFilter?
-		@set('selectedFilter', selectedFilter)
+		@setSelectedFilter(selectedFilter.name)
+		@updateCurrentFilter(selectedFilter)
 		@update(@REQUEST_TYPE.FILTER)
 
 	# Called by UI button to trigger filtering
@@ -47,14 +79,15 @@ Tent.Data.Filter = Ember.Mixin.create
 		@filter()
 
 	getFilteringInfo: ->
-		@get('selectedFilter')
+		@getSelectedFilter()
 
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
-		@set('filters', []) if not @get('filters')
-		@get('filters').pushObject(filterDef)
+		@updateCurrentFilter(filterDef)
 		#@get('availableFilters').notifyPropertyChange('content')
 
+	addNewFilter: (filter)->
+		@get('filteringInfo.availableFilters').push(filter)
 
 	 
