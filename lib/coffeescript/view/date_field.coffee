@@ -78,14 +78,5 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch error
 			return null
 
-	# Operators for use within a grid filter
-	operators: [
-		Ember.Object.create({label: "tent.filter.equal", operator: "equal"}),
-		Ember.Object.create({label: "tent.filter.nEqual", operator: "nequal"})
-		Ember.Object.create({label: "tent.filter.before", operator: "before"})
-		Ember.Object.create({label: "tent.filter.after", operator: "after"})
-		Ember.Object.create({label: "tent.filter.beforeInc", operator: "beforeinc"})
-		Ember.Object.create({label: "tent.filter.afterInc", operator: "afterinc"})
-	]
 
 		 

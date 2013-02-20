@@ -24,6 +24,13 @@ Tent.FilteringSupport = Ember.Mixin.create
 		console.log 'filter changed'
 	).observes('filter')
 	
+	# Check to see if the operator requires a range presentation
+	isRangeOperator: (->
+		currentFilterOperator = @get('filterOp')
+		currentFilterOperator == 'range'
+	).property('filterOp')
+
+
 
 
 

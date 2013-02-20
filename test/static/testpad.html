@@ -162,7 +162,10 @@
             {{view Tent.AmountField valueBinding="Pad.amount2" label="_invalidCurrency" currencyBinding="Pad.changingCurrency" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
 
 
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"}}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"
+                isFilter=true rangeValueBinding="Pad.numericRange"
+            }}
+
             {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
 
             {{view Tent.AmountField valueBinding="Pad.amount1" label="_amountInput" currency="JPY" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
@@ -261,6 +264,8 @@
           {{#view Tent.Form name="Values"}}
             <p>{{loc _focussedInput}} : {{Pad.appName}}</p>
             <p>{{loc _numericInput}} : {{Pad.numeric}}</p>
+            <p>{{loc _numericInput}} Range : {{Pad.numericRange}}</p>
+
             <p>Amount Input : {{Pad.amount}}</p>
             <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
             <p>Selected States :</p>
@@ -309,7 +314,6 @@
                   grouping=true
               }}
 
-
               <h5>Collection not provided</h5>
  
               {{view Tent.JqGrid
@@ -328,8 +332,8 @@
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
-
-
+              
+       
               <h5>Client-Side</h5>
 
               {{view Tent.JqGrid
@@ -349,6 +353,8 @@
                   required=true
 
               }}
+
+       
 
               {{view Tent.Button label="Submit" validate="true"}}
 
