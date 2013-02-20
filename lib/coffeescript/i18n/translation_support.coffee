@@ -35,7 +35,7 @@ Tent.I18n = Ember.Namespace.create
       vars = [vars] if(typeof vars == 'string')
       string.replace(/%@([0-9]|[a-zA-Z]+)?/g,(s, argIndex)->
         argIndex = if(argIndex? and isNaN(argIndex)) then argIndex else (if isNaN(parseInt(argIndex)) then idx++ else parseInt(argIndex)-1)
-        s = vars[argIndex]
+        s = vars?[argIndex]
         if(s?) then s else ''
       )
 
