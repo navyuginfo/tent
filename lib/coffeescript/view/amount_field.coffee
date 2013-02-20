@@ -20,11 +20,11 @@
         }}
 ###
 
-require '../mixin/field_support'
 require '../mixin/currency_support'
 require '../template/text_field'
+require '../mixin/filtering_range_support'
 
-Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, 
+Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRangeSupport,
   hasPrefix: true
   hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
@@ -56,7 +56,6 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport,
   # Format for binding
   unFormat: (value)->
     return Tent.Formatting.amount.unformat(value)
-  
 
   #formats the value when the input field is out of focus
   focusOut: ->

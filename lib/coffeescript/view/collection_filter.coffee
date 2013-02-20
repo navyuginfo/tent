@@ -53,8 +53,8 @@ Tent.CollectionFilter = Ember.View.extend
     filter = @get('currentFilter')
     for column in @get('collection.columnsDescriptor')
       if column.filterable!=false
-        if not filter.values[column.field]?
-          @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
+        if not filter.values[column.name]?
+          @set('currentFilter.values.' + column.name, {field:column.name, op:"", data:""})
 
   clearFilter: ->
     currentFilter = @get('currentFilter')
@@ -63,7 +63,7 @@ Tent.CollectionFilter = Ember.View.extend
     @set('currentFilter.description', "")
     for column in @get('collection.columnsDescriptor')
       if column.filterable!=false
-        @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
+        @set('currentFilter.values.' + column.name, {field:column.name, op:"", data:""})
 
   didInsertElement: ->
     @closeFilterPanel()
@@ -130,35 +130,35 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
               fieldView = Tent.TextField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
-                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
+                valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 filterBinding: "parentView.parentView.parentView.currentFilter"
-                field: column.field
-            when "date"
+                field: column.name
+            when "date", "utcdate"
               fieldView = Tent.DateRangeField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
+                valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
                 closeOnSelect:true
                 arrows:true
-                #filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
+                #filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 #filterBinding: "parentView.parentView.parentView.currentFilter"
-                #field: column.field
-            when "number"
+                #field: column.name
+            when "number", "amount"
               fieldView = Tent.NumericTextField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                rangeValueBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
-                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
+                rangeValueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 filterBinding: "parentView.parentView.parentView.currentFilter"
-                field: column.field
+                field: column.name
             when "boolean"
               fieldView = Tent.Checkbox.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                checkedBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
-                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
+                checkedBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 filterBinding: "parentView.parentView.parentView.currentFilter"
-                field: column.field
+                field: column.name
 
           c.get('childViews').pushObject(fieldView) if fieldView?

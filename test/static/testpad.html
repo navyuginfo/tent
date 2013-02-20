@@ -166,7 +166,9 @@
                 isFilter=true rangeValueBinding="Pad.numericRange"
             }}
 
-            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
+              isFilter=true rangeValueBinding="Pad.amountRange"
+            }}
 
             {{view Tent.AmountField valueBinding="Pad.amount1" label="_amountInput" currency="JPY" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
@@ -267,6 +269,7 @@
             <p>{{loc _numericInput}} Range : {{Pad.numericRange}}</p>
 
             <p>Amount Input : {{Pad.amount}}</p>
+            <p>Amount Range Input : {{Pad.amountRange}}</p>
             <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
             <p>Selected States :</p>
             <ul>

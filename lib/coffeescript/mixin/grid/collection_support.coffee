@@ -170,15 +170,16 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 			@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
 
 	storeColumnDataToCollection: ->
-		# Store hidden column data
-		if  @get('collection')?
-			for col in @getColModel()
-				@set('columnInfo.hidden.' + col.name, col.hidden)
+		if @getTableDom().length > 0
+			# Store hidden column data
+			if  @get('collection')?
+				for col in @getColModel()
+					@set('columnInfo.hidden.' + col.name, col.hidden)
 
-		# Store column widths 
-		if @get('collection')?
-			for col in @getTableDom().get(0).p.colModel
-				@set('columnInfo.widths.' + col.name, col.width)
+			# Store column widths 
+			if @get('collection')?
+				for col in @getTableDom().get(0).p.colModel
+					@set('columnInfo.widths.' + col.name, col.width)
 
 	storeColumnOrderingToCollection: (permutation)->
 		oldOrder = @get('columnInfo.order.old')
