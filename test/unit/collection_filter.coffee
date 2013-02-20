@@ -57,6 +57,13 @@ test 'Initial population from collection', ->
 	equal filter.get('currentFilter').values.title.field, "title", 'title'
 	equal filter.get('currentFilter').values.title.data, "Task 1", 'data for title'
 
+test 'All filterable fields have properties in the current filter', ->
+	collection.filteringInfo.selectedFilter = 'task2'
+	filter = Tent.CollectionFilter.create
+		collection: collection
+	equal filter.get('currentFilter').name, "task2", 'name'
+	equal filter.get('currentFilter').values.id.field, "id", 'id'
+	equal filter.get('currentFilter').values.title.field, "title", 'title'
 
 test 'Clear filter', ->
 	filter = Tent.CollectionFilter.create
@@ -76,7 +83,7 @@ test 'Filter', ->
 	filter = Tent.CollectionFilter.create
 		collection: collection
 	filter.closeFilterPanel = ->
-		
+
 	filter.filter()
 	ok collection.filter.calledOnce
 	equal collection.filter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
@@ -90,6 +97,8 @@ test 'Save Filter', ->
 	filter.saveFilter()
 	ok collection.saveFilter.calledOnce, 'saveFilter was called on collection'
 	equal collection.saveFilter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
+
+
 
 	
 

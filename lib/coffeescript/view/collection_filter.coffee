@@ -45,15 +45,25 @@ Tent.CollectionFilter = Ember.View.extend
       for filter in @get('collection.filteringInfo.availableFilters')
         if filter.name == @get('collection.filteringInfo.selectedFilter')
           selectedFilter = filter
-      @set('currentFilter', Ember.copy(selectedFilter, true))
-      
+          @set('currentFilter', Ember.copy(selectedFilter, true))
+          @ensureAllFieldsRepresented()
+
+  # We want the current filter to contain all fields, not just those with values
+  ensureAllFieldsRepresented: ->
+    filter = @get('currentFilter')
+    for column in @get('collection.columnsDescriptor')
+      if column.filterable!=false
+        if not filter.values[column.field]?
+          @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
+
   clearFilter: ->
     currentFilter = @get('currentFilter')
     @set('currentFilter.name', "")
     @set('currentFilter.label', "")
     @set('currentFilter.description', "")
     for column in @get('collection.columnsDescriptor')
-      @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
+      if column.filterable!=false
+        @set('currentFilter.values.' + column.field, {field:column.field, op:"", data:""})
 
   didInsertElement: ->
     @closeFilterPanel()
@@ -80,9 +90,9 @@ Tent.CollectionFilter = Ember.View.extend
   closeSaveFilterDialog: ->
     Ember.View.views[@$('.filter-details .tent-modal').attr('id')].hide()
 
-  #collapsiblePanel: (->
-  #  "#" + @get('elementId') + ' .filter-details'
-  #).property()
+  collapsiblePanel: (->
+    "#" + @get('elementId') + ' .filter-details'
+  ).property()
 
   doSearch: ->
     @get('collection').search(@get('searchValue'))
@@ -129,9 +139,11 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
                 valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".data" 
-                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
-                filterBinding: "parentView.parentView.parentView.currentFilter"
-                field: column.field
+                closeOnSelect:true
+                arrows:true
+                #filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.field + ".op" 
+                #filterBinding: "parentView.parentView.parentView.currentFilter"
+                #field: column.field
             when "number"
               fieldView = Tent.NumericTextField.create
                 label: Tent.I18n.loc(column.title) 
