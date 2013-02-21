@@ -24,6 +24,8 @@
 * Similarly use {@link #secondaryAction} and {@link #secondaryTarget} for the secondary button.
 * The close button (located at the top right), is bound to the secondary action, unless a {@link #closeAction} is provided.
 *
+* The dialog can be closed when clicking the primary button by adding 'primaryButtonClass="close-dialog"'
+*
 * When the dialog is closed by clicking outside the dialog, the secondary action will be called.
 *
 * ## Usage

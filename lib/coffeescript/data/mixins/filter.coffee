@@ -4,13 +4,15 @@
 ###
 
 Tent.Data.Filter = Ember.Mixin.create
-	filteringInfo: {}
+	filteringInfo:
+		selectedFilter: null
+		availableFilters: []
 
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
 
-		@set('filteringInfo', 
+		###@set('filteringInfo', 
 			selectedFilter: 'task1'
 			availableFilters: [
 				{
@@ -35,13 +37,14 @@ Tent.Data.Filter = Ember.Mixin.create
 					values: {id: {field:"id",op: "equal", data: "5"}}
 				}
 			])
+		###
 
 	selectedFilter: ( ->
 		@getSelectedFilter()
 	).property('filteringInfo', 'filteringInfo.selectedFilter')
 	
 	getSelectedFilter: ->
-		if @get('filteringInfo')? and @get('filteringInfo.selectedFilter')?
+		if @get('filteringInfo')? and @get('filteringInfo.selectedFilter')? 
 			for filter in @get('filteringInfo.availableFilters')
 				if filter.name == @get('filteringInfo.selectedFilter')
 					return filter
@@ -56,7 +59,7 @@ Tent.Data.Filter = Ember.Mixin.create
 				if item.name == currentFilter.name 
 					if item.label == currentFilter.label
 						replacedExisting = true
-						currentFilter
+						Ember.copy(currentFilter,true)
 					else
 						currentFilter.name = currentFilter.label.split(" ").join('')
 						item
@@ -88,6 +91,8 @@ Tent.Data.Filter = Ember.Mixin.create
 		#@get('availableFilters').notifyPropertyChange('content')
 
 	addNewFilter: (filter)->
-		@get('filteringInfo.availableFilters').push(filter)
+		filter.name = filter.name or filter.label.split(" ").join('')
+		@set('filteringInfo.selectedFilter', filter.name)
+		@get('filteringInfo.availableFilters').push(Ember.copy(filter,true))
 
 	 

@@ -1,20 +1,15 @@
-<div class="summary-panel form-inline">
-	{{view Tent.Select span="4"
-			label="tent.filter.currentFilter" 
-			listBinding="view.availableFilters" 
-			selectionBinding="view.selectedDropdownFilter" 
-			optionLabelPath="content.label" 
-			optionValuePath="content.name"
-			prompt="tent.filter.noFilter"
-			class="pull-left"
-	}}
-	<a class="toggle pull right" data-toggle="collapse" {{bindAttr data-target="view.collapsiblePanel"}}>
-		<span class="caret"></span>
-	</a>
+	{{view Tent.Select
+		label="tent.filter.currentFilter" 
+		listBinding="view.availableFilters" 
+		selectionBinding="view.selectedDropdownFilter" 
+		optionLabelPath="content.label" 
+		optionValuePath="content.name"
+		prompt="tent.filter.noFilter"
+		class="filter-selection jqgrid-title-button"
+}}
+ 
 
-</div>
-
-<div class="filter-details collapse in">
+<div class="filter-details">
 
 	{{view Tent.FilterFieldsView
 		collectionBinding="view.collection"
@@ -26,9 +21,10 @@
 		        header="tent.filter.saveFilter" 
 		        primaryLabel="filter.save" 
 		        secondaryLabel="tent.filter.cancel"
-		        type="link"
+		        type="secondary"
 		        primaryAction="saveFilter"
 		        primaryTargetBinding="view"
+		        primaryButtonClass="close-dialog"
 		        closeOnSubmit=true
 		    	}}
 	    	
@@ -38,7 +34,7 @@
 	    	
 	    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="do-filter pull-right"}}
 
-	    	{{view Tent.Button label="tent.filter.clear" type="link" action="clearFilter" targetBinding="view" class="do-filter pull-left"}}
+	    	{{view Tent.Button label="tent.filter.clear" type="secondary" action="clearFilter" targetBinding="view" class="clear-filter pull-left"}}
 
 	</div>
 </div>

@@ -30,12 +30,12 @@ Tent.CollectionFilter = Ember.View.extend
     @populateFilterFromCollection()
 
   createEmptyFilter: ->
-    @set('currentFilter', Ember.Object.create
+    @set('currentFilter', {
       name: ""
       label: ""
       description: ""
-    )
-    @get('currentFilter').set('values', {})
+    })
+    @set('currentFilter.values', {})
 
     if @get('collection.columnsDescriptor')?
       @clearFilter()
@@ -81,7 +81,7 @@ Tent.CollectionFilter = Ember.View.extend
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
-    @closeSaveFilterDialog()
+    #@closeSaveFilterDialog()
     return true
 
   closeFilterPanel: ->
@@ -112,6 +112,7 @@ Tent.FilterDefinition = Ember.Object.extend
 
 Tent.FilterFieldsView = Ember.ContainerView.extend
   childViews: ['filtersView']
+  classNames: ['form-horizontal']
   collection: null
 
   filtersView: (->
