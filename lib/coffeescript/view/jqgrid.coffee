@@ -546,9 +546,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')? 
 			page: @get('pagingInfo').page if @get('pagingInfo')? 
 		@resetGrouping()
-		@getTableDom()[0].addJSONData(data)
+		@getTableDom()[0]?.addJSONData(data)
 		@updateGrid()
-	).observes('content', 'content.isLoaded', 'content.@each')
+	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
 
 	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
 	# grouping so that they accumulate. We need to explicitly clear the grouping here.
@@ -620,10 +620,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).observes("clearAction")
 
 	setSelectAllCheckbox: (grid) ->
-		if @allRowsAreSelected(grid)
-			grid.setHeadCheckBox(true)
-		else
-			grid.setHeadCheckBox(false)
+    if grid?
+      if @allRowsAreSelected(grid)
+        grid.setHeadCheckBox(true)
+      else
+        grid.setHeadCheckBox(false)
 
 	allRowsAreSelected: (grid) ->
 		# Check for state of selectAll checkbox
