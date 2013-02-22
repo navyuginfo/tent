@@ -22,7 +22,6 @@ Pad.DataStore = Ember.Object.extend
 
 	getColumnsForType: ->
 		[
-
 			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},
 			{id: "title", name: "title", type:"string", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
 			# {id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
@@ -91,8 +90,9 @@ Pad.DataStore = Ember.Object.extend
 			for columnId of filterFields
 				if columnId != undefined and filterFields[columnId]? and filterFields[columnId].data? and filterFields[columnId].data != ""
 					if item.get(columnId) instanceof Date
-						if filterFields[columnId].data.getTime() != item.get(columnId).getTime()
-							passed = false	
+						#if filterFields[columnId].data.getTime() != item.get(columnId).getTime()
+						#	passed = false	
+						passed = true
 					else
 						re = new RegExp("^" + filterFields[columnId].data,"i")
 						if !re.test(item.get(columnId))
