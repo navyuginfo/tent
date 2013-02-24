@@ -2,6 +2,7 @@ require '../template/jqgrid'
 require '../mixin/grid/collection_support' 
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
+require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_menu'
 
 ###*
@@ -29,7 +30,7 @@ require '../mixin/grid/column_menu'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.GroupingSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -188,6 +189,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
+			onSelectGroup: (itemId, status, e) ->
+				widget.didSelectGroup(itemId, status, e)
+			,
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
 		})
@@ -243,6 +247,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
+
+
+	# A group was row was selected from the grid
+	didSelectGroup: (itemId, status, e)->
+		@selectRemoteGroup(itemId)
 
 
 	markErrorCell: (rowId, iCell) ->
@@ -522,9 +531,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			total: @get('totalPages')
 			records: @get('totalRows')
 			page: @get('pagingData').page
+			remoteGrouping: @get('showingGroups')
 		@resetGrouping()
-		@getTableDom()[0].addJSONData(data)
-		@updateGrid()
+		if @get('showingGroups')
+			@getTableDom()[0].addGroupingData(data)
+		else
+			@getTableDom()[0].addJSONData(data)
+			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each')
 
 	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
