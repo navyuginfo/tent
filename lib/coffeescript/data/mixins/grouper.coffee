@@ -14,8 +14,9 @@ Tent.Data.Grouper = Ember.Mixin.create
 		if page?
 			@set('groupingInfo.page', page)
 			@set('currentGroupPage', page)
-			@set('groupingInfo.currentGroupId', null)
-			
+		
+		@set('groupingInfo.currentGroupId', null)
+
 		@update(@REQUEST_TYPE.GROUP)
 
 	setCurrentGroupId: (id) ->
