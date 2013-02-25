@@ -162,7 +162,7 @@
 		cursor: pointer;
 		span.ui-icon {
 			float: left;
-			margin: 2px 2px;
+			margin: 1px 1px;
 		}
 	}
 
@@ -284,6 +284,9 @@
 		a {
 			font-size: 11px;
 			outline: 0px;
+			&:hover {
+				text-decoration: none;
+			}
 			.caret {
 				vertical-align: middle;
 				border-top-color: white;

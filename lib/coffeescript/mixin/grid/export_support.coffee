@@ -25,8 +25,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			button = """
 				<div class="btn-group export">
 					<a class="" data-toggle="dropdown" href="#">
-					Export
-					<span class="caret"></span>
+						<i class="icon-share"></i>Export
 					</a>
 					<ul class="dropdown-menu">
 						<li><a class="export-json">#{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
