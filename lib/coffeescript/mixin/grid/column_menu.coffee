@@ -108,35 +108,12 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 
 	groupByColumnBindings: ->
 		widget = this
-
 		@$('.group.dropdown-submenu').click((e)->
 			target = $(e.target)
 			groupType = target.attr('data-grouptype') or target.parents('li[data-grouptype]:first').attr('data-grouptype')
-			if groupType == 'none'
-				widget.getTableDom().jqGrid('groupingRemove', true)
-			else
-				column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
-				columnType = 'string'
-				for col in widget.get('columns')
-					if col.name == column then columnType= col.type
-				widget.groupByColumn(column, groupType, columnType)
+			column = target.attr('data-column') or target.parents('ul.column-dropdown:first').attr('data-column')
+			widget.newGroupSelected(groupType, column)
 		)
-
-	groupByColumn: (column, groupType, columnType)->
-		lastSort = @getTableDom()[0].p.sortname
-		for columnDef in @get('columns')
-			if columnDef.name == column and columnDef.sortable? and columnDef.sortable
-				if (not lastSort?) or not (lastSort == column)
-					@getTableDom().sortGrid(column)
-
-		comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
-		this.getTableDom().groupingGroupBy(column, {
-				groupText : ['<b>' + @getTitleForColumn(column) + ':  {0}</b>']
-				range: comparator
-			}
-		)
-
-		this.gridDataDidChange()
 
 	renameColumnHeaderBindings: ->
 		widget = this

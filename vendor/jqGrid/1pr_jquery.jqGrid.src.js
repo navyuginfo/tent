@@ -1098,7 +1098,7 @@ $.fn.jqGrid = function( pin ) {
 				ts.p._index[val] = i;
 			}
 		},
-		constructTr = function(id, hide, altClass, rd, cur, selected) {
+		constructTr = function(id, hide, altClass, rd, cur, selected, additionalClasses) {
 			var tabindex = '-1', restAttr = '', attrName, style = hide ? 'display:none;' : '',
 				classes = 'ui-widget-content jqgrow ui-row-' + ts.p.direction + altClass + ((selected) ? ' ui-state-highlight' : ''),
 				rowAttrObj = $.isFunction(ts.p.rowattr) ? ts.p.rowattr.call(ts, rd, cur) : {};
@@ -1127,7 +1127,7 @@ $.fn.jqGrid = function( pin ) {
 					}
 				}
 			}
-			return '<tr role="row" id="' + id + '" tabindex="' + tabindex + '" class="' + classes + '"' +
+			return '<tr role="row" id="' + id + '" tabindex="' + tabindex + '" class="' + classes + ' ' + additionalClasses + '"' +
 				(style === '' ? '' : ' style="' + style + '"') + restAttr + '>';
 		},
 		addXmlData = function (xml,t, rcnt, more, adjust) {
@@ -1303,6 +1303,39 @@ $.fn.jqGrid = function( pin ) {
 				}
 			}
 		},
+
+		/* 
+			PR: adding remote grouping support.
+			When in remote grouping mode, we wish to display groups as if they were single line items.
+		*/
+		addGroupingData = function(data, t) {
+			var len = data.rows.length, rowData=[];
+			var i = 0;
+
+			while (i<len) {
+				var row = data.rows[i++];
+				// constructTr = function(id, hide, altClass, rd, cur, selected) {
+
+				rowData.push(constructTr(row.id, false, 0, {}, row, false, 'group-row'));
+				var v = "<span>[" + row.id + "] Group Title ...</span><i class='icon-right-open pull-right'></i>";
+				rowData.push('<td colspan="'+ts.p.colModel.length+'">'+v+'</td>');
+				rowData.push( "</tr>" );
+			}
+
+			var container = $("#"+$.jgrid.jqID(ts.p.id)+" tbody:first");
+			container.append(rowData.join(''));
+			$('.group-row',container).each(function(i){
+				$(this).click( function(e) {
+					var selected = true;
+					if( ts.p.onSelectGroup) { 
+						ts.p.onSelectGroup.call(ts, this.getAttribute('id'), selected, e)
+					}
+					e.preventDefault();
+					e.stopPropagation();
+				});
+			});
+		},
+
 		addJSONData = function(data,t, rcnt, more, adjust) {
 			var startReq = new Date();
 			if(data) {
@@ -1398,6 +1431,7 @@ $.fn.jqGrid = function( pin ) {
 				}
 				rowData[iStartTrTag] = constructTr(idr, hiderow, cn1, rd, cur, selr);
 				rowData.push( "</tr>" );
+				
 				if(ts.p.grouping) {
 					grpdata = $(ts).jqGrid('groupingPrepare',rowData, grpdata, rd, i);
 					rowData = [];
@@ -2639,6 +2673,8 @@ $.fn.jqGrid = function( pin ) {
 		this.grid = grid;
 		ts.addXmlData = function(d) {addXmlData(d,ts.grid.bDiv);};
 		ts.addJSONData = function(d) {addJSONData(d,ts.grid.bDiv);};
+		/* PR: adding remote grouping support */
+		ts.addGroupingData = function(d) {addGroupingData(d,ts.grid.bDiv);};
 		this.grid.cols = this.rows[0].cells;
 
 		populate();ts.p.hiddengrid=false;
