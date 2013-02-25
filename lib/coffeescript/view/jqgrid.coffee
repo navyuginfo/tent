@@ -3,6 +3,7 @@ require '../mixin/grid/collection_support'
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
+require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
 
 ###*
@@ -30,7 +31,7 @@ require '../mixin/grid/column_menu'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.GroupingSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.GroupingSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -285,12 +286,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
-		@renderColumnChooser(tableDom)
+		#@renderColumnChooser(tableDom)
 		@_super()
 		@renderMaximizeButton()
 
 
-	renderColumnChooser: (tableDom)->
+	renderColumnChooserxxx: (tableDom)->
 		widget =  @
 		if @get('showColumnChooser')
 			# Ensure that the caption header is displayed
