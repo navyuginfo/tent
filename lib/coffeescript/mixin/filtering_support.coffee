@@ -1,3 +1,5 @@
+require './constants'
+
 ###*
 * @class Tent.FilteringSupport 
 * Allows widgets to participate in filter panels, and provides them with a range of 
@@ -6,10 +8,11 @@
 Tent.FilteringSupport = Ember.Mixin.create
 	isFilter: false
 	operators: [
-		Ember.Object.create({label: "tent.filter.beginsWith", operator: "begin"}),
-		Ember.Object.create({label: "tent.filter.contains", operator: "contain"}),
-		Ember.Object.create({label: "tent.filter.equal", operator: "equal"}),
-		Ember.Object.create({label: "tent.filter.nEqual", operator: "nequal"})
+		Ember.Object.create({label: "tent.filter.beginsWith", operator: Tent.Constants.get('OPERATOR_BEGINS_WITH')}),
+		Ember.Object.create({label: "tent.filter.contains", operator: Tent.Constants.get('OPERATOR_CONTAINS')}),
+		Ember.Object.create({label: "tent.filter.equal", operator: Tent.Constants.get('OPERATOR_EQUALS')}),
+		Ember.Object.create({label: "tent.filter.nEqual", operator: Tent.Constants.get('OPERATOR_NOT_EQUALS')})
+		Ember.Object.create({label: "tent.filter.like", operator: Tent.Constants.get('OPERATOR_LIKE')})
 	]
 
 	init: ->

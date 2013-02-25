@@ -107,6 +107,7 @@ Tent.I18n.loadTranslations(
 			search: 'Search'
 			clear: 'Clear'
 			noFilter: 'No Filter'
+			like: 'like'
 		}
 		warning: {
 			header: 'Warnings Exist'

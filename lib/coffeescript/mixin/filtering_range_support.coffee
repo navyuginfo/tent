@@ -1,13 +1,17 @@
+require './constants'
+
 Tent.FilteringRangeSupport = Ember.Mixin.create
 	# Operators for use within a grid filter
 	operators: [
-		Ember.Object.create({label: "tent.filter.equal", operator: "equal"}),
-		Ember.Object.create({label: "tent.filter.nEqual", operator: "nequal"})
-		Ember.Object.create({label: "tent.filter.lThan", operator: "lthan"})
-		Ember.Object.create({label: "tent.filter.lThanEq", operator: "lthaneq"})
-		Ember.Object.create({label: "tent.filter.gThan", operator: "gthan"})
-		Ember.Object.create({label: "tent.filter.gThanEq", operator: "gthaneq"})
-		Ember.Object.create({label: "tent.filter.range", operator: "range"})
+		Ember.Object.create({label: "tent.filter.equal", operator: Tent.Constants.get('OPERATOR_EQUALS')}),
+		Ember.Object.create({label: "tent.filter.nEqual", operator: Tent.Constants.get('OPERATOR_NOT_EQUALS')})
+		Ember.Object.create({label: "tent.filter.lThan", operator: Tent.Constants.get('OPERATOR_LESS_THAN')})
+		Ember.Object.create({label: "tent.filter.lThanEq", operator: Tent.Constants.get('OPERATOR_LESS_THAN_EQUALS')})
+		Ember.Object.create({label: "tent.filter.gThan", operator: Tent.Constants.get('OPERATOR_GREATER_THAN')})
+		Ember.Object.create({label: "tent.filter.gThanEq", operator: Tent.Constants.get('OPERATOR_GREATER_THAN_EQUALS')})
+    Ember.Object.create({label: "tent.filter.like", operator: Tent.Constants.get('OPERATOR_LIKE')})
+    Ember.Object.create({label: "tent.filter.contains", operator: Tent.Constants.get('OPERATOR_CONTAINS')})
+		Ember.Object.create({label: "tent.filter.range", operator: Tent.Constants.get('OPERATOR_RANGE')})
 	]
 
 	###*

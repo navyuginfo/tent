@@ -1,0 +1,11 @@
+Tent.Constants = Ember.Object.create
+    OPERATOR_BEGINS_WITH: "begin"
+    OPERATOR_CONTAINS: "contain"
+    OPERATOR_LIKE: "like"
+    OPERATOR_EQUALS: "eql"
+    OPERATOR_NOT_EQUALS: "not"
+    OPERATOR_LESS_THAN: "lt"
+    OPERATOR_GREATER_THAN: "gt"
+    OPERATOR_LESS_THAN_EQUAL: "lte"
+    OPERATOR_GREATER_THAN_EQUAL: "gte"
+    OPERATOR_RANGE: "range"
