@@ -17,7 +17,7 @@ Tent.FilteringRangeSupport = Ember.Mixin.create
 	###
 	rangeValue: (->
 		if @get('isRangeOperator') and @get('value2')?
-			[@get('value'), @get('value2')]
+			"#{@get('value')},#{@get('value2')}"
 		else
 			@get('value')
 	).property('value', 'value2', 'isRangeOperator')
