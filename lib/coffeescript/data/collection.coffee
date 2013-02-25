@@ -1,21 +1,25 @@
 
 require './mixins/pager'
 require './mixins/sorter'
+require './mixins/columninfo'
 require './mixins/filter'
 require './mixins/grouper'
+require './mixins/search_support'
 require './mixins/export_support'
+require './mixins/customizable'
 
 ###*
 * @class Tent.Data.Collection
 * An object used to wrap an array of objects, with a facade for paging, sorting and filtering, 
 ###
-Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.Filter, Tent.Data.ExportSupport, Tent.Data.Grouper,
+Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.Filter, Tent.Data.ExportSupport, Tent.Data.Customizable, Tent.Data.SearchSupport, Tent.Data.ExportSupport, Tent.Data.Grouper,
 	content: null
 	dataType: null
 	data: []
 	serverPaging: false
 	liveStreaming: false
 	store: null
+
 	isLoadable: false #Does the collection have a 'isLoaded' state
 	REQUEST_TYPE: {'ALL': 'all'}
 
@@ -48,13 +52,13 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			query = $.extend(
 				{}, 
 				{type: requestType}, 
-				{paging: @getPagingInfo()},
+				{paging: @get('pagingInfo')},
 				{sorting: @getSortingInfo()},
 				{filtering: @getFilteringInfo()}
 				{grouping: @getGroupingInfo()}
+				{searching: @getSearchingInfo()}
 			)
 			# Add support for asynch calls later	
 			response = @get('store').findQuery(eval(@get('dataType')), query)
 			@set('modelData', response.modelData)
 			@updatePagingInfo(response.pagingInfo)
-

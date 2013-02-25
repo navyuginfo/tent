@@ -11,6 +11,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 	showExportButton: true
 
 	addNavigationBar: ->
+		@_super()
 		tableDom = @getTableDom()
 		@renderExportButton(tableDom)
 
@@ -23,7 +24,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
 
 			button = """
-				<div class="btn-group export">
+				<div class="btn-group export jqgrid-title-button">
 					<a class="" data-toggle="dropdown" href="#">
 						<i class="icon-share"></i>Export
 					</a>

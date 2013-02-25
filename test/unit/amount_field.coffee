@@ -94,3 +94,47 @@ test 'Currency validation tests', ->
   equal amount.get('isValidCurrency'), false, 'Invalid currency'
   amount.set 'currency', 'JPY'
   equal amount.get('isValidCurrency'), true, 'valid currency'
+
+
+test 'operators', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.AmountField valueBinding="value" isFilter=true labelBinding="label"}}'
+    value: 1
+    label: 'FooBar'
+
+  appendView()
+  amount = Ember.View.views[view.$('.tent-text-field').attr('id')] 
+
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+  equal amount.get('rangeValue'), '1', 'Single value'
+
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(1).val('9')
+      view.$('input').eq(1).trigger('change')
+  equal amount.get('rangeValue'), '1', 'Single value'
+
+  
+###  Ember.run ->
+      amount.set('filterOp', 'range')
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(1).val('9')
+      view.$('input').eq(1).trigger('change')
+  equal amount.get('rangeValue')[0], 1, 'Range value is an array [0]'
+  equal amount.get('rangeValue')[1], 9, 'Range value is an array [1]'
+
+  Ember.run ->
+    amount.set('filterOp', 'lthan')
+  equal amount.get('rangeValue'), '1', 'Range value with non-range operator'
+###
+
+
+
+
+
+

@@ -139,6 +139,9 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   resize: ->
   	@_super()
   	@estimateFormStyle()
+
+  clear: ->
+    @set('value', null)
   	
   didInsertElement: ->
     @_super()

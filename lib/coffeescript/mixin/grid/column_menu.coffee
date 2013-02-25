@@ -157,7 +157,10 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 	renameColumnHeader: (columnField, value, dropdownMenu)->
 		@toggleColumnDropdown(columnField)
 		@renameGridColumnHeader(columnField, value)
+		# set the column title in the collection for storage
+		@set('columnInfo.titles.' + columnField, value) if @get('columnInfo.titles')
 		dropdownMenu.attr('data-last-title', value)
+
 
 	renameGridColumnHeader: (colname, value) ->
 		# jqGrid ignores "" as a column header, so set it to a space.
@@ -166,5 +169,4 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		@getTableDom().jqGrid('setLabel', colname, value);
 		for column in @get('columns')
 			column.title = value if column.name == colname
-
 		@columnsDidChange()

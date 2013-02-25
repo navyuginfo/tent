@@ -115,7 +115,7 @@ Tent.SelectOption = Ember.SelectOption.extend
     if !labelPath
       return
     Ember.defineProperty(@, 'label', Ember.computed(->
-      return Tent.I18n.loc(Ember.get(this, labelPath))
+      return Tent.I18n.loc(Ember.get(this, labelPath)) if Ember.get(this, labelPath) != ""
     ).property(labelPath).cacheable())
   , 'parentView.optionLabelPath')
 

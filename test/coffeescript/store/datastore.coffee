@@ -22,8 +22,7 @@ Pad.DataStore = Ember.Object.extend
 
 	getColumnsForType: ->
 		[
-
-			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false},
+			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},
 			{id: "title", name: "title", type:"string", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
 			# {id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
 			{id: "duration", name: "duration", type:"string", title: "_hDuration",field: "duration", width:10, sortable: true, groupable:true, align: 'right'},
@@ -46,16 +45,16 @@ Pad.DataStore = Ember.Object.extend
 		if !paging?
 			return modelData
 
-		start = (paging.pageNum-1) * paging.pageSize
+		start = (paging.page-1) * paging.pageSize
 		if (start > modelData.length) 
 			start = 0
-			paging.pageNum = 1
+			paging.page = 1
 		end = start + paging.pageSize - 1
 		if (end > modelData.length) then end = modelData.length 
 		return modelData[start..end]
 
 	doSort: (modelData, sorting) ->
-		if !sorting?
+		if !sorting.fields?
 			return modelData
 
 		that = this
@@ -89,10 +88,11 @@ Pad.DataStore = Ember.Object.extend
 		for item in modelData
 			passed = true
 			for columnId of filterFields
-				if columnId != undefined and filterFields[columnId]?
+				if columnId != undefined and filterFields[columnId]? and filterFields[columnId].data? and filterFields[columnId].data != ""
 					if item.get(columnId) instanceof Date
-						if filterFields[columnId].data.getTime() != item.get(columnId).getTime()
-							passed = false	
+						#if filterFields[columnId].data.getTime() != item.get(columnId).getTime()
+						#	passed = false	
+						passed = true
 					else
 						re = new RegExp("^" + filterFields[columnId].data,"i")
 						if !re.test(item.get(columnId))

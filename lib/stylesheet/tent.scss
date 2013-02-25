@@ -20,6 +20,12 @@
 	@include box-sizing(border-box);
 }
 
+
+/* UI Library Overrides */
+.ui-widget {
+	font-family: inherit;
+}
+
 .tent-button-group {
   	position: relative; 
 }
@@ -54,6 +60,11 @@ a[rel=tooltip] {
 
 /*  Modal Dialog */
 
+/* Hide the base backdrop, as each modal handles its own. */
+body > .modal-backdrop {
+	visibility: hidden;
+}
+
 .tent-modal {
 	text-align: left;
 }
@@ -67,12 +78,98 @@ a[rel=tooltip] {
 
 /* List Filters */
 
-.tent-filter {
-	padding: 10px;
-	border-radius: 4px;
-	margin-bottom: 5px;
+.filter-panel {
+	//position: absolute;
+	//z-index: 500; 
+	//width: 100%;
+	//height: 30px;
+	margin-left: -360px;
+	box-sizing: border-box;
+	z-index: 800;
+	@include transition(all 0.3s ease);
+
+	li {
+		padding: 4px 20px;
+	}
+	
+	a.toggle {
+		padding: 2px;
+		display: inline-block;
+		vertical-align: top;
+		float: right;
+		.caret {
+			vertical-align: middle;
+		}
+	}
+
+	/* Styling for a compact form : maybe generalize this */
+	label {
+		font-size: 12px;
+	}
+	.control-group {
+		margin-bottom: 5px;
+		input:nth-child(2) {
+			display: block; // For range controls, put the second range element below the first.
+		}
+	}
+	select,textarea,input {
+		height: 22px;
+		padding: 0px 6px;
+	}
+	.btn {
+		font-size: 12px;
+		padding: 0px 14px;
+	}
 }
 
+.tent-filter {
+	background-color: #D0E4D0;
+	margin-left: -1px;
+	/*padding: 10px;
+	border-radius: 4px;
+	margin-bottom: 5px;*/
+	.summary-panel {
+		padding: 5px;
+		height: 30px;
+		overflow: hidden;
+		box-sizing: border-box;
+
+	}
+
+	.filter-details {
+		padding: 0px 20px;
+		border-right: 1px solid #D1D1D1;
+		border-left: 1px solid #D1D1D1;
+		border-bottom: 1px solid #D1D1D1;
+		border-bottom-left-radius: 7px;
+		border-bottom-right-radius: 7px;
+	}
+}	
+
+.ui-jqgrid-titlebar {
+	.filter-selection {
+		margin-bottom: 0px;
+		margin-right: 5px;
+		label {
+			font-weight:bold;
+			font-size: 1em;
+			padding-top: 0px;
+			width: 100px;
+			display: inline;
+		}
+		select {
+			height: 23px;
+			vertical-align: baseline;
+		}
+		.controls {
+			margin-left: 100px;
+		}
+	}
+
+	.jqgrid-title-button .filter a {
+		opacity: .8;
+	}
+}
 
 /* Breadcrumb */
 

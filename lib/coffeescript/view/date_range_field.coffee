@@ -89,6 +89,8 @@ Tent.DateRangeField = Tent.TextField.extend
 	###
 	dateFormat: Tent.Formatting.date.getFormat()
 
+	operators: null # We don't need operators with a date range
+
 	init: ->		 
 		@_super()
 	
@@ -151,7 +153,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('formattedValue')!=""
+		if @get('formattedValue')? and @get('formattedValue')!=""
 			startString = @getValue().split(@get('rangeSplitter'))[0]
 			if startString?
 				try 
