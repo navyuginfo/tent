@@ -21,7 +21,15 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 				tableDom.setCaption('&nbsp;')
 
 			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
-
+			# columns with hidden true and hideable false are kept only for refrences or in special cases. They will never be required in export files
+			columnsToRemove = @get("columns").filter((item) ->
+				item.hidden is true and item.hideable is false
+			).mapProperty "name"
+			data = tableDom.getRowData()
+			data.forEach (row)->
+				columns.forEach (item)->
+					delete row[item]
+					
 			button = """
 				<div class="btn-group export">
 					<a class="" data-toggle="dropdown" href="#">
@@ -96,15 +104,15 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			@$(".ui-jqgrid-titlebar").append(button)
 
 			@$('a.export-json').click =>
-        ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+        ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(data,"data","    ",true)+'}'
         @clientDownload(ret)
 
 			@$('a.export-xml').click =>
-				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(data,"    ")+"</root>"
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
-				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
+				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(data, @getColModel())
 				@clientDownload(ret)
 
 			@$('#customExportForm').click (e) =>
