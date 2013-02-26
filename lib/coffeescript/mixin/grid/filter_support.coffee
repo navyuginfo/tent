@@ -1,6 +1,6 @@
 Tent.Grid.FilterSupport = Ember.Mixin.create
 
-	filtering: true
+	filtering: false
 
 	addFilterPanel: ->
 		if @get('filtering')

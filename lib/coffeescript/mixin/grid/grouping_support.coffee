@@ -19,9 +19,7 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		if groupType == 'none'			
 			@getTableDom().jqGrid('groupingRemove', true)
 		else 
-			columnType = 'string'
-			for col in @get('columns')
-				if col.name == columnName then columnType= col.type
+			@getColumnType(columnName)
 			
 			lastSort = @getTableDom()[0].p.sortname
 			for columnDef in @get('columns')
@@ -37,6 +35,12 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 			)
 			this.gridDataDidChange()
 
+	getColumnType: (columnName)->
+		columnType = 'string'
+		for col in @get('columns')
+			if col.name == columnName then columnType= col.type
+		columnType
+
 	doRemoteGrouping: (groupType, columnName) ->
 		if groupType == 'none'			
 			@set('showingGroups', false)
@@ -46,27 +50,48 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 			groupData = 
 				columnName: columnName
 				type: groupType
+				columnType: @getColumnType(columnName)
 
 			@set('showingGroups', true)
 			@get('collection').goToGroupPage(1, groupData)
 
 	selectRemoteGroup: (id)->
 		@set('showingGroups', false)
-		@showGroupHeader('['+id+'] content..')
+		@showGroupHeader(id)
 		@get('collection').setCurrentGroupId(id)
 		@get('collection').goToPage(1)
 
-	showGroupHeader: (content)->
+	showGroupHeader: (id)->
 		widget = this
-		headerRow = $('<tr class="group-header"><td colspan="' + @getColSpan() + '"><i class="icon-left-open"></i><span>'+content+'</span></td></tr>')
+
+		columnName = @get('groupingInfo.columnName')
+		columnType = @get('groupingInfo.columnType')
+		groupType = @get('groupingInfo.type')
+		columnTitle = @getColumnTitle(columnName)
+		
+		for item in @get('content').toArray()
+			if item.get('id') == parseInt(id,10)
+				selectedGroup = item
+
+		if selectedGroup?
+			content = "<span class='title'>" + @getColumnTitle(columnName) + "</span><span class='range'>"
+			comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
+			startValue = selectedGroup[columnName.decamelize()]
+			if startValue?
+				content = content + comparator.rowTitle(startValue);
+			content = content + "</span>"
+
+		headerRow = $('<tr class="group-header"><td colspan="' + @getColSpan() + '"><i class="icon-caret-left"></i>'+content+'</td></tr>')
 		@$('.ui-jqgrid-hbox .ui-jqgrid-htable').append(headerRow)
 		headerRow.click(->
 			widget.returnToGroupList()
 		)
+		@columnsDidChange()
 
 	hideGroupHeader: ->
 		headerRow = @$('.ui-jqgrid-hbox .group-header')
 		headerRow.remove()
+		@columnsDidChange()
 
 	getColSpan: ->
 		@getTableDom()[0].p.colModel.length

@@ -267,7 +267,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	didSelectGroup: (itemId, status, e)->
 		@selectRemoteGroup(itemId)
 
-
 	markErrorCell: (rowId, iCell) ->
 		@getCell(rowId, iCell).addClass('error')
 
@@ -533,16 +532,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	gridData: (->
 		models = @get('content').toArray()
 		grid = []
-		for model in models
-			item = {"id" : model.get('id')}
-			if @get('selectedIds').contains(model.get('id'))
-				item.sel = true
-			cell = []
-			for column in @get('columnModel')
-				#item[column.name] = model.get(column.name)
-				cell.push(model.get(column.name))
-			item.cell = cell
-			grid.push(item)
+
+		if @get('showingGroups')
+			for model in models
+				grid.push(model)
+		else
+			for model in models
+				item = {"id" : model.get('id')}
+				if @get('selectedIds').contains(model.get('id'))
+					item.sel = true
+				cell = []
+				for column in @get('columnModel')
+					#item[column.name] = model.get(column.name)
+					cell.push(model.get(column.name))
+				item.cell = cell
+				grid.push(item)
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
@@ -557,11 +561,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			remoteGrouping: @get('showingGroups')
 		@resetGrouping()
 		if @get('showingGroups')
+			data.columnName = @get('groupingInfo.columnName')
+			data.columnType = @get('groupingInfo.columnType')
+			data.groupType = @get('groupingInfo.type')
+			data.columnTitle = @getColumnTitle(data.columnName)
 			@getTableDom()[0]?.addGroupingData(data)
 		else
 			@getTableDom()[0]?.addJSONData(data)
 			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	getColumnTitle: (columnName)->
+		for col in @get('columns')
+			if col.name == columnName
+				return Tent.I18n.loc(col.title)
+		return columnName
 
 	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
 	# grouping so that they accumulate. We need to explicitly clear the grouping here.
