@@ -26,4 +26,10 @@ Tent.Data.Grouper = Ember.Mixin.create
 	getGroupingInfo: ->
 		@get('groupingInfo')
 
+	clearGrouping: ->
+		@set('groupingInfo', 
+			columnName: null
+			type: null
+		)
+
 
