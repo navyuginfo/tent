@@ -21,9 +21,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 				tableDom.setCaption('&nbsp;')
 
 			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
-			columnsToBeRemoved = @get('columns').filter (item)->
+			columnsToBeRemoved = (@get('columns').filter (item)->
 				item.hidden==true and item.hideable==false
-
+			).mapProperty("name")
 			button = """
 				<div class="btn-group export">
 					<a class="" data-toggle="dropdown" href="#">
