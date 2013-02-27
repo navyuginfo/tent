@@ -6,6 +6,6 @@ Tent.Constants = Ember.Object.create
     OPERATOR_NOT_EQUALS: "not"
     OPERATOR_LESS_THAN: "lt"
     OPERATOR_GREATER_THAN: "gt"
-    OPERATOR_LESS_THAN_EQUAL: "lte"
-    OPERATOR_GREATER_THAN_EQUAL: "gte"
+    OPERATOR_LESS_THAN_EQUALS: "lte"
+    OPERATOR_GREATER_THAN_EQUALS: "gte"
     OPERATOR_RANGE: "range"

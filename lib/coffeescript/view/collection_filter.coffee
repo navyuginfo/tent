@@ -141,7 +141,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
                 valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
                 closeOnSelect:true
                 arrows:true
-                #filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
+                filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 #filterBinding: "parentView.parentView.parentView.currentFilter"
                 #field: column.name
             when "number", "amount"
