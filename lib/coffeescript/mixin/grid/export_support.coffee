@@ -21,7 +21,6 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 				tableDom.setCaption('&nbsp;')
 
 			xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx',`undefined`,`undefined`,`undefined`,@generateExportDate()) else "#"
-
 			button = """
 				<div class="btn-group export">
 					<a class="" data-toggle="dropdown" href="#">
@@ -96,15 +95,15 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 			@$(".ui-jqgrid-titlebar").append(button)
 
 			@$('a.export-json').click =>
-        ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-        @clientDownload(ret)
+				ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(@removeHiddenColumnsAndGenerateExportData(tableDom),"data","    ",true)+'}'
+				@clientDownload(ret)
 
 			@$('a.export-xml').click =>
-				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+				ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(@removeHiddenColumnsAndGenerateExportData(tableDom),"    ")+"</root>"
 				@clientDownload(ret)
 
 			@$('a.export-csv').click =>
-				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
+				ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(@removeHiddenColumnsAndGenerateExportData(tableDom), @getColModel())
 				@clientDownload(ret)
 
 			@$('#customExportForm').click (e) =>
@@ -168,4 +167,14 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 	generateExportDate: ->
 		Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
 
+	removeHiddenColumnsAndGenerateExportData: (tableDom)->
+		data = tableDom.getRowData()
+		columnsToBeRemoved = (@get('columns').filter (item)->
+			item.hidden==true and item.hideable==false
+		).mapProperty("name")
+		if columnsToBeRemoved.length>0
+			data.forEach (row) ->
+				columnsToBeRemoved.forEach (item) ->
+					delete row[item]
+		data
 
