@@ -11,6 +11,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 	showExportButton: true
 
 	addNavigationBar: ->
+		@_super()
 		tableDom = @getTableDom()
 		@renderExportButton(tableDom)
 
