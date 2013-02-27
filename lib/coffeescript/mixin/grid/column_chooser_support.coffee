@@ -18,7 +18,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 					<a class="" data-toggle="dropdown" href="#">
 						<i class="icon-columns"></i>#{Tent.I18n.loc("tent.jqGrid.hideShowCaption")}
 					</a>
-					<div class="dropdown-menu columns">
+					<div class="dropdown-menu columns pull-right">
 						<div class="window"></div>
 						<ul>
 							{{#each columns}}
@@ -36,7 +36,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		)
 
 		columns = columns.filter((item)->
-			item.hideable ==true
+			item.hideable != false
 		)
 		context = 
 			columns: columns
