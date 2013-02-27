@@ -142,6 +142,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
                 closeOnSelect:true
                 arrows:true
                 filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
+                dateFormat: "yy-mm-dd"
                 #filterBinding: "parentView.parentView.parentView.currentFilter"
                 #field: column.name
             when "number", "amount"

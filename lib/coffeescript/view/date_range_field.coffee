@@ -118,6 +118,10 @@ Tent.DateRangeField = Tent.TextField.extend
 		@handleDisabled()
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
+	filterOpDidChange: (->
+		console.log("Daterange filter op = " + @get('filterOp'))
+	).observes('filterOp')
+
 	###*
 	* @method getValue Return the current value of the input field
 	* @return {String}
