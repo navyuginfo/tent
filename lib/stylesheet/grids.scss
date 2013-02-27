@@ -203,16 +203,15 @@
 		.dropdown-menu {
 			margin-left: -130%;
 			.window {
-				height: .8em;
+				height: 3.2em;
 			}
 			background-color: rgba(255, 255, 255, 0.8)
 		}
 		label {
 			margin-bottom: 0px;
 			font-size: 1.1em;
-			padding: 3px 10px;
+			padding: 3px 20px 0px 10px;
 			&:hover {
-				background-color: #0081C2;
 				color: white;
 			}
 		}
