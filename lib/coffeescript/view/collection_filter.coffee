@@ -111,15 +111,14 @@ Tent.FilterDefinition = Ember.Object.extend
 
 
 Tent.FilterFieldsView = Ember.ContainerView.extend
-  childViews: ['filtersView']
   classNames: ['form-horizontal']
   collection: null
 
-  filtersView: (->
+  init: ->
+    @_super()
     c = Ember.ContainerView.create()
     @populateContainer(c)
-    return c
-  ).property()
+    @get('childViews').pushObject(c)
 
   populateContainer: (c)->
     if @get('collection.columnsDescriptor')?

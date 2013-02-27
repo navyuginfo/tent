@@ -104,11 +104,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	init: ->
 		@_super()
-		
-		widget = @
-		$.subscribe("/ui/refresh", ->
-			widget.resizeToContainer()
-		)
 		#@set('selection',[]) if not @get('selection')?
 
 	valueForMandatoryValidation: (->
@@ -120,6 +115,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	didInsertElement: ->
 		@_super()
+		widget = @
+		$.subscribe("/ui/refresh", ->
+			widget.resizeToContainer()
+		)
 		@setupDomIDs()
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()
