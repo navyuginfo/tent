@@ -34,6 +34,10 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 			item.t = Tent.I18n.loc(item.title)
 			return item;
 		)
+
+		columns = columns.filter((item)->
+			item.hideable ==true
+		)
 		context = 
 			columns: columns
 
