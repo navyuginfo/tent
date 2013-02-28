@@ -2,7 +2,7 @@
 <div class="controls">
   {{#if view.isFilter}}
     {{#if view.operators}}
-      {{view Tent.Select listBinding="view.operators" class="embed no-label" 
+      {{view Tent.Select listBinding="view.operators" class="embed no-label operators" 
         optionLabelPath="content.label"
         optionValuePath="content.operator"
         valueBinding="view.filterOp"
@@ -28,6 +28,7 @@
           valueBinding="view.value2" 
           placeholderBinding="view.translatedPlaceholder"
           classBinding="view.controlClass"
+          classNames="range-end"
           typeBinding="view.type"
         }}
       {{/if}}

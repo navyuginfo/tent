@@ -120,6 +120,15 @@ body > .modal-backdrop {
 		font-size: 12px;
 		padding: 0px 14px;
 	}
+
+	input.range-end {
+		display: block;  // Second range field should wrap
+	}
+
+	.operators {
+		float: left;
+		margin-right: 5px;
+	}
 }
 
 .tent-filter {
@@ -143,6 +152,7 @@ body > .modal-backdrop {
 		border-bottom: 1px solid #D1D1D1;
 		border-bottom-left-radius: 7px;
 		border-bottom-right-radius: 7px;
+
 	}
 }	
 

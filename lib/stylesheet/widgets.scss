@@ -102,14 +102,14 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 			width: 170px;
 			font-size: .8em;
 			height: 1.2em;
-			display: inline-block;
+			display: inline-block!important;
 		}
 		.ui-daterangepicker-prev, .ui-daterangepicker-next {
 			top: 4px;
 		}
 	}
 	input {
-		display: none;
+		display: none!important;
 	}
 }
 

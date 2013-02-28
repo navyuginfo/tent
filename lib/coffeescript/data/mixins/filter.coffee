@@ -5,22 +5,31 @@
 
 Tent.Data.Filter = Ember.Mixin.create
 	filteringInfo:
-		selectedFilter: null
-		availableFilters: []
+		selectedFilter: 'default'
+		availableFilters: [
+			{
+				name: "default"
+				label: ""
+				description: ""
+				values: {
+					
+				}
+			}
+		]
 
 	init: ->
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
 
 		###@set('filteringInfo', 
-			selectedFilter: 'task1'
+			selectedFilter: 'task2'
 			availableFilters: [
 				{
 					name: "task1"
 					label: "Task 1"
 					description: "Select the first task"
 					values: {
-						id: {field:"id", op: "equal", data: "5"}, 
+						id: {field:"id", op: "equal", data: "5"}
 						title: {field:"title",op: "equal", data: "Task 1"}
 						duration: {field:"duration",op: "equal", data: "5"}
 						#percentcomplete: {field:"percentcomplete",op: "equal", data: "41"}
@@ -34,7 +43,18 @@ Tent.Data.Filter = Ember.Mixin.create
 					name: "task2"
 					label: "Task 2"
 					description: "Select all tasks 50-59"
-					values: {id: {field:"id",op: "equal", data: "5"}}
+					values: {
+						id: {field:"id",op: "equal", data: "5"}
+						title: {field:"title",op: "equal", data: "Task 2"}
+					}
+				},
+				{
+					name: "task3"
+					label: "Task 3"
+					description: "Select all tasks 50-59"
+					values: {
+						id: {field:"id",op: "equal", data: "5"}
+					}
 				}
 			])
 		###
@@ -49,8 +69,20 @@ Tent.Data.Filter = Ember.Mixin.create
 				if filter.name == @get('filteringInfo.selectedFilter')
 					return filter
 
+	getSelectedFilterName: ->
+		f = @getSelectedFilter()
+		name: f.name
+		label: f.label
+
 	setSelectedFilter: (name) ->
 		@set('filteringInfo.selectedFilter', name)
+
+	filterNames: (->
+		@get('filteringInfo.availableFilters').map((item)->
+			name: item.name
+			label: item.label
+		)
+	).property('filteringInfo.availableFilters', 'filteringInfo.availableFilters.@each')
 
 	updateCurrentFilter: (currentFilter)->
 		replacedExisting = false
@@ -66,15 +98,20 @@ Tent.Data.Filter = Ember.Mixin.create
 				else 
 					item
 			)
-			@set('filteringInfo.availableFilters', filters)
+
+			@get('filteringInfo.availableFilters').clear()
+			@get('filteringInfo.availableFilters').pushObjects(filters)
+
+
+			#@set('filteringInfo.availableFilters', filters)
 
 			if not replacedExisting
 				@addNewFilter(currentFilter)
 
 	filter: (selectedFilter) -> 
-		#if selectedFilter?
-		@setSelectedFilter(selectedFilter.name)
-		@updateCurrentFilter(selectedFilter)
+		if selectedFilter?
+			@setSelectedFilter(selectedFilter.name)
+			@updateCurrentFilter(selectedFilter)
 		@update(@REQUEST_TYPE.FILTER)
 
 	# Called by UI button to trigger filtering
