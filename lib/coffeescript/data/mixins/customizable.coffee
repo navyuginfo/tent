@@ -6,78 +6,79 @@ the same collection
 The json data we expect is:
 
 paging: {
-	pageSize: 12
+  pageSize: 12
 }
 sorting: {
-	field: 'title'
-	asc: 'desc'
+  field: 'title'
+  asc: 'desc'
 }
 column: {
-	titles: {
-		duration: 'Time Elapsed'
-	}
-	widths: {
-		id: 5
-		title: 35
-		duration: 10
-		percentcomplete: 10
-		effortdriven: 10
-		start: 10
-		finish: 10
-		completed: 10
-	}
-	order: {
-		id: 1
-		title: 3
-		duration: 2
-		percentcomplete: 4
-		effortdriven: 5
-		start: 6
-		finish: 7
-		completed: 8
-	}
-	hidden: {
-		start: true
-		finish: true
-	}
+  titles: {
+    duration: 'Time Elapsed'
+  }
+  widths: {
+    id: 5
+    title: 35
+    duration: 10
+    percentcomplete: 10
+    effortdriven: 10
+    start: 10
+    finish: 10
+    completed: 10
+  }
+  order: {
+    id: 1
+    title: 3
+    duration: 2
+    percentcomplete: 4
+    effortdriven: 5
+    start: 6
+    finish: 7
+    completed: 8
+  }
+  hidden: {
+    start: true
+    finish: true
+  }
 }
 grouping: {
-	columnName: 'duration'
-	type: 'exact'
+  columnName: 'duration'
+  type: 'exact'
 }
 
 ###
 
 Tent.Data.Customizable = Ember.Mixin.create
-	isCustomizable: true  #Allows the user to store and retrieve the current state of the collection (and UI properties such as grouping/column visibility etc)
-	customizationName: null
+  isCustomizable: true  #Allows the user to store and retrieve the current state of the collection (and UI properties such as grouping/column visibility etc)
+  customizationName: null
 
-	init: ->
-		@_super()
-		@set('customizationName', null)
+  init: ->
+    @_super()
+    @set('customizationName', null)
 
-	saveUIState: (name)->
-		if name?
-			@set('customizationName', name)
-		uiState = @gatherGridData(@get('customizationName'))
-		response = @get('store').findQuery(eval(@get('dataType')), uiState)
+  saveUIState: (name) ->
+    @set('customizationName', name) if name?
+    uiState = @gatherGridData(@get('customizationName'))
+    @get('store').savePersonalization(
+      'collection', @get('dataType'), name, uiState)
 
-	gatherGridData: (name)->
-		state = $.extend(
-			{customizationName: name},
-			{paging: @get('pagingInfo')},
-			{sorting: @get('sortingInfo')},
-			{filtering: @getFilteringInfo()}
-			{columns: @get('columnInfo')}
-			{grouping: @get('groupingInfo')}
-		)
+  gatherGridData: (name)->
+    state = $.extend(
+      {customizationName: name},
+      {paging: @get('pagingInfo')},
+      {sorting: @get('sortingInfo')},
+      {filtering: @getFilteringInfo()}
+      {columns: @get('columnInfo')}
+      {grouping: @get('groupingInfo')}
+    )
 
-	restoreUIState: ->
-		uiState = @get('store').findQuery(eval(@get('dataType')), 'collectionUIState')
-		@set('customizationName', uiState.customizationName)
-		@set('pagingInfo', uiState.paging)
-		@set('sortingInfo', uiState.sorting)
-		@set(filteringInfo, uiState.filtering)
-		@set('columnInfo', uiState.columns)
-		@set('groupingInfo', uiState.grouping)
-		
+  fetchPersonalizations: ->
+    @get('store').fetchPersonalizations('collection', @get('dataType'))
+
+  restoreUIState: (uiState) ->
+    @set('customizationName', uiState.customizationName)
+    @set('pagingInfo', uiState.paging)
+    @set('sortingInfo', uiState.sorting)
+    @set(filteringInfo, uiState.filtering)
+    @set('columnInfo', uiState.columns)
+    @set('groupingInfo', uiState.grouping)
