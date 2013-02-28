@@ -2,6 +2,7 @@ Tent.Data.Grouper = Ember.Mixin.create
 	groupingInfo: {}
 	currentGroupPage: 1
 	currentGroupId: null
+	isShowingGroupsList: false
 
 	init: ->
 		@_super()

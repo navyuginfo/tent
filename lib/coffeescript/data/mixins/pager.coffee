@@ -35,6 +35,8 @@ Tent.Data.Pager = Ember.Mixin.create
 
 	goToPage: (page) ->
 		@set('currentPage', page)
+		if @get('isShowingGroupsList')
+			@set('currentGroupPage', page)
 		@update(@REQUEST_TYPE.PAGE)
 
 	nextPage: ->

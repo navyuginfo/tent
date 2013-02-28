@@ -555,7 +555,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		data = 
 			rows: @get('gridData')
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
-			records: @get('pagingInfo.totalRows') if @get('pagingInfo')? 
+			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')? 
 			remoteGrouping: @get('showingGroups')
 		@resetGrouping()
@@ -574,7 +574,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	updatePagingForGroups: (grid,data) ->
 		grid.p.lastpage = data.total
-		grid.p.page = data.page
+		grid.p.page = @get('collection.currentGroupPage')
 		grid.p.reccount = data.rows.length
 		grid.p.records = data.records
 		grid.updatepager(null, false)

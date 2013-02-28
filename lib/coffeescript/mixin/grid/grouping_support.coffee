@@ -50,11 +50,11 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 				columnName: columnName
 				type: groupType
 				columnType: @getColumnType(columnName)
-			@set('showingGroups', true)
+			@setShowingGroupsListState(true)
 			@get('collection').goToGroupPage(1, groupData)
 
 	selectRemoteGroup: (id)->
-		@set('showingGroups', false)
+		@setShowingGroupsListState(false)
 		@showGroupHeader(id)
 		@get('collection').setCurrentGroupId(id)
 		@get('collection').goToPage(1)
@@ -95,15 +95,18 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		@getTableDom()[0].p.colModel.length
 
 	returnToGroupList: ->
-		@set('showingGroups', true)
+		@setShowingGroupsListState(true)
 		@hideGroupHeader()
 		@get('collection').goToGroupPage()
 
 	clearAllGrouping: ->
 		@get('collection').clearGrouping()
 		@hideGroupHeader()
-		@set('showingGroups', false)
+		@setShowingGroupsListState(false)
 
+	setShowingGroupsListState: (isShowing) ->
+		@set('showingGroups', isShowing)
+		@set('collection.isShowingGroupsList', isShowing)
 	
 			
 	
