@@ -564,11 +564,20 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			data.columnType = @get('groupingInfo.columnType')
 			data.groupType = @get('groupingInfo.type')
 			data.columnTitle = @getColumnTitle(data.columnName)
-			@getTableDom()[0]?.addGroupingData(data)
+			grid = @getTableDom()[0]
+			@updatePagingForGroups(grid, data)
+			grid?.addGroupingData(data)
 		else
 			@getTableDom()[0]?.addJSONData(data)
 			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	updatePagingForGroups: (grid,data) ->
+		grid.p.lastpage = data.total
+		grid.p.page = data.page
+		grid.p.reccount = data.rows.length
+		grid.p.records = data.records
+		grid.updatepager(null, false)
 
 	getColumnTitle: (columnName)->
 		for col in @get('columns')
