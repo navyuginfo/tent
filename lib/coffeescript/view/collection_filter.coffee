@@ -70,9 +70,6 @@ Tent.CollectionFilter = Ember.View.extend
 
   clearFilter: ->
     currentFilter = @get('currentFilter')
-    @set('currentFilter.name', "")
-    @set('currentFilter.label', "")
-    @set('currentFilter.description', "")
     for column in @get('collection.columnsDescriptor')
       if column.filterable!=false
         if @get('currentFilter.values.' + column.name + '.field')?
@@ -153,6 +150,19 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
     @_super()
     c = Ember.ContainerView.create()
     @populateContainer(c)
+
+    labelField = Tent.TextField.create
+      label: Tent.I18n.loc 'tent.filter.filterLabel'
+      valueBinding: "parentView.parentView.currentFilter.label"
+      isTextDisplay: true
+
+    descriptionField = Tent.TextField.create
+      label: Tent.I18n.loc 'tent.filter.filterDescription'
+      valueBinding: "parentView.parentView.currentFilter.description"
+      isTextDisplay: true
+    
+    @get('childViews').pushObject(labelField)
+    @get('childViews').pushObject(descriptionField)
     @get('childViews').pushObject(c)
 
   populateContainer: (c)->

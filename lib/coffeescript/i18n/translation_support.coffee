@@ -87,6 +87,8 @@ Tent.I18n.loadTranslations(
 			currentFilter: 'Filter'
 			saveFilter: 'Save Filter'
 			newFilter: 'New Filter'
+			filterLabel: 'Filter Label'
+			filterDescription: 'Filter Description'
 			save: 'Save'
 			saveAs: 'Save As'
 			cancel: 'Cancel'

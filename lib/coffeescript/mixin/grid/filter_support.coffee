@@ -31,7 +31,7 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 				widget.toggleFilterPanel()
 			)
 
-			@$(".jqgrid-title-button.filter .filter-panel .do-filter .btn").click(->
+			@$(".jqgrid-title-button.filter .filter-panel .close-panel .btn").click(->
 				widget.closeFilterPanel()
 			)
 
