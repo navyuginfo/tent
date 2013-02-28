@@ -572,6 +572,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
 
+	showSpinner: (->
+		if @get('content.isLoaded')
+			@getTableDom()[0].endReq()
+		else
+			@getTableDom()[0].beginReq()
+	).observes('content.isLoaded')
+
 	updatePagingForGroups: (grid,data) ->
 		grid.p.lastpage = data.total
 		grid.p.page = @get('collection.currentGroupPage')

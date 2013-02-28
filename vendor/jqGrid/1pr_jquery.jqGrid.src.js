@@ -2679,6 +2679,10 @@ $.fn.jqGrid = function( pin ) {
 		ts.addJSONData = function(d) {addJSONData(d,ts.grid.bDiv);};
 		/* PR: adding remote grouping support */
 		ts.addGroupingData = function(d) {addGroupingData(d,ts.grid.bDiv);};
+		ts.beginReq = function(d) {beginReq();};
+		ts.endReq = function(d) {endReq();};
+		/* end of PR*/
+
 		this.grid.cols = this.rows[0].cells;
 
 		populate();ts.p.hiddengrid=false;
