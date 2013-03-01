@@ -52,6 +52,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   sortingInfoBinding: 'collection.sortingInfo'
   columnInfoBinding: 'collection.columnInfo'
   groupingInfoBinding: 'collection.groupingInfo'
+   
 
   init: ->
     @_super(arguments)
@@ -140,34 +141,43 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setupColumnTitleProperties: ->
     # Copy any column titles provided by the collection
-    for name, title of @get('columnInfo.titles')
-      for column in @get('columns')
-        column.title = title if column.name == name
+    # This is done inside the computed property, so just refresh it.
+    @set('colNames', [])
 
   setupColumnVisibilityProperties: ->
     # Copy any hidden column information provided by the collection
     for name, hidden of @get('columnInfo.hidden')
-      for column in @get('columns')
+      for column in @get('columnModel')
         column.hidden = hidden if column.name == name
 
   setupColumnWidthProperties: ->
     # Copy any column width information provided by the collection
     for name, width of @get('columnInfo.widths')
-      for column in @get('columns')
+      for column in @get('columnModel')
         column.width = width if column.name == name
 
   setupColumnOrderingProperties: ->
-    if @get('columnInfo.order')? 
-      permutation = [0]
-      for column, position in @get('columns')
-        newPosition = @get('columnInfo.order')[column.name]
-        permutation[newPosition] = position+1 if newPosition?
-      if permutation.length > 1
-        @getTableDom().remapColumns(permutation, true, false)
+    if @get('columnInfo')
+      if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
+        permutation = [0]
+        for column, position in @get('columnModel')
+          newPosition = @get('columnInfo.order')[column.name]
+          permutation[newPosition] = position+1 if newPosition?
+        if permutation.length > 1
+          @getTableDom().remapColumns(permutation, true, false)
+      else
+        permutation = []
+        for column, position in @get('columnModel')
+          permutation[position] = column.order or position
+        @set('columnInfo.order', {})
+        @set('columnInfo.order.old', permutation)
+
+
 
   setupColumnGroupingProperties: ->
     if @get('groupingInfo.columnName')? and @get('groupingInfo.type')? 
-      @groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
+      @doRemoteGrouping(@get('groupingInfo.type'), @get('groupingInfo.columnName'))
+      #@groupByColumn(@get('groupingInfo.columnName'), @get('groupingInfo.type'))
 
   storeColumnDataToCollection: ->
     if @getTableDom().length > 0
@@ -191,7 +201,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
             match = field
         if match?
           @set('columnInfo.order.' + match, position)
-
     @set('columnInfo.order.old', Ember.copy(@get('columnInfo.order')))
     console.log("Ordering = " + @get('columnInfo.order'))
 
@@ -221,3 +230,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         sortable = true
 
     sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.fields.firstObject.field') or postdata.sord != @get('sortingInfo.fields.firstObject.sortDir'))
+
+
+  restoreUIState: (->
+    # Retrieve the first personalization for now.
+    uiState = @get('collection.personalizations').objectAt(0).get('settings')
+    @set('collection.customizationName', uiState.customizationName)
+    @set('pagingInfo', uiState.paging) if uiState.paging?
+    @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
+    @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
+    @set('columnInfo', uiState.columns) if uiState.columns?
+    @set('groupingInfo', uiState.grouping) if uiState.grouping?
+    @applyStoredPropertiesToGrid()
+  ).observes('collection.personalizations','collection.personalizations.@each')
+
+

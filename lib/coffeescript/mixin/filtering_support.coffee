@@ -20,8 +20,8 @@ Tent.FilteringSupport = Ember.Mixin.create
 
 	didInsertElement: ->
 		@_super()
-		if @get('filter')
-			@get('filter.values')[@get('id')] = {}
+		#if @get('filter')
+		#	@get('filter.values')[@get('id')] = {}
 
 	filterDidChange: (->
 		console.log 'filter changed'

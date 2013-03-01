@@ -20,6 +20,73 @@ Pad.DataStore = Ember.Object.extend
 		#rowId = id.slice(0, id.indexOf('_'))
 		#$(elem).val($(this).getCell(rowId,3))
 
+	fetchPersonalizations: ->
+		customizationName:'Default'
+		paging: {
+		  pageSize: 12
+		}
+		sorting: {
+		  field: 'effortdriven'
+		  asc: 'desc'
+		}
+		column: {
+		  titles: {
+		    duration: 'Time Elapsed'
+		    title: 'My New Title'
+		  }
+		  widths: {
+		    id: 5
+		    title: 35
+		    duration: 10
+		    percentcomplete: 10
+		    effortdriven: 10
+		    start: 10
+		    finish: 10
+		    completed: 3
+		  }
+		  order: {
+		    id: 1
+		    title: 3
+		    duration: 2
+		    percentcomplete: 5
+		    effortdriven: 4
+		    start: 6
+		    finish: 7
+		    completed: 8
+		  }
+		  hidden: {
+		    start: true
+		    finish: true
+		    duration: true
+		  }
+		}
+		grouping: {
+		  #columnName: 'percentcomplete'
+		  #type: 'exact'
+		} 
+		filtering: {
+			selectedFilter: 'default'
+			availableFilters: [
+				{
+					name: "default"
+					label: "Task 1"
+					description: "Select the first task"
+					values: {
+						id: {field:"id", op: "equal", data: "5"}
+						title: {field:"title",op: "equal", data: "Task 1"}
+						duration: {field:"duration",op: "equal", data: "5"}
+						#percentcomplete: {field:"percentcomplete",op: "equal", data: "41"}
+						effortdriven: {field:"effortdriven",op: "equal", data: "-1"}
+						start: {field:"start",op: "equal", data: ""}
+						finish: {field:"finish",op: "equal", data: ""}
+						completed: {field:"completed",op: "equal", data: true}
+					}
+				}
+			]
+		}
+
+	savePersonalization: ->
+
 	getColumnsForType: ->
 		[
 			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},

@@ -120,12 +120,25 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			widget.resizeToContainer()
 		)
 		@setupDomIDs()
+		@drawGrid()
+
+	drawGrid: ->
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()
 		@setupColumnVisibilityProperties()
 		@buildGrid()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
+
+	applyStoredPropertiesToGrid: ->
+		@setupColumnTitleProperties();
+		@setupColumnWidthProperties();
+		@setupColumnVisibilityProperties();
+		@getTableDom().GridUnload();
+		@buildGrid();
+		@setupColumnGroupingProperties();
+		@setupColumnOrderingProperties();
+		@get('collection').filter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -498,7 +511,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	colNames: (->
 		names = []
 		for column in @get('columns')
-			names.pushObject(Tent.I18n.loc(column.title))
+			t = Tent.I18n.loc(column.title)
+			if @get('columnInfo.titles')?
+				for name, title of @get('columnInfo.titles')
+        			t = title if column.name == name
+			names.pushObject(t)
 		names
 	).property('columns')
 

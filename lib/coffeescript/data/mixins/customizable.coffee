@@ -55,6 +55,7 @@ Tent.Data.Customizable = Ember.Mixin.create
   init: ->
     @_super()
     @set('customizationName', null)
+    @set('personalizations', @fetchPersonalizations())
 
   saveUIState: (name) ->
     @set('customizationName', name) if name?
@@ -67,7 +68,7 @@ Tent.Data.Customizable = Ember.Mixin.create
       {customizationName: name},
       {paging: @get('pagingInfo')},
       {sorting: @get('sortingInfo')},
-      {filtering: @getFilteringInfo()}
+      {filtering: @get('filteringInfo')}
       {columns: @get('columnInfo')}
       {grouping: @get('groupingInfo')}
     )
@@ -75,10 +76,4 @@ Tent.Data.Customizable = Ember.Mixin.create
   fetchPersonalizations: ->
     @get('store').fetchPersonalizations('collection', @get('dataType'))
 
-  restoreUIState: (uiState) ->
-    @set('customizationName', uiState.customizationName)
-    @set('pagingInfo', uiState.paging)
-    @set('sortingInfo', uiState.sorting)
-    @set(filteringInfo, uiState.filtering)
-    @set('columnInfo', uiState.columns)
-    @set('groupingInfo', uiState.grouping)
+

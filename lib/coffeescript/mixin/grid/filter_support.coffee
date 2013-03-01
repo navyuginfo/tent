@@ -21,11 +21,24 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 
 			@$(".ui-jqgrid-titlebar").append(button)
 
-			filterSelection = @getFilterSelection().detach()
+			filterSelection = @getFilterSelection()
+			if filterSelection?
+				filterSelection.detach()
+				@set('filterSelection', filterSelection)
+			else 
+				filterSelection = @get('filterSelection')
+
 			@$(".ui-jqgrid-titlebar").append(filterSelection)
 			
-			filterDetails = @getFilterDetails().detach()
+			
+			filterDetails = @getFilterDetails()
+			if filterDetails?
+				filterDetails.detach()
+				@set('filterDetails', filterDetails)
+			else 
+				filterDetails = @get('filterDetails')
 			@$(".jqgrid-title-button .filter-panel li").append(filterDetails)
+
 
 			@$(".jqgrid-title-button.filter .open-dropdown").click(->
 				widget.toggleFilterPanel()
@@ -47,10 +60,10 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 		@$(".jqgrid-title-button.filter .dropdown-menu").css('display', 'block')
 
 	getFilterSelection: ->
-		@$('.filter-selection')
+		@$('.filter-selection') if @$('.filter-selection').length > 0
 
 	getFilterDetails: ->
-		@$('.filter-details')
+		@$('.filter-details') if @$('.filter-details').length > 0
 
 
  
