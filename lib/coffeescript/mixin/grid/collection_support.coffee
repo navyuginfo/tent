@@ -234,14 +234,15 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   restoreUIState: (->
     # Retrieve the first personalization for now.
-    uiState = @get('collection.personalizations').objectAt(0).get('settings')
-    @set('collection.customizationName', uiState.customizationName)
-    @set('pagingInfo', uiState.paging) if uiState.paging?
-    @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
-    @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
-    @set('columnInfo', uiState.columns) if uiState.columns?
-    @set('groupingInfo', uiState.grouping) if uiState.grouping?
-    @applyStoredPropertiesToGrid()
+    if @get('collection.personalizations').toArray().length > 0
+      uiState = @get('collection.personalizations').objectAt(0).get('settings')
+      @set('collection.customizationName', uiState.customizationName)
+      @set('pagingInfo', uiState.paging) if uiState.paging?
+      @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
+      @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
+      @set('columnInfo', uiState.columns) if uiState.columns?
+      @set('groupingInfo', uiState.grouping) if uiState.grouping?
+      @applyStoredPropertiesToGrid()
   ).observes('collection.personalizations','collection.personalizations.@each')
 
 
