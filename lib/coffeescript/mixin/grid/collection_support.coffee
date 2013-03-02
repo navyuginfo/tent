@@ -78,6 +78,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
                   <div><a class='btn pull-left cancel'>#{Tent.I18n.loc("tent.button.cancel")}</a><a class='btn pull-right saveas'>#{Tent.I18n.loc("tent.button.save")}</a></div>
                  
               </ul>
+            </li> 
+            <li class="dropdown-submenu-left">
+              <a>#{Tent.I18n.loc("tent.button.load")}</a>
+              <ul class="dropdown-menu load-panel">
+              </ul>
             </li>  
           </ul>
         </div>
@@ -112,6 +117,15 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       e.stopPropagation()
     )
 
+  populateCollectionDropdown: ->
+    @$(".load-panel").empty()
+    for personalization, index in @get('collection.personalizations').toArray()
+      @$(".load-panel").append($('<li><a class="load" data-index="'+index+'">' + personalization.get('name') + '</a></li>'))
+
+    @$(".load-panel .load").click((e)=>
+      @initializeWithNewPersonalization($(e.target).attr('data-index'))
+    )    
+      
   saveAs: (el) ->
     @toggleUIStatePanel()
     customizationName = el.parents('.save-ui-state').find('input').val()
@@ -232,17 +246,21 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.fields.firstObject.field') or postdata.sord != @get('sortingInfo.fields.firstObject.sortDir'))
 
 
-  restoreUIState: (->
+  restoreUIState: ((index)->
     # Retrieve the first personalization for now.
+    @initializeWithNewPersonalization(0)
+  ).observes('collection.personalizations','collection.personalizations.@each')
+
+  initializeWithNewPersonalization: (index)->
     if @get('collection.personalizations').toArray().length > 0
-      uiState = @get('collection.personalizations').objectAt(0).get('settings')
+      uiState = @get('collection.personalizations').objectAt(index).get('settings')
       @set('collection.customizationName', uiState.customizationName)
-      @set('pagingInfo', uiState.paging) if uiState.paging?
+      @set('collection.pagingInfo', uiState.paging) if uiState.paging?
       @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
       @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
       @set('columnInfo', uiState.columns) if uiState.columns?
       @set('groupingInfo', uiState.grouping) if uiState.grouping?
       @applyStoredPropertiesToGrid()
-  ).observes('collection.personalizations','collection.personalizations.@each')
+      @populateCollectionDropdown()
 
 
