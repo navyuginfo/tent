@@ -129,7 +129,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   populateCollectionDropdown: (->
     @$(".load-panel").empty()
-    @$(".load-panel").append('<li><a class="load" data-index="-1">#{Tent.I18n.loc("tent.jqGrid.saveUi.default")}</a></li>')
+    @$(".load-panel").append('<li><a class="load" data-index="-1">' + Tent.I18n.loc("tent.jqGrid.saveUi.default") + '</a></li>')
     if @get('collection.personalizations')?
       for personalization, index in @get('collection.personalizations').toArray()
         @$(".load-panel").append($('<li><a class="load" data-index="'+index+'">' + personalization.get('name') + '</a></li>'))

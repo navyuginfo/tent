@@ -46,7 +46,7 @@ Tent.I18n.loadTranslations(
 	tent: {
 		on: 'On'
 		off: 'Off'
-		pleaseSelect: 'Please Select'
+		pleaseSelect: 'Please Select...'
 		button: {
 			ok: 'Ok'
 			yes: 'Yes'
@@ -87,7 +87,7 @@ Tent.I18n.loadTranslations(
 			filter: 'Filter'
 			availableFilters: 'Available Filters'
 			selectedFilter: 'Selected Filter'
-			currentFilter: 'Filter'
+			currentFilter: 'Current Filter'
 			saveFilter: 'Save Filter'
 			newFilter: 'New Filter'
 			filterLabel: 'Filter Label'

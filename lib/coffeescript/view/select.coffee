@@ -58,6 +58,13 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   multiple: false
 
+  ###*
+  * @property {Boolean} [showPrompt=true] A boolean property to indicate whether a prompt should be displayed in
+  * the select dropdown. 
+  * If no 'prompt' property is set, the prompt will default to a message similar to 'Please Select ...' 
+  ###
+  showPrompt: true
+
   init: ->
     @_super()
 
@@ -97,8 +104,8 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     Ember.get(item, @get('optionLabelPath'))
 
   _prompt: (-> 
-    if !@get('multiple')
-      if prompt = Tent.I18n.loc(@get('prompt')) then prompt else "Please Select..." 
+    if !@get('multiple') and @get('showPrompt')
+      if prompt = Tent.I18n.loc(@get('prompt')) then prompt else Tent.I18n.loc 'tent.pleaseSelect'
   ).property('prompt')
   
   change: ->

@@ -9,7 +9,7 @@ Tent.Data.Filter = Ember.Mixin.create
 		availableFilters: [
 			{
 				name: "default"
-				label: ""
+				label: Tent.I18n.loc 'tent.filter.noFilter'
 				description: ""
 				values: {
 					
@@ -125,6 +125,7 @@ Tent.Data.Filter = Ember.Mixin.create
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
 		@updateCurrentFilter(filterDef)
+		@saveUIState()
 		#@get('availableFilters').notifyPropertyChange('content')
 
 	addNewFilter: (filter)->
