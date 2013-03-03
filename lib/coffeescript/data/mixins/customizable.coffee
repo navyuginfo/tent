@@ -50,11 +50,24 @@ grouping: {
 
 Tent.Data.Customizable = Ember.Mixin.create
   isCustomizable: true  #Allows the user to store and retrieve the current state of the collection (and UI properties such as grouping/column visibility etc)
-  customizationName: null
+  defaultName: Tent.I18n.loc 'tent.jqGrid.saveUi.defaultName'
+  defaultPersonalization: 
+    customizationName: Tent.I18n.loc 'tent.jqGrid.saveUi.defaultName'
+    paging: {}
+    sorting: {}
+    columns: 
+      titles: {}
+      widths: {}
+      order: {}
+      hidden: {}
+    grouping: {}
+    filtering: {
+      availableFilters: []
+    }
 
   init: ->
     @_super()
-    @set('customizationName', null)
+    @set('customizationName', @get('defaultName'))
     @set('personalizations', @fetchPersonalizations())
 
   saveUIState: (name) ->
@@ -62,6 +75,7 @@ Tent.Data.Customizable = Ember.Mixin.create
     uiState = @gatherGridData(@get('customizationName'))
     @get('store').savePersonalization(
       'collection', @get('dataType'), name, uiState)
+    
 
   gatherGridData: (name)->
     state = $.extend(
@@ -75,5 +89,9 @@ Tent.Data.Customizable = Ember.Mixin.create
 
   fetchPersonalizations: ->
     @get('store').fetchPersonalizations('collection', @get('dataType'))
+
+  isShowingDefault: (->
+    return @get('customizationName') == @get('defaultName')
+  ).property('customizationName')
 
 

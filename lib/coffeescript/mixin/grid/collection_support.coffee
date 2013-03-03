@@ -61,25 +61,25 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   addNavigationBar: ->
     @renderSaveUIStateButton() if this.get('collection')?
+    @renderCollectionName()
+    @populateCollectionDropdown()
 
   renderSaveUIStateButton: ->
     widget = @
     button = """
-        <div class="btn-group jqgrid-title-button save-ui-state">
-          <a data-toggle="dropdown" >#{Tent.I18n.loc("tent.button.save")}<span class="caret"></span></a>
+        <div class="btn-group save-ui-state">
+          <a data-toggle="dropdown"><i class="icon-camera"></i><span class="custom-name"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a class="save">#{Tent.I18n.loc("tent.button.save")}</a></li>
-            <li class="dropdown-submenu-left">
+            <li class="dropdown-submenu">
               <a>#{Tent.I18n.loc("tent.button.saveAs")}</a>
               <ul class="dropdown-menu save-as-panel">
-                 
                   <p>#{Tent.I18n.loc("tent.jqGrid.saveUi.message")}</p>
                   <p><input type="text" class="input-medium keep-open" value="#{widget.get('collection.customizationName')}"/></p>
                   <div><a class='btn pull-left cancel'>#{Tent.I18n.loc("tent.button.cancel")}</a><a class='btn pull-right saveas'>#{Tent.I18n.loc("tent.button.save")}</a></div>
-                 
               </ul>
             </li> 
-            <li class="dropdown-submenu-left">
+            <li class="dropdown-submenu">
               <a>#{Tent.I18n.loc("tent.button.load")}</a>
               <ul class="dropdown-menu load-panel">
               </ul>
@@ -105,8 +105,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     )
 
     @$('.save-ui-state .save').click(->
-      widget.toggleUIStatePanel()
-      widget.saveUiState(widget.get('collection.customizationName'))
+      if not $(this).hasClass('disabled')
+        widget.toggleUIStatePanel()
+        widget.saveUiState(widget.get('collection.customizationName'))
     )
 
     @$('.save-ui-state .saveas').click(->
@@ -117,14 +118,26 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       e.stopPropagation()
     )
 
-  populateCollectionDropdown: ->
+  renderCollectionName: (->
+    if @get('collection')? and @get('collection.isCustomizable') and @get('collection.customizationName')?
+      @$(".ui-jqgrid-titlebar .custom-name").text(@get('collection.customizationName'))
+    if @get('collection.isShowingDefault')
+      @disableSaveButton()
+    else 
+      @enableSaveButton()
+  ).observes('collection.customizationName')
+
+  populateCollectionDropdown: (->
     @$(".load-panel").empty()
-    for personalization, index in @get('collection.personalizations').toArray()
-      @$(".load-panel").append($('<li><a class="load" data-index="'+index+'">' + personalization.get('name') + '</a></li>'))
+    @$(".load-panel").append('<li><a class="load" data-index="-1">#{Tent.I18n.loc("tent.jqGrid.saveUi.default")}</a></li>')
+    if @get('collection.personalizations')?
+      for personalization, index in @get('collection.personalizations').toArray()
+        @$(".load-panel").append($('<li><a class="load" data-index="'+index+'">' + personalization.get('name') + '</a></li>'))
 
     @$(".load-panel .load").click((e)=>
       @initializeWithNewPersonalization($(e.target).attr('data-index'))
-    )    
+    )
+  ).observes('collection.personalizations', 'collection.personalizations.@each')
       
   saveAs: (el) ->
     @toggleUIStatePanel()
@@ -138,6 +151,12 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   saveUiState: (name) ->
     @get('collection').saveUIState(name) if @get('collection')?
+
+  disableSaveButton: ->
+    @$('.save-ui-state .save').addClass('disabled')
+
+  enableSaveButton: ->
+    @$('.save-ui-state .save').removeClass('disabled')
 
   setupCustomizedProperties: ->
     @setupPagingProperties()
@@ -252,15 +271,21 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ).observes('collection.personalizations','collection.personalizations.@each')
 
   initializeWithNewPersonalization: (index)->
-    if @get('collection.personalizations').toArray().length > 0
+    #if @get('collection.personalizations').toArray().length > 0
+    if parseInt(index) != -1 # -1 signifies the default view
       uiState = @get('collection.personalizations').objectAt(index).get('settings')
-      @set('collection.customizationName', uiState.customizationName)
-      @set('collection.pagingInfo', uiState.paging) if uiState.paging?
-      @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
-      @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
-      @set('columnInfo', uiState.columns) if uiState.columns?
-      @set('groupingInfo', uiState.grouping) if uiState.grouping?
-      @applyStoredPropertiesToGrid()
-      @populateCollectionDropdown()
+    else 
+      uiState = @get('collection.defaultPersonalization')
+    @set('collection.customizationName', uiState.customizationName)
+    @set('collection.pagingInfo', uiState.paging) if uiState.paging?
+    @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
+    @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
+    @set('columnInfo', uiState.columns) if uiState.columns?
+    @set('groupingInfo', uiState.grouping) if uiState.grouping?
+    @applyStoredPropertiesToGrid()
+    @populateCollectionDropdown()
+        
+
+
 
 
