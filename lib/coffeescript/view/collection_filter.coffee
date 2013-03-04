@@ -74,14 +74,13 @@ Tent.CollectionFilter = Ember.View.extend
           @set('currentFilter.values.' + column.name, {field:column.name, op:"", data:""})
 
   clearFilter: ->
-    currentFilter = @get('currentFilter')
-    for column in @get('collection.columnsDescriptor')
-      if column.filterable!=false
-        if @get('currentFilter.values.' + column.name + '.field')?
-          @set('currentFilter.values.' + column.name + '.data', "") #Don't overwrite the operator
-        else
-          @set('currentFilter.values.' + column.name, {field:column.name, op:"", data:""})
+    @clearView(@)
 
+  clearView: (parentView)->
+    for view in parentView.get('childViews')
+      view.clear() if view.clear?
+      @clearView(view) if view.get('childViews')?
+    
   currentFilterDidChange: (->
     console.log('Current filter = ' + @get('currentFilter.name'))
   ).observes('currentFilter')
@@ -201,6 +200,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
                 rangeValueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
+                #valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
                 filterOpBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".op" 
                 filterBinding: "parentView.parentView.parentView.currentFilter"
                 field: column.name
