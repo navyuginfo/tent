@@ -47,7 +47,12 @@ Tent.CollectionFilter = Ember.View.extend
 
     if @get('collection.columnsDescriptor')?
       @clearFilter()
-    
+  
+  filteringInfoDidChange: (->
+    # Update currentFilter when the collection filter is changed
+    @populateFilterFromCollection()
+  ).observes('collection.filteringInfo')
+
   populateFilterFromCollection: ->
     if @get('collection.filteringInfo')? and @get('collection.filteringInfo.selectedFilter')?
       for filter in @get('collection.filteringInfo.availableFilters')
@@ -151,7 +156,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
     c = Ember.ContainerView.create()
     @populateContainer(c)
 
-    labelField = Tent.TextField.create
+    ###labelField = Tent.TextField.create
       label: Tent.I18n.loc 'tent.filter.filterLabel'
       valueBinding: "parentView.parentView.currentFilter.label"
       isTextDisplay: true
@@ -163,6 +168,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
     
     @get('childViews').pushObject(labelField)
     @get('childViews').pushObject(descriptionField)
+    ###
     @get('childViews').pushObject(c)
 
   populateContainer: (c)->

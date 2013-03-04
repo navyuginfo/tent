@@ -1,15 +1,6 @@
 
- 
+
 <div class="filter-details">
-	{{view Tent.Select
-		label="tent.filter.currentFilter" 
-		listBinding="view.collection.filterNames" 
-		selectionBinding="view.dropdownSelection" 
-		optionLabelPath="content.label" 
-		optionValuePath="content.name"
-		class="filter-selection jqgrid-title-button"
-		showPrompt=false
-	}}
 
 	{{view Tent.FilterFieldsView
 		collectionBinding="view.collection"
@@ -17,28 +8,7 @@
 	
 	<div class="form-inline buttons">
 		   	{{view Tent.Button label="tent.filter.clear" type="secondary" action="clearFilter" targetBinding="view" class="clear-filter pull-left"}}
-
-		   	 {{#view Tent.ModalPane 
-		    	label="tent.filter.saveAs"
-		        header="tent.filter.saveAs" 
-		        primaryLabel="tent.filter.save" 
-		        secondaryLabel="tent.filter.cancel"
-		        type="secondary"
-		        primaryAction="saveFilter"
-		        primaryTargetBinding="view"
-		        primaryButtonClass="close-dialog"
-		        closeOnSubmit=true
-		    	}}
-	    	
-	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.label" label="tent.filter.label" required=true span="6"}}
-	      		{{view Tent.TextField valueBinding="view.parentView.currentFilter.description" label="tent.filter.description" span="6"}}
-	      	{{/view}}
 	    	
 	    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="close-panel pull-right"}}
-
-	    	{{view Tent.Button label="tent.filter.save" type="secondary" action="saveFilter" targetBinding="view" class="pull-left"}}
-
-	    
-
 	</div>
 </div>
