@@ -53,7 +53,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   columnInfoBinding: 'collection.columnInfo'
   groupingInfoBinding: 'collection.groupingInfo'
    
-
   init: ->
     @_super(arguments)
     if @get('collection')?
@@ -272,7 +271,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   initializeWithNewPersonalization: (index)->
     #if @get('collection.personalizations').toArray().length > 0
-    if parseInt(index) != -1 # -1 signifies the default view
+    if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
       uiState = @get('collection.personalizations').objectAt(index).get('settings')
     else 
       uiState = @get('collection.defaultPersonalization')

@@ -18,12 +18,21 @@ Tent.FilteringRangeSupport = Ember.Mixin.create
   * @property {Array} rangeValue The value containing the range array if a range operator is selected while filtering
   * If no range operator is selected, this property will just return the normal value.
   *
-  ###
-  rangeValue: (->
-    if @get('isRangeOperator') and @get('value2')?
-      value = @get('value')?.toString().replace(/,/, '')
-      value2 = @get('value2')?.toString().replace(/,/, '')
-      "#{value},#{value2}"
-    else
-      @get('value')
+  ### 
+  rangeValue: ((key, value)->
+    if (arguments.length == 1)
+      if @get('isRangeOperator') and @get('value2')?
+        value = @get('value')?.toString().replace(/,/, '')
+        value2 = @get('value2')?.toString().replace(/,/, '')
+        "#{value},#{value2}"
+      else
+        @get('value')
+    else 
+      if value?
+        strVal = ""+value
+        if strVal.search(/,/) > 0
+          @set('value', parseInt(strVal.split(',')[0]))
+          @set('value2', parseInt(strVal.split(',')[1]))
+        else
+          @set('value', value)
   ).property('value', 'value2', 'isRangeOperator')

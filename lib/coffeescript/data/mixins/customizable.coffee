@@ -68,15 +68,26 @@ Tent.Data.Customizable = Ember.Mixin.create
   init: ->
     @_super()
     @set('customizationName', @get('defaultName'))
-    @set('personalizations', @fetchPersonalizations())
+    @set('personalizationsRecord', @fetchPersonalizations())
+
+  personalizationsRecordDidChange: (->
+    @set('personalizations', @get('personalizationsRecord').toArray())
+  ).observes('personalizationsRecord','personalizationsRecord.@each')
 
   saveUIState: (name) ->
     @set('customizationName', name) if name?
     uiState = @gatherGridData(@get('customizationName'))
-    @get('store').savePersonalization(
-      'collection', @get('dataType'), name, uiState)
-    
+    @set('newRecord', @get('store').savePersonalization('collection', @get('dataType'), name, uiState))
+    newRecord = @createPersonalizationRecordForClientSide(name, uiState)
+    @get('personalizations').pushObject(newRecord) if newRecord?
 
+  createPersonalizationRecordForClientSide: (name, uiState)->
+    # To be implemented by application collection
+
+  storeFinished: (->
+    r = @get('newRecord')
+  ).observes('newRecord', 'newRecord.@each')
+    
   gatherGridData: (name)->
     state = $.extend(
       {customizationName: name},
