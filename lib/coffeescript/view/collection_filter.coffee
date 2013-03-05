@@ -24,6 +24,7 @@ Tent.CollectionFilter = Ember.View.extend
   currentFilter: 
     name: ""
     label: ""
+    description: ""
     values: {}
 
   init: ->
@@ -86,7 +87,7 @@ Tent.CollectionFilter = Ember.View.extend
     @closeFilterPanel()  
 
   stopGroupingOnGrid: ->
-    grid = @get('parentView').clearAllGrouping()
+    @get('parentView').clearAllGrouping() if @get('parentView')?
 
   selectedFilterDidChange: (->
     if @get('dropdownSelection')?
@@ -106,7 +107,7 @@ Tent.CollectionFilter = Ember.View.extend
     @clearFilter()
 
   closeFilterPanel: ->
-    @$('.filter-details').collapse('hide')
+    @$('.filter-details')?.collapse('hide') #existence check for unit test
 
   #closeSaveFilterDialog: ->
   #  Ember.View.views[@$('.filter-details .tent-modal').attr('id')].hide()

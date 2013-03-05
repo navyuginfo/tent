@@ -27,6 +27,7 @@ test 'test set and get value', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
 			value="11/11/2011 - 12/11/2011"
+			rangeSplitter="-"
 		}}'
 
 	appendView()	
@@ -42,6 +43,7 @@ test 'validate', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
 			value="11/11/2011 - 12/11/2011"
+			rangeSplitter="-"
 		}}'
 
 	appendView()	
@@ -61,6 +63,7 @@ test 'initializeWithStartAndEndDates', ->
 		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
 			startDateBinding="startDate"
 			endDateBinding="endDate"
+			rangeSplitter="-"
 		}}'
 		startDate: Tent.Formatting.date.unformat('11/11/2011')
 		endDate: Tent.Formatting.date.unformat('12/11/2011')

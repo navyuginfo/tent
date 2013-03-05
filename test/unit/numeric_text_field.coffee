@@ -178,8 +178,8 @@ test 'operators', ->
       view.$('input').eq(0).trigger('change')
       view.$('input').eq(1).val('9')
       view.$('input').eq(1).trigger('change')
-  equal numeric.get('rangeValue')[0], 1, 'Range value is an array [0]'
-  equal numeric.get('rangeValue')[1], 9, 'Range value is an array [1]'
+  equal numeric.get('rangeValue').split(',')[0], 1, 'Range value is a comma-separated string'
+  equal numeric.get('rangeValue').split(',')[1], 9, 'Range value is an array [1]'
 
   Ember.run ->
     numeric.set('filterOp', 'lthan')

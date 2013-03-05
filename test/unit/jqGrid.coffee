@@ -25,6 +25,8 @@ setup = ->
 		goToPage: ->
 		sort: ->
 		getURL: ->
+		clearGrouping: ->
+		goToGroupPage: ->
 		pagingInfo: 
 			pageSize: 1
 			page: 1
@@ -402,7 +404,7 @@ test 'Column info bound to collection', ->
 
 	# Title Renaming
 	equal gridView.columnInfo.titles.title, 'New Title', 'Title read from controller'
-	equal gridView.get('columns')[1].title, 'New Title', 'Columns Descriptor has been updated with new title'
+	equal gridView.get('colNames')[1], 'New Title', 'Columns Descriptor has been updated with new title'
 
 	gridView.renameColumnHeader('title', 'jabberwocky', gridView.$())
 	equal collection.get('columnInfo.titles.title'), 'jabberwocky', 'Changed column title propagated to collection'
@@ -410,14 +412,16 @@ test 'Column info bound to collection', ->
 	equal collection.get('columnInfo.titles.id'), '6655', 'Changed column id propagated to collection'
 
 	# Column Visibility
-	equal gridView.get('columns')[1].hidden, true, 'Title should be hidden initially'
-	equal gridView.get('columns')[0].hidden, false, 'ID should be not hidden initially'
+	equal gridView.get('columnModel')[1].hidden, true, 'Title should be hidden initially'
+	equal gridView.get('columnModel')[0].hidden, false, 'ID should be not hidden initially'
 
 	gridView.getColModel()[2].hidden = false
 	gridView.columnsDidChange()
 	equal collection.get('columnInfo.hidden.title'), false, 'Title should no longer be hidden'
 
 
+###
+These are tests for client-side grouping
 test 'Grouping info bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
@@ -441,7 +445,6 @@ test 'Grouping info bound to collection', ->
 
 	equal gridView.groupingInfo.columnName, 'title','Collection column name has been reflected in the grid'
 	equal gridView.groupingInfo.type, 'exact','Collection id has been reflected in the grid'
-
 	equal gridView.getTableDom().get(0).p.groupingView.groupField, 'title','Grid grouping column name has been set on load'
 
 	Ember.run ->
@@ -458,6 +461,7 @@ test 'Grouping info bound to collection', ->
 	equal collection.get('groupingInfo.columnName'), 'id', 'Changing the grouping column name reflects in the collection: no grouping'
 	equal collection.get('groupingInfo.type'), 'exact', 'Changing the grouping type reflects in the collection: no grouping'
 
+###
 
 test 'Column Width info bound to collection', ->
 	view = Ember.View.create
@@ -479,8 +483,8 @@ test 'Column Width info bound to collection', ->
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 
 	#equal gridView.columnInfo.widths.title, '80','Collection width has been bound in the grid'
-	equal gridView.get('columns')[0].width, '20', 'Collection width values have been applied to the columns: id'
-	equal gridView.get('columns')[1].width, '80', 'Collection width values have been applied to the columns: title'
+	equal gridView.get('columnModel')[0].width, '20', 'Collection width values have been applied to the columns: id'
+	equal gridView.get('columnModel')[1].width, '80', 'Collection width values have been applied to the columns: title'
 
 	# Change width and see if it gets copied to the collection
 	gridView.getTableDom().get(0).p.colModel[1].width = 40
