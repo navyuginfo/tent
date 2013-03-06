@@ -105,8 +105,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
     @$('.save-ui-state .save').click(->
       if not $(this).hasClass('disabled')
-        widget.toggleUIStatePanel()
-        widget.saveUiState(widget.get('collection.customizationName'))
+        widget.save()
     )
 
     @$('.save-ui-state .saveas').click(->
@@ -131,17 +130,26 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     @$(".load-panel").append('<li><a class="load" data-index="-1">' + Tent.I18n.loc("tent.jqGrid.saveUi.default") + '</a></li>')
     if @get('collection.personalizations')?
       for personalization, index in @get('collection.personalizations').toArray()
-        @$(".load-panel").append($('<li><a class="load" data-index="'+index+'">' + personalization.get('name') + '</a></li>'))
+        @$(".load-panel").append($('<li><a class="load" data-index="'+index+'" data-name="'+personalization.get('name')+'">' + personalization.get('name') + '</a></li>'))
 
     @$(".load-panel .load").click((e)=>
-      @initializeWithNewPersonalization($(e.target).attr('data-index'))
+      index = $(e.target).attr('data-index')
+      name = $(e.target).attr('data-name')
+      @set('customizationIndex', index)
+      @set('customizationName', name)
+      @initializeWithNewPersonalization(index)
     )
   ).observes('collection.personalizations', 'collection.personalizations.@each')
-      
+  
+  save: ->
+    @toggleUIStatePanel()
+    @set('customizationName', @get('collection.customizationName'))
+    @saveUiState(@get('collection.customizationName'))
+
   saveAs: (el) ->
     @toggleUIStatePanel()
-    customizationName = el.parents('.save-ui-state').find('input').val()
-    @saveUiState(customizationName)
+    @set('customizationName', el.parents('.save-ui-state').find('input').val())
+    @saveUiState(@get('customizationName'))
 
   toggleUIStatePanel: ->
     widget = this
@@ -264,25 +272,26 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.fields.firstObject.field') or postdata.sord != @get('sortingInfo.fields.firstObject.sortDir'))
 
 
-  restoreUIState: ((index)->
+  restoreUIState: (->
     # Retrieve the first personalization for now.
     @initializeWithNewPersonalization(0)
   ).observes('collection.personalizations','collection.personalizations.@each')
 
   initializeWithNewPersonalization: (index)->
-    #if @get('collection.personalizations').toArray().length > 0
-    if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
-      uiState = @get('collection.personalizations').objectAt(index).get('settings')
-    else 
-      uiState = @get('collection.defaultPersonalization')
-    @set('collection.customizationName', uiState.customizationName)
-    @set('collection.pagingInfo', uiState.paging) if uiState.paging?
-    @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
-    @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
-    @set('columnInfo', uiState.columns) if uiState.columns?
-    @set('groupingInfo', uiState.grouping) if uiState.grouping?
-    @applyStoredPropertiesToGrid()
-    @populateCollectionDropdown()
+    if @get('customizationName') != @get('collection.customizationName')
+      #if @get('collection.personalizations').toArray().length > 0
+      if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
+        uiState = @get('collection.personalizations').objectAt(index).get('settings')
+      else 
+        uiState = @get('collection.defaultPersonalization')
+      @set('collection.customizationName', uiState.customizationName)
+      @set('collection.pagingInfo', uiState.paging) if uiState.paging?
+      @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
+      @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
+      @set('columnInfo', uiState.columns) if uiState.columns?
+      @set('groupingInfo', uiState.grouping) if uiState.grouping?
+      @applyStoredPropertiesToGrid()
+      @populateCollectionDropdown()
         
 
 

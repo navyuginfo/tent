@@ -78,8 +78,16 @@ Tent.Data.Customizable = Ember.Mixin.create
     @set('customizationName', name) if name?
     uiState = @gatherGridData(@get('customizationName'))
     @set('newRecord', @get('store').savePersonalization('collection', @get('dataType'), name, uiState))
-    newRecord = @createPersonalizationRecordForClientSide(name, uiState)
-    @get('personalizations').pushObject(newRecord) if newRecord?
+    if not @customizationAlreadyExists(name)
+      newRecord = @createPersonalizationRecordForClientSide(name, uiState)
+      @get('personalizations').pushObject(newRecord) if newRecord?
+
+  customizationAlreadyExists: (name)->
+    exists = false
+    for p in @get('personalizations').toArray()
+      if p.get('name') == name
+        exists = true
+    exists
 
   createPersonalizationRecordForClientSide: (name, uiState)->
     # To be implemented by application collection
