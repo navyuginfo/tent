@@ -167,6 +167,6 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 		if value == ""
 			value = " "
 		@getTableDom().jqGrid('setLabel', colname, value);
-		for column in @get('columns')
+		for column in @get('columnModel')
 			column.title = value if column.name == colname
 		@columnsDidChange()
