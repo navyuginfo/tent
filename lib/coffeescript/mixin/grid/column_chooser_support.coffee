@@ -5,7 +5,7 @@
 
 Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 	addNavigationBar: ->
-		 
+		@_super()
 		tableDom = @getTableDom()
 		if not @get('title')?
 			tableDom.setCaption('&nbsp;')

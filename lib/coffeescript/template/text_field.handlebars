@@ -1,11 +1,13 @@
 <label class="control-label" {{bindAttr for="view.forId"}}>{{loc view.label}}<span class='tent-required'/></label>
 <div class="controls">
   {{#if view.isFilter}}
-    {{view Tent.Select listBinding="view.operators" class="embed no-label" 
-      optionLabelPath="content.label"
-      optionValuePath="content.operator"
-      valueBinding="view.filterOp"
-    }}
+    {{#if view.operators}}
+      {{view Tent.Select listBinding="view.operators" class="embed no-label operators" 
+        optionLabelPath="content.label"
+        optionValuePath="content.operator"
+        valueBinding="view.filterOp"
+      }}
+    {{/if}}
   {{/if}}
   <div class="input-prepend">
     {{#if view.isTextDisplay}}
@@ -20,6 +22,17 @@
         classBinding="view.controlClass"
         typeBinding="view.type"
       }}
+
+      {{#if view.isRangeOperator}}
+        {{view Tent.TextFieldInput 
+          valueBinding="view.value2" 
+          placeholderBinding="view.translatedPlaceholder"
+          classBinding="view.controlClass"
+          classNames="range-end"
+          typeBinding="view.type"
+        }}
+      {{/if}}
+
       {{#if view.hasHelpBlock}}
         <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
       {{/if}}

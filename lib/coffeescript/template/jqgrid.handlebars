@@ -4,8 +4,17 @@
   	{{/unless}}
 {{/if}}
 
+{{#if view.collection}}
+	{{#if view.filtering}}
+		{{view Tent.CollectionFilter 
+			collectionBinding="view.collection"
+		}}
+	{{/if}}
+{{/if}}
+
 <table class="grid-table"></table>
 <div class="gridpager"></div>
 {{#if view.hasErrors}}
 	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
 {{/if}}
+

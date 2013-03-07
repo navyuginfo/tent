@@ -22,6 +22,7 @@
 
 require '../template/text_field'
 require '../mixin/jquery_ui'
+require '../mixin/constants'
 
 Tent.DateRangeField = Tent.TextField.extend
 	classNames: ['tent-date-range-field']
@@ -50,7 +51,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	###*
 	* @property {String} rangeSplitter The character to use between two dates in the range
 	###
-	rangeSplitter: '-'
+	rangeSplitter: ','
 
 	###*
 	* @property {Date} earliestDate The earliest date allowed in the system. e.g. the 'All Dates Before'
@@ -89,6 +90,8 @@ Tent.DateRangeField = Tent.TextField.extend
 	###
 	dateFormat: Tent.Formatting.date.getFormat()
 
+	operators: null # We don't need operators with a date range
+
 	init: ->		 
 		@_super()
 	
@@ -113,6 +116,11 @@ Tent.DateRangeField = Tent.TextField.extend
 		})
 		@handleReadonly()
 		@handleDisabled()
+		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
+
+	filterOpDidChange: (->
+		console.log("Daterange filter op = " + @get('filterOp'))
+	).observes('filterOp')
 
 	###*
 	* @method getValue Return the current value of the input field
@@ -151,7 +159,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('formattedValue')!=""
+		if @get('formattedValue')? and @get('formattedValue')!=""
 			startString = @getValue().split(@get('rangeSplitter'))[0]
 			if startString?
 				try 

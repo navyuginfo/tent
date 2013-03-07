@@ -14,8 +14,10 @@
 ###
 
 require '../template/text_field'
+require '../mixin/filtering_range_support'
 
-Tent.NumericTextField = Tent.TextField.extend
+
+Tent.NumericTextField = Tent.TextField.extend Tent.FilteringRangeSupport,
 	validate: ->
 		didOtherValidationPass = @_super()
 		value = @get('formattedValue')
@@ -36,3 +38,5 @@ Tent.NumericTextField = Tent.TextField.extend
 	# Format for binding
 	unFormat: (value)->
 		Tent.Formatting.number.unformat(value)
+
+

@@ -34,7 +34,7 @@ test 'Boolean Ranges', ->
 
 test 'Number Ranges - 10s', ->
 	group = Tent.JqGrid.Grouping
-	comparator = group.getComparator('number','10s')
+	comparator = group.getComparator('number','10')
 	ok comparator.compare(2, 6), '2/6'
 	ok comparator.compare(0, 6), '0/6'
 	ok not comparator.compare(0, 10), '0/10'
@@ -49,7 +49,7 @@ test 'Number Ranges - 10s', ->
 
 test 'Number Ranges - 100s', ->
 	group = Tent.JqGrid.Grouping
-	comparator = group.getComparator('number','100s')
+	comparator = group.getComparator('number','100')
 	ok comparator.compare(2, 60), '2/6'
 	ok comparator.compare(0, 60), '0/6'
 	ok not comparator.compare(0, 100), '0/100'
@@ -64,7 +64,7 @@ test 'Number Ranges - 100s', ->
 
 test 'Number Ranges - 1000s', ->
 	group = Tent.JqGrid.Grouping
-	comparator = group.getComparator('number','1000s')
+	comparator = group.getComparator('number','1000')
 	ok comparator.compare(200, 600), '200/600'
 	ok comparator.compare(0, 600), '0/600'
 	ok not comparator.compare(0, 1000), '0/1000'

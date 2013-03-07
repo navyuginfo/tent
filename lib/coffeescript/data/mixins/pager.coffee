@@ -1,7 +1,11 @@
+###*
+* @class Tent.Data.Pager
+* Adds paging support
+###
 
 Tent.Data.Pager = Ember.Mixin.create
 	paged: false
-	pageSize: 12
+	pageSize: null
 	_page: 1
 	_totalRows: 27
 
@@ -31,6 +35,8 @@ Tent.Data.Pager = Ember.Mixin.create
 
 	goToPage: (page) ->
 		@set('currentPage', page)
+		if @get('isShowingGroupsList')
+			@set('currentGroupPage', page)
 		@update(@REQUEST_TYPE.PAGE)
 
 	nextPage: ->
@@ -43,15 +49,13 @@ Tent.Data.Pager = Ember.Mixin.create
 		@set('currentPage', newPage) unless !@isValidPage(newPage)
 		@update(@REQUEST_TYPE.PAGE)
 
-
-	getPagingInfo: ->
-		if @get('paged')
-			pageSize: @get('pageSize')
-			pageNum: @get('currentPage')
-			totalPages: @get('totalPages')
-		else
-			{}
+	pagingInfo: (->
+		pageSize: @get('pageSize')
+		page: @get('currentPage')
+		totalRows: @get('totalRows')
+		totalPages: @get('totalPages')
+	).property('pageSize', 'currentPage', 'totalPages', 'totalRows')
 			
 	updatePagingInfo: (info) ->
 		@set('_totalRows', info.totalRows)
-		@set('_page', info.pageNum)
+		@set('_page', info.page)

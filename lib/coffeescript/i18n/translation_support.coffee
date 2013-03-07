@@ -46,11 +46,14 @@ Tent.I18n.loadTranslations(
 	tent: {
 		on: 'On'
 		off: 'Off'
-		pleaseSelect: 'Please Select'
+		pleaseSelect: 'Please Select...'
 		button: {
 			ok: 'Ok'
 			yes: 'Yes'
 			cancel: 'Cancel'
+			save: 'Save'
+			saveAs: 'Save As...'
+			load: 'Load'
 			no: 'No'
 			proceed: 'Ignore warnings and proceed'
 			dontProceed: 'No, return to page'
@@ -74,6 +77,11 @@ Tent.I18n.loadTranslations(
 				inclQuotes: 'Include Quotes'
 				export: 'Export'
 			}
+			saveUi: {
+				defaultName: 'Unsaved View'
+				default: 'Default'
+				message: 'Save current settings as:'
+			}
 		}
 		filter: {
 			filter: 'Filter'
@@ -81,14 +89,32 @@ Tent.I18n.loadTranslations(
 			selectedFilter: 'Selected Filter'
 			currentFilter: 'Current Filter'
 			saveFilter: 'Save Filter'
+			newFilter: 'New Filter'
+			filterLabel: 'Filter Label'
+			filterDescription: 'Filter Description'
 			save: 'Save'
+			saveAs: 'Save As'
 			cancel: 'Cancel'
 			label: 'Label'
+			more: 'more'
 			description: 'Description'
 			beginsWith: 'begins with'
 			contains: 'contains'
 			equal: 'equal'
-			nEqual: 'not equal' 
+			nEqual: 'not equal'
+			before: 'before'
+			after: 'after'
+			beforeInc: 'before incl'
+			afterInc: 'after incl'
+			lThan: 'less than'
+			gThan: 'greater than'
+			lThanEq: 'less than or equal'
+			gThanEq: 'greater than or equal'
+			range: 'range'
+			search: 'Search'
+			clear: 'Clear'
+			noFilter: 'No Filter'
+			like: 'like'
 		}
 		warning: {
 			header: 'Warnings Exist'

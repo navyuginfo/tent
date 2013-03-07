@@ -148,3 +148,46 @@ test 'Ensure aria attributes are applied ', ->
   equal view.$('input').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
   equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
   equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
+
+test 'operators', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.NumericTextField valueBinding="name" isFilter=true labelBinding="label"}}'
+    value: 1
+    label: 'FooBar'
+
+  appendView()
+  numeric = Ember.View.views[view.$('.tent-text-field').attr('id')] 
+
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+  equal numeric.get('rangeValue'), '1', 'Single value'
+
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(1).val('9')
+      view.$('input').eq(1).trigger('change')
+  equal numeric.get('rangeValue'), '1', 'Single value'
+
+  
+  Ember.run ->
+      numeric.set('filterOp', 'range')
+  Ember.run ->
+      view.$('input').eq(0).val('1')
+      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(1).val('9')
+      view.$('input').eq(1).trigger('change')
+  equal numeric.get('rangeValue').split(',')[0], 1, 'Range value is a comma-separated string'
+  equal numeric.get('rangeValue').split(',')[1], 9, 'Range value is an array [1]'
+
+  Ember.run ->
+    numeric.set('filterOp', 'lthan')
+  equal numeric.get('rangeValue'), '1', 'Range value with non-range operator'
+
+
+
+
+
+
+

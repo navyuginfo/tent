@@ -2,6 +2,7 @@ view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
+
 	@TemplateTests = Ember.Namespace.create()
 	Ember.run ->
 		@dispatcher = Ember.EventDispatcher.create()
@@ -18,6 +19,32 @@ setup = ->
 		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true}
 	]
 
+	@collection = Ember.ArrayController.create
+		paged: true
+		content: row_data
+		goToPage: ->
+		sort: ->
+		getURL: ->
+		clearGrouping: ->
+		goToGroupPage: ->
+		pagingInfo: 
+			pageSize: 1
+			page: 1
+			totalPages: 3
+		sortingInfo: 
+			field: 'title'
+			asc: 'desc'
+		columnInfo: 
+			titles: 
+				'title': 'New Title'
+			hidden: {}
+			widths:
+				id: 20
+				title: 80
+			order: {}
+		groupingInfo: {}
+		
+
 teardown = ->
 	
 	if view
@@ -32,6 +59,7 @@ teardown = ->
 	@dispatcher.destroy()
 	@row_data = null
 	@column_data = null
+	@collection = null
 
 module 'Tent.JqGrid', setup, teardown
 
@@ -50,17 +78,15 @@ module 'Tent.JqGrid', setup, teardown
 ###
 
 test 'Collection data set up', ->
-	mockCollection = Ember.Object.create
-		goToPage: ->
 
 	grid = Tent.JqGrid.create
-		collection: mockCollection
+		collection: collection
 
-	equal grid.pagingData.page, 1, 'Paging data'
+	equal grid.pagingInfo.page, 1, 'Paging data'
 
 test 'Collection not provided', ->
 	grid = Tent.JqGrid.create()
-	equal grid.pagingData.page, 1, 'Paging data'
+	equal grid.pagingInfo, undefined, 'No paging info'
 
 
 test 'Initial Selection should be populated', ->
@@ -284,9 +310,229 @@ test 'Error Cell', ->
 	ok not gridView.getCell(52,2).hasClass('error'), 'Error class removed'
 
 
+test 'Paging data collection binding', ->
+	# Hack to get the date formatting working
+	# For some reason the Date prototype is being reset somewhere.
+	Date.CultureInfo={name:"en-US",englishName:"English (United States)",nativeName:"English (United States)",dayNames:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],abbreviatedDayNames:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],shortestDayNames:["Su","Mo","Tu","We","Th","Fr","Sa"],firstLetterDayNames:["S","M","T","W","T","F","S"],monthNames:["January","February","March","April","May","June","July","August","September","October","November","December"],abbreviatedMonthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],amDesignator:"AM",pmDesignator:"PM",firstDayOfWeek:0,twoDigitYearMax:2029,dateElementOrder:"mdy",formatPatterns:{shortDate:"M/d/yyyy",longDate:"dddd, MMMM dd, yyyy",shortTime:"h:mm tt",longTime:"h:mm:ss tt",fullDateTime:"dddd, MMMM dd, yyyy h:mm:ss tt",sortableDateTime:"yyyy-MM-ddTHH:mm:ss",universalSortableDateTime:"yyyy-MM-dd HH:mm:ssZ",rfc1123:"ddd, dd MMM yyyy HH:mm:ss GMT",monthDay:"MMMM dd",yearMonth:"MMMM, yyyy"},regexPatterns:{jan:/^jan(uary)?/i,feb:/^feb(ruary)?/i,mar:/^mar(ch)?/i,apr:/^apr(il)?/i,may:/^may/i,jun:/^jun(e)?/i,jul:/^jul(y)?/i,aug:/^aug(ust)?/i,sep:/^sep(t(ember)?)?/i,oct:/^oct(ober)?/i,nov:/^nov(ember)?/i,dec:/^dec(ember)?/i,sun:/^su(n(day)?)?/i,mon:/^mo(n(day)?)?/i,tue:/^tu(e(s(day)?)?)?/i,wed:/^we(d(nesday)?)?/i,thu:/^th(u(r(s(day)?)?)?)?/i,fri:/^fr(i(day)?)?/i,sat:/^sa(t(urday)?)?/i,future:/^next/i,past:/^last|past|prev(ious)?/i,add:/^(\+|after|from)/i,subtract:/^(\-|before|ago)/i,yesterday:/^yesterday/i,today:/^t(oday)?/i,tomorrow:/^tomorrow/i,now:/^n(ow)?/i,millisecond:/^ms|milli(second)?s?/i,second:/^sec(ond)?s?/i,minute:/^min(ute)?s?/i,hour:/^h(ou)?rs?/i,week:/^w(ee)?k/i,month:/^m(o(nth)?s?)?/i,day:/^d(ays?)?/i,year:/^y((ea)?rs?)?/i,shortMeridian:/^(a|p)/i,longMeridian:/^(a\.?m?\.?|p\.?m?\.?)/i,timezone:/^((e(s|d)t|c(s|d)t|m(s|d)t|p(s|d)t)|((gmt)?\s*(\+|\-)\s*\d\d\d\d?)|gmt)/i,ordinalSuffix:/^\s*(st|nd|rd|th)/i,timeContext:/^\s*(\:|a|p)/i},abbreviatedTimeZoneStandard:{GMT:"-000",EST:"-0400",CST:"-0500",MST:"-0600",PST:"-0700"},abbreviatedTimeZoneDST:{GMT:"-000",EDT:"-0500",CDT:"-0600",MDT:"-0700",PDT:"-0800"}};
+
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+	appendView()
+
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.pagingInfo.pageSize, 1, 'PageSize should be 1 - from the controller'
+	equal gridView.pagingInfo.page, 1, 'Page should be 1 - from the controller'
+	equal gridView.pagingInfo.totalPages, 3, 'Total pages should be 3 - from the controller'
+
+test 'Paging data collection binding: no data on collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('pagingInfo.pageSize', null) 
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	equal gridView.pagingInfo.pageSize, 6, 'PageSize should be 6 - from the view'
+
+
+test 'Sorting data collection binding', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.sortingInfo.field, 'title', 'sorting field is title on the controller'
+	equal gridView.sortingInfo.asc, 'desc', 'sorting dir is desc on the controller'
+
+	 
+test 'Column info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('columnInfo.hidden.title', true)
+	collection.set('columnInfo.hidden.id', false)
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	# Title Renaming
+	equal gridView.columnInfo.titles.title, 'New Title', 'Title read from controller'
+	equal gridView.get('colNames')[1], 'New Title', 'Columns Descriptor has been updated with new title'
+
+	gridView.renameColumnHeader('title', 'jabberwocky', gridView.$())
+	equal collection.get('columnInfo.titles.title'), 'jabberwocky', 'Changed column title propagated to collection'
+	gridView.renameColumnHeader('id', '6655', gridView.$())
+	equal collection.get('columnInfo.titles.id'), '6655', 'Changed column id propagated to collection'
+
+	# Column Visibility
+	equal gridView.get('columnModel')[1].hidden, true, 'Title should be hidden initially'
+	equal gridView.get('columnModel')[0].hidden, false, 'ID should be not hidden initially'
+
+	gridView.getColModel()[2].hidden = false
+	gridView.columnsDidChange()
+	equal collection.get('columnInfo.hidden.title'), false, 'Title should no longer be hidden'
+
+
 ###
-test 'Export', ->
-test 'Collection Support', ->
+These are tests for client-side grouping
+test 'Grouping info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('groupingInfo.columnName', 'title')
+	collection.set('groupingInfo.type', 'exact')
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	equal gridView.groupingInfo.columnName, 'title','Collection column name has been reflected in the grid'
+	equal gridView.groupingInfo.type, 'exact','Collection id has been reflected in the grid'
+	equal gridView.getTableDom().get(0).p.groupingView.groupField, 'title','Grid grouping column name has been set on load'
+
+	Ember.run ->
+		# Click id/none
+		gridView.$('.group.dropdown-submenu').eq(0).find('li:first a').click()
+
+	equal collection.get('groupingInfo.columnName'), null, 'Changing the grouping column name reflects in the collection: no grouping'
+	equal collection.get('groupingInfo.type'), null, 'Changing the grouping type reflects in the collection: no grouping'
+
+	Ember.run ->
+		# Click title/exact
+		gridView.$('.group.dropdown-submenu').eq(0).find('li:eq(1) a').click()
+
+	equal collection.get('groupingInfo.columnName'), 'id', 'Changing the grouping column name reflects in the collection: no grouping'
+	equal collection.get('groupingInfo.type'), 'exact', 'Changing the grouping type reflects in the collection: no grouping'
+
 ###
 
+test 'Column Width info bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+
+	#equal gridView.columnInfo.widths.title, '80','Collection width has been bound in the grid'
+	equal gridView.get('columnModel')[0].width, '20', 'Collection width values have been applied to the columns: id'
+	equal gridView.get('columnModel')[1].width, '80', 'Collection width values have been applied to the columns: title'
+
+	# Change width and see if it gets copied to the collection
+	gridView.getTableDom().get(0).p.colModel[1].width = 40
+	gridView.columnsDidChange()
+
+	equal collection.get('columnInfo.widths.id'), 40, 'Changed width on grid'
+
+test 'Column Ordering bound to collection', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          columnsBinding="columns"
+	          collectionBinding="collection"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          paged=true
+              pageSize=6
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
+
+	collection.set('columnInfo.order.id', 2)
+	collection.set('columnInfo.order.title', 1)
+	appendView()
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	
+	equal gridView.columnInfo.order.id, 2,'Collection order has been reflected in the grid info: id'
+	equal gridView.columnInfo.order.title, 1,'Collection order has been reflected in the grid info: title'	
+
+	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'values made it to the grid colmodel'
+	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'values made it to the grid colmodel'
+	
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,1,2], true, false)
+		# the remap defines the position of the item that was at the current index previously
+	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,2,1], true, false)
+	equal gridView.columnInfo.order.id, 1,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 2,'grid order has been reflected in the collection info: title'
+
+	# Change ordering
+	gridView.getTableDom().remapColumns([0,2,1], true, false)
+	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
+	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+	 
 

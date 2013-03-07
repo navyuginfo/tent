@@ -162,8 +162,13 @@
             {{view Tent.AmountField valueBinding="Pad.amount2" label="_invalidCurrency" currencyBinding="Pad.changingCurrency" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
 
 
-            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"}}
-            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
+            {{view Tent.NumericTextField valueBinding="Pad.numeric" label="_numericInput" currency="EUR" isVisible="true" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere"
+                isFilter=true rangeValueBinding="Pad.numericRange"
+            }}
+
+            {{view Tent.AmountField valueBinding="Pad.amount" label="_amountInput" currency="USD" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
+              isFilter=true rangeValueBinding="Pad.amountRange"
+            }}
 
             {{view Tent.AmountField valueBinding="Pad.amount1" label="_amountInput" currency="JPY" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
@@ -252,10 +257,6 @@
               validationOptions="{datebetween:{startDate:'8/8/2012', endDate:'12/12/2012'}}" 
               warnings="futuredate"
             }}
-
-
-            
-
             
           {{/view}}
 
@@ -265,7 +266,10 @@
           {{#view Tent.Form name="Values"}}
             <p>{{loc _focussedInput}} : {{Pad.appName}}</p>
             <p>{{loc _numericInput}} : {{Pad.numeric}}</p>
+            <p>{{loc _numericInput}} Range : {{Pad.numericRange}}</p>
+
             <p>Amount Input : {{Pad.amount}}</p>
+            <p>Amount Range Input : {{Pad.amountRange}}</p>
             <p>Selected State : {{Pad.stateSelection.stateName}} : {{Pad.stateSelection.stateCode}}</p>
             <p>Selected States :</p>
             <ul>
@@ -290,10 +294,7 @@
               <h4>jqGrid</h4>
                
               <h5>Remote Paging, Sorting, Filtering</h5>
-
-              {{view Tent.CollectionFilter 
-                  filterTemplate="task_collection_filter" 
-                  collectionBinding="Pad.jqRemoteCollection"}}
+ 
 
               {{view Tent.JqGrid
                   label="Tasks"
@@ -314,8 +315,8 @@
                   required=true
                   resizeGridSteps=false
                   remoteGrouping=true
+                  filtering=true
               }}
-
 
               <h5>Collection not provided</h5>
  
@@ -335,8 +336,8 @@
 
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
-
-
+              
+       
               <h5>Client-Side</h5>
 
               {{view Tent.JqGrid
@@ -356,6 +357,8 @@
                   required=true
 
               }}
+
+       
 
               {{view Tent.Button label="Submit" validate="true"}}
 

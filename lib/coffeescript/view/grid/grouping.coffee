@@ -138,6 +138,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 								yesterday.add(-1).day()
 
 						"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{formatter(yesterday.add(1).day())}"
+
 			}
 			{
 				###*
@@ -163,12 +164,13 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					compare: (last, value)->
 						quarter = Math.floor(last.getMonth()/3) + 1
 						(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
-						
+		
 					rowTitle: (value)->
 						if (typeof value == "string")
 							value = Tent.Formatting.date.unformat(value)
 						quarter = Math.floor(value.getMonth()/3) + 1
 						'Quarter ' + quarter + ', ' + value.getFullYear()
+
 			}
 			{
 				###*
@@ -214,7 +216,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 10s group numbers in ranges of ten
 				###
-				name: '10s'
+				name: '10'
 				title: Tent.I18n.loc 'tent.grouping.range.tens'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
@@ -228,7 +230,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 100s group numbers in ranges of hundreds
 				###
-				name: '100s'
+				name: '100'
 				title: Tent.I18n.loc 'tent.grouping.range.hundreds'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
@@ -241,7 +243,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 100s group numbers in ranges of thousands
 				###
-				name: '1000s'
+				name: '1000'
 				title: Tent.I18n.loc 'tent.grouping.range.thousands'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
@@ -269,7 +271,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 10s group amounts in ranges of ten
 				###
-				name: '10s'
+				name: '10'
 				title: Tent.I18n.loc 'tent.grouping.range.tens'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
@@ -283,7 +285,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 100s group amounts in ranges of hundreds
 				###
-				name: '100s'
+				name: '100'
 				title: Tent.I18n.loc 'tent.grouping.range.hundreds'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null
@@ -296,7 +298,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 				###*
 				* @property {Object} 100s group amounts in ranges of thousands
 				###
-				name: '1000s'
+				name: '1000'
 				title: Tent.I18n.loc 'tent.grouping.range.thousands'
 				comparator: Tent.JqGrid.Grouping.comparator.create
 					lower: null

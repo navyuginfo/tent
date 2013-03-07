@@ -155,8 +155,31 @@
 		background-position: -65px -18px;
 	}
 
+	/* Save UI State Button */
+	.ui-widget-header .save-ui-state {
+		float: left;
+		cursor: pointer;
+		margin-left: 30px; 
+		li {
+			.save-as-panel {
+				padding: 4px;
+			}
+			a {
+				clear: none;
+				&:hover {
+					background-image: none;
+					text-shadow: none;
+				}
+				&.disabled {
+					color: #aaa;
+					cursor: default;
+				}
+			}
+		}
+	}
+
 	/* Export */
-	.column-chooser, .export {
+	.column-chooser, .jqgrid-title-button {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -315,8 +338,9 @@
 		}
 	}
 
-	.ui-widget-header {
-		[data-toggle="dropdown"] {
+
+	.ui-widget-header{
+		a {
 			font-size: 11px;
 			outline: 0px;
 			&:hover {
@@ -324,15 +348,16 @@
 			}
 			.caret {
 				vertical-align: middle;
-				border-top-color: white;
-				border-bottom-color: white;
+				//border-top-color: white;
+				//border-bottom-color: white;
 			}
 		}
-
+		
 		.dropdown-menu {
 			//min-width: 70px;
 			color: #333;
 			font-size: 11px;
+			z-index: 1010;
 			li > a {
 				color: #333;
 				font-size: 11px;
@@ -340,6 +365,10 @@
 					color: white;
 				}
 			}
+		} 
+
+		.dropdown-menu a {
+			color: #222;
 		}
 	}
 
@@ -376,6 +405,14 @@
 
 .dropdown-submenu-left > .dropdown-menu.custom-export {
 	left: -305px;
+}
+
+.dropdown-submenu-left  .save-as-panel {
+	left: -14em;
+}
+
+.dropdown-submenu-left  .load-panel {
+	left: -6em;
 }
 
 /* Selected row in a Tent.Table */

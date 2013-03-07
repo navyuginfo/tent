@@ -1314,10 +1314,14 @@ $.fn.jqGrid = function( pin ) {
 
 			while (i<len) {
 				var row = data.rows[i++];
-				// constructTr = function(id, hide, altClass, rd, cur, selected) {
-
-				rowData.push(constructTr(row.id, false, 0, {}, row, false, 'group-row'));
-				var v = "<span>[" + row.id + "] Group Title ...</span><i class='icon-right-open pull-right'></i>";
+				var comparator = Tent.JqGrid.Grouping.getComparator(data.columnType, data.groupType)
+				rowData.push(constructTr(row.get('id'), false, "", {}, row, false, 'group-row'));
+				var v = "<span class='title'>" + data.columnTitle + "</span><span class='range'>";
+				var startValue = row[data.columnName.decamelize()]
+				if (startValue != undefined) { 
+					v = v + comparator.rowTitle(startValue);
+				}
+				v = v + "</span><i class='icon-caret-right pull-right'></i>";
 				rowData.push('<td colspan="'+ts.p.colModel.length+'">'+v+'</td>');
 				rowData.push( "</tr>" );
 			}
@@ -2675,6 +2679,10 @@ $.fn.jqGrid = function( pin ) {
 		ts.addJSONData = function(d) {addJSONData(d,ts.grid.bDiv);};
 		/* PR: adding remote grouping support */
 		ts.addGroupingData = function(d) {addGroupingData(d,ts.grid.bDiv);};
+		ts.beginReq = function(d) {beginReq();};
+		ts.endReq = function(d) {endReq();};
+		/* end of PR*/
+
 		this.grid.cols = this.rows[0].cells;
 
 		populate();ts.p.hiddengrid=false;

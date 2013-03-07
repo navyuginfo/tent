@@ -5,6 +5,7 @@ require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
+require '../mixin/grid/filter_support'
 
 ###*
 * @class Tent.JqGrid
@@ -14,6 +15,7 @@ require '../mixin/grid/column_menu'
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
 * @mixins Tent.Grid.ColumnMenu
+* @mixins Tent.Grid.FilterSupport
 *
 * Create a jqGrid view which displays the data provided by its content property
 *
@@ -31,7 +33,7 @@ require '../mixin/grid/column_menu'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.GroupingSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.FilterSupport, Tent.Grid.GroupingSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -67,7 +69,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	###*
 	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
 	###
-	grouping: false
+	grouping: true
 
 	###*
 	* @property {String} groupField The name of the field by which to group the grid
@@ -103,11 +105,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	init: ->
 		@_super()
-		
-		widget = @
-		$.subscribe("/ui/refresh", ->
-			widget.resizeToContainer()
-		)
 		#@set('selection',[]) if not @get('selection')?
 
 	valueForMandatoryValidation: (->
@@ -119,8 +116,30 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	didInsertElement: ->
 		@_super()
+		widget = @
+		$.subscribe("/ui/refresh", ->
+			widget.resizeToContainer()
+		)
 		@setupDomIDs()
+		@drawGrid()
+
+	drawGrid: ->
+		@setupColumnTitleProperties()
+		@setupColumnWidthProperties()
+		@setupColumnVisibilityProperties()
 		@buildGrid()
+		@setupColumnGroupingProperties()
+		@setupColumnOrderingProperties()
+
+	applyStoredPropertiesToGrid: ->
+		@setupColumnTitleProperties();
+		@setupColumnWidthProperties();
+		@setupColumnVisibilityProperties();
+		@getTableDom().GridUnload();
+		@buildGrid();
+		@setupColumnGroupingProperties();
+		@setupColumnOrderingProperties();
+		@get('collection').filter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -161,14 +180,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@columnsDidChange()
 			}
 			resizeStop: (width, index)=>
+				# Fires when a column is finished resizing
 				@columnsDidChange(index)
-				
+
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
-			rowNum: if @get('paged') then @get('pageSize') else -1,
+			rowNum: if @get('paged') then @get('pagingInfo.pageSize') else -1,
 			gridview: true,
 			toppager:false,
 			cloneToTop:false,
@@ -177,16 +197,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
+			toolbar: [true,"top"] if @get('filtering'),
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
 
 			grouping: @get('grouping')
-			groupingView: {
-				groupField: [@get('groupField')]
-				groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
-				groupDataSorted: true
-			}
+		#	groupingView: @{
+		#		groupField: [@get('groupField')]
+		#		groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
+		#		groupDataSorted: true
+		#	}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -198,11 +219,16 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		})
 		@addMarkupToHeaders()
 		@addNavigationBar()
+		if @get('filtering')
+			@addFilterPanel()
 		@addColumnDropdowns()
 		@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
 
+		@getTableDom().bind('jqGridRemapColumns', (e, permutation)=>
+			@storeColumnOrderingToCollection(permutation)
+		)
 
 	didSelectRow: (itemId, status, e)->
 		if not @get('multiSelect')
@@ -254,7 +280,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	didSelectGroup: (itemId, status, e)->
 		@selectRemoteGroup(itemId)
 
-
 	markErrorCell: (rowId, iCell) ->
 		@getCell(rowId, iCell).addClass('error')
 
@@ -287,33 +312,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	addNavigationBar: ->
 		tableDom = @getTableDom()
 		#@renderColumnChooser(tableDom)
-		@_super()
 		@renderMaximizeButton()
-
-
-	renderColumnChooserxxx: (tableDom)->
-		widget =  @
-		if @get('showColumnChooser')
-			# Ensure that the caption header is displayed
-			if not @get('title')?
-				tableDom.setCaption('&nbsp;')
-
-			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("tent.jqGrid.hideShowCaption") + '</a>')
-			@$('a.column-chooser').click(() ->
-				tableDom.jqGrid('setColumns',{
-					caption: Tent.I18n.loc("tent.jqGrid.hideShowTitle"),
-					showCancel: false,
-					ShrinkToFit: true,
-					recreateForm: true,
-					updateAfterCheck: true,
-					colnameview: false,
-					top: 60,
-					width: 300,
-					afterSubmitForm: (itemId, status, e) ->
-						widget.columnsDidChange()
-					,
-				})
-			)
+		@_super()
 
 	getLastColumn: ->
 		@$('.ui-th-column').filter(->
@@ -325,6 +325,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('fixedHeader')
 			@adjustHeightForFixedHeader()
 		@removeLastDragBar()
+		@storeColumnDataToCollection()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -334,6 +335,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
 
+
 	renderMaximizeButton: ->
 		widget = @
 		if @get('showMaximizeButton')
@@ -342,6 +344,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
 			)
+
 
 	toggleFullScreen: (a)->
 		widget = @
@@ -477,8 +480,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
 		names = []
-		for column in @get('columns')
-			names.pushObject(Tent.I18n.loc(column.title))
+		for column in @get('columnModel')
+			t = Tent.I18n.loc(column.title)
+			if @get('columnInfo.titles')?
+				for name, title of @get('columnInfo.titles')
+        			t = title if column.name == name
+			names.pushObject(t)
 		names
 	).property('columns')
 
@@ -503,6 +510,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				sortable: column.sortable
 				groupable: column.groupable
 				resizable: true
+				title: Tent.I18n.loc column.title
 			columns.pushObject(item)
 		columns
 	).property('columns')
@@ -511,16 +519,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	gridData: (->
 		models = @get('content').toArray()
 		grid = []
-		for model in models
-			item = {"id" : model.get('id')}
-			if @get('selectedIds').contains(model.get('id'))
-				item.sel = true
-			cell = []
-			for column in @get('columnModel')
-				#item[column.name] = model.get(column.name)
-				cell.push(model.get(column.name))
-			item.cell = cell
-			grid.push(item)
+
+		if @get('showingGroups')
+			for model in models
+				grid.push(model)
+		else
+			for model in models
+				item = {"id" : model.get('id')}
+				if @get('selectedIds').contains(model.get('id'))
+					item.sel = true
+				cell = []
+				for column in @get('columnModel')
+					#item[column.name] = model.get(column.name)
+					cell.push(model.get(column.name))
+				item.cell = cell
+				grid.push(item)
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
@@ -529,23 +542,50 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().jqGrid('clearGridData')
 		data = 
 			rows: @get('gridData')
-			total: @get('totalPages')
-			records: @get('totalRows')
-			page: @get('pagingData').page
+			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
+			page: @get('pagingInfo').page if @get('pagingInfo')? 
 			remoteGrouping: @get('showingGroups')
 		@resetGrouping()
 		if @get('showingGroups')
-			@getTableDom()[0].addGroupingData(data)
+			data.columnName = @get('groupingInfo.columnName')
+			data.columnType = @get('groupingInfo.columnType')
+			data.groupType = @get('groupingInfo.type')
+			data.columnTitle = @getColumnTitle(data.columnName)
+			grid = @getTableDom()[0]
+			@updatePagingForGroups(grid, data)
+			grid?.addGroupingData(data)
 		else
-			@getTableDom()[0].addJSONData(data)
+			@getTableDom()[0]?.addJSONData(data)
 			@updateGrid()
-	).observes('content', 'content.isLoaded', 'content.@each')
+	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	showSpinner: (->
+		if @get('content.isLoaded')
+			@getTableDom()[0].endReq()
+		else
+			@getTableDom()[0].beginReq()
+	).observes('content.isLoaded')
+
+	updatePagingForGroups: (grid,data) ->
+		grid.p.lastpage = data.total
+		grid.p.page = @get('collection.currentGroupPage')
+		grid.p.reccount = data.rows.length
+		grid.p.records = data.records
+		grid.updatepager(null, false)
+
+	getColumnTitle: (columnName)->
+		for col in @get('columns')
+			if col.name == columnName
+				return Tent.I18n.loc(col.title)
+		return columnName
 
 	# Bug in jqGrid: Calling addJSONData() causes the grouping to be recalculated, preserving previous
 	# grouping so that they accumulate. We need to explicitly clear the grouping here.
 	#
 	resetGrouping: ->
-		this.getTableDom().groupingSetup()
+		if @get('grouping')
+			this.getTableDom().groupingSetup()
 		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->
@@ -610,10 +650,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).observes("clearAction")
 
 	setSelectAllCheckbox: (grid) ->
-		if @allRowsAreSelected(grid)
-			grid.setHeadCheckBox(true)
-		else
-			grid.setHeadCheckBox(false)
+    if grid?
+      if @allRowsAreSelected(grid)
+        grid.setHeadCheckBox(true)
+      else
+        grid.setHeadCheckBox(false)
 
 	allRowsAreSelected: (grid) ->
 		# Check for state of selectAll checkbox

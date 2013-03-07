@@ -28,7 +28,7 @@
 				  	{{view Tent.Button buttonClass="close-dialog pull-left cancel" labelBinding="view.secondaryLabel" actionBinding="view.secondaryAction" targetBinding="view.secondaryTarget" typeBinding="view.secondaryType" iconClassBinding="view.secondaryIcon"}}
 				  {{/if}}
 				  {{#if view.primaryLabel}}
-				  	{{view Tent.Button buttonClass="" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" typeBinding="view.primaryType" iconClassBinding="view.primaryIcon" validate="true" warnBinding="view.warn"}}
+				  	{{view Tent.Button buttonClassBinding="view.primaryButtonClass" labelBinding="view.primaryLabel" actionBinding="view.primaryAction" targetBinding="view.primaryTarget" typeBinding="view.primaryType" iconClassBinding="view.primaryIcon" validate="true" warnBinding="view.warn"}}
 				  {{/if}}
 				</div>
 			</div>
