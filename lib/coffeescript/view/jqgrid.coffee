@@ -130,16 +130,18 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@buildGrid()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
+		#@get('collection').doFilter()
 
 	applyStoredPropertiesToGrid: ->
-		@setupColumnTitleProperties();
-		@setupColumnWidthProperties();
-		@setupColumnVisibilityProperties();
-		@getTableDom().GridUnload();
-		@buildGrid();
-		@setupColumnGroupingProperties();
-		@setupColumnOrderingProperties();
-		@get('collection').doFilter()
+		if @get('collection.personalizable')
+			@setupColumnTitleProperties();
+			@setupColumnWidthProperties();
+			@setupColumnVisibilityProperties();
+			@getTableDom().GridUnload();
+			@buildGrid();
+			@setupColumnGroupingProperties();
+			@setupColumnOrderingProperties();
+			@get('collection').doFilter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -506,6 +508,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				width: column.width or 20
 				position: "right"
 				hidden: column.hidden
+				hideable: column.hideable
 				hidedlg: true if column.hideable == false
 				sortable: column.sortable
 				groupable: column.groupable
