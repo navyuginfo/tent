@@ -139,7 +139,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@buildGrid();
 		@setupColumnGroupingProperties();
 		@setupColumnOrderingProperties();
-		@get('collection').filter()
+		@get('collection').doFilter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')

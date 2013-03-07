@@ -108,7 +108,7 @@ Tent.Data.Filter = Ember.Mixin.create
 			if not replacedExisting
 				@addNewFilter(currentFilter)
 
-	filter: (selectedFilter) -> 
+	doFilter: (selectedFilter) ->  # Careful not to overload Array.filter()
 		if selectedFilter?
 			@setSelectedFilter(selectedFilter.name)
 			@updateCurrentFilter(selectedFilter)
@@ -116,7 +116,7 @@ Tent.Data.Filter = Ember.Mixin.create
 
 	# Called by UI button to trigger filtering
 	filterTrigger: ->
-		@filter()
+		@doFilter()
 
 	getFilteringInfo: ->
 		@getSelectedFilter()

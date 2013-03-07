@@ -78,12 +78,12 @@ Tent.CollectionFilter = Ember.View.extend
 
   filter: ->
     @stopGroupingOnGrid()
-    @get('collection').filter(@get('currentFilter'))
+    @get('collection').doFilter(@get('currentFilter'))
     @closeFilterPanel()
 
   changeFilter: ->
     @stopGroupingOnGrid()
-    @get('collection').filter()
+    @get('collection').doFilter()
     @closeFilterPanel()  
 
   stopGroupingOnGrid: ->
