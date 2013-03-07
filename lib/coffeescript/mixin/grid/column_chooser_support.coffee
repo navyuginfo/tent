@@ -9,9 +9,10 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		tableDom = @getTableDom()
 		if not @get('title')?
 			tableDom.setCaption('&nbsp;')
-		@renderColumnChooser(tableDom)
+		@renderColumnChooser()
 
-	renderColumnChooser: (tableDom)->
+	renderColumnChooser: (->
+		tableDom = @getTableDom()
 		widget = this
 		button = """
 				<div class="btn-group column-chooser">
@@ -30,7 +31,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		"""
 
 		template = Handlebars.compile(button)
-		columns = @get('columns').map((item)->
+		columns = @get('columnModel').map((item)->
 			item.t = Tent.I18n.loc(item.title)
 			return item;
 		)
@@ -41,6 +42,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		context = 
 			columns: columns
 
+		@$(".ui-jqgrid-titlebar .column-chooser").remove()
 		@$(".ui-jqgrid-titlebar").append(template(context))
 
 		@$('.column-chooser input').click (e) -> 
@@ -56,4 +58,5 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 
 		@$('.column-chooser label').click (e) -> 
 			e.stopPropagation()
+	).observes('columnModel','columnModel.@each')
 			 
