@@ -221,6 +221,41 @@
 		}
 	}
 
+	/* Column Chooser */
+	.column-chooser {
+		.dropdown-menu {
+			margin-left: -130%;
+			.window {
+				height: 3.2em;
+			}
+			background-color: rgba(255, 255, 255, 0.8)
+		}
+		label {
+			margin-bottom: 0px;
+			font-size: 1.1em;
+			padding: 3px 20px 0px 10px;
+			&:hover {
+				color: white;
+			}
+		}
+		ul {
+			max-height: 20em;
+			overflow-y: auto;
+			overflow-x: hidden;
+			margin: 0px;
+		}
+		li {
+			background: white;
+			input {
+				vertical-align: top;
+			}
+			.title {
+				padding-left: 10px;
+			}
+		}
+	}
+
+
 	.maximize {
 		float: left;
 		cursor: pointer;
@@ -303,6 +338,7 @@
 		}
 	}
 
+
 	.ui-widget-header{
 		a {
 			font-size: 11px;
@@ -318,7 +354,7 @@
 		}
 		
 		.dropdown-menu {
-			min-width: 70px;
+			//min-width: 70px;
 			color: #333;
 			font-size: 11px;
 			z-index: 1010;

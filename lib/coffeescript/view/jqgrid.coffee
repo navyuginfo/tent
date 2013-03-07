@@ -3,6 +3,7 @@ require '../mixin/grid/collection_support'
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
+require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
 require '../mixin/grid/filter_support'
 
@@ -32,7 +33,7 @@ require '../mixin/grid/filter_support'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.FilterSupport, Tent.Grid.GroupingSupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.FilterSupport, Tent.Grid.GroupingSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -310,33 +311,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	addNavigationBar: ->
 		tableDom = @getTableDom()
-		@renderColumnChooser(tableDom)
+		#@renderColumnChooser(tableDom)
 		@renderMaximizeButton()
 		@_super()
-
-	renderColumnChooser: (tableDom)->
-		widget =  @
-		if @get('showColumnChooser')
-			# Ensure that the caption header is displayed
-			if not @get('title')?
-				tableDom.setCaption('&nbsp;')
-
-			@$(".ui-jqgrid-titlebar").append('<a class="column-chooser"><span class="ui-icon ui-icon-newwin"></span>' + Tent.I18n.loc("tent.jqGrid.hideShowCaption") + '</a>')
-			@$('a.column-chooser').click(() ->
-				tableDom.jqGrid('setColumns',{
-					caption: Tent.I18n.loc("tent.jqGrid.hideShowTitle"),
-					showCancel: false,
-					ShrinkToFit: true,
-					recreateForm: true,
-					updateAfterCheck: true,
-					colnameview: false,
-					top: 60,
-					width: 300,
-					afterSubmitForm: (itemId, status, e) ->
-						widget.columnsDidChange()
-					,
-				})
-			)
 
 	getLastColumn: ->
 		@$('.ui-th-column').filter(->
@@ -503,7 +480,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
 		names = []
-		for column in @get('columns')
+		for column in @get('columnModel')
 			t = Tent.I18n.loc(column.title)
 			if @get('columnInfo.titles')?
 				for name, title of @get('columnInfo.titles')
@@ -533,6 +510,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				sortable: column.sortable
 				groupable: column.groupable
 				resizable: true
+				title: Tent.I18n.loc column.title
 			columns.pushObject(item)
 		columns
 	).property('columns')
