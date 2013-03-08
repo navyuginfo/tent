@@ -7,8 +7,8 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 	addNavigationBar: ->
 		@_super()
 		tableDom = @getTableDom()
-		if not @get('title')?
-			tableDom.setCaption('&nbsp;')
+		#if not @get('title')?
+		#	tableDom.setCaption('&nbsp;')
 		@renderColumnChooser()
 
 	renderColumnChooser: (->
@@ -42,15 +42,15 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		context = 
 			columns: columns
 
-		@$(".ui-jqgrid-titlebar .column-chooser").remove()
-		@$(".ui-jqgrid-titlebar").append(template(context))
+		@$(".grid-header .column-chooser").remove()
+		@$(".grid-header .header-buttons").append(template(context))
 
 		@$('.column-chooser input').click (e) -> 
 			column = $(this).attr('data-column')
 			if $(this).is(':checked')
-				tableDom.jqGrid("showCol",column);
+				widget.showCol(column)
 			else
-				tableDom.jqGrid("hideCol",column);
+				widget.hideCol(column)
 
 			e.stopPropagation()
 			widget.columnsDidChange()
@@ -59,4 +59,10 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		@$('.column-chooser label').click (e) -> 
 			e.stopPropagation()
 	).observes('columnModel','columnModel.@each')
+
+	showCol: (column) ->
+		@getTableDom().jqGrid("showCol",column);
+
+	hideCol: (column) ->
+		@getTableDom().jqGrid("hideCol",column);
 			 

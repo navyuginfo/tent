@@ -1,0 +1,7 @@
+<div class="btn-group header-buttons"></div>
+
+{{#if view.parentView.collection}}
+	{{#if view.parentView.filtering}}
+		{{view Tent.CollectionFilter collectionBinding="view.parentView.collection"}}
+	{{/if}}
+{{/if}}	
