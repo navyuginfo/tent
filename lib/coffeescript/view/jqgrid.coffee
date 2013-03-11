@@ -534,7 +534,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		models = @get('content').toArray()
 		grid = []
 
-		if @get('showingGroups')
+		if @isShowingValidGroups()
 			for model in models
 				grid.push(model)
 		else
@@ -559,9 +559,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')? 
-			remoteGrouping: @get('showingGroups')
+			remoteGrouping: @isShowingValidGroups()
 		@resetGrouping()
-		if @get('showingGroups')
+		if @isShowingValidGroups()
 			data.columnName = @get('groupingInfo.columnName')
 			data.columnType = @get('groupingInfo.columnType')
 			data.groupType = @get('groupingInfo.type')
@@ -573,6 +573,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@getTableDom()[0]?.addJSONData(data)
 			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	isShowingValidGroups: ->
+		@get('showingGroups') and @get('groupingInfo.columnName')?
 
 	showSpinner: (->
 		if @get('content.isLoaded')
