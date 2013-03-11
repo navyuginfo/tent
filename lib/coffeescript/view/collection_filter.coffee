@@ -19,7 +19,7 @@ Tent.CollectionFilter = Ember.View.extend
   ###
   collection: null
   templateName: 'collection_filter'
-  classNames: ['tent-filter', 'clearfix']
+  classNames: ['tent-filter']
   availableFiltersBinding: 'collection.filteringInfo.availableFilters'
   currentFilter: 
     name: ""
@@ -32,10 +32,32 @@ Tent.CollectionFilter = Ember.View.extend
     @populateFilterFromCollection()
 
   didInsertElement: ->
-    @closeFilterPanel()
+    @set('grid', @get('parentView.grid'))
     if @get('collection.columnsDescriptor')?
       @clearFilter()
+    @setupToggling()
   
+  setupToggling: ->
+    widget = @
+    @$(".open-dropdown").click(->
+      widget.toggleFilterPanel()
+    )
+
+    @$(".filter-panel .close-panel .btn").click(->
+      widget.closeFilterPanel()
+    )
+
+  toggleFilterPanel: ->
+    dropDown = @$(".dropdown-menu")
+    dropDown.css('display', if dropDown.css('display')=='none' then 'block' else 'none')
+
+  closeFilterPanel: ->
+    @$(".dropdown-menu").css('display', 'none')
+
+  openFilterPanel: ->
+    @$(".dropdown-menu").css('display', 'block')
+
+
   filteringInfoDidChange: (->
     # Update currentFilter when the collection filter is changed
     @populateFilterFromCollection()
@@ -67,50 +89,35 @@ Tent.CollectionFilter = Ember.View.extend
     for view in parentView.get('childViews')
       view.clear() if view.clear?
       @clearView(view) if view.get('childViews')?
-    
-  currentFilterDidChange: (->
-    console.log('Current filter = ' + @get('currentFilter.name'))
-  ).observes('currentFilter')
-
-  currentLabel: (->
-    @get('currentFilter.label')
-  ).property('currentFilter','currentFilter.label')
 
   filter: ->
     @stopGroupingOnGrid()
-    @get('collection').filter(@get('currentFilter'))
-    @closeFilterPanel()
+    @get('collection').doFilter(@get('currentFilter'))
+    #@closeFilterPanel()
 
-  changeFilter: ->
-    @stopGroupingOnGrid()
-    @get('collection').filter()
-    @closeFilterPanel()  
+  #changeFilter: ->
+  #  @stopGroupingOnGrid()
+  #  @get('collection').doFilter()
+  #  @closeFilterPanel()  
 
   stopGroupingOnGrid: ->
-    @get('parentView').clearAllGrouping() if @get('parentView')?
+    @get('grid').clearAllGrouping() if @get('grid')?
 
-  selectedFilterDidChange: (->
-    if @get('dropdownSelection')?
-      @get('collection').setSelectedFilter(@get('dropdownSelection.name'))
-      @populateFilterFromCollection()
-      @changeFilter()
-  ).observes('dropdownSelection')
+  #selectedFilterDidChange: (->
+  #  if @get('dropdownSelection')?
+  #    @get('collection').setSelectedFilter(@get('dropdownSelection.name'))
+  #    @populateFilterFromCollection()
+  #    @changeFilter()
+  #).observes('dropdownSelection')
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
     @set('dropdownSelection', {name: @get('currentFilter').name, label:@get('currentFilter').label})
-    #@filter()
     @closeFilterPanel()
     return true
 
   newFilter: ->
     @clearFilter()
-
-  closeFilterPanel: ->
-    @$('.filter-details')?.collapse('hide') #existence check for unit test
-
-  #closeSaveFilterDialog: ->
-  #  Ember.View.views[@$('.filter-details .tent-modal').attr('id')].hide()
 
   collapsiblePanel: (->
     "#" + @get('elementId') + ' .filter-details'
@@ -134,6 +141,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
 
   init: ->
     @_super()
+    @set('collectionFilter', @get('parentView'))
     @populateContainer()
 
   populateContainer: ()->
@@ -146,37 +154,37 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
               fieldView = Tent.TextField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                valueBinding: "parentView.parentView.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.parentView.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.parentView.currentFilter"
+                valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+                filterBinding: "parentView.collectionFilter.currentFilter"
                 field: column.name
             when "date", "utcdate"
               fieldView = Tent.DateRangeField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                valueBinding: "parentView.parentView.currentFilter.values." + column.name + ".data" 
+                valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
                 closeOnSelect:true
                 arrows:true
-                filterOpBinding: "parentView.parentView.currentFilter.values." + column.name + ".op" 
+                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
                 dateFormat: "yy-mm-dd"
-                #filterBinding: "parentView.parentView.parentView.currentFilter"
+                #filterBinding: "parentView.grid.currentFilter"
                 #field: column.name
             when "number", "amount"
               fieldView = Tent.NumericTextField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                rangeValueBinding: "parentView.parentView.currentFilter.values." + column.name + ".data" 
-                #valueBinding: "parentView.parentView.parentView.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.parentView.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.parentView.currentFilter"
+                rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+                #valueBinding: "parentView.grid.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+                filterBinding: "parentView.collectionFilter.currentFilter"
                 field: column.name
             when "boolean"
               fieldView = Tent.Checkbox.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
-                checkedBinding: "parentView.parentView.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.parentView.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.parentView.currentFilter"
+                checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+                filterBinding: "parentView.collectionFilter.currentFilter"
                 field: column.name
 
           @get('childViews').pushObject(fieldView) if fieldView?

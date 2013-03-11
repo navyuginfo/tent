@@ -5,7 +5,6 @@ require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
-require '../mixin/grid/filter_support'
 
 ###*
 * @class Tent.JqGrid
@@ -33,7 +32,7 @@ require '../mixin/grid/filter_support'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.FilterSupport, Tent.Grid.GroupingSupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -65,6 +64,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* a dialog to maximize the grid view.
 	###
 	showMaximizeButton: true
+
+	###*
+	* @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
+	###
+	filtering: false
 
 	###*
 	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
@@ -121,25 +125,34 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			widget.resizeToContainer()
 		)
 		@setupDomIDs()
+		@bindHeaderView()
 		@drawGrid()
+
+	bindHeaderView: ->
+		@getHeaderView().set('grid', @)
+
+	getHeaderView: ->
+		Ember.View.views[@$('.grid-header').attr('id')]
 
 	drawGrid: ->
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()
 		@setupColumnVisibilityProperties()
 		@buildGrid()
+		@addNavigationBar()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
 
 	applyStoredPropertiesToGrid: ->
-		@setupColumnTitleProperties();
-		@setupColumnWidthProperties();
-		@setupColumnVisibilityProperties();
-		@getTableDom().GridUnload();
-		@buildGrid();
-		@setupColumnGroupingProperties();
-		@setupColumnOrderingProperties();
-		@get('collection').filter()
+		if @get('collection.personalizable')
+			@setupColumnTitleProperties();
+			@setupColumnWidthProperties();
+			@setupColumnVisibilityProperties();
+			@getTableDom().GridUnload();
+			@buildGrid();
+			@setupColumnGroupingProperties();
+			@setupColumnOrderingProperties();
+			@get('collection').doFilter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -197,7 +210,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			editurl: 'clientArray',
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
-			toolbar: [true,"top"] if @get('filtering'),
+			toolbar: [false,"top"],
 			#pgbuttons:false, 
 			#recordtext:'', 
 			#pgtext:''
@@ -217,10 +230,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
 		})
+
+		#@$('.ui-jqgrid-titlebar').remove()
 		@addMarkupToHeaders()
-		@addNavigationBar()
-		if @get('filtering')
-			@addFilterPanel()
 		@addColumnDropdowns()
 		@gridDataDidChange()
 		@resizeToContainer()
@@ -332,14 +344,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getLastColumn().find('.ui-jqgrid-resize').hide()
 
 	adjustHeightForFixedHeader: ->
-		top = @$('.ui-jqgrid-htable').height() + @$('.ui-jqgrid-titlebar').height() + 6
+		top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
-
+		#@$('.ui-jqgrid-view').css('top', @$('.grid-header').height())
+		#@$('.ui-jqgrid').css('top', @$('.grid-header').height())
 
 	renderMaximizeButton: ->
 		widget = @
 		if @get('showMaximizeButton')
-			@$(".ui-jqgrid-titlebar").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
+			@$(".grid-header").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
 			
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
@@ -506,6 +519,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				width: column.width or 20
 				position: "right"
 				hidden: column.hidden
+				hideable: column.hideable
 				hidedlg: true if column.hideable == false
 				sortable: column.sortable
 				groupable: column.groupable
@@ -520,7 +534,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		models = @get('content').toArray()
 		grid = []
 
-		if @get('showingGroups')
+		if @isShowingValidGroups()
 			for model in models
 				grid.push(model)
 		else
@@ -545,9 +559,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')? 
-			remoteGrouping: @get('showingGroups')
+			remoteGrouping: @isShowingValidGroups()
 		@resetGrouping()
-		if @get('showingGroups')
+		if @isShowingValidGroups()
 			data.columnName = @get('groupingInfo.columnName')
 			data.columnType = @get('groupingInfo.columnType')
 			data.groupType = @get('groupingInfo.type')
@@ -559,6 +573,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@getTableDom()[0]?.addJSONData(data)
 			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	isShowingValidGroups: ->
+		@get('showingGroups') and @get('groupingInfo.columnName')?
 
 	showSpinner: (->
 		if @get('content.isLoaded')

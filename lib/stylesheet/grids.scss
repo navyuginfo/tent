@@ -1,8 +1,10 @@
 /* jqGrid */
 
+$headerHeight: 20px;
+
 .tent-jqgrid {
-	position: relative;
-	
+	height: 100%;
+
 	table {
 		font-size: 12px;
 	}
@@ -314,10 +316,17 @@
 
 	/* Fixed header styles */
 	&.fixed-header {
-		.ui-jqgrid-view {
-			height: 100%;
+		height: 100%;
+		.ui-jqgrid {
+			position: absolute;
+			top: $headerHeight;
+			bottom: 0px;
 		}
 
+		.ui-jqgrid-titlebar {
+			height: $headerHeight;	
+		}
+		
 		.ui-jqgrid-titlebar, .ui-jqgrid-hdiv{
 			top: 0px;
 			position: absolute;
@@ -326,7 +335,7 @@
 		}
 
 		.ui-jqgrid-hdiv {
-			top: 28px;
+			//top: 28px;
 		}
 
 		.ui-jqgrid-bdiv {

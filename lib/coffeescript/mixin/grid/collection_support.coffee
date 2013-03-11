@@ -59,9 +59,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @setupCustomizedProperties()
 
   addNavigationBar: ->
-    @renderSaveUIStateButton() if this.get('collection')?
-    @renderCollectionName()
-    @populateCollectionDropdown()
+    if @get('collection.personalizable')
+      @renderSaveUIStateButton() if this.get('collection')?
+      @renderCollectionName()
+      @populateCollectionDropdown()
 
   renderSaveUIStateButton: ->
     widget = @
@@ -86,7 +87,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
           </ul>
         </div>
     """
-    @$(".ui-jqgrid-titlebar").append(button)
+    @$(".grid-header").append(button)
 
     @$('.save-ui-state').bind('keyup', ((e)->
       if e.keyCode == 27 # escape key
@@ -118,7 +119,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   renderCollectionName: (->
     if @get('collection')? and @get('collection.isCustomizable') and @get('collection.customizationName')?
-      @$(".ui-jqgrid-titlebar .custom-name").text(@get('collection.customizationName'))
+      @$(".grid-header .custom-name").text(@get('collection.customizationName'))
     if @get('collection.isShowingDefault')
       @disableSaveButton()
     else 

@@ -1,14 +1,24 @@
-
-
-<div class="filter-details clearfix">
-
-	{{view Tent.FilterFieldsView
-		collectionBinding="view.collection"
-	}}
-	
-	<div class="form-inline buttons">
-		   	{{view Tent.Button label="tent.filter.clear" type="secondary" action="clearFilter" targetBinding="view" class="clear-filter pull-left"}}
-	    	
-	    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="close-panel pull-right"}}
-	</div>
+<div class="btn-group jqgrid-title-button filter">
+	<a class="open-dropdown">
+		<i class="icon-filter"></i>
+		{{loc tent.filter.filter}}
+		<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu filter-panel">
+		<li>
+			<div class="filter-details clearfix">
+				{{view Tent.FilterFieldsView collectionBinding="view.collection"}}
+				<div class="form-inline buttons">
+				   	{{view Tent.Button label="tent.filter.clear" type="secondary" action="clearFilter" targetBinding="view" class="clear-filter pull-left"}}
+			    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="close-panel pull-right"}}
+				</div>
+			</div>
+			
+		</li>
+	</ul>
 </div>
+
+
+
+
+

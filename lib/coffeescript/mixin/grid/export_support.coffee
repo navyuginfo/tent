@@ -18,8 +18,8 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   renderExportButton: (tableDom)->
     if @get('showExportButton') 
       # Ensure that the caption header is displayed
-      if not @get('title')?
-        tableDom.setCaption('&nbsp;')
+      #if not @get('title')?
+      #  tableDom.setCaption('&nbsp;')
 
       jsonUrl = if @get('collection')? then @get('collection').getURL('json', {headers: true, quoted: true})
       csvUrl = if @get('collection')? then @get('collection').getURL('csv', {headers: true, quoted: true})
@@ -97,7 +97,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
           </ul>
         </div>
       """
-      @$(".ui-jqgrid-titlebar").append(button)
+      @$(".grid-header .header-buttons").append(button)
 
       unless jsonUrl?
         @$('a.export-json').click =>

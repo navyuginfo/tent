@@ -4,13 +4,7 @@
   	{{/unless}}
 {{/if}}
 
-{{#if view.collection}}
-	{{#if view.filtering}}
-		{{view Tent.CollectionFilter 
-			collectionBinding="view.collection"
-		}}
-	{{/if}}
-{{/if}}
+{{view Tent.JqGridHeaderView}}
 
 <table class="grid-table"></table>
 <div class="gridpager"></div>
