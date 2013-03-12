@@ -127,7 +127,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupDomIDs()
 		@bindHeaderView()
 		@drawGrid()
-		@set('initialLoad',true)
 
 	bindHeaderView: ->
 		@getHeaderView().set('grid', @)
