@@ -173,8 +173,8 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
               fieldView = Tent.NumericTextField.create
                 label: Tent.I18n.loc(column.title) 
                 isFilter: true 
+                serializer: Tent.Formatting.number.serializer
                 rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
-                #valueBinding: "parentView.grid.currentFilter.values." + column.name + ".data" 
                 filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
                 filterBinding: "parentView.collectionFilter.currentFilter"
                 field: column.name

@@ -18,6 +18,7 @@ require './visibility_support'
 require './validation_support'
 require './mandatory_support'
 require './span_support'
+require './serializer_support'
 
 Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, 
 
@@ -39,9 +40,15 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   value: null
 
   ###*
-    * @property {String} formattedValue The current value of the field in its formatted form.
-    ###
+  * @property {String} formattedValue The current value of the field in its formatted form.
+  ###
   formattedValue: null
+
+  ###*
+  * @property serializedValue If a {@link serializer} has been defined, this will contain the serialized
+  * value. If this value is set, a deserialized version of it will be set on the 'value' property
+  ###
+  serializedValue: null
 
   ###*
     * @property {String} [readOnly=false] A boolean indicating that the field is read-only.

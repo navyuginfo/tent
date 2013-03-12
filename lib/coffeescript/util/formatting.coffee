@@ -73,6 +73,11 @@ Tent.Formatting.amount = Ember.Object.create
 	cssClass: ->
 		"amount"
 
+	###*
+	* @Object serializer A serialization object which implements serialize() and deserialize() methods.
+	###
+	serializer: null
+
 Tent.Formatting.date = Ember.Object.create
 	options: 
 		dateFormat: "mm/dd/yy"
@@ -124,6 +129,11 @@ Tent.Formatting.number = Ember.Object.create
 
 	cssClass: ->
 		"amount"
+
+	###*
+	* @Object serializer A serialization object which implements serialize() and deserialize() methods.
+	###
+	serializer: null
 
 Tent.Formatting.percent = Ember.Object.create
 	isValidNumber: (value)->
