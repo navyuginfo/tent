@@ -203,15 +203,15 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         permutation = [0]
         for column, position in @get('columnModel')
           newPosition = @get('columnInfo.order')[column.name]
-          permutation[newPosition] = position+1 if newPosition?
+          permutation[position+1] = newPosition + 1 if newPosition?
         if permutation.length > 1
-          @getTableDom().remapColumns(permutation, true, false)
+          @getTableDom().remapColumns(permutation, true, true)
       else
         permutation = []
         for column, position in @get('columnModel')
           permutation[position] = column.order or position
-        @set('columnInfo.order', {})
-        @set('columnInfo.order.old', permutation)
+        #@set('columnInfo.order', permutation)
+        @set('columnInfo.oldOrder', permutation)
 
 
 
@@ -233,7 +233,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
           @set('columnInfo.widths.' + col.name, col.width)
 
   storeColumnOrderingToCollection: (permutation)->
-    oldOrder = @get('columnInfo.order.old')
+    oldOrder = @get('columnInfo.oldOrder')
     if oldOrder?
       for col, position in permutation
         #what was at position 'col' now equals 'position'
@@ -242,7 +242,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
             match = field
         if match?
           @set('columnInfo.order.' + match, position)
-    @set('columnInfo.order.old', Ember.copy(@get('columnInfo.order')))
+    @set('columnInfo.oldOrder', Ember.copy(@get('columnInfo.order')))
     console.log("Ordering = " + @get('columnInfo.order'))
 
   didInsertElement: ->
