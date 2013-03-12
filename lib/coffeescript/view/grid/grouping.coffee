@@ -14,7 +14,7 @@ Tent.JqGrid.Grouping = Ember.Object.extend()
 * @param {String} groupType the type of grouping to perform e.g. 'month'  
 ###
 Tent.JqGrid.Grouping.getComparator = (dataType, groupType)->
-		comparator = @ranges.default.comparator
+		comparator = @ranges.get('default')().comparator
 		if not @ranges.get(dataType)?
 			dataType = "string"
 			#throw new Error('Invalid data type for grid grouping.')
