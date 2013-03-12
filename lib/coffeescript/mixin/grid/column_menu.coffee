@@ -43,7 +43,10 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 						</ul>'
 
 
-				groupType = Tent.JqGrid.Grouping.ranges[column.type] || Tent.JqGrid.Grouping.ranges['string']
+				if column.type?
+					groupType = Tent.JqGrid.Grouping.ranges.get(column.type)()
+				groupType = Tent.JqGrid.Grouping.ranges['string'] if not groupType?
+
 				context = 
 					column: column
 					title: Tent.I18n.loc column.title
