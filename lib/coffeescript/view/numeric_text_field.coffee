@@ -15,9 +15,15 @@
 
 require '../template/text_field'
 require '../mixin/filtering_range_support'
+require '../mixin/serializer_support'
 
-
-Tent.NumericTextField = Tent.TextField.extend Tent.FilteringRangeSupport,
+Tent.NumericTextField = Tent.TextField.extend Tent.FilteringRangeSupport, Tent.SerializerSupport, 
+	###*
+	* @property serializer An object which implements serialize() and deserialize(). It will be applied
+	* to the value and available on the {@link serializedValue} property
+	###
+	serializer: null
+	
 	validate: ->
 		didOtherValidationPass = @_super()
 		value = @get('formattedValue')

@@ -23,13 +23,19 @@
 require '../mixin/currency_support'
 require '../template/text_field'
 require '../mixin/filtering_range_support'
+require '../mixin/serializer_support'
 
-Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRangeSupport,
+Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRangeSupport, Tent.SerializerSupport, 
   hasPrefix: true
   hasHelpBlock: false
   placeholder: accounting.settings.number.pattern
   validAmountExp: /^(\-|\+)?(\d+\,?\d+)*\.?\d+$/
   validations: 'positive'
+  ###*
+  * @property serializer An object which implements serialize() and deserialize(). It will be applied
+  * to the value and available on the {@link serializedValue} property
+  ###
+  serializer: null
 
   prefix: (->
     if @get('currency') then Tent.I18n.loc(this.get('currency')) else '...'

@@ -1,6 +1,6 @@
 require './constants'
 
-Tent.FilteringRangeSupport = Ember.Mixin.create
+Tent.FilteringRangeSupport = Ember.Mixin.create Tent.SerializerSupport,
   # Operators for use within a grid filter
   operators: [
     Ember.Object.create({label: "tent.filter.equal", operator: Tent.Constants.get('OPERATOR_EQUALS')}),
@@ -22,17 +22,17 @@ Tent.FilteringRangeSupport = Ember.Mixin.create
   rangeValue: ((key, value)->
     if (arguments.length == 1)
       if @get('isRangeOperator') and @get('value2')?
-        value = @get('value')?.toString().replace(/,/, '')
-        value2 = @get('value2')?.toString().replace(/,/, '')
+        value = @serialize(@get('value')?.toString().replace(/,/, ''))
+        value2 = @serialize(@get('value2')?.toString().replace(/,/, ''))
         "#{value},#{value2}"
       else
-        @get('value')
+        @serialize(@get('value'))
     else 
       if value?
         strVal = ""+value
         if strVal.search(/,/) > 0
-          @set('value', parseInt(strVal.split(',')[0]))
-          @set('value2', parseInt(strVal.split(',')[1]))
+          @set('value', @deserialize(parseInt(strVal.split(',')[0])))
+          @set('value2', @deserialize(parseInt(strVal.split(',')[1])))
         else
-          @set('value', value)
+          @set('value', @deserialize(value))
   ).property('value', 'value2', 'isRangeOperator')
