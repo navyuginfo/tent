@@ -202,17 +202,15 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
         permutation = [0]
         for column, position in @get('columnModel')
-          newPosition = @get('columnInfo.order')[column.name]
-          permutation[position+1] = newPosition + 1 if newPosition?
+          column = @get('columnInfo.order')[position + 1]
+          permutation[column] = position + 1 if column?
         if permutation.length > 1
-          @getTableDom().remapColumns(permutation, true, true)
+          @getTableDom().remapColumns(permutation, true, false)
       else
-        permutation = []
+        permutation = [0]
         for column, position in @get('columnModel')
-          permutation[position] = column.order or position
-        #@set('columnInfo.order', permutation)
+          permutation[position + 1] = column.order or (position + 1)
         @set('columnInfo.oldOrder', permutation)
-
 
 
   setupColumnGroupingProperties: ->
@@ -237,6 +235,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     if oldOrder?
       for col, position in permutation
         #what was at position 'col' now equals 'position'
+        match = null
         for field of oldOrder
           if oldOrder[field] == col
             match = field
