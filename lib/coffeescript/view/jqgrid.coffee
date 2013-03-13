@@ -504,9 +504,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
-		columns = []
+		columns = Ember.A()
 		for column in @get('columns')
-			item = 
+			item = Ember.Object.create
 				name: column.name
 				index: column.name
 				align: column.align
