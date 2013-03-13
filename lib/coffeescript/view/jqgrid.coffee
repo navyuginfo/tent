@@ -346,7 +346,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
-		#@$('.ui-jqgrid-view').css('top', @$('.grid-header').height())
+		@$('.ui-jqgrid-view').css('height', '100%')
 		#@$('.ui-jqgrid').css('top', @$('.grid-header').height())
 
 	renderMaximizeButton: ->
