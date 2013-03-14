@@ -142,6 +142,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@addNavigationBar()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
+		
 
 	applyStoredPropertiesToGrid: ->
 		if @get('collection.personalizable')
@@ -187,7 +188,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			multiselect: @get('multiSelect'),
 			caption: Tent.I18n.loc(@get('title')) if @get('title')?, 
 			autowidth: true,
-			#sortable: true, #columns can be dragged
+			#sortable: true, #columns can be dragged		    
 			sortable: { 
 				update: (permutation) =>
 					@columnsDidChange()
@@ -195,7 +196,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			resizeStop: (width, index)=>
 				# Fires when a column is finished resizing
 				@columnsDidChange(index)
-
+			loadComplete:widget.get('content.isLoaded')
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -227,30 +228,45 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			onSelectGroup: (itemId, status, e) ->
 				widget.didSelectGroup(itemId, status, e)
 			,
+			###
+			* while paging set the viewrecords to false till the content of asked page is fetched
+			* so that the text "no records to view" does not appear.
+			### 
+			onPaging:(button)->
+				widget.getTableDom()[0].p.viewrecords = false
+			,
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
 		})
 
 		#@$('.ui-jqgrid-titlebar').remove()
+		@setInitialViewRecordsAttribute()
 		@addMarkupToHeaders()
 		@addColumnDropdowns()
 		@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
-
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
 		)
-
+  
 	didSelectRow: (itemId, status, e)->
 		if not @get('multiSelect')
 			@selectItemSingleSelect(itemId)
 		else 
 			@selectItemMultiSelect(itemId, status)
-
+			
+	setInitialViewRecordsAttribute:()->
+    ###
+    * Set initial value of viewrecords to be false so that the text "no records to view" does not
+    * appear when page is refreshed or is first visited, this was not possible in initial definition
+    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
+    ###
+    @getTableDom()[0].p.viewrecords = false
+  
 	selectItemSingleSelect: (itemId) ->
-		@clearSelection()
-		@selectItem(itemId)
+    	@clearSelection()
+    	@selectItem(itemId)
 
 	selectItemMultiSelect: (itemId, status) ->
 		if status!=false #status indicates whether the row is being selected or unselected
@@ -553,8 +569,14 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-		# remove existing grid data
+		#remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
+		###
+		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
+		* calculate whether there are any records or not using the reccount attribute
+		###
+		if @get('content.isLoaded')
+			@getTableDom()[0].p.viewrecords = true
 		data = 
 			rows: @get('gridData')
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
@@ -590,6 +612,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		grid.p.page = @get('collection.currentGroupPage')
 		grid.p.reccount = data.rows.length
 		grid.p.records = data.records
+		grid.p.viewrecords = true
 		grid.updatepager(null, false)
 
 	getColumnTitle: (columnName)->
