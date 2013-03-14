@@ -46,7 +46,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 
 	init: ->
 		@_super()
-		@update(@REQUEST_TYPE.ALL)
+		#@update(@REQUEST_TYPE.ALL)
 
 	update: (requestType)->
 		if @get('dataType')? && @get('store')?

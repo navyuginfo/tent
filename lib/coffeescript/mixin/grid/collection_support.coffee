@@ -248,7 +248,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   didInsertElement: ->
     if @get('collection')?
       @setupCustomizedProperties()
-      @get('collection').goToPage(1)
+      #@get('collection').goToPage(1)
 
   onPageOrSort: (postdata)->
     if @get('collection')?
@@ -276,7 +276,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   restoreUIState: (->
     # Retrieve the first personalization for now.
     @initializeWithNewPersonalization(0)
-  ).observes('collection.personalizations','collection.personalizations.@each')
+  ).observes('collection.personalizations')
 
   initializeWithNewPersonalization: (index)->
     if @get('customizationName') != @get('collection.customizationName')
