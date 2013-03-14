@@ -152,7 +152,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@buildGrid();
 			@setupColumnGroupingProperties();
 			@setupColumnOrderingProperties();
-			@get('collection').doFilter()
+			#@get('collection').doFilter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -531,23 +531,24 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
  
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
-		models = @get('content').toArray()
 		grid = []
 
-		if @isShowingValidGroups()
-			for model in models
-				grid.push(model)
-		else
-			for model in models
-				item = {"id" : model.get('id')}
-				if @get('selectedIds').contains(model.get('id'))
-					item.sel = true
-				cell = []
-				for column in @get('columnModel')
-					#item[column.name] = model.get(column.name)
-					cell.push(model.get(column.name))
-				item.cell = cell
-				grid.push(item)
+		if @get('content')?
+			models = @get('content').toArray()
+			if @isShowingValidGroups()
+				for model in models
+					grid.push(model)
+			else
+				for model in models
+					item = {"id" : model.get('id')}
+					if @get('selectedIds').contains(model.get('id'))
+						item.sel = true
+					cell = []
+					for column in @get('columnModel')
+						#item[column.name] = model.get(column.name)
+						cell.push(model.get(column.name))
+					item.cell = cell
+					grid.push(item)
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
