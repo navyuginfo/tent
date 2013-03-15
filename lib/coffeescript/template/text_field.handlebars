@@ -46,7 +46,9 @@
           }}
         {{/unless}}
       {{/if}}
-
+      {{#if view.hasParsedValue}}
+        <span class="help-inline">{{view.parsedValue}}</span>
+      {{/if}} 
       {{#if view.hasHelpBlock}}
         <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
       {{/if}}

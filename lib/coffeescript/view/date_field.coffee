@@ -14,11 +14,18 @@ require '../template/text_field'
 require '../mixin/jquery_ui'
 
 Tent.DateField = Tent.TextField.extend Tent.JQWidget, 
+	###*
+	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
+	* a valid date
+	###
+	allowFuzzyDates: false
+	hasParsedValue: false
+
 	uiType: 'datepicker'
 	uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 
 		'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths',
 		'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 
-		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'
+		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled', 'constrainInput'
 	]
 	classNames: ['tent-date-field']
 	
@@ -49,20 +56,46 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	init: ->
 		@_super()
 	
+	change: ->
+		@set('hasParsedValue', false)
+		@doValidations()
+
 	didInsertElement: ->
 		@_super(arguments)
+		@set('options.constrainInput', false) if @get('allowFuzzyDates')
 		@.$('input').datepicker(@get('options'))
 
 	validate: ->
 		isValid = @_super()
-		isValidDate = true
-		try
-			isValidDate = (@get("formattedValue")=="") or $.datepicker.parseDate(@get('options').dateFormat, @get("formattedValue"))
-		catch e
-			isValidDate = false
+		isValidDate = @isDateValid(@get("formattedValue")) or @convertFuzzyDate(@get("formattedValue"))
+		#isValidDate = isValidDate or @parseFuzzyDate()
+
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless isValidDate
-		@validateWarnings() if isValid and isValidDate
+		@validateWarnings() if isValid 
 		isValid && isValidDate
+
+	isDateValid: (date)->
+		try
+			valid = (date=="") or $.datepicker.parseDate(@get('options').dateFormat, date)
+		catch e
+			valid = false
+		return valid
+
+	convertFuzzyDate: (date)->
+		if @isFuzzyDate(date)
+			@set('formattedValue', @format(@parseFuzzyDate(date)))
+			@set('hasParsedValue', true)
+			@set('parsedValue', date)
+			return true
+		else
+			@set('hasParsedValue', false)
+			return false
+
+	isFuzzyDate: (date) ->
+		!!@parseFuzzyDate(date)
+
+	parseFuzzyDate: (date) ->
+		Date.parse(date)
 
 	validateWarnings: ->
 		@_super()
@@ -74,7 +107,10 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	# Format for binding
 	unFormat: (value)->
 		try 
-			Tent.Formatting.date.unformat(value, @get('dateFormat'))
+			if @isDateValid(value)
+				Tent.Formatting.date.unformat(value, @get('dateFormat'))
+			else
+				Tent.Formatting.date.unformat(@parseFuzzyDate(value), @get('dateFormat'))
 		catch error
 			return null
 

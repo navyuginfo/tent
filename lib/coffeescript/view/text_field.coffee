@@ -65,10 +65,12 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
  
   # Validate on change
   change: ->
+    @_super(arguments)
     @validateField()
 
   fieldClass: (->
     @get('controlClass') + " primary-class"
   ).property('controlClass')
+
 
 Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport
