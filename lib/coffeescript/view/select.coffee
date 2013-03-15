@@ -65,13 +65,17 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   showPrompt: true
 
+  setShowPromptOnSingleElementList: true
+
   init: ->
     @_super()
-
+    if @get('list.length') is 1 and !@get('setShowPromptOnSingleElementList')
+      @set 'showPrompt', false
+  
   didInsertElement: ->
     @_super(arguments)
     @set('inputIdentifier', @$('select').attr('id'))
-
+    
   valueForMandatoryValidation: (->
     if @get('multiple')
       @get('selection')
