@@ -65,11 +65,17 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   showPrompt: true
 
-  setShowPromptOnSingleElementList: true
+  ###*
+  * @property {Boolean} [preselectSingleElement=false] A boolean property to indicate whether a prompt 
+  * should be displayed in the select dropdown if the list has only one option available. If set to true, the only option 
+  * in the list will be preselected. If false, the prompt will be displayed.
+  * 
+  ###
+  preselectSingleElement: false
 
   init: ->
     @_super()
-    if @get('list.length') is 1 and !@get('setShowPromptOnSingleElementList')
+    if @get('list.length') is 1 and @get('preselectSingleElement')
       @set 'showPrompt', false
   
   didInsertElement: ->
