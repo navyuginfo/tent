@@ -93,13 +93,9 @@ Tent.Formatting.date = Ember.Object.create
 			minutes = "0" + minutes if minutes < 10
 			dateString = value.toLongDateString()
 			tz = dateString.substring(35,dateString.length-1)
-			abbreviatedTZ = ""
-			if tz.length != 3
-				tz.split(" ").forEach (str) ->
-					abbreviatedTZ += (str.slice(0, 1))
-			else
-				abbreviatedTZ = tz
-			Tent.Formatting.date.format(value, "dd-M-yy") + ' ' + hours + ':' + minutes + " (" + abbreviatedTZ + ")"
+			if tz.split(" ").length != 1
+				tz = Tent.getAbbreviatedTZFromFullName(tz)
+			Tent.Formatting.date.format(value, "dd-M-yy") + ' ' + hours + ':' + minutes + " (" + tz + ")"
 		else
 			$.datepicker.formatDate(dateFormat or Tent.Formatting.date.getFormat(), value)
 	
