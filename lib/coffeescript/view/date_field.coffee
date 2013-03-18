@@ -19,6 +19,10 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	* a valid date
 	###
 	allowFuzzyDates: false
+	###*
+	* @property {String} fuzzyDate This will store the fuzzy date if one is entered by the user.
+	###
+	fuzzyDate: null
 	hasParsedValue: false
 
 	uiType: 'datepicker'
@@ -63,6 +67,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	
 	change: ->
 		@set('hasParsedValue', false)
+		@set('fuzzyValue', null)
 		@doValidations()
 
 	didInsertElement: ->
