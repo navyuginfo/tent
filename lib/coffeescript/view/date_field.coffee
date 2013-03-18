@@ -43,7 +43,9 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		changeYear: true
 		showOn: "button"
 		buttonImage: "stylesheet/images/calendar.gif"
-		buttonImageOnly: true
+		buttonImageOnly: false
+		useFontIcon: true
+		fontIconClass: 'icon-calendar'
 
 	optionDidChange: (->
 		#@set('options', @_gatherOptions())
@@ -64,6 +66,8 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@_super(arguments)
 		@set('options.constrainInput', false) if @get('allowFuzzyDates')
 		@.$('input').datepicker(@get('options'))
+		if @get('useFontIcon')
+			@.$('.ui-datepicker-trigger').html('<i class="' + @get('defaultOptions.fontIconClass') + '"></i>')
 
 	validate: ->
 		isValid = @_super()

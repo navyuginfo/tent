@@ -88,6 +88,18 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 
 }
 
+/* Date Field */
+
+
+.tent-date-field {
+	.ui-datepicker-trigger {
+		border: 0px;
+		background: none;
+		img {
+			display: none;
+		}
+	}
+}
 
 /* Date Range Picker */
 
