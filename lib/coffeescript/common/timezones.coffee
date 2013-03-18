@@ -980,6 +980,7 @@ Tent.TIMEZONES = [
 #Finds the closest match of the name string supplied from the given list 
 #if more than one timezones exist for the given UTCOffset
 Tent.getAbbreviatedTZ = (UTCOffset, name="")->
+	return null unless UTCOffset?
 	zones = Tent.TIMEZONES.filter (item) ->
 			item["UTCOffset"] is UTCOffset
 	if zones.length
@@ -1006,6 +1007,7 @@ Tent.getAbbreviatedTZ = (UTCOffset, name="")->
 #If there are more than one timezones for the given offset, it matches the
 #available abbreviation if provided, returns null otherwise
 Tent.getFullTZ = (UTCOffset, abbr="")->
+	return null unless UTCOffset?
 	zones = Tent.TIMEZONES.filter (item) ->
 			item["UTCOffset"] is UTCOffset
 	if zones.length is 1
