@@ -20,10 +20,10 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       # Ensure that the caption header is displayed
       #if not @get('title')?
       #  tableDom.setCaption('&nbsp;')
-
-      jsonUrl = if @get('collection')? then @get('collection').getURL('json', {headers: true, quoted: true})
-      csvUrl = if @get('collection')? then @get('collection').getURL('csv', {headers: true, quoted: true})
-      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', {headers: true, quoted: true})
+      params = {del: ",", headers: true, quotes: true, date: @generateExportDate()}
+      jsonUrl = if @get('collection')? then @get('collection').getURL('json',`undefined`, params['headers'],params['quotes'],params['date'])
+      csvUrl = if @get('collection')? then @get('collection').getURL('csv', params['del'], params['headers'],params['quotes'],params['date'])
+      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', `undefined`, params['headers'],params['quotes'],params['date'])
 
       button = """
         <div class="btn-group export jqgrid-title-button">
@@ -31,7 +31,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
             <i class="icon-share"></i>Export
           </a>
           <ul class="dropdown-menu">
-            <li><a href=#{jsonUrl}" class="export-json">#{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
+            <li><a href="#{jsonUrl}" class="export-json">#{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
             <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
             <li><a href="#{xslxUrl}" class="export-xlsx">#{Tent.I18n.loc("tent.jqGrid.export.xlsx")}</a></li>
