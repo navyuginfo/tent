@@ -23,6 +23,8 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	* @property {String} fuzzyDate This will store the fuzzy date if one is entered by the user.
 	###
 	fuzzyDate: null
+	useFontIcon: true
+	fontIconClass: 'icon-calendar'
 	hasParsedValue: false
 
 	uiType: 'datepicker'
@@ -48,8 +50,6 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		showOn: "button"
 		buttonImage: "stylesheet/images/calendar.gif"
 		buttonImageOnly: false
-		useFontIcon: true
-		fontIconClass: 'icon-calendar'
 
 	optionDidChange: (->
 		#@set('options', @_gatherOptions())
@@ -75,7 +75,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@set('options.constrainInput', false) if @get('allowFuzzyDates')
 		@.$('input').datepicker(@get('options'))
 		if @get('useFontIcon')
-			@.$('.ui-datepicker-trigger').html('<i class="' + @get('defaultOptions.fontIconClass') + '"></i>')
+			@.$('.ui-datepicker-trigger').html('<i class="' + @get('fontIconClass') + '"></i>')
 
 	validate: ->
 		isValid = @_super()
