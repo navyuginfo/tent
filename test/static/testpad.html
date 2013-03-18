@@ -211,7 +211,7 @@
             
             {{view Tent.Checkbox label="_agreeToPrivacyPolicy" checkedBinding="Pad.privacyPolicy" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
 
-            {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip" warnings="futuredate" warningseverity="high" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" allowFuzzyDates=true
+            {{view Tent.DateField label="_signatureDate" valueBinding="Pad.date" fuzzyValueBinding="Pad.fuzzyDate" showOtherMonths=true  dateFormatBinding="Pad.dateFormat" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" tooltip="_tooltip" warnings="futuredate" warningseverity="high" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" allowFuzzyDates=true
             }}
 
             {{view Tent.Spinner label="_spinner" valueBinding="Pad.spinner" requiredBinding="Pad.isRequired" min=2 max=100 validations="valueBetween"
@@ -319,6 +319,7 @@
             <p>Radio Value : {{Pad.radioValue}}</p>
             <p>email : {{Pad.email}}</p>
             <p>Signature Date : {{Pad.date}}</p>
+            <p>Fuzzy Date : {{Pad.fuzzyDate}}</p>
             <p>Range = {{Pad.dateRange}}:  {{Pad.startDate}} :: {{Pad.endDate}}</p>
             <p>Text Area : {{Pad.textarea}}</p>
             <p>Filter: {{Pad.filter}}</p>

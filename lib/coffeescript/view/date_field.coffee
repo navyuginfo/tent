@@ -57,6 +57,9 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 
 	init: ->
 		@_super()
+		if @get('allowFuzzyDates') and @isFuzzyDate(@get('fuzzyValue'))
+			@set('formattedValue', @get('fuzzyValue'))
+			@change()
 	
 	change: ->
 		@set('hasParsedValue', false)
@@ -78,16 +81,18 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@validateWarnings() if isValid 
 		isValid && isValidDate
 
-	isDateValid: (date)->
+	isDateValid: (dateString)->
+		valid = true
 		try
-			valid = (date=="") or $.datepicker.parseDate(@get('options').dateFormat, date)
+			$.datepicker.parseDate(@get('dateFormat'), dateString)
 		catch e
 			valid = false
-		return valid
+		return valid or (dateString=="")
 
 	convertFuzzyDate: (date)->
 		if @isFuzzyDate(date)
 			@set('formattedValue', @format(@parseFuzzyDate(date)))
+			@set('fuzzyValue', date)
 			@set('hasParsedValue', true)
 			@set('parsedValue', date)
 			return true

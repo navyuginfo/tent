@@ -183,6 +183,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
           label: Tent.I18n.loc(column.title) 
           isFilter: true 
           valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+          fuzzyValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".fuzzyData"
           closeOnSelect:true
           arrows:true
           filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
@@ -206,4 +207,3 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
           field: column.name
 
     return fieldView
-
