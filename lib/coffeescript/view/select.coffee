@@ -98,6 +98,10 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     @set('content', @get('selection'))
   ).observes('selected')
 
+  listObserver: (->
+    @set('showPrompt', !(@get('list.length') is 1 and @get('preselectSingleElement')))
+  ).observes('list','list@each')
+
   currentSelectedLabel: (->
     content = @get('selection')
     if content? 
@@ -116,7 +120,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   _prompt: (-> 
     if !@get('multiple') and @get('showPrompt')
       if prompt = Tent.I18n.loc(@get('prompt')) then prompt else Tent.I18n.loc 'tent.pleaseSelect'
-  ).property('prompt')
+  ).property('prompt','showPrompt')
   
   change: ->
       @_super(arguments)
