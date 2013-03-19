@@ -5,7 +5,7 @@
 
 Tent.Grid.ExportSupport = Ember.Mixin.create
   ###*
-  * @property {Boolean} showExportButton Display a button in the header which allows the table data to 
+  * @property {Boolean} showExportButton Display a button in the header which allows the table data to
   * be exported a selected format.
   ###
   showExportButton: true
@@ -16,7 +16,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     @renderExportButton(tableDom)
 
   renderExportButton: (tableDom)->
-    if @get('showExportButton') 
+    if @get('showExportButton')
       # Ensure that the caption header is displayed
       #if not @get('title')?
       #  tableDom.setCaption('&nbsp;')
@@ -31,7 +31,8 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
             <i class="icon-share"></i>Export
           </a>
           <ul class="dropdown-menu">
-            <li><a href="#{jsonUrl}" class="export-json">#{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
+            <li><a href="#{jsonUrl}" class="export-json" download="#{jsonUrl.split('/').pop().split('?')[0]}">
+              #{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
             <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
             <li><a href="#{xslxUrl}" class="export-xlsx">#{Tent.I18n.loc("tent.jqGrid.export.xlsx")}</a></li>
@@ -45,17 +46,17 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
                       <label class="control-label">Delimiter</label>
                       <div class="controls">
                           <select name="delimiter" class="input-small" id="delimiter">
-                          <option value="">#{Tent.I18n.loc("tent.pleaseSelect")}</option>  
+                          <option value="">#{Tent.I18n.loc("tent.pleaseSelect")}</option>
                           <option value="," selected>#{Tent.I18n.loc("tent.jqGrid.export.comma")}</option>
                           <option value="|">#{Tent.I18n.loc("tent.jqGrid.export.pipe")}</option>
                           <option value=";">#{Tent.I18n.loc("tent.jqGrid.export.semicolon")}</option>
                           <option value=":">#{Tent.I18n.loc("tent.jqGrid.export.colon")}</option>
                         </select>
                       </div>
-                    </div>            
+                    </div>
                     <div class="control-group">
                       <label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export._or")}</label>
-                    </div>                     
+                    </div>
                     <div class="control-group">
                       <label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export.enterDelimiter")}</label>
                       <div class="controls">
@@ -70,9 +71,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
                         </label>
                         <label class="radio inline">
                           <input type="radio" name="columnHeaders" value="false">#{Tent.I18n.loc("tent.off")}
-                        </label>  
+                        </label>
                       </div>
-                    </div>        
+                    </div>
                     <div class="control-group">
                       <label class="control-label">#{Tent.I18n.loc("tent.jqGrid.export.inclQuotes")}</label>
                       <div class="controls">
@@ -81,9 +82,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
                         </label>
                         <label class="radio inline">
                           <input type="radio" name="includeQuotes" value="false">#{Tent.I18n.loc("tent.off")}
-                        </label>  
+                        </label>
                       </div>
-                    </div>                                  
+                    </div>
                     <div class="control-group">
                       <div class="controls">
                         <button type="button" class="btn">#{Tent.I18n.loc("tent.jqGrid.export.export")}</button>
@@ -93,7 +94,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
                   </form>
                 </li>
               </ul>
-            </li>              
+            </li>
           </ul>
         </div>
       """
@@ -170,8 +171,6 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     str = ""
     str += obj.name + ',' for obj in keys
     str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
-  
+
   generateExportDate: ->
     Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
-
-
