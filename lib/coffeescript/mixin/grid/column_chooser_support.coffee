@@ -16,7 +16,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		widget = this
 		button = """
 				<div class="btn-group column-chooser">
-					<a class="" data-toggle="dropdown" href="#">
+					<a class="open-dropdown" href="#">
 						<i class="icon-columns"></i>#{Tent.I18n.loc("tent.jqGrid.hideShowCaption")}
 					</a>
 					<div class="dropdown-menu columns pull-right">
@@ -35,7 +35,6 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 			item.t = Tent.I18n.loc(item.title)
 			return item;
 		)
-
 		columns = columns.filter((item)->
 			item.hideable != false
 		)
@@ -45,19 +44,16 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 		@$(".grid-header .column-chooser").remove()
 		@$(".grid-header .header-buttons").append(template(context))
 
+		@bindToggleVisibility(@$(".column-chooser .open-dropdown"), @.$(".column-chooser .dropdown-menu"))
+
 		@$('.column-chooser input').click (e) -> 
 			column = $(this).attr('data-column')
 			if $(this).is(':checked')
 				widget.showCol(column)
 			else
 				widget.hideCol(column)
-
-			e.stopPropagation()
 			widget.columnsDidChange()
 			widget.resizeToContainer()
-
-		@$('.column-chooser label').click (e) -> 
-			e.stopPropagation()
 	).observes('columnModel','columnModel.@each')
 
 	showCol: (column) ->

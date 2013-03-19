@@ -1,4 +1,5 @@
 require '../template/collection_filter'
+require '../mixin/toggle_visibility'
 
 ###*
 * @class Tent.CollectionFilter
@@ -13,7 +14,7 @@ require '../template/collection_filter'
                  }} 
 ###
 
-Tent.CollectionFilter = Ember.View.extend
+Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   ###*
   * @property {Tent.Collection} collection The collection which is to be filtered
   ###
@@ -39,24 +40,11 @@ Tent.CollectionFilter = Ember.View.extend
   
   setupToggling: ->
     widget = @
-    @$(".open-dropdown").click(->
-      widget.toggleFilterPanel()
-    )
+    @bindToggleVisibility(@$(".open-dropdown"), @.$(".dropdown-menu"))
 
     @$(".filter-panel .close-panel .btn").click(->
-      widget.closeFilterPanel()
+      widget.hideComponent(widget.$(".dropdown-menu"))
     )
-
-  toggleFilterPanel: ->
-    dropDown = @$(".dropdown-menu")
-    dropDown.css('display', if dropDown.css('display')=='none' then 'block' else 'none')
-
-  closeFilterPanel: ->
-    @$(".dropdown-menu").css('display', 'none')
-
-  openFilterPanel: ->
-    @$(".dropdown-menu").css('display', 'block')
-
 
   filteringInfoDidChange: (->
     # Update currentFilter when the collection filter is changed

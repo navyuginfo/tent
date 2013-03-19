@@ -5,6 +5,7 @@ require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
+require '../mixin/toggle_visibility'
 
 ###*
 * @class Tent.JqGrid
@@ -32,7 +33,7 @@ require '../mixin/grid/column_menu'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
