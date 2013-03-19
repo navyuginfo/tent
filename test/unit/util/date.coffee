@@ -3,7 +3,7 @@ setup = ->
 
 teardown = ->
 
-module 'Tent.TIMEZONES', setup, teardown
+module 'Tent.Date', setup, teardown
 
 test 'Get abbreviated timezone from utcoffset and name', ->
 	equal Tent.Date.getAbbreviatedTZFromUTCOffsetAndName('GMT+0530', 'India Standard Time'), 'IST', 'returns the closest match of the timezone name string provided for the given utc offset'
