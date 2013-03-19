@@ -21,9 +21,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       #if not @get('title')?
       #  tableDom.setCaption('&nbsp;')
       params = {del: ",", headers: true, quotes: true, date: @generateExportDate()}
-      jsonUrl = if @get('collection')? then @get('collection').getURL('json',`undefined`, params['headers'],params['quotes'],params['date'])
-      csvUrl = if @get('collection')? then @get('collection').getURL('csv', params['del'], params['headers'],params['quotes'],params['date'])
-      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', `undefined`, params['headers'],params['quotes'],params['date'])
+      jsonUrl = if @get('collection')? then @get('collection').getURL('json', params)
+      csvUrl = if @get('collection')? then @get('collection').getURL('csv', params)
+      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', params)
 
       button = """
         <div class="btn-group export jqgrid-title-button">
