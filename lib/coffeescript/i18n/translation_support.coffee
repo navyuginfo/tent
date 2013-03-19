@@ -78,8 +78,8 @@ Tent.I18n.loadTranslations(
 				export: 'Export'
 			}
 			saveUi: {
-				defaultName: 'Unsaved View'
-				default: 'Default'
+				defaultName: ' '
+				default: 'No Customization'
 				message: 'Save current settings as:'
 			}
 		}

@@ -133,7 +133,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	getHeaderView: ->
 		Ember.View.views[@$('.grid-header').attr('id')]
-
+ 
 	drawGrid: ->
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()
@@ -142,18 +142,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@addNavigationBar()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
-		
 
 	applyStoredPropertiesToGrid: ->
 		if @get('collection.personalizable')
 			@setupColumnTitleProperties();
 			@setupColumnWidthProperties();
 			@setupColumnVisibilityProperties();
+			@clearAllGrouping();
 			@getTableDom().GridUnload();
 			@buildGrid();
 			@setupColumnGroupingProperties();
 			@setupColumnOrderingProperties();
-			#@get('collection').doFilter()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -197,6 +196,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				# Fires when a column is finished resizing
 				@columnsDidChange(index)
 			loadComplete:widget.get('content.isLoaded')
+			loadtext: '<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>',
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: true,
 			viewsortcols: [true,'vertical',false],
@@ -243,7 +243,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setInitialViewRecordsAttribute()
 		@addMarkupToHeaders()
 		@addColumnDropdowns()
-		@gridDataDidChange()
+		#@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
