@@ -20,6 +20,11 @@
 	@include box-sizing(border-box);
 }
 
+ul:empty {
+	// A ul with no li content should not have padding visible
+	border: 0px;
+	padding: 0px;
+}
 
 /* UI Library Overrides */
 .ui-widget {
