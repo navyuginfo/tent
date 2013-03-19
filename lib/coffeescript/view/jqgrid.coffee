@@ -601,7 +601,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@get('showingGroups') and @get('groupingInfo.columnName')?
 
 	showSpinner: (->
-		if @get('content.isLoaded')
+		if @get('content.isLoaded') or not @get('content.isLoaded')?
 			@getTableDom()[0].endReq()
 		else
 			@getTableDom()[0].beginReq()
