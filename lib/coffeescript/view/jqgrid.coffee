@@ -146,6 +146,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	applyStoredPropertiesToGrid: ->
 		if @get('collection.personalizable')
+			@set('columnModel', {}) #reset the columnModel
 			@setupColumnTitleProperties();
 			@setupColumnWidthProperties();
 			@setupColumnVisibilityProperties();
