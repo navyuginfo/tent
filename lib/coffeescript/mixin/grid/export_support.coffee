@@ -21,9 +21,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       #if not @get('title')?
       #  tableDom.setCaption('&nbsp;')
       params = {del: ",", headers: true, quotes: true, date: @generateExportDate()}
-      jsonUrl = if @get('collection')? then @get('collection').getURL('json', params)
-      csvUrl = if @get('collection')? then @get('collection').getURL('csv', params)
-      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', params)
+      jsonUrl = if @get('collection')? then @get('collection').getURL('json', params) else ""
+      csvUrl = if @get('collection')? then @get('collection').getURL('csv', params) else ""
+      xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', params) else ""
 
       button = """
         <div class="btn-group export jqgrid-title-button">
@@ -133,7 +133,8 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
             columnHeaders = fd.value
           if fd.name == 'includeQuotes'
             includeQuotes = fd.value
-        document.location.href =  @get('collection').getURL(extension, delimiter, columnHeaders, includeQuotes,@generateExportDate())
+        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: @generateExportDate()};
+        return document.location.href = @get('collection').getURL(extension, customParams);
 
       @$('#delimiter').change =>
         if $('#delimiter').val().length > 0
