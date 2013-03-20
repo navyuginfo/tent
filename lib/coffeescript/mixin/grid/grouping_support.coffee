@@ -92,7 +92,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		@columnsDidChange()
 
 	getColSpan: ->
-		(@getTableDom()[0].p.colModel.length) - 1 
+		visibleColumns = @getTableDom()[0].p.colModel.filter((col)->
+			!col.hidden
+		)
+		visibleColumns.length
 
 	returnToGroupList: ->
 		@setShowingGroupsListState(true)
