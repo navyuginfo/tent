@@ -198,6 +198,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			resizeStop: (width, index)=>
 				# Fires when a column is finished resizing
 				@columnsDidChange(index)
+				#@replaceOriginalColumnWidthsWithNewOnes(width, index)
 			loadComplete:widget.get('content.isLoaded')
 			loadtext: '<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>',
 			forceFit: true, #column widths adapt when one is resized
@@ -357,7 +358,26 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@adjustHeightForFixedHeader()
 		@removeLastDragBar()
 		@storeColumnDataToCollection()
-		
+
+
+	replaceOriginalColumnWidthsWithNewOnes: (width, index)->
+		totalSpan = 0
+		for col in @getColModel()
+			totalSpan = totalSpan + col.widthOrg if not col.hidden
+		fullWidth = @$().outerWidth()
+		newSpan = (totalSpan*width)/fullWidth
+		widthOrg = @getColModel()[index+1].widthOrg
+		@getColModel()[index+1].widthOrg = newSpan
+
+		prevCol = @findPreviousVisibleColumn(index+1)
+		if prevCol?
+			@getColModel()[prevCol].widthOrg = @getColModel()[prevCol].widthOrg - (newSpan - widthOrg) 
+
+	findPreviousVisibleColumn: (index) ->
+		colModel = @getColModel()
+		for pos in [index-1..1]
+			return pos if not colModel[pos].hidden
+		null
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -525,27 +545,28 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
 		columns = Ember.A()
-		for column in @get('columns')
-			item = Ember.Object.create
-				name: column.name
-				index: column.name
-				align: column.align
-				editable: column.editable
-				formatter: column.formatter
-				formatoptions: column.formatoptions
-				edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
-				editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
-				editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
-				width: column.width or 20
-				position: "right"
-				hidden: column.hidden
-				hideable: column.hideable
-				hidedlg: true if column.hideable == false
-				sortable: column.sortable
-				groupable: column.groupable
-				resizable: true
-				title: Tent.I18n.loc column.title
-			columns.pushObject(item)
+		if @get('columns')?
+			for column in @get('columns')
+				item = Ember.Object.create
+					name: column.name
+					index: column.name
+					align: column.align
+					editable: column.editable
+					formatter: column.formatter
+					formatoptions: column.formatoptions
+					edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
+					editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
+					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
+					width: column.width or 20
+					position: "right"
+					hidden: if column.hidden? then column.hidden else false
+					hideable: column.hideable
+					hidedlg: true if column.hideable == false
+					sortable: column.sortable
+					groupable: column.groupable
+					resizable: true
+					title: Tent.I18n.loc column.title
+				columns.pushObject(item)
 		columns
 	).property('columns')
  
