@@ -140,6 +140,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupColumnWidthProperties()
 		@setupColumnVisibilityProperties()
 		@buildGrid()
+		@gridDataDidChange()
 		@addNavigationBar()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
@@ -356,6 +357,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@adjustHeightForFixedHeader()
 		@removeLastDragBar()
 		@storeColumnDataToCollection()
+		
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
