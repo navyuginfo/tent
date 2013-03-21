@@ -187,7 +187,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setupColumnVisibilityProperties: ->
     # Copy any hidden column information provided by the collection
-    @set('columnModel', {}) #reset the columnModel
     for name, hidden of @get('columnInfo.hidden')
       for column in @get('columnModel')
         column.hidden = hidden if column.name == name
@@ -286,12 +285,12 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
       else 
         uiState = @get('collection.defaultPersonalization')
-      @set('collection.customizationName', uiState.customizationName)
-      @set('collection.pagingInfo', uiState.paging) if uiState.paging?
-      @set('collection.sortingInfo', uiState.sorting) if uiState.sorting?
-      @set('collection.filteringInfo', uiState.filtering) if uiState.filtering?
-      @set('columnInfo', uiState.columns) if uiState.columns?
-      @set('groupingInfo', uiState.grouping) if uiState.grouping?
+      @set('collection.customizationName',  uiState.customizationName);
+      @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
+      @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
+      @set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering)) if uiState.filtering?
+      @set('columnInfo', jQuery.extend(true, {}, uiState.columns)) if uiState.columns?
+      @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
       @applyStoredPropertiesToGrid()
       @populateCollectionDropdown()
         

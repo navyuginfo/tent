@@ -19,7 +19,7 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		if groupType == 'none'			
 			@getTableDom().jqGrid('groupingRemove', true)
 		else 
-			@getColumnType(columnName)
+			columnType = @getColumnType(columnName)
 			
 			lastSort = @getTableDom()[0].p.sortname
 			for columnDef in @get('columns')
@@ -92,7 +92,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		@columnsDidChange()
 
 	getColSpan: ->
-		(@getTableDom()[0].p.colModel.length) - 1 
+		visibleColumns = @getTableDom()[0].p.colModel.filter((col)->
+			!col.hidden
+		)
+		visibleColumns.length
 
 	returnToGroupList: ->
 		@setShowingGroupsListState(true)
