@@ -2,6 +2,8 @@ view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
+	Tent.Date.getAbbreviatedTZFromDate = (date)->
+		return "TMP"
 
 	@TemplateTests = Ember.Namespace.create()
 	Ember.run ->
@@ -135,6 +137,7 @@ test 'selectedIds should track selection', ->
 
 	grid = Tent.JqGrid.create
 		selection: selection
+		columns: []
 
 	equal grid.get('selectedIds').length, 2, "Should be 2 selectedIds"
 	grid.clearSelection()
