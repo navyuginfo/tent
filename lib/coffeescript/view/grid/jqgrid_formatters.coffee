@@ -177,9 +177,13 @@ Tent.JqGrid.editOptions =
 	'amount': {
 		dataEvents: [
 			{ 
-				type: 'blur', 
+				type: 'keyup', 
 				fn: (e) -> 
 					Ember.View.views[$(this).parents('.tent-jqgrid').attr('id')].saveEditableCell(this)
+			},
+			{
+				type: 'blur',
+				fn: (e) ->
 					$(this).val(Tent.Formatting.amount.format($(this).val()))
 			}
 		]

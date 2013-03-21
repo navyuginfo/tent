@@ -187,31 +187,34 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setupColumnVisibilityProperties: ->
     # Copy any hidden column information provided by the collection
-    for name, hidden of @get('columnInfo.hidden')
-      for column in @get('columnModel')
-        column.hidden = hidden if column.name == name
+    if this.get('collection.personalizable')
+      for name, hidden of @get('columnInfo.hidden')
+        for column in @get('columnModel')
+          column.hidden = hidden if column.name == name
     @renderColumnChooser()
 
   setupColumnWidthProperties: ->
     # Copy any column width information provided by the collection
-    for name, width of @get('columnInfo.widths')
-      for column in @get('columnModel')
-        column.width = width if column.name == name
+    if this.get('collection.personalizable')
+      for name, width of @get('columnInfo.widths')
+        for column in @get('columnModel')
+          column.width = width if column.name == name
 
   setupColumnOrderingProperties: ->
-    if @get('columnInfo')
-      if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
-        permutation = [0]
-        for column, position in @get('columnModel')
-          column = @get('columnInfo.order')[position + 1]
-          permutation[column] = position + 1 if column?
-        if permutation.length > 1
-          @getTableDom().remapColumns(permutation, true, false)
-      else
-        permutation = [0]
-        for column, position in @get('columnModel')
-          permutation[position + 1] = column.order or (position + 1)
-        @set('columnInfo.oldOrder', permutation)
+    if this.get('collection.personalizable')
+      if @get('columnInfo')
+        if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
+          permutation = [0]
+          for column, position in @get('columnModel')
+            column = @get('columnInfo.order')[position + 1]
+            permutation[column] = position + 1 if column?
+          if permutation.length > 1
+            @getTableDom().remapColumns(permutation, true, false)
+        else
+          permutation = [0]
+          for column, position in @get('columnModel')
+            permutation[position + 1] = column.order or (position + 1)
+          @set('columnInfo.oldOrder', permutation)
 
 
   setupColumnGroupingProperties: ->

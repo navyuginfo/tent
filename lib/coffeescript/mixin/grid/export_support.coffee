@@ -24,14 +24,14 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       jsonUrl = if @get('collection')? then @get('collection').getURL('json', params) else ""
       csvUrl = if @get('collection')? then @get('collection').getURL('csv', params) else ""
       xslxUrl = if @get('collection')? then @get('collection').getURL('xlsx', params) else ""
-
+      jsonUrlPart = jsonUrl?.split('/').pop().split('?')[0]
       button = """
         <div class="btn-group export jqgrid-title-button">
           <a class="" data-toggle="dropdown" href="#">
             <i class="icon-share"></i>Export
           </a>
           <ul class="dropdown-menu">
-            <li><a href="#{jsonUrl}" class="export-json" download="#{jsonUrl.split('/').pop().split('?')[0]}">
+            <li><a href="#{jsonUrl}" class="export-json" download="#{jsonUrlPart}">
               #{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
             <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
