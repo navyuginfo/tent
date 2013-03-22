@@ -225,7 +225,7 @@ body > .modal-backdrop {
 		@include border-radius(4px);
 		border: 1px solid #EEDCB9;
 		.error-message {
-			padding: 0px 0px 0px 100px;
+			padding: 1px 0px 0px 100px;
 		}
 
 		i {
@@ -272,7 +272,7 @@ body > .modal-backdrop {
 			font-weight: bold;
 			text-shadow: 0 1px 1px #FFEFEF;
 			font-style: normal;
-			vertical-align: top;
+			//vertical-align: top;
 			&:hover {
 				text-decoration: underline;
 			}

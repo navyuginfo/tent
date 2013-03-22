@@ -139,7 +139,13 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     if @$()?
       Ember.View.views[@$().closest('form').attr('id')]
   ).property()
-  
+
+  enableWarningProcessing: (->
+    # For all widget, if the value triggers a warning messages, and if the warning message is closed, 
+    # we dont turn warning evaluation on until the value of the widget changes again.
+    @set('processWarnings', true)
+  ).observes('value')
+
   focus: ->
     $('#' + @get('inputIdentifier')).focus()
 
