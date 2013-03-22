@@ -136,7 +136,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 							if (typeof value == "string")
 									value = Tent.Formatting.date.unformat(value)
 								week = value.getWeekOfYear()
-								yesterday = value
+								yesterday = value.clone() # The date is passed by reference, so don't modify it directly.
 								while week == yesterday.getWeekOfYear()
 									yesterday.add(-1).day()
 
