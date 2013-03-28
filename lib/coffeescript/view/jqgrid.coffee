@@ -97,7 +97,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* @property {Array} columns The array of column descriptors used to represent the data. 
 	* By default this will be retrieved from the collection, if provided
 	###
-	columnsBinding: 'collection.columnsDescriptor'
+	#columnsBinding: 'collection.columnsDescriptor'
 
 	###*
 	* @property {Array} selection The array of items selected in the list. This can be used as a setter
@@ -116,10 +116,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@get('selection')
 	).property('selection')
 
+	columns: (->
+		debugger;
+		@get('collection.columnsDescriptor')
+	).property('collection.columnsDescriptor')
+
 	focus: ->
 		@getTableDom().focus()
 
 	didInsertElement: ->
+		debugger;
+		console.log "didInsertElement"
 		@_super()
 		widget = @
 		$.subscribe("/ui/refresh", ->
@@ -146,6 +153,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupColumnOrderingProperties()
 
 	applyStoredPropertiesToGrid: ->
+		debugger;
 		if @get('collection.personalizable')
 			@set('columnModel', {}) #reset the columnModel
 			@setupColumnTitleProperties();
@@ -533,6 +541,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
+		debugger;
 		names = []
 		for column in @get('columnModel')
 			t = Tent.I18n.loc(column.title)
@@ -545,6 +554,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
+		debugger;
 		columns = Ember.A()
 		if @get('columns')?
 			for column in @get('columns')
@@ -595,6 +605,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
+		debugger;
 		#remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###
