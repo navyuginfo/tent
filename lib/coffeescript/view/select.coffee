@@ -99,13 +99,14 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ).observes('selected')
 
   listObserver: (->
-    if @get("list.length") is 1 and @get("preselectSingleElement")
-      @set "showPrompt", false
-      @set "selection", @get("list").toArray()[0]
-    else
-      @set "selection", null
-      Ember.run =>
-        @set "showPrompt", true
+    if @get 'preselectSingleElement'
+      if @get("list.length") is 1
+        @set "showPrompt", false
+        @set "selection", @get("list").toArray()[0]
+      else
+        @set "selection", null
+        Ember.run =>
+          @set "showPrompt", true
   ).observes("list", "list@each")
 
   currentSelectedLabel: (->
