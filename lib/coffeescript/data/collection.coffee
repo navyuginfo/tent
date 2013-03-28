@@ -41,14 +41,16 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	).property('modelData')
 
 	columnsDescriptor: (->
+		debugger;
 		@get('store').getColumnsForType(@get('dataType'))
-	).property('dataType').cacheable()
+	).property('dataType')
 
 	init: ->
 		@_super()
 		#@update(@REQUEST_TYPE.ALL)
 
 	update: (requestType)->
+		debugger;
 		if @get('dataType')? && @get('store')?
 			query = $.extend(
 				{}, 
@@ -59,6 +61,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 				{grouping: @getGroupingInfo()}
 				{searching: @getSearchingInfo()}
 			)
+			debugger;
 			# Add support for asynch calls later	
 			response = @get('store').findQuery(eval(@get('dataType')), query)
 			@set('modelData', response.modelData)
