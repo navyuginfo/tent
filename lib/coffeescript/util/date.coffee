@@ -41,7 +41,12 @@ Tent.Date = Ember.Object.create
 		return null unless date?
 		dateString = date.toLongDateString()
 		tz = dateString.substring(35,dateString.length-1)
-		if tz.split(" ").length != 1 then Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(dateString.substring(25,33), tz) else tz
+		if tz.split(" ").length != 1
+			idx = dateString.search /(GMT)|(UTC)/
+			offset = dateString.substring(idx, idx+8).replace('UTC', 'GMT')
+			Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
+		else
+			tz
 
 	###*
 	* @method getFullTZFromDate Returns timezone name, returns null if date is missing
