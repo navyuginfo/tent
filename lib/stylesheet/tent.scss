@@ -154,7 +154,7 @@ body > .modal-backdrop {
 	}
 
 	.jqgrid-title-button .filter a {
-		opacity: .8;
+		@include opacity(0.8);
 	}
 }
 
