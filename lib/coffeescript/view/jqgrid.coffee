@@ -407,21 +407,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		else 
 			@maximize()
 
-	maximize: () -> 
-		widget = @
-		@set('currentTop', @$().offset().top - $(window).scrollTop())
-		@set('currentLeft', @$().offset().left)
-		@set('currentWidth', @$().outerWidth())
-		@set('currentHeight', @$().outerHeight())
-		@set('currentRight', $(window).width() - (@$().offset().left + @$().outerWidth()))
-		@set('currentBottom', $(window).height() - (@$().offset().top + @$().outerHeight()))
+  maximize: () ->
+    widget = @
+    @set('currentTop', @$().offset().top - $(window).scrollTop())
+    @set('currentLeft', @$().offset().left)
+    @set('currentWidth', @$().outerWidth())
+    @set('currentHeight', @$().outerHeight())
+    @set('currentRight', $(window).width() - (@$().offset().left + @$().outerWidth()))
+    @set('currentBottom', $(window).height() - (@$().offset().top + @$().outerHeight()))
 
-		newWidth = $(window).width() - 60
-		newHeight = $(window).height() - 120
+    newWidth = $(window).width() - 60
+    newHeight = $(window).height() - 120
 
-		@$().css('top', @get('currentTop') + 'px')
-		@$().css('left', @get('currentLeft') + 'px')
-		@$().css('height', @get('currentHeight') + 'px')
+    @$().css('top', @get('currentTop') + 'px')
+    @$().css('left', @get('currentLeft') + 'px')
+    @$().css('height', @get('currentHeight') + 'px')
     @$().css('width', @get('currentWidth') + 'px')
 		@$().css('z-index', '2000')
 		@$().css('position', 'fixed')
