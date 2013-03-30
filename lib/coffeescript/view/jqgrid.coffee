@@ -422,6 +422,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@$().css('top', @get('currentTop') + 'px')
 		@$().css('left', @get('currentLeft') + 'px')
 		@$().css('height', @get('currentHeight') + 'px')
+    @$().css('width', @get('currentWidth') + 'px')
 		@$().css('z-index', '2000')
 		@$().css('position', 'fixed')
 		@$().addClass('dialog')
