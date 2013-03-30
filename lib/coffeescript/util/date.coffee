@@ -14,7 +14,7 @@ Tent.Date = Ember.Object.create
 	* @param {String} name Optional argument which is the full name of timezone
 	* @return {String}
 	###
-	getAbbreviatedTZFromUTCOffsetAndName: (UTCOffset, name="")->
+	getAbbreviatedTZFromUTCOffsetAndName: (UTCOffset, name=null)->
 		return null unless UTCOffset?
 		zones = getZonesFromUTCOffset(UTCOffset)
 		zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZName(zones, name))
@@ -26,7 +26,7 @@ Tent.Date = Ember.Object.create
 	* @param {String} abbr Timezone abbreviation of type: "IST" (Optional)
 	* @return {string}
 	###
-	getFullTZFromUTCOffsetAndAbbreviation: (UTCOffset, abbr="")->
+	getFullTZFromUTCOffsetAndAbbreviation: (UTCOffset, abbr=null)->
 		return null unless UTCOffset?
 		zones = getZonesFromUTCOffset(UTCOffset)
 		zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZAbbreviation(zones, abbr)) if zones.length
@@ -40,13 +40,12 @@ Tent.Date = Ember.Object.create
 	getAbbreviatedTZFromDate: (date)->
 		return null unless date?
 		dateString = date.toLongDateString()
-		tz = dateString.substring(35,dateString.length-1)
-		if tz.split(" ").length != 1
-			idx = dateString.search /(GMT)|(UTC)/
-			offset = dateString.substring(idx, idx+8).replace('UTC', 'GMT')
-			Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
-		else
-			tz
+		idx = dateString.search /(GMT)|(UTC)/
+		offset = dateString.substring(idx, idx+8).replace('UTC', 'GMT')
+		match = /\((.+)\)/.exec(dateString)
+		if match? then (tz = match[0].replace(/[()]/g, "")) else (tz = null)
+		return tz if tz? and tz.split(" ").length == 1
+		Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
 
 	###*
 	* @method getFullTZFromDate Returns timezone name, returns null if date is missing
@@ -85,10 +84,11 @@ Tent.Date = Ember.Object.create
 * @return {Object} Zone object
 ###
 filterZoneUsingTZAbbreviation = (zones, abbr)->
-	return null unless zones? or zones.length>0 or abbr?
-	zones.find (item) ->
+	return null unless zones? or zones.length>0
+	return zones[0] unless abbr?
+	zone = zones.find (item) ->
 		item.abbr == abbr
-
+	zone
 ###*
 * @method filterZoneUsingTZName (PRIVATE) Returns an zone object from an array of zone objects
   if the given name exactly or almost matches any of the object names 
@@ -99,7 +99,8 @@ filterZoneUsingTZAbbreviation = (zones, abbr)->
 * @return {Object} Zone object
 ###
 filterZoneUsingTZName = (zones, name)->
-	return null unless zones? or zones.length>0 or name? 
+	return null unless zones? or zones.length>0
+	return zones[0] unless name?
 	zone = zones.find (item)->
 		item.name == name
 	unless zone
@@ -112,7 +113,7 @@ filterZoneUsingTZName = (zones, name)->
 		indices = zones.mapProperty('index')
 		min = Math.max.apply(Math, indices)
 		zone = (if min is 0 then null else zones[indices.indexOf(min)])
-	zone
+		zone
 
 ###*
 * @method getZonesFromUTCOffset (PRIVATE) Returns an array list of zone objects which have the given UTCOffset
