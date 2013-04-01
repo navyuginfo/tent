@@ -117,7 +117,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('selection')
 
 	columns: (->
-		debugger;
 		@get('collection.columnsDescriptor')
 	).property('collection.columnsDescriptor')
 
@@ -125,7 +124,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().focus()
 
 	didInsertElement: ->
-		debugger;
 		console.log "didInsertElement"
 		@_super()
 		widget = @
@@ -141,7 +139,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	getHeaderView: ->
 		Ember.View.views[@$('.grid-header').attr('id')]
- 
+  
 	drawGrid: ->
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()
@@ -153,7 +151,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupColumnOrderingProperties()
 
 	applyStoredPropertiesToGrid: ->
-		debugger;
 		if @get('collection.personalizable')
 			@set('columnModel', {}) #reset the columnModel
 			@setupColumnTitleProperties();
@@ -394,7 +391,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
-		@$('.ui-jqgrid-view').css('height', '100%')
+		@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		#@$('.ui-jqgrid').css('top', @$('.grid-header').height())
 
 	renderMaximizeButton: ->
@@ -414,7 +411,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@restoreSize()
 		else
 			@maximize()
-	
+
 	maximize: () ->
 		widget = @
 		@set('currentTop', @$().offset().top - $(window).scrollTop())
@@ -541,7 +538,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# Adapter to get column names from current datastore columndescriptor version  
 	colNames: (->
-		debugger;
 		names = []
 		for column in @get('columnModel')
 			t = Tent.I18n.loc(column.title)
@@ -554,7 +550,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
-		debugger;
 		columns = Ember.A()
 		if @get('columns')?
 			for column in @get('columns')
@@ -605,7 +600,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-		debugger;
 		#remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###

@@ -1,3 +1,4 @@
+require './browsers'
 require './resize_support'
 require './string'
 require './computed'
