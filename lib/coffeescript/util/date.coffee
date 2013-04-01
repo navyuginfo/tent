@@ -40,9 +40,15 @@ Tent.Date = Ember.Object.create
 	getAbbreviatedTZFromDate: (date)->
 		return null unless date?
 		dateString = date.toLongDateString()
+		### 
+			Possible Dates:
+			Mon Apr 01 2013 14:55:15 GMT+0530 (IST) - with TZ abbreviations & GMT
+			Mon Apr 01 2013 14:55:15 GMT+0530 (India Standard Time) - with TZ fullform & GMT(Windows)
+			Mon Apr 1 15:19:25 UTC+0530 2013 - without TZ abbreviations (IE) & UTC
+		###
 		idx = dateString.search /(GMT)|(UTC)/
 		offset = dateString.substring(idx, idx+8).replace('UTC', 'GMT')
-		match = /\((.+)\)/.exec(dateString)
+		match = /\((.+)\)/.exec(dateString) #looking for TZ abbreviations
 		if match? then (tz = match[0].replace(/[()]/g, "")) else (tz = null)
 		return tz if tz? and tz.split(" ").length == 1
 		Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
@@ -85,6 +91,7 @@ Tent.Date = Ember.Object.create
 ###
 filterZoneUsingTZAbbreviation = (zones, abbr)->
 	return null unless zones? or zones.length>0
+	# returning first search result, if no TZ abbreviation is given
 	return zones[0] unless abbr?
 	zone = zones.find (item) ->
 		item.abbr == abbr
@@ -100,6 +107,7 @@ filterZoneUsingTZAbbreviation = (zones, abbr)->
 ###
 filterZoneUsingTZName = (zones, name)->
 	return null unless zones? or zones.length>0
+	# returning first search result, if no TZ name is given
 	return zones[0] unless name?
 	zone = zones.find (item)->
 		item.name == name
