@@ -122,25 +122,29 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					title: Tent.I18n.loc 'tent.grouping.range.week'
 					comparator: Tent.JqGrid.Grouping.comparator.create
 						compare: (last, value)->
-							if (last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
-								return true
-							if (last.compareTo(value) == -1) #ascending
-								if (last.getFullYear()+1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 11) and (value.getMonth() == 0)
+							if last? and value?
+								if (last.getFullYear() == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear())
 									return true
-							if (last.compareTo(value) == 1) #descending
-								if (last.getFullYear()-1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 0) and (value.getMonth() == 11)
+								if (last.compareTo(value) == -1) #ascending
+									if (last.getFullYear()+1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 11) and (value.getMonth() == 0)
+										return true
+								if (last.compareTo(value) == 1) #descending
+									if (last.getFullYear()-1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 0) and (value.getMonth() == 11)
+										return true
+							else 
+								if value?
 									return true
 						rowTitle: (value, formatter)->
 							if not formatter? then formatter = Tent.Formatting.date.format
-
-							if (typeof value == "string")
-									value = Tent.Formatting.date.unformat(value)
+							if value?
+								if (typeof value == "string")
+										value = Tent.Formatting.date.unformat(value)
 								week = value.getWeekOfYear()
 								yesterday = value.clone() # The date is passed by reference, so don't modify it directly.
 								while week == yesterday.getWeekOfYear()
 									yesterday.add(-1).day()
 
-							"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{formatter(yesterday.add(1).day())}"
+								"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{formatter(yesterday.add(1).day())}"
 
 				}
 				{
@@ -151,11 +155,15 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					title: Tent.I18n.loc 'tent.grouping.range.month'
 					comparator: Tent.JqGrid.Grouping.comparator.create
 						compare: (last, value)->
-							(last.getFullYear() == value.getFullYear()) and (last.getMonth() == value.getMonth())
+							if last? and value?
+								(last.getFullYear() == value.getFullYear()) and (last.getMonth() == value.getMonth())
+							else
+								return false
 						rowTitle: (value)->
-							if (typeof value == "string")
-								value = Tent.Formatting.date.unformat(value)
-							Tent.Formatting.date.format(value,'MM') + ' ' + value.getFullYear()
+							if value?
+								if (typeof value == "string")
+									value = Tent.Formatting.date.unformat(value)
+								Tent.Formatting.date.format(value,'MM') + ' ' + value.getFullYear()
 				}
 				{
 					###*
@@ -165,14 +173,19 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					title: Tent.I18n.loc 'tent.grouping.range.quarter'
 					comparator: Tent.JqGrid.Grouping.comparator.create
 						compare: (last, value)->
-							quarter = Math.floor(last.getMonth()/3) + 1
-							(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
+							if last? and value?
+								quarter = Math.floor(last.getMonth()/3) + 1
+								(last.getFullYear() == value.getFullYear()) and ((quarter-1) * 3) <= value.getMonth() <= ((quarter-1) * 3) + 2
+							else
+								if value?
+									return true
 			
 						rowTitle: (value)->
-							if (typeof value == "string")
-								value = Tent.Formatting.date.unformat(value)
-							quarter = Math.floor(value.getMonth()/3) + 1
-							'Quarter ' + quarter + ', ' + value.getFullYear()
+							if value?
+								if (typeof value == "string")
+									value = Tent.Formatting.date.unformat(value)
+								quarter = Math.floor(value.getMonth()/3) + 1
+								'Quarter ' + quarter + ', ' + value.getFullYear()
 
 				}
 				{
@@ -183,11 +196,16 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 					title: Tent.I18n.loc 'tent.grouping.range.year'
 					comparator: Tent.JqGrid.Grouping.comparator.create
 						compare: (last, value)->
-							last.getFullYear() == value.getFullYear()
+							if last? and value?
+								last.getFullYear() == value.getFullYear()
+							else 
+								if value?
+									return true
 						rowTitle: (value)->
-							if (typeof value == "string")
-								value = Tent.Formatting.date.unformat(value)
-							'Year = ' + value.getFullYear()
+							if value?
+								if (typeof value == "string")
+									value = Tent.Formatting.date.unformat(value)
+								'Year = ' + value.getFullYear()
 				}
 			]
 		###*
