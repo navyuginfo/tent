@@ -132,7 +132,7 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 									if (last.getFullYear()-1 == value.getFullYear()) and (last.getWeekOfYear() == value.getWeekOfYear()) and (last.getMonth() == 0) and (value.getMonth() == 11)
 										return true
 							else 
-								if value?
+								if not value? and not last?
 									return true
 						rowTitle: (value, formatter)->
 							if not formatter? then formatter = Tent.Formatting.date.format
@@ -145,6 +145,8 @@ Tent.JqGrid.Grouping.ranges = Ember.Object.create
 									yesterday.add(-1).day()
 
 								"#{Tent.I18n.loc('tent.grouping.range.weekStarting')} #{formatter(yesterday.add(1).day())}"
+							else 
+								"#{Tent.I18n.loc('tent.grouping.range.empty')}"
 
 				}
 				{
