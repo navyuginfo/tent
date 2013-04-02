@@ -391,6 +391,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeightForFixedHeader: ->
 		top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 		@$('.ui-jqgrid-bdiv').css('top', top)
+		@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 		@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		#@$('.ui-jqgrid').css('top', @$('.grid-header').height())
 
