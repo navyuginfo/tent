@@ -34,8 +34,9 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
 
   didInsertElement: ->
     @set('grid', @get('parentView.grid'))
-    if @get('collection.columnsDescriptor')?
-      @clearFilter()
+    # For performance reasons
+    #if @get('collection.columnsDescriptor')?
+    #  @clearFilter()
     @setupToggling()
   
   setupToggling: ->
