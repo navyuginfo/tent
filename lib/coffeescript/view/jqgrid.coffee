@@ -359,8 +359,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	columnsDidChange: (colChangedIndex)->
 		@_super()
-		if @get('fixedHeader')
-			@adjustHeightForFixedHeader()
+		@adjustHeight()
 		@removeLastDragBar()
 		@storeColumnDataToCollection()
 
@@ -388,12 +387,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@$('.ui-th-column .ui-jqgrid-resize').show()
 		@getLastColumn().find('.ui-jqgrid-resize').hide()
 
-	adjustHeightForFixedHeader: ->
-		top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
-		@$('.ui-jqgrid-bdiv').css('top', top)
-		@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
-		@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
-		#@$('.ui-jqgrid').css('top', @$('.grid-header').height())
+	# After any changes to the dimensions of the grid, re-calculate for display
+	adjustHeight: ->
+		if @get('fixedHeader')
+			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
+			@$('.ui-jqgrid-bdiv').css('top', top)
+			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
+			@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
+		else
+			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
 	renderMaximizeButton: ->
 		widget = @
@@ -519,7 +521,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	resizeToContainer: ->
 		if @$()?
 			@getTableDom().setGridWidth(@$().width(), true)
-			@columnsDidChange()
+			# Removed for performance reasons
+			# @columnsDidChange()
 
 	hideGrid: ->
 		#@getTableDom().jqGrid('clearGridData')
