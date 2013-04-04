@@ -237,18 +237,19 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
           @set('columnInfo.widths.' + col.name, col.width)
 
   storeColumnOrderingToCollection: (permutation)->
-    oldOrder = @get('columnInfo.oldOrder')
-    if oldOrder?
-      for col, position in permutation
-        #what was at position 'col' now equals 'position'
-        match = null
-        for field of oldOrder
-          if oldOrder[field] == col
-            match = field
-        if match?
-          @set('columnInfo.order.' + match, position)
-    @set('columnInfo.oldOrder', Ember.copy(@get('columnInfo.order')))
-    console.log("Ordering = " + @get('columnInfo.order'))
+    if @get('columnInfo')?
+      oldOrder = @get('columnInfo.oldOrder')
+      if oldOrder?
+        for col, position in permutation
+          #what was at position 'col' now equals 'position'
+          match = null
+          for field of oldOrder
+            if oldOrder[field] == col
+              match = field
+          if match?
+            @set('columnInfo.order.' + match, position)
+      @set('columnInfo.oldOrder', Ember.copy(@get('columnInfo.order')))
+      console.log("Ordering = " + @get('columnInfo.order'))
 
   didInsertElement: ->
     if @get('collection')?
