@@ -52,9 +52,9 @@ Tent.Date = Ember.Object.create
     min = "0"+min if min<10
     hours = "0" + hours if hours<10
     if tzOffset<0
-      offset = "GMT-#{hours}#{min}"
-    else
       offset = "GMT+#{hours}#{min}"
+    else
+      offset = "GMT-#{hours}#{min}"
     dateString = date.toLongDateString()
     if Tent.Browsers.isIE()
       match = /[A-Z]{3}/.exec(dateString)
