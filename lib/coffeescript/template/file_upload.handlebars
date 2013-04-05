@@ -1,5 +1,5 @@
 <span>
-  <span>Drag &amp; Drop files here...</span>
+  {{#if view.helpText}}<span>Drag &amp; Drop files here...</span>{{/if}}
   <input type="file" name="files[]" {{bindAttr data-url="view.dataUrl"}} multiple>
   {{#if view.applyWait}}
      {{view Tent.WaitIcon}}
