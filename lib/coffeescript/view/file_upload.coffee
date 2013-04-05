@@ -3,6 +3,7 @@ require '../template/file_upload'
 Tent.FileUpload = Ember.View.extend
   templateName: 'file_upload'
   classNameBindings: ['tent-file-upload']
+  helpText: true
 
   didInsertElement: -> @$('input').fileupload
     add: (e, data) =>
