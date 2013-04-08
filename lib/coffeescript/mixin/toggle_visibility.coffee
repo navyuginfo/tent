@@ -14,12 +14,12 @@ Tent.ToggleVisibility = Ember.Mixin.create
 	bindToggleVisibility: (source, dest)->
 		widget = @
 		source.click((e)->
-			widget.toggleVisibility(dest)
+			widget.toggleVisibility(dest, source)
 		)
 
-	toggleVisibility: (component)->
+	toggleVisibility: (component, source)->
 		if component.css('display')=='none'
-			@showComponent(component)
+			@showComponent(component, source)
 		else
 			@hideComponent(component)
 
@@ -36,16 +36,17 @@ Tent.ToggleVisibility = Ember.Mixin.create
 	* @method showComponent Shows a toggleable component
 	* @param {Object} component The jQuery object to show
 	###
-	showComponent: (component)->
+	showComponent: (component, source)->
 		component.css('display', 'block')
-		@set('hideHandler', @get('generateHideHandler')(@, component))
+		@set('hideHandler', @get('generateHideHandler')(@, component, source))
 		$('body').get(0).addEventListener('click', @get('hideHandler'), true)
 		$('body').get(0).addEventListener('keyup', @get('hideHandler'), true)
 
-	generateHideHandler: (widget, component) ->
+	generateHideHandler: (widget, component, source) ->
 		return (e)->
-			#if e.keyCode==27 or ($(e.target).parents('.tent-filter').attr('id') != widget.get('elementId'))	
-			if e.keyCode==27 or ($(e.target).closest(component).length == 0)
+			if e.keyCode==27 or (($(e.target).closest(component).length == 0) and (e.target != source.get(0)))
 				widget.hideComponent(component)
 				e.stopPropagation()
 				return
+
+

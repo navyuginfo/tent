@@ -127,19 +127,20 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ).observes('collection.customizationName')
 
   populateCollectionDropdown: (->
-    @$(".load-panel").empty()
-    @$(".load-panel").append('<li><a class="load" data-index="-1">' + Tent.I18n.loc("tent.jqGrid.saveUi.default") + '</a></li>')
-    if @get('collection.personalizations')?
-      for personalization, index in @get('collection.personalizations').toArray()
-        @$(".load-panel").append($('<li><a class="load" data-index="'+index+'" data-name="'+personalization.get('name')+'">' + personalization.get('name') + '</a></li>'))
+    if @$()?
+      @$(".load-panel").empty()
+      @$(".load-panel").append('<li><a class="load" data-index="-1">' + Tent.I18n.loc("tent.jqGrid.saveUi.default") + '</a></li>')
+      if @get('collection.personalizations')?
+        for personalization, index in @get('collection.personalizations').toArray()
+          @$(".load-panel").append($('<li><a class="load" data-index="'+index+'" data-name="'+personalization.get('name')+'">' + personalization.get('name') + '</a></li>'))
 
-    @$(".load-panel .load").click((e)=>
-      index = $(e.target).attr('data-index')
-      name = $(e.target).attr('data-name')
-      @set('customizationIndex', index)
-      @set('customizationName', name)
-      @initializeWithNewPersonalization(index)
-    )
+      @$(".load-panel .load").click((e)=>
+        index = $(e.target).attr('data-index')
+        name = $(e.target).attr('data-name')
+        @set('customizationIndex', index)
+        @set('customizationName', name)
+        @initializeWithNewPersonalization(index)
+      )
   ).observes('collection.personalizations', 'collection.personalizations.@each')
   
   save: ->
@@ -175,8 +176,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setPageSize: ->
     # If the collection has a pageSize specified, use that.
-    if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
-      @set('pagingInfo.pageSize', @get('pageSize'))
+    if @get('pagingInfo')?
+      if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
+        @set('pagingInfo.pageSize', @get('pageSize'))
 
   setupSortingProperties: ->
 
@@ -225,28 +227,29 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   storeColumnDataToCollection: ->
     if @getTableDom().length > 0
       # Store hidden column data
-      if  @get('collection')?
+      if  @get('columnInfo')?
         for col in @getColModel()
           @set('columnInfo.hidden.' + col.name, col.hidden)
 
       # Store column widths 
-      if @get('collection')?
+      if @get('columnInfo')?
         for col in @getTableDom().get(0).p.colModel
           @set('columnInfo.widths.' + col.name, col.width)
 
   storeColumnOrderingToCollection: (permutation)->
-    oldOrder = @get('columnInfo.oldOrder')
-    if oldOrder?
-      for col, position in permutation
-        #what was at position 'col' now equals 'position'
-        match = null
-        for field of oldOrder
-          if oldOrder[field] == col
-            match = field
-        if match?
-          @set('columnInfo.order.' + match, position)
-    @set('columnInfo.oldOrder', Ember.copy(@get('columnInfo.order')))
-    console.log("Ordering = " + @get('columnInfo.order'))
+    if @get('columnInfo')?
+      oldOrder = @get('columnInfo.oldOrder')
+      if oldOrder?
+        for col, position in permutation
+          #what was at position 'col' now equals 'position'
+          match = null
+          for field of oldOrder
+            if oldOrder[field] == col
+              match = field
+          if match?
+            @set('columnInfo.order.' + match, position)
+      @set('columnInfo.oldOrder', Ember.copy(@get('columnInfo.order')))
+      console.log("Ordering = " + @get('columnInfo.order'))
 
   didInsertElement: ->
     if @get('collection')?
@@ -268,10 +271,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     sortable = false
     sortBy = postdata.sidx.split(',')
     newSort = sortBy[sortBy.length-1].trim()
-    for columnDef in @get('columns')
-      if newSort.indexOf(columnDef.name) > -1 and columnDef.sortable? and columnDef.sortable
-        postdata.sidx = columnDef.name
-        sortable = true
+    if @get('columns')?
+      for columnDef in @get('columns')
+        if newSort.indexOf(columnDef.name) > -1 and columnDef.sortable? and columnDef.sortable
+          postdata.sidx = columnDef.name
+          sortable = true
 
     sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.fields.firstObject.field') or postdata.sord != @get('sortingInfo.fields.firstObject.sortDir'))
 

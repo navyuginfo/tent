@@ -5,80 +5,89 @@
   A "zone" object = A javascript object having timezone name, abbreviation and UTCOffset
 ###
 Tent.Date = Ember.Object.create
-	###*
-	* @method getAbbreviatedTZFromUTCOffsetAndName Returns time zone abbreviation
-	(closest match of the supplied name string is considered as full names of timezones 
-	might be different from what is in the Tent list). 
-	Returns null if UTCOffset is missing
-	* @param {String} UTCOffset string of type : "GMT+0400"
-	* @param {String} name Optional argument which is the full name of timezone
-	* @return {String}
-	###
-	getAbbreviatedTZFromUTCOffsetAndName: (UTCOffset, name=null)->
-		return null unless UTCOffset?
-		zones = getZonesFromUTCOffset(UTCOffset)
-		zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZName(zones, name))
-		if zone then zone['abbr'] else null
+  ###*
+  * @method getAbbreviatedTZFromUTCOffsetAndName Returns time zone abbreviation
+  (closest match of the supplied name string is considered as full names of timezones 
+  might be different from what is in the Tent list). 
+  Returns null if UTCOffset is missing
+  * @param {String} UTCOffset string of type : "GMT+0400"
+  * @param {String} name Optional argument which is the full name of timezone
+  * @return {String}
+  ###
+  getAbbreviatedTZFromUTCOffsetAndName: (UTCOffset, name=null)->
+    return null unless UTCOffset?
+    zones = getZonesFromUTCOffset(UTCOffset)
+    zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZName(zones, name))
+    if zone then zone['abbr'] else null
 
-	###*
-	* @method getFullTZFromUTCOffsetAndAbbreviation Returns timezone name, returns null if UTC Offset is missing
-	* @param {String} UTCOffset string of type : "GMT+0400" (Required)
-	* @param {String} abbr Timezone abbreviation of type: "IST" (Optional)
-	* @return {string}
-	###
-	getFullTZFromUTCOffsetAndAbbreviation: (UTCOffset, abbr=null)->
-		return null unless UTCOffset?
-		zones = getZonesFromUTCOffset(UTCOffset)
-		zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZAbbreviation(zones, abbr)) if zones.length
-		if zone then zone['name'] else null
+  ###*
+  * @method getFullTZFromUTCOffsetAndAbbreviation Returns timezone name, returns null if UTC Offset is missing
+  * @param {String} UTCOffset string of type : "GMT+0400" (Required)
+  * @param {String} abbr Timezone abbreviation of type: "IST" (Optional)
+  * @return {string}
+  ###
+  getFullTZFromUTCOffsetAndAbbreviation: (UTCOffset, abbr=null)->
+    return null unless UTCOffset?
+    zones = getZonesFromUTCOffset(UTCOffset)
+    zone = (if zones.length is 1 then zones[0] else filterZoneUsingTZAbbreviation(zones, abbr)) if zones.length
+    if zone then zone['name'] else null
 
-	###*
-	* @method getAbbreviatedTZFromDate Returns timezone abbreviation, returns null if date is missing
-	* @param {Date Object} date (Required)
-	* @return {string}
-	###
-	getAbbreviatedTZFromDate: (date)->
-		return null unless date?
-		dateString = date.toLongDateString()
-		### 
-			Possible Dates:
-			Mon Apr 01 2013 14:55:15 GMT+0530 (IST) - with TZ abbreviations & GMT
-			Mon Apr 01 2013 14:55:15 GMT+0530 (India Standard Time) - with TZ fullform & GMT(Windows)
-			Mon Apr 1 15:19:25 UTC+0530 2013 - without TZ abbreviations (IE) & UTC
-		###
-		idx = dateString.search /(GMT)|(UTC)/
-		offset = dateString.substring(idx, idx+8).replace('UTC', 'GMT')
-		match = /\((.+)\)/.exec(dateString) #looking for TZ abbreviations
-		if match? then (tz = match[0].replace(/[()]/g, "")) else (tz = null)
-		return tz if tz? and tz.split(" ").length == 1
-		Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
+  ###*
+  * @method getAbbreviatedTZFromDate Returns timezone abbreviation, returns null if date is missing
+  * @param {Date Object} date (Required)
+  * @return {string}
+  ###
+  getAbbreviatedTZFromDate: (date)->
+    ### 
+      Possible Dates:
+      Mon Apr 01 2013 14:55:15 GMT+0530 (IST) - with TZ abbreviations & GMT
+      Mon Apr 01 2013 14:55:15 GMT+0530 (India Standard Time) - with TZ fullform & GMT(Windows)
+      Mon Apr 1 15:19:25 UTC+0530 2013 - In IE, if data doesn't exist for client's tz, it shows date in this format 
+      Fri Apr 5 06:31:52 EDT 2013 - In IE, if there exists data for client's tz, it shows date in this format
+    ###
+    return null unless date?
+    tzOffset = date.getTimezoneOffset()
+    hours = Math.floor(Math.abs(tzOffset/60))
+    min = Math.abs(tzOffset%60)
+    min = "0"+min if min<10
+    hours = "0" + hours if hours<10
+    if tzOffset<0
+      offset = "GMT+#{hours}#{min}"
+    else
+      offset = "GMT-#{hours}#{min}"
+    dateString = date.toLongDateString()
+    if Tent.Browsers.isIE()
+      match = /[A-Z]{3}/.exec(dateString)
+    else
+      match = /\((.+)\)/.exec(dateString)
+    if match? then (tz = match[0].replace(/[()]/g, "")) else (tz = null)
+    return tz if tz? and tz.split(" ").length == 1
+    Tent.Date.getAbbreviatedTZFromUTCOffsetAndName(offset, tz)
 
-	###*
-	* @method getFullTZFromDate Returns timezone name, returns null if date is missing
-	* @param {Date Object} date (Required)
-	* @return {String}
-	###
-	getFullTZFromDate: (date)->
-		return null unless date?
-		dateString = date.toLongDateString()
-		tz = dateString.substring(35,dateString.length-1)
-		if tz.split(" ").length != 1 then tz else Tent.Date.getFullTZFromUTCOffsetAndAbbreviation(dateString.substring(25,33), tz)
-		
-	###*
-	* @method getUTCOffsetFromTZ Returns UTCOffset given the timezone abbreviation and name. 
-	* If name is not provided and there are more than one records with the given abbreviation,
-	* null will be returned
-	* @param {String} abbr (Required)
-	* @param {String} name (Optional)
-	* @return {String}
-	###
-	getUTCOffsetFromTZ: (abbr, name) ->
-		return null unless abbr?
-		zones = getZonesFromAbbreviation(abbr)
-		zone = (if zones.length is 1 then zones[0] else (if name? then filterZoneUsingTZName(zones, name) else null))
-		if zone then zone['UTCOffset'] else null
+  ###* 
+  * @method getFullTZFromDate Returns timezone name, returns null if date is missing
+  * @param {Date Object} date (Required)
+  * @return {String}
+  ###
+  getFullTZFromDate: (date)->
+    return null unless date?
+    dateString = date.toLongDateString()
+    tz = dateString.substring(35,dateString.length-1)
+    if tz.split(" ").length != 1 then tz else Tent.Date.getFullTZFromUTCOffsetAndAbbreviation(dateString.substring(25,33), tz)
 
-
+  ###*
+  * @method getUTCOffsetFromTZ Returns UTCOffset given the timezone abbreviation and name. 
+  * If name is not provided and there are more than one records with the given abbreviation,
+  * null will be returned
+  * @param {String} abbr (Required)
+  * @param {String} name (Optional)
+  * @return {String}
+  ###
+  getUTCOffsetFromTZ: (abbr, name) ->
+    return null unless abbr?
+    zones = getZonesFromAbbreviation(abbr)
+    zone = (if zones.length is 1 then zones[0] else (if name? then filterZoneUsingTZName(zones, name) else null))
+    if zone then zone['UTCOffset'] else null 
 
 
 ###*
