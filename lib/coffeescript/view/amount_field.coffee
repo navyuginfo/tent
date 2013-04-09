@@ -74,9 +74,9 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRan
     if @get 'isValidCurrency'
       @set('isValid', true) unless @get('validationErrors').length
       @set('formattedValue', @format(@get('formattedValue')))
+      @set 'value', @unFormat(@get('formattedValue'))
     else
-      @addValidationError(Tent.messages.CURRENCY_ERROR)
-      
+      @addValidationError(Tent.messages.CURRENCY_ERROR)  
   ).observes('currency')
 
   inputSizeClass: (->
