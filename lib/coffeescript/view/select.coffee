@@ -73,6 +73,19 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   preselectSingleElement: false
 
+  ###*
+  * @property {boolean} isEnhanced Renders the select widget as a progressively enhanced, stylable control.
+  * The control and options may be styled by css, and the options may be rendered using HTML rather than plain
+  * text.
+  ###
+  isEnhanced: true
+
+  ###*
+  * @property {Number} menuWidth The width available for the option items.
+  * This is used when it is likely that the options will be wider than the selection box when they are displayed.
+  ###
+  menuWidth: null
+
   init: ->
     @_super()
     if @get('list.length') is 1 and @get('preselectSingleElement')
@@ -81,7 +94,15 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   didInsertElement: ->
     @_super(arguments)
     @set('inputIdentifier', @$('select').attr('id'))
-    
+    @convertToSelectMenu()
+  
+  # Apply the selectmenu plugin, which allows for styling and markup for <options>
+  convertToSelectMenu: ->
+    if not @get('isRadioGroup') and (@get('isEnhanced') or Tent.Browsers.isIE())   
+      @$('select').selectmenu({
+        menuWidth: @get('menuWidth') if @get('menuWidth')?
+      })
+
   valueForMandatoryValidation: (->
     if @get('multiple')
       @get('selection')
@@ -98,7 +119,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     @set('content', @get('selection'))
   ).observes('selected')
 
-  listObserver: (->
+  listObserver: (->    
     if @get 'preselectSingleElement'
       if @get("list.length") is 1
         @set "showPrompt", false
@@ -107,6 +128,9 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
         @set "selection", null
         Ember.run =>
           @set "showPrompt", true
+    Ember.run.next =>
+      # Create a runloop to ensure that this executes after the select DOM has been updated.
+      @convertToSelectMenu() if @$()?
   ).observes("list", "list@each")
 
   currentSelectedLabel: (->
