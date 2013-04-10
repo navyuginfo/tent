@@ -51,14 +51,46 @@ Tent.TabPane = Ember.View.extend
 	###*
 	* @property {String} title The title for the pane. This title will be translated and displayed in a tab by the containing {@link Tent.Tabs}.	 
 	###
-	title: null	
+	title: null
+	
+	###*
+  * The title will be updated from the bindings, but there is a race condition between the
+  * Instantiation of the view and change of title, now there are two cases
+  * 1) if the value is changed before this view is instantiated the observer
+  * will not fire because the value is set and will not change, in that case
+  * we would need to call the observer explicitely in the didInsertElement for
+  * this view to render that tab element.
+  * 2) if the value is set after this view is instantiated the observer will
+  * automatically fire and will render the required tab element, and once
+  * the value of the title is set, the observer won't do anything
+  ###
+	didInsertElement:->
+    @updateTitle()
+  
+  updateTitle: (->
+    unless Ember.empty(@get("title"))
+      title = Tent.I18n.loc(@get("title"))
+      href = "#" + @get("elementId")
+      unless @exists(href)
+        @get("parentView").$("ul:first").append "<li><a href=\"" + href + "\" data-toggle=\"tab\">" + title + "</a></li>"
+        @getTabWithHref(@get("parentView.active")).tab "show"  if @get("parentView.active") is @get("elementId")
+  ).observes("title")
+  
+  
+  ###*
+  * This method checks whether there already exists an element with same href as the href of this 
+  * view instance, if there is it will update the element's title and return true, so that it is not 
+  * appended on the tabs
+  ###
+  exists: (href) ->
+    list = @get("parentView").$("ul:first")[0].children
+    if list.length
+      for list_item in list
+        if list_item.children[0].getAttribute("href") is href
+          $(list_item.children[0]).html(@get('title'))
+          return true
+    false
 
-	didInsertElement: ->
-		title = Tent.I18n.loc(@get('title'))
-		@get('parentView').$('ul:first').append('<li><a href="#' + @get('elementId')+ '" data-toggle="tab">' + title + '</a></li>')
-		if @get('parentView.active') == @get('elementId')
-			@getTabWithHref(@get("parentView.active")).tab("show")
-
-	getTabWithHref: (href) ->
-		@get('parentView').$("a[href=#" + href + "]")
-
+  getTabWithHref: (href) ->
+    @get("parentView").$ "a[href=#" + href + "]"
+    
