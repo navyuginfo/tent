@@ -54,18 +54,18 @@ Tent.TabPane = Ember.View.extend
 	title: null
 	
 	###*
-  * The title will be updated from the bindings, but there is a race condition between the
-  * Instantiation of the view and change of title, now there are two cases
-  * 1) if the value is changed before this view is instantiated the observer
-  * will not fire because the value is set and will not change, in that case
-  * we would need to call the observer explicitely in the didInsertElement for
-  * this view to render that tab element.
-  * 2) if the value is set after this view is instantiated the observer will
-  * automatically fire and will render the required tab element, and once
-  * the value of the title is set, the observer won't do anything
-  ###
+	* The title will be updated from the bindings, but there is a race condition between the
+	* Instantiation of the view and change of title, now there are two cases
+	* 1) if the value is changed before this view is instantiated the observer
+	* will not fire because the value is set and will not change, in that case
+	* we would need to call the observer explicitely in the didInsertElement for
+	* this view to render that tab element.
+	* 2) if the value is set after this view is instantiated the observer will
+	* automatically fire and will render the required tab element, and once
+	* the value of the title is set, the observer won't do anything
+	###
 	didInsertElement:->
-    @updateTitle()
+	  @updateTitle()
   
   updateTitle: (->
     unless Ember.empty(@get("title"))
