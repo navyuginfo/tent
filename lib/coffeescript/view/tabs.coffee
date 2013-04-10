@@ -66,7 +66,6 @@ Tent.TabPane = Ember.View.extend
 	###
 	didInsertElement:->
 	  @updateTitle()
-  
   updateTitle: (->
     unless Ember.empty(@get("title"))
       title = Tent.I18n.loc(@get("title"))
@@ -76,7 +75,6 @@ Tent.TabPane = Ember.View.extend
         @getTabWithHref(@get("parentView.active")).tab "show"  if @get("parentView.active") is @get("elementId")
   ).observes("title")
   
-  
   ###*
   * This method checks whether there already exists an element with same href as the href of this 
   * view instance, if there is it will update the element's title and return true, so that it is not 
@@ -84,13 +82,12 @@ Tent.TabPane = Ember.View.extend
   ###
   exists: (href) ->
     list = @get("parentView").$("ul:first")[0].children
-    if list.length
-      for list_item in list
-        if list_item.children[0].getAttribute("href") is href
-          $(list_item.children[0]).html(@get('title'))
-          return true
+    for list_item in list
+      if list_item.children[0].getAttribute("href") is href
+        $(list_item.children[0]).html(@get('title'))
+        return true
     false
-
+    
   getTabWithHref: (href) ->
     @get("parentView").$ "a[href=#" + href + "]"
     
