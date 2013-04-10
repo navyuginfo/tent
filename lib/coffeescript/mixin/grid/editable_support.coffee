@@ -41,10 +41,13 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 	showEditableCells: ->
 		if @getTableDom()?
 			for id in @getTableDom().jqGrid('getDataIDs')
-				if @get('selectedIds').contains(id)
-					@editRow(id)
-				else
-					@restoreRow(id)
+				@showEditableCell(id)
+
+	showEditableCell: (id) ->
+		if @get('selectedIds').contains(id)
+			@editRow(id)
+		else
+			@restoreRow(id)
 
 	# Make all editable cells editable
 	editRow: (rowId) ->
