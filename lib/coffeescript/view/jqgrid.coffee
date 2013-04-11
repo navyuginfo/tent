@@ -172,7 +172,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@$('.gridpager').attr('id', @get('elementId') + '_pager')
 
 	getTableDom: ->
-		@$('#' + @get('tableId'))
+		if not @get('tableDom')?
+			@set('tableDom', @$('#' + @get('tableId')))
+		@get('tableDom')
 
 	getTopPagerId: ->
 		'#' + @get('tableId') + '_toppager_left'
@@ -283,12 +285,28 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	didSelectAll: (rowIds, status) ->
 		originalRowsIds = rowIds.filter(-> true)
-		for id in originalRowsIds
+		selectedIds = @get('selectedIds')
+		if @get('paged')
+			# We can optimise when we know all items are to be selected
+			for id in originalRowsIds
+				if status!=false
+					if !selectedIds.contains(id)
+						@selectItem(id)
+				else 
+					@deselectItem(id)
+		else
 			if status!=false
-				if !@get('selectedIds').contains(id)
-					@selectItem(id)
-			else 
-				@deselectItem(id)
+				@selectAllItems()
+				for id in originalRowsIds
+					#if !selectedIds.contains(id)
+						@highlightRow(id)
+						@editRow(id)
+			else
+				@clearSelection()
+				@restoreRows(originalRowsIds)
+
+	selectAllItems: ->
+		@set('selection', @get('content').filter(-> true))
 
 	clearSelection: ->
 		@get('selectedIds').clear()
@@ -297,7 +315,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	selectItem: (itemId) ->
 		@get('selection').pushObject(@getItemFromModel(itemId))
 		@highlightRow(itemId)
-		@showEditableCell(itemId)
+		@showEditableCell(itemId)  ## 4.5
 
 	deselectItem: (itemId) ->
 		@removeItemFromSelection(itemId)
@@ -309,8 +327,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			)
 		)
 
-	getItemFromModel: (id)->
-		for model in @get('content').toArray()
+	getItemFromModel: (id, contentArray)->  ## 2
+		# For performance: .toArray() is expensive for large collections
+		contentArray = contentArray or @get('content').toArray()
+		for model in contentArray
 			return model if model.get('id') == parseInt(id)
 
 	# A group was row was selected from the grid
@@ -684,40 +704,43 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@highlightRows()
 			@showEditableCells()
 		@validate() if doValidation
+		$.publish("/grid/rendered")
 
 	highlightRows: ()->
-		if @getTableDom()?
-			grid = @getTableDom().get(0)
-			if @getTableDom()?
-				for id in @getTableDom().jqGrid('getDataIDs')
-					if @get('multiSelect')
-						if (@isRowSelectedMultiSelect(id))
-							@getTableDom().jqGrid('setSelection', id, false)
-					else
-						if (@isRowSelectedSingleSelect(id))
-							@getTableDom().jqGrid('setSelection', id, false)
-					@$('#'+id).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"})
-				for item in @get('selectedIds')
-					@highlightRow(item)
-				@setSelectAllCheckbox(grid)
+		table = @getTableDom()
+		if table?
+			grid = table.get(0)
+			###for id in table.jqGrid('getDataIDs')
+				if @get('multiSelect')
+					if (@isRowSelectedMultiSelect(id, grid))
+						table.jqGrid('setSelection', id, false)
+				else
+					if (@isRowSelectedSingleSelect(id, grid))
+						table.jqGrid('setSelection', id, false)
+				#@$('#'+id).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"})
+			###
+			for item in @get('selectedIds')
+				@highlightRow(item)
+			@setSelectAllCheckbox(grid)
 
-	isRowSelectedMultiSelect: (id)->
+	isRowSelectedMultiSelect: (id, grid)->
 		# Is the row registered as selected within jqGrid
-		this.getTableDom().get(0).p.selarrrow.contains(id)
+		grid.p.selarrrow.contains(id)
 
-	isRowSelectedSingleSelect: (id)->
+	isRowSelectedSingleSelect: (id, grid)->
 		# Is the row registered as selected within jqGrid
-		this.getTableDom().get(0).p.selrow == id
+		grid.p.selrow == id
 	
 	highlightRow: (id)->
-		if @getTableDom()?
+		table = @getTableDom()
+		if table?
 			if @get('multiSelect')
-				if not @isRowSelectedMultiSelect(id)
-					@getTableDom().jqGrid('setSelection', id, false)
+				if not @isRowSelectedMultiSelect(id, table.get(0))
+					table.jqGrid('setSelection', id, false)
 			else
-				if not @isRowSelectedSingleSelect(id)
-					@getTableDom().jqGrid('setSelection', id, false)
-			@$('#'+id).addClass("ui-state-highlight").attr({"aria-selected":"true", "tabindex" : "0"});
+				if not @isRowSelectedSingleSelect(id, table.get(0))
+					table.jqGrid('setSelection', id, false)
+			#@$('#'+id).addClass("ui-state-highlight").attr({"aria-selected":"true", "tabindex" : "0"});
 
 	unHighlightAllRows: (->
 		if (@get("clearAction") &&  @getTableDom()?)

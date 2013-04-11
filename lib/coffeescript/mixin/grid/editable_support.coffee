@@ -60,9 +60,31 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 			@saveEditedRow(rowId)
 			@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
 
+	restoreRows: (ids)->
+		tableDom = @getTableDom()
+		savedRows = tableDom[0].p.savedRow.filter(-> true)
+		# For performance
+		contentArray = @get('content').toArray()
+		onRestoreRow = @get('onRestoreRow')
+		for row in savedRows
+			rowId = row.id
+			tableDom.jqGrid('restoreRow', rowId)
+			@cancelEditedRow(rowId, contentArray)
+			#@saveEditedRow(rowId)
+			onRestoreRow.call(@, rowId, tableDom) if onRestoreRow?
+
+	# Revert to the previous value
+	cancelEditedRow: (rowId, contentArray)->
+		rowData = @getTableDom().getRowData(rowId)
+		model = @getItemFromModel(rowId, contentArray)
+		for col in @getColModel()
+			if col.editable
+				model.set(col.name, rowData[col.name])
+
 	isRowCurrentlyEditing: (rowId)->
 		isEditing = false
-		for row in @getTableDom()[0].p.savedRow
+		savedRow = @getTableDom()[0].p.savedRow
+		for row in savedRow
 			if row.id == rowId
 				isEditing = true
 		isEditing
