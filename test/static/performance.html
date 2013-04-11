@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="stylesheet/bootstrap.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/ui.jqgrid.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/jquery-ui-1.9.2.custom.css" type="text/css" media="screen" />
+    
+    <!-- link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" / -->
+
+    <!-- Begin playing, "The March of the Dependencies!" -->
+    <script src="javascript/minispade.js" type="text/javascript"></script> 
+    <script src="javascript/jquery.js" type="text/javascript"></script>
+    <script src="javascript/modernizr.js" type="text/javascript"></script>
+    <script src="javascript/handlebars.js" type="text/javascript"></script>
+    <script src="javascript/ember.js" type="text/javascript"></script>
+    <script src="javascript/ember-data.js" type="text/javascript"></script>
+    <script src="javascript/bootstrap.js" type="text/javascript"></script>
+    <script src="javascript/jquery-ui.js" type="text/javascript"></script>
+    <script src="javascript/jqGrid.js" type="text/javascript"></script>
+    <script src="javascript/accounting.js" type="text/javascript"></script>
+    <script src="javascript/date.js" type="text/javascript"></script>
+    <script src="javascript/date-range.js" type="text/javascript"></script>
+    <script src="javascript/pubsub.js" type="text/javascript"></script>
+    <script src="javascript/tent.js" type="text/javascript"></script>
+    <script src="javascript/tent-tests.js" type="text/javascript"></script>
+    <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
+    <!--[if lte IE 7]>
+      <script src="javascript/eventlistener-polyfill.js" type="text/javascript"></script>
+    <![endif]-->
+
+    <style>
+      row{
+        margin: 20px;
+      }
+
+      .timer {
+        width: 20em;
+      }
+
+      .form-inline .checkbox input[type="checkbox"] {
+        float: none;
+        margin: 0px 15px 6px 3px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <script type="text/javascript">
+        
+      $(document).ready(function() {
+
+        function timeReload(model) {
+          var grid1 = Ember.View.views[$('.grid1').attr('id')];
+          $.subscribe("/grid/rendered", function(){
+            $('.timeTaken').text((Date.now() - start)/1000);
+          });
+          var start = Date.now();
+          grid1.set('content', Pad[model]);  
+          return false;
+        }
+
+        $('.clear').bind('click',function () {
+          $.unsubscribe("/grid/rendered");
+          timeReload('model0');
+          return false;
+        }); 
+        $('.100').bind('click',function () {
+          timeReload('model100');
+        }); 
+        $('.200').bind('click',function () {
+          timeReload('model200');
+        }); 
+        $('.500').bind('click',function () {
+          timeReload('model500');
+        }); 
+        $('.1000').bind('click',function () {
+          timeReload('model1000');
+        }); 
+        $('.2000').bind('click',function () {
+          timeReload('model2000');
+        }); 
+
+      });
+
+    </script>
+
+
+    <div class="container-fluid">
+      <row>
+        <script type="text/x-handlebars" data-template-name="application">
+          
+                <div class="well">
+                  <div class="btn-toolbar">
+                    <button class="clear btn">Clear</button>
+                    <div class="btn-group">
+                      <button class="100 btn"><i class="icon-play"></i> 100</button>
+                      <button class="200 btn"><i class="icon-play"></i> 200</button>
+                      <button class="500 btn"><i class="icon-play"></i> 500</button>
+                      <button class="1000 btn"><i class="icon-play"></i> 1000</button>
+                    </div>
+                    <h4 class="pull-right timer"><i class="icon-time"></i>Time = <span class="timeTaken"></span></h4>
+                  </div>
+                </div>
+
+             
+              {{#view Tent.Panel span="12" }}
+                <div class="settings pull-right">
+                      {{#view Tent.Form formStyle="inline"}}
+                        {{view Tent.Checkbox label="_multiSelect" checkedBinding="Pad.isMultiselect"}}
+                        {{view Tent.Checkbox label="_isEditable" checkedBinding="Pad.isEditable"}}
+                        {{view Tent.Checkbox label="_showGrid" checkedBinding="Pad.showGrid"}}
+                      {{/view}}
+                    </div>
+                {{#view Tent.Form name="Tables and Grids" id="table-section"}}
+
+                    <h4>jqGrid</h4>
+
+                     
+                    <h5>Remote Paging, Sorting, Filtering</h5>
+                    
+                    {{#if Pad.showGrid}}
+                     {{view Tent.JqGrid
+                        class="grid1"
+                        label="Tasks"
+                        collectionBinding="Pad.jqRemoteCollection"
+                        contentBinding= "Pad.Models.TaskModel.FIXTURES"
+                        selectionBinding="Pad.jqGridSelection"
+                        fixedHeader=false
+                        showMaximizeButton=true
+                        paged=false
+                        pageSize=6
+                        remotePaging=false
+                        multiSelectBinding="Pad.isMultiselect"
+                        useColumnFilters=false
+                        showColumnChooser=true
+                        isEditableBinding="Pad.isEditable"
+                        onEditRowBinding="Pad.jqOnEditRow"
+                        onRestoreRowBinding="Pad.jqOnRestoreRow"
+                        onSaveCellBinding="Pad.jqOnSaveCell"
+                        required=true
+                        resizeGridSteps=false
+                        remoteGrouping=true
+                        filtering=true
+                      }}
+                    {{else}}
+                      <h5>Not showing grid..</h5>
+
+                    {{/if}}
+                      
+                {{/view}}  
+              {{/view}}
+        </script>
+
+        <script>
+          minispade.require('tent');
+          minispade.require('coffeescript/initialize');
+          minispade.require('coffeescript/initializePerformanceData');
+        </script>
+      </row>
+    </div>
+  </body>
+</html>

@@ -43,6 +43,9 @@
 	Pad.isDisabled = false
 	Pad.textDisplay = false
 	Pad.isFilter = false
+	Pad.isMultiselect = true
+	Pad.isEditable = false
+	Pad.showGrid = true
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
 	Pad.currencies = ['USD','JPY','XXX','CNY', 'YYY']
 	Pad.changingCurrency = 'XXX'
@@ -328,5 +331,6 @@
 		#alert('cancel outer.')
 	Pad.clickCancelInner = ->
 		#alert('cancel inner.')
+
 
 )(minispade)
