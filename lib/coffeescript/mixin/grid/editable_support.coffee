@@ -96,21 +96,24 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 
 	saveEditedRow: (rowId, status, options)->
 		rowData = @getTableDom().getRowData(rowId)
+		modelItem = @getItemFromModel(rowId)
 		for col in @getColModel()
 			if col.editable
-				@saveEditedCell(rowId, col.name, rowData[col.name])
+				@saveEditedCell(rowId, col.name, rowData[col.name], null, null, null, modelItem)
 
-	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
+	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell, modelItem) ->
+		modelItem = modelItem or @getItemFromModel(rowId)
+
 		# Need to unformat/validate the value before saving 
 		formatter = @getTableDom().getColProp(cellName).formatter
 		#if formatter?
 		if $.fn.fmatter[formatter]?
 			if cell?
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
+				modelItem.set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
 			else
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
+				modelItem.set(cellName, $.fn.fmatter[formatter].unformat(value))
 		else 
-			@getItemFromModel(rowId).set(cellName, value)
+			modelItem.set(cellName, value)
 		#@getTableDom().triggerHandler()
 
 	# Called by a cell widget on blur or change
