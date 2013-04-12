@@ -172,9 +172,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@$('.gridpager').attr('id', @get('elementId') + '_pager')
 
 	getTableDom: ->
-		if not @get('tableDom')?
-			@set('tableDom', @$('#' + @get('tableId')))
-		@get('tableDom')
+		@$('#' + @get('tableId'))
 
 	getTopPagerId: ->
 		'#' + @get('tableId') + '_toppager_left'
@@ -266,12 +264,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@selectItemMultiSelect(itemId, status)
 			
 	setInitialViewRecordsAttribute:()->
-    ###
-    * Set initial value of viewrecords to be false so that the text "no records to view" does not
-    * appear when page is refreshed or is first visited, this was not possible in initial definition
-    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
-    ###
-    @getTableDom()[0].p.viewrecords = false
+	    ###
+	    * Set initial value of viewrecords to be false so that the text "no records to view" does not
+	    * appear when page is refreshed or is first visited, this was not possible in initial definition
+	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
+	    ###
+	    @getTableDom()[0].p.viewrecords = false
   
 	selectItemSingleSelect: (itemId) ->
     	@clearSelection()
@@ -328,10 +326,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		)
 
 	getItemFromModel: (id, contentArray)->  ## 2
-		# For performance: .toArray() is expensive for large collections
-		contentArray = contentArray or @get('content').toArray()
-		for model in contentArray
-			return model if model.get('id') == parseInt(id)
+		intValue = parseInt(id)
+		@get('content').find((item)->
+			item.get('id') == intValue
+		)
 
 	# A group was row was selected from the grid
 	didSelectGroup: (itemId, status, e)->
