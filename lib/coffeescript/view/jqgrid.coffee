@@ -298,9 +298,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	selectItem: (itemId) ->
 		@get('selection').pushObject(@getItemFromModel(itemId))
+		@highlightRow(itemId)
+		@showEditableCell(itemId)
 
 	deselectItem: (itemId) ->
 		@removeItemFromSelection(itemId)
+		@restoreRow(itemId)
 
 	removeItemFromSelection: (id)->
 		@set('selection', @get('selection').filter((item, index)->
@@ -311,7 +314,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	getItemFromModel: (id)->
 		for model in @get('content').toArray()
 			return model if model.get('id') == parseInt(id)
-
 
 	# A group was row was selected from the grid
 	didSelectGroup: (itemId, status, e)->
@@ -665,7 +667,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->
-		@updateGrid(true)
+		#@updateGrid(true)
 	).observes('selection.@each')
 
 	selectedIds: (->
