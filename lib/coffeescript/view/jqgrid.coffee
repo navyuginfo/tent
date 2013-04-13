@@ -187,8 +187,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		@getTableDom().jqGrid({
 			parentView: widget
+			###
+      * If query is going to be made set the viewrecords to false till the content of asked page is fetched
+      * so that the text "no records to view" does not appear.
+      ### 
 			datatype: (postdata) ->
-				widget.onPageOrSort(postdata)
+			  widget.getTableDom()[0].p.viewrecords = false
+			  widget.onPageOrSort(postdata)
 			height: @get('height') or 'auto',
 			colNames: @get('colNames'),
 			colModel: @get('columnModel'),
@@ -236,13 +241,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			,
 			onSelectGroup: (itemId, status, e) ->
 				widget.didSelectGroup(itemId, status, e)
-			,
-			###
-			* while paging set the viewrecords to false till the content of asked page is fetched
-			* so that the text "no records to view" does not appear.
-			### 
-			onPaging:(button)->
-				widget.getTableDom()[0].p.viewrecords = false
 			,
 			onSelectAll: (rowIds, status) ->
 				widget.didSelectAll(rowIds, status)
