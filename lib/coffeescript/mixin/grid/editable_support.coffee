@@ -60,9 +60,31 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 			@saveEditedRow(rowId)
 			@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
 
+	restoreRows: (ids)->
+		tableDom = @getTableDom()
+		savedRows = tableDom[0].p.savedRow.filter(-> true)
+		# For performance
+		contentArray = @get('content').toArray()
+		onRestoreRow = @get('onRestoreRow')
+		for row in savedRows
+			rowId = row.id
+			tableDom.jqGrid('restoreRow', rowId)
+			@cancelEditedRow(rowId, contentArray)
+			#@saveEditedRow(rowId)
+			onRestoreRow.call(@, rowId, tableDom) if onRestoreRow?
+
+	# Revert to the previous value
+	cancelEditedRow: (rowId, contentArray)->
+		rowData = @getTableDom().getRowData(rowId)
+		model = @getItemFromModel(rowId, contentArray)
+		for col in @getColModel()
+			if col.editable
+				model.set(col.name, rowData[col.name])
+
 	isRowCurrentlyEditing: (rowId)->
 		isEditing = false
-		for row in @getTableDom()[0].p.savedRow
+		savedRow = @getTableDom()[0].p.savedRow
+		for row in savedRow
 			if row.id == rowId
 				isEditing = true
 		isEditing
@@ -74,21 +96,24 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 
 	saveEditedRow: (rowId, status, options)->
 		rowData = @getTableDom().getRowData(rowId)
+		modelItem = @getItemFromModel(rowId)
 		for col in @getColModel()
 			if col.editable
-				@saveEditedCell(rowId, col.name, rowData[col.name])
+				@saveEditedCell(rowId, col.name, rowData[col.name], null, null, null, modelItem)
 
-	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell) ->
+	saveEditedCell: (rowId, cellName, value, iRow, iCell, cell, modelItem) ->
+		modelItem = modelItem or @getItemFromModel(rowId)
+
 		# Need to unformat/validate the value before saving 
 		formatter = @getTableDom().getColProp(cellName).formatter
 		#if formatter?
 		if $.fn.fmatter[formatter]?
 			if cell?
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
+				modelItem.set(cellName, $.fn.fmatter[formatter].unformat(null, {}, cell))
 			else
-				@getItemFromModel(rowId).set(cellName, $.fn.fmatter[formatter].unformat(value))
+				modelItem.set(cellName, $.fn.fmatter[formatter].unformat(value))
 		else 
-			@getItemFromModel(rowId).set(cellName, value)
+			modelItem.set(cellName, value)
 		#@getTableDom().triggerHandler()
 
 	# Called by a cell widget on blur or change

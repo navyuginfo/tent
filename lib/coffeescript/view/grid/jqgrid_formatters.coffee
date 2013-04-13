@@ -175,6 +175,17 @@ Tent.JqGrid.editTypes =
 
 Tent.JqGrid.editOptions =
 	'amount': {
+		dataInit: (elem)->
+			$(elem).css('text-align','right') #Make this a style change!
+			#field.trigger('focus')
+			$(elem).keypress (event) ->
+				charCode = (if (event.which) then event.which else event.keyCode)
+				if charCode isnt 46 and charCode > 31 and (charCode < 48 or charCode > 57)
+					false
+				else
+					true
+
+
 		dataEvents: [
 			{ 
 				type: 'keyup', 
