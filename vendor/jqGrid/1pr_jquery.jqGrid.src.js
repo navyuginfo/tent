@@ -1478,7 +1478,12 @@ $.fn.jqGrid = function( pin ) {
 			if( ts.p.treeGrid === true) {
 				try {$(ts).jqGrid("setTreeNode", fpos+1, ir+fpos+1);} catch (e) {}
 			}
-			if(!ts.p.treeGrid && !ts.p.scroll) {ts.grid.bDiv.scrollTop = 0;}
+			/*
+				PR: scrollTop is badly performant on large grids.
+				Avoid this line if there are > 100 records.
+			*/
+			if(!ts.p.treeGrid && !ts.p.scroll && ts.p.records < 100) {ts.grid.bDiv.scrollTop = 0;}
+			
 			ts.p.reccount=ir;
 			ts.p.treeANode = -1;
 			if(ts.p.userDataOnFooter) { $(ts).jqGrid("footerData","set",ts.p.userData,true); }
