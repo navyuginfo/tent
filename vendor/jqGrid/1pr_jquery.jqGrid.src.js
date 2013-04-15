@@ -9095,7 +9095,11 @@ $.jgrid.extend({
 				if(cnt > 0) {
 					svr.id = rowid; $t.p.savedRow.push(svr);
 					$(ind).attr("editable","1");
+					/* PR: 
+						Focus performs badly on large grids.
+						Refactor this.
 					$("td:eq("+focus+") input",ind).focus();
+					*/
 					if(o.keys===true) {
 						$(ind).bind("keydown",function(e) {
 							if (e.keyCode === 27) {
