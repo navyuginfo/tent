@@ -152,3 +152,11 @@ Tent.Footer = Ember.View.extend Tent.SpanSupport,
 	tagName: 'footer' 
 	classNameBindings: ['spanClass']
 	layout: Ember.Handlebars.compile '{{yield}}'
+
+	didInsertElement: ->
+		# Ensure that if a footer is added after the content, that the content resizes.
+		section = @.$().parent('section')
+		content = section.children('.content')
+		if content.length > 0
+			Ember.View.views[content.attr('id')].resize()
+
