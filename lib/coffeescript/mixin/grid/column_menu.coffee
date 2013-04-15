@@ -9,7 +9,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 				column.renamable = not (column.renamable? && column.renamable ==false)
 				column.sortable = not (column.sortable? && column.sortable ==false)
 
-				if column.groupable or column.renamable or column.sortable
+				if column.groupable or column.renamable or column.sortable or @get('customColumnMenu')
 					template = Handlebars.compile '
 						 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">
 								{{#if column.sortable}}
@@ -65,6 +65,8 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 					$(columnDivId + ' .title').after template(context)
 					$(columnDivId + ' .title').addClass('has-dropdown').attr('data-toggle','dropdown').append('<span class="dropdown-mask"><i class="icon-chevron-down"></i></span>')
 
+
+			@addCustomColumnMenu()
 			@leftAlignLastDropdown()
 			@groupByColumnBindings()
 			@renameColumnHeaderBindings()
@@ -73,6 +75,21 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
 		$(columnDivId + ' .title' ).dropdown('toggle')
+
+	addCustomColumnMenu: ->
+		if @get('customColumnMenu')?
+			for menu in @get('customColumnMenu')
+				columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + menu.columnName
+				menuItem = $("""
+					<li class="#{menu.className}">
+						<a tabindex="-1">#{Tent.I18n.loc menu.label}</a>
+					</li>
+				""")
+				$(columnDivId + ' .column-dropdown').append(menuItem)
+				menuItem.click(=>
+					menu.action.call(@, menu.columnName)
+				)
+
 
 	leftAlignLastDropdown: ->
 		if @.$('.ui-jqgrid-htable').length > 0

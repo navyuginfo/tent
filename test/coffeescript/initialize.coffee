@@ -333,4 +333,15 @@
 		#alert('cancel inner.')
 
 
+	Pad.customColumnMenu = [
+		{
+			columnName: "duration",
+			label: "Change Name",
+			className: "my-classname",
+			action: (columnName) ->
+				alert('triggered: ' + columnName + "  " + this.get('elementId'));
+		}
+	]
+
+
 )(minispade)

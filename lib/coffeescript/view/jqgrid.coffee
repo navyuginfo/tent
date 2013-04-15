@@ -105,6 +105,28 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	###
 	selection: []
 
+	###*
+	* @property {Object} customColumnMenu An array of objects which represent menu items to be added to the 
+	* column menus. 
+	* 
+	* Each item in the array should define a column name, label, and a callback function to call 
+	* when the item is selected. The callback will be called in the context of the jqGrid view, and will be passed the 
+	* name of the column to which it is targetted
+	* A className may also be provided, and will be added to the menu <li>
+	*
+	* e.g. 
+	* customMenus = [
+		{
+			columnName: "duration",
+			label: "Change Name",
+			className: "popout",
+			action: (columnName) ->
+				alert('triggered: ' + columnName + " for grid with ID: " + this.get('elementId'));
+		}
+	]
+	###
+	customColumnMenu: null
+
 	resizeGridSteps: true
 	resizeSpeed: 700
 
