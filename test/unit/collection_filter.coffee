@@ -7,6 +7,7 @@ setup = ->
 		getURL: ->
 		saveFilter: ->
 		setSelectedFilter: ->
+		doFilter: ->
 		columnsDescriptor: [
 			{id: "id", name: "id", title: "_hID", field: "id", sortable: true},
 			{id: "title", name: "title", title: "_hTitle", field: "title", sortable: true}
@@ -81,14 +82,14 @@ test 'All filterable fields have properties in the current filter', ->
 ###
 
 test 'Filter', ->
-	sinon.spy(collection, "filter")
+	sinon.spy(collection, "doFilter")
 	filter = Tent.CollectionFilter.create
 		collection: collection
 	filter.closeFilterPanel = ->
 
 	filter.filter()
-	ok collection.filter.calledOnce
-	equal collection.filter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
+	ok collection.doFilter.calledOnce
+	equal collection.doFilter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
 
 test 'Save Filter', ->
 	sinon.spy(collection, "saveFilter")

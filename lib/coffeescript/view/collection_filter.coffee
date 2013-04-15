@@ -102,7 +102,7 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
     @set('dropdownSelection', {name: @get('currentFilter').name, label:@get('currentFilter').label})
-    @closeFilterPanel()
+    #@closeFilterPanel()
     return true
 
   newFilter: ->
