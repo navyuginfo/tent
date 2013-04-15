@@ -50,7 +50,7 @@ test 'Ensure Tent.Select renders for list', ->
   ok view.$().length, 'Select was rendered'
   equal view.$('option').length, Application.content.length + 1,  'Options were rendered'
   equal view.get('selection'), null, 'Nothing has been selected'
-  equal view.$('label.control-label').text(), view.get('label'), 'label is rendered'
+  equal view.$('label.control-label').text().trim(), view.get('label'), 'label is rendered'
   equal view.$('label.control-label').attr('for'), view.$('select').attr('id'), 'label has the correct "for" attribute'
 
   # add a new object to the list and see if the select holds that object 

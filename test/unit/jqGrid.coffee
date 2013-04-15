@@ -24,6 +24,7 @@ setup = ->
 	@collection = Ember.ArrayController.create
 		paged: true
 		content: row_data
+		personalizable: true
 		goToPage: ->
 		sort: ->
 		getURL: ->
@@ -385,11 +386,13 @@ test 'Sorting data collection binding', ->
 
 	 
 test 'Column info bound to collection', ->
+	
+
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
 	          label="Tasks"
-	          columnsBinding="columns"
 	          collectionBinding="collection"
+	          columnsBinding="columns"
 	          multiSelect=true
 	          required=true
 	          selection=selection
@@ -402,6 +405,7 @@ test 'Column info bound to collection', ->
 
 	collection.set('columnInfo.hidden.title', true)
 	collection.set('columnInfo.hidden.id', false)
+	collection.set('columnsDescriptor', column_data)
 
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
