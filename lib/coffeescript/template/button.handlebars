@@ -1,6 +1,7 @@
 <div 	{{bindAttr class="view.classes view.buttonClass"}}
 		{{action triggerAction target="view"}}
 		{{bindAttr data-toggle="view.dataToggle"}}
+    {{bindAttr disabled="view.isDisabled"}}
 		role="button"
 		>
   <i {{bindAttr class="view.iconClass"}}></i> {{view.localizedLabel}}
