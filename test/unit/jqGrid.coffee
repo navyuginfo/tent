@@ -4,7 +4,13 @@ appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 setup = ->
 	Tent.Date.getAbbreviatedTZFromDate = (date)->
 		return "TMP"
+	
+	@origFormat = Tent.Formatting.date.format
+	Tent.Formatting.date.format = ->
+		"01/01/2013"
 
+	Date.CultureInfo={name:"en-US",englishName:"English (United States)",nativeName:"English (United States)",dayNames:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],abbreviatedDayNames:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],shortestDayNames:["Su","Mo","Tu","We","Th","Fr","Sa"],firstLetterDayNames:["S","M","T","W","T","F","S"],monthNames:["January","February","March","April","May","June","July","August","September","October","November","December"],abbreviatedMonthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],amDesignator:"AM",pmDesignator:"PM",firstDayOfWeek:0,twoDigitYearMax:2029,dateElementOrder:"mdy",formatPatterns:{shortDate:"M/d/yyyy",longDate:"dddd, MMMM dd, yyyy",shortTime:"h:mm tt",longTime:"h:mm:ss tt",fullDateTime:"dddd, MMMM dd, yyyy h:mm:ss tt",sortableDateTime:"yyyy-MM-ddTHH:mm:ss",universalSortableDateTime:"yyyy-MM-dd HH:mm:ssZ",rfc1123:"ddd, dd MMM yyyy HH:mm:ss GMT",monthDay:"MMMM dd",yearMonth:"MMMM, yyyy"},regexPatterns:{jan:/^jan(uary)?/i,feb:/^feb(ruary)?/i,mar:/^mar(ch)?/i,apr:/^apr(il)?/i,may:/^may/i,jun:/^jun(e)?/i,jul:/^jul(y)?/i,aug:/^aug(ust)?/i,sep:/^sep(t(ember)?)?/i,oct:/^oct(ober)?/i,nov:/^nov(ember)?/i,dec:/^dec(ember)?/i,sun:/^su(n(day)?)?/i,mon:/^mo(n(day)?)?/i,tue:/^tu(e(s(day)?)?)?/i,wed:/^we(d(nesday)?)?/i,thu:/^th(u(r(s(day)?)?)?)?/i,fri:/^fr(i(day)?)?/i,sat:/^sa(t(urday)?)?/i,future:/^next/i,past:/^last|past|prev(ious)?/i,add:/^(\+|after|from)/i,subtract:/^(\-|before|ago)/i,yesterday:/^yesterday/i,today:/^t(oday)?/i,tomorrow:/^tomorrow/i,now:/^n(ow)?/i,millisecond:/^ms|milli(second)?s?/i,second:/^sec(ond)?s?/i,minute:/^min(ute)?s?/i,hour:/^h(ou)?rs?/i,week:/^w(ee)?k/i,month:/^m(o(nth)?s?)?/i,day:/^d(ays?)?/i,year:/^y((ea)?rs?)?/i,shortMeridian:/^(a|p)/i,longMeridian:/^(a\.?m?\.?|p\.?m?\.?)/i,timezone:/^((e(s|d)t|c(s|d)t|m(s|d)t|p(s|d)t)|((gmt)?\s*(\+|\-)\s*\d\d\d\d?)|gmt)/i,ordinalSuffix:/^\s*(st|nd|rd|th)/i,timeContext:/^\s*(\:|a|p)/i},abbreviatedTimeZoneStandard:{GMT:"-000",EST:"-0400",CST:"-0500",MST:"-0600",PST:"-0700"},abbreviatedTimeZoneDST:{GMT:"-000",EDT:"-0500",CDT:"-0600",MDT:"-0700",PDT:"-0800"}};
+	
 	@TemplateTests = Ember.Namespace.create()
 	Ember.run ->
 		@dispatcher = Ember.EventDispatcher.create()
@@ -30,6 +36,7 @@ setup = ->
 		getURL: ->
 		clearGrouping: ->
 		goToGroupPage: ->
+		columnsDescriptor: column_data
 		pagingInfo: 
 			pageSize: 1
 			page: 1
@@ -63,6 +70,7 @@ teardown = ->
 	@row_data = null
 	@column_data = null
 	@collection = null
+	Tent.Formatting.date.format = @origFormat
 
 module 'Tent.JqGrid', setup, teardown
 
@@ -296,13 +304,13 @@ test 'Error Cell', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
 	          label="Tasks"
+	          collectionBinding="collection"
 	          columnsBinding="columns"
-	          contentBinding="row_data"
 	          multiSelect=true
 	          required=true
 	          selection=selection
 	    }}'
-		row_data: row_data
+	    collection: collection
 		columns: column_data
 		selection: []
 
@@ -318,7 +326,6 @@ test 'Error Cell', ->
 test 'Paging data collection binding', ->
 	# Hack to get the date formatting working
 	# For some reason the Date prototype is being reset somewhere.
-	Date.CultureInfo={name:"en-US",englishName:"English (United States)",nativeName:"English (United States)",dayNames:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],abbreviatedDayNames:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],shortestDayNames:["Su","Mo","Tu","We","Th","Fr","Sa"],firstLetterDayNames:["S","M","T","W","T","F","S"],monthNames:["January","February","March","April","May","June","July","August","September","October","November","December"],abbreviatedMonthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],amDesignator:"AM",pmDesignator:"PM",firstDayOfWeek:0,twoDigitYearMax:2029,dateElementOrder:"mdy",formatPatterns:{shortDate:"M/d/yyyy",longDate:"dddd, MMMM dd, yyyy",shortTime:"h:mm tt",longTime:"h:mm:ss tt",fullDateTime:"dddd, MMMM dd, yyyy h:mm:ss tt",sortableDateTime:"yyyy-MM-ddTHH:mm:ss",universalSortableDateTime:"yyyy-MM-dd HH:mm:ssZ",rfc1123:"ddd, dd MMM yyyy HH:mm:ss GMT",monthDay:"MMMM dd",yearMonth:"MMMM, yyyy"},regexPatterns:{jan:/^jan(uary)?/i,feb:/^feb(ruary)?/i,mar:/^mar(ch)?/i,apr:/^apr(il)?/i,may:/^may/i,jun:/^jun(e)?/i,jul:/^jul(y)?/i,aug:/^aug(ust)?/i,sep:/^sep(t(ember)?)?/i,oct:/^oct(ober)?/i,nov:/^nov(ember)?/i,dec:/^dec(ember)?/i,sun:/^su(n(day)?)?/i,mon:/^mo(n(day)?)?/i,tue:/^tu(e(s(day)?)?)?/i,wed:/^we(d(nesday)?)?/i,thu:/^th(u(r(s(day)?)?)?)?/i,fri:/^fr(i(day)?)?/i,sat:/^sa(t(urday)?)?/i,future:/^next/i,past:/^last|past|prev(ious)?/i,add:/^(\+|after|from)/i,subtract:/^(\-|before|ago)/i,yesterday:/^yesterday/i,today:/^t(oday)?/i,tomorrow:/^tomorrow/i,now:/^n(ow)?/i,millisecond:/^ms|milli(second)?s?/i,second:/^sec(ond)?s?/i,minute:/^min(ute)?s?/i,hour:/^h(ou)?rs?/i,week:/^w(ee)?k/i,month:/^m(o(nth)?s?)?/i,day:/^d(ays?)?/i,year:/^y((ea)?rs?)?/i,shortMeridian:/^(a|p)/i,longMeridian:/^(a\.?m?\.?|p\.?m?\.?)/i,timezone:/^((e(s|d)t|c(s|d)t|m(s|d)t|p(s|d)t)|((gmt)?\s*(\+|\-)\s*\d\d\d\d?)|gmt)/i,ordinalSuffix:/^\s*(st|nd|rd|th)/i,timeContext:/^\s*(\:|a|p)/i},abbreviatedTimeZoneStandard:{GMT:"-000",EST:"-0400",CST:"-0500",MST:"-0600",PST:"-0700"},abbreviatedTimeZoneDST:{GMT:"-000",EDT:"-0500",CDT:"-0600",MDT:"-0700",PDT:"-0800"}};
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
@@ -475,8 +482,8 @@ test 'Column Width info bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
 	          label="Tasks"
-	          columnsBinding="columns"
 	          collectionBinding="collection"
+	          columnsBinding="columns"
 	          multiSelect=true
 	          required=true
 	          selection=selection
@@ -487,6 +494,7 @@ test 'Column Width info bound to collection', ->
 		columns: column_data
 		selection: []
 
+	debugger;
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 
@@ -504,8 +512,8 @@ test 'Column Ordering bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
 	          label="Tasks"
-	          columnsBinding="columns"
 	          collectionBinding="collection"
+	          columnsBinding="columns"
 	          multiSelect=true
 	          required=true
 	          selection=selection
@@ -516,31 +524,28 @@ test 'Column Ordering bound to collection', ->
 		columns: column_data
 		selection: []
 
-	collection.set('columnInfo.order.id', 2)
-	collection.set('columnInfo.order.title', 1)
+	collection.get('columnInfo.order')[1] = 2
+	collection.get('columnInfo.order')[2] = 1
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 	
-	equal gridView.columnInfo.order.id, 2,'Collection order has been reflected in the grid info: id'
-	equal gridView.columnInfo.order.title, 1,'Collection order has been reflected in the grid info: title'	
-
 	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'values made it to the grid colmodel'
 	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'values made it to the grid colmodel'
 	
 	# Change ordering
 	gridView.getTableDom().remapColumns([0,1,2], true, false)
 		# the remap defines the position of the item that was at the current index previously
-	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
-	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'remap title'
+	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'remap id'
 
 	# Change ordering
 	gridView.getTableDom().remapColumns([0,2,1], true, false)
-	equal gridView.columnInfo.order.id, 1,'grid order has been reflected in the collection info: id'
-	equal gridView.columnInfo.order.title, 2,'grid order has been reflected in the collection info: title'
+	equal gridView.getTableDom().get(0).p.colModel[1].name, 'id', 'remap title to id'
+	equal gridView.getTableDom().get(0).p.colModel[2].name, 'title', 'remap id to title'
 
 	# Change ordering
 	gridView.getTableDom().remapColumns([0,2,1], true, false)
-	equal gridView.columnInfo.order.id, 2,'grid order has been reflected in the collection info: id'
-	equal gridView.columnInfo.order.title, 1,'grid order has been reflected in the collection info: title'
+	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'remap title back'
+	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'remap id back'
 	 
 
