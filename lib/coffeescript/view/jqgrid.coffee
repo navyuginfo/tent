@@ -283,22 +283,24 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		selectedIds = @get('selectedIds')
 		if @get('paged')
 			# We can optimise when we know all items are to be selected
-			for id in originalRowsIds
-				if status!=false
-					if !selectedIds.contains(id)
-						@selectItem(id)
-				else 
-					@deselectItem(id)
+			if status!=false
+				@selectAllItems()
+				#for id in originalRowsIds
+				#	if !selectedIds.contains(id)
+				#		@selectItem(id)
+			else 
+				@clearSelection()
+				@restoreRows(originalRowsIds) # maybe not necessary
 		else
 			if status!=false
 				@selectAllItems()
-				for id in originalRowsIds
+				#for id in originalRowsIds
 					#if !selectedIds.contains(id)
-						@highlightRow(id)
-						@editRow(id)
+						#@highlightRow(id)
+						#@editRow(id)
 			else
 				@clearSelection()
-				@restoreRows(originalRowsIds)
+				@restoreRows(originalRowsIds) # maybe not necessary
 
 	selectAllItems: ->
 		@set('selection', @get('content').filter(-> true))
@@ -308,12 +310,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	selectItem: (itemId) ->
 		@get('selection').pushObject(@getItemFromModel(itemId))
-		@highlightRow(itemId)
-		@showEditableCell(itemId)  ## 4.5
+		#@highlightRow(itemId)
+		#@showEditableCell(itemId)  ## 4.5
 
 	deselectItem: (itemId) ->
 		@removeItemFromSelection(itemId)
-		@restoreRow(itemId)
+		#@restoreRow(itemId)
 
 	removeItemFromSelection: (id)->
 		@set('selection', @get('selection').filter((item, index)->
@@ -682,7 +684,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		#this.getTableDom()[0].p.groupingView.groups=[]
 
 	selectionDidChange: (->
-		#@updateGrid(true)
+		@updateGrid()
 	).observes('selection.@each')
 
 	selectedIds: (->
@@ -698,6 +700,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	updateGrid: (doValidation)->
 		if @getTableDom()?
+			@unHighlightAllRows()
 			@highlightRows()
 			@showEditableCells()
 		@validate() if doValidation
@@ -707,17 +710,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		table = @getTableDom()
 		if table?
 			grid = table.get(0)
-			###for id in table.jqGrid('getDataIDs')
-				if @get('multiSelect')
-					if (@isRowSelectedMultiSelect(id, grid))
-						table.jqGrid('setSelection', id, false)
-				else
-					if (@isRowSelectedSingleSelect(id, grid))
-						table.jqGrid('setSelection', id, false)
-				#@$('#'+id).removeClass("ui-state-highlight").attr({"aria-selected":"false", "tabindex" : "-1"})
-			###
+			#table.jqGrid('resetSelection')
 			for item in @get('selectedIds')
-				@highlightRow(item)
+				@highlightRow(item, table)
 			@setSelectAllCheckbox(grid)
 
 	isRowSelectedMultiSelect: (id, grid)->
@@ -727,31 +722,47 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	isRowSelectedSingleSelect: (id, grid)->
 		# Is the row registered as selected within jqGrid
 		grid.p.selrow == id
-	
-	highlightRow: (id)->
+
+	unHighlightAllRows: ()->
 		table = @getTableDom()
+		selectedIds = @get('selectedIds')
+		for id in table.getDataIDs()
+			if not selectedIds.contains(id)
+				if @get('multiSelect')
+					if @isRowSelectedMultiSelect(id, table.get(0))
+						table.jqGrid('setSelection', id, false)
+						@restoreRow(id, table)
+				else
+					if @isRowSelectedSingleSelect(id, table.get(0))
+						table.jqGrid('setSelection', id, false)
+						@restoreRow(id, table)
+	
+	highlightRow: (id, table)->
+		table = table or @getTableDom()
 		if table?
 			if @get('multiSelect')
 				if not @isRowSelectedMultiSelect(id, table.get(0))
 					table.jqGrid('setSelection', id, false)
+					@editRow(id, table)
 			else
 				if not @isRowSelectedSingleSelect(id, table.get(0))
 					table.jqGrid('setSelection', id, false)
+					@editRow(id, table)
 			#@$('#'+id).addClass("ui-state-highlight").attr({"aria-selected":"true", "tabindex" : "0"});
 
-	unHighlightAllRows: (->
+	clearAllSelections: (->
 		if (@get("clearAction") &&  @getTableDom()?)
 			@set('selection',[])
 			@set "clearAction", false
-			@gridDataDidChange()
+			#@gridDataDidChange()
 	).observes("clearAction")
 
 	setSelectAllCheckbox: (grid) ->
-    if grid?
-      if @allRowsAreSelected(grid)
-        grid.setHeadCheckBox(true)
-      else
-        grid.setHeadCheckBox(false)
+		if grid?
+			if @allRowsAreSelected(grid)
+				grid.setHeadCheckBox(true)
+			else
+				grid.setHeadCheckBox(false)
 
 	allRowsAreSelected: (grid) ->
 		# Check for state of selectAll checkbox
