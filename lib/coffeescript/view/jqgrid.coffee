@@ -187,12 +187,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		@getTableDom().jqGrid({
 			parentView: widget
-			###
-      * If query is going to be made set the viewrecords to false till the content of asked page is fetched
-      * so that the text "no records to view" does not appear.
-      ### 
 			datatype: (postdata) ->
-			  widget.getTableDom()[0].p.viewrecords = false
 			  widget.onPageOrSort(postdata)
 			height: @get('height') or 'auto',
 			colNames: @get('colNames'),
@@ -621,7 +616,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-		#remove previous grid data
+	 @getTableDom()[0].p.viewrecords = false
+    #remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###
 		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
@@ -664,7 +660,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		grid.p.page = @get('collection.currentGroupPage')
 		grid.p.reccount = data.rows.length
 		grid.p.records = data.records
-		grid.p.viewrecords = true
+		# show page message only when the content has been loaded
+		if @get('content.isLoaded')
+		  grid.p.viewrecords = true
 		grid.updatepager(null, false)
 
 	getColumnTitle: (columnName)->
