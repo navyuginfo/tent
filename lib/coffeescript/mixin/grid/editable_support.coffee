@@ -39,26 +39,29 @@ Tent.Grid.EditableSupport = Ember.Mixin.create
 	onSaveCell: null
 
 	showEditableCells: ->
-		if @getTableDom()?
-			for id in @getTableDom().jqGrid('getDataIDs')
-				@showEditableCell(id)
+		table = @getTableDom()
+		if table?
+			for id in table.jqGrid('getDataIDs')
+				@showEditableCell(id, table)
 
-	showEditableCell: (id) ->
+	showEditableCell: (id, table) ->
 		if @get('selectedIds').contains(id)
-			@editRow(id)
+			@editRow(id, table)
 		else
 			@restoreRow(id)
 
 	# Make all editable cells editable
-	editRow: (rowId) ->
-		@getTableDom().jqGrid('editRow', rowId, false,  @onEditFunc())
+	editRow: (rowId, table) ->
+		table = table or @getTableDom()
+		table.jqGrid('editRow', rowId, false,  @onEditFunc())
 
 	# When a row is deselected, revert to the previous value 
-	restoreRow: (rowId) ->
+	restoreRow: (rowId, table) ->
 		if @isRowCurrentlyEditing(rowId)
-			@getTableDom().jqGrid('restoreRow', rowId)
+			table = table or @getTableDom()
+			table.jqGrid('restoreRow', rowId)
 			@saveEditedRow(rowId)
-			@get('onRestoreRow').call(@, rowId, @getTableDom()) if @get('onRestoreRow')?
+			@get('onRestoreRow').call(@, rowId, table) if @get('onRestoreRow')?
 
 	restoreRows: (ids)->
 		tableDom = @getTableDom()
