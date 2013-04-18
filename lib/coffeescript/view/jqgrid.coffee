@@ -1,5 +1,6 @@
 require '../template/jqgrid'
 require '../mixin/grid/collection_support' 
+require '../mixin/grid/selection_support' 
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
@@ -12,6 +13,7 @@ require '../mixin/toggle_visibility'
 * @mixins Tent.ValidationSupport
 * @mixins Tent.MandatorySupport
 * @mixins Tent.Grid.CollectionSupport
+* @mixins Tent.Grid.SelectionSupport
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
 * @mixins Tent.Grid.ColumnMenu
@@ -33,7 +35,7 @@ require '../mixin/toggle_visibility'
 * contain the items selected from the grid.
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -267,61 +269,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
-  
-	selectItemSingleSelect: (itemId) ->
-    	@clearSelection()
-    	@selectItem(itemId)
-
-	selectItemMultiSelect: (itemId, status) ->
-		if status!=false #status indicates whether the row is being selected or unselected
-			@selectItem(itemId)
-		else 
-			@deselectItem(itemId)
-
-	didSelectAll: (rowIds, status) ->
-		originalRowsIds = rowIds.filter(-> true)
-		selectedIds = @get('selectedIds')
-		if @get('paged')
-			# We can optimise when we know all items are to be selected
-			if status!=false
-				@selectAllItems()
-				#for id in originalRowsIds
-				#	if !selectedIds.contains(id)
-				#		@selectItem(id)
-			else 
-				@clearSelection()
-				@restoreRows(originalRowsIds) # maybe not necessary
-		else
-			if status!=false
-				@selectAllItems()
-				#for id in originalRowsIds
-					#if !selectedIds.contains(id)
-						#@highlightRow(id)
-						#@editRow(id)
-			else
-				@clearSelection()
-				@restoreRows(originalRowsIds) # maybe not necessary
-
-	selectAllItems: ->
-		@set('selection', @get('content').filter(-> true))
-
-	clearSelection: ->
-		@set('selection', [])
-
-	selectItem: (itemId) ->
-		@get('selection').pushObject(@getItemFromModel(itemId))
-		#@highlightRow(itemId)
-		#@showEditableCell(itemId)  ## 4.5
-
-	deselectItem: (itemId) ->
-		@removeItemFromSelection(itemId)
-		#@restoreRow(itemId)
-
-	removeItemFromSelection: (id)->
-		@set('selection', @get('selection').filter((item, index)->
-				item.get('id') != parseInt(id)
-			)
-		)
 
 	getItemFromModel: (id, contentArray)->  ## 2
 		intValue = parseInt(id)
