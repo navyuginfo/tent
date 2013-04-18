@@ -129,7 +129,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		$.subscribe("/ui/refresh", ->
 			widget.resizeToContainer()
-			widget.adjustHeight()
+			if widget
+				widget.columnsDidChange()
 		)
 		@setupDomIDs()
 		@bindHeaderView()
