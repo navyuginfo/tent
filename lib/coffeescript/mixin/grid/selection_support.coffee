@@ -6,15 +6,15 @@ Tent.Grid = Tent.Grid or Ember.Namespace.create()
 ###
 
 Tent.Grid.SelectionSupport = Ember.Mixin.create
+	didSelectRow: (itemId, status, e)->
+		if not @get('multiSelect')
+			@selectItemSingleSelect(itemId)
+		else 
+			@selectItemMultiSelect(itemId, status)
+			
 	selectItemSingleSelect: (itemId) ->
     	@clearSelection()
     	@selectItem(itemId)
-
-	selectItemMultiSelect: (itemId, status) ->
-		if status!=false #status indicates whether the row is being selected or unselected
-			@selectItem(itemId)
-		else 
-			@deselectItem(itemId)
 
 	###*
 	* @method  clearSelection Removes all items from the selection array and resets the grid
@@ -27,6 +27,16 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
 		selection = @get('selection')
 		selection.pushObject(selectedItem) if (selectedItem? and not selection.contains(selectedItem))
 
+
+
+	####### Multiple Selection ########
+
+	selectItemMultiSelect: (itemId, status) ->
+		if status!=false #status indicates whether the row is being selected or unselected
+			@selectItem(itemId)
+		else 
+			@deselectItem(itemId)
+
 	deselectItem: (itemId) ->
 		@removeItemFromSelection(itemId)
 
@@ -36,6 +46,7 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
 			)
 		)
 
+	######## Select All ########
 	didSelectAll: (rowIds, status) ->
 		selectedIds = @get('selectedIds')
 		if @get('paged')

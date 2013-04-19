@@ -10,6 +10,9 @@ Tent.Grid.Maximize = Ember.Mixin.create
 	###
 	showMaximizeButton: true
 
+	resizeGridSteps: true
+	resizeSpeed: 700
+
 	addNavigationBar: ->
 		@renderMaximizeButton()
 

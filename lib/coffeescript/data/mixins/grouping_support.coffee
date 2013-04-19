@@ -1,4 +1,4 @@
-Tent.Data.Grouper = Ember.Mixin.create
+Tent.Data.GroupingSupport = Ember.Mixin.create
 	groupingInfo: {}
 	currentGroupPage: 1
 	currentGroupId: null
@@ -17,7 +17,6 @@ Tent.Data.Grouper = Ember.Mixin.create
 			@set('currentGroupPage', page)
 		
 		@set('groupingInfo.currentGroupId', null)
-
 		@update(@REQUEST_TYPE.GROUP)
 
 	setCurrentGroupId: (id) ->
