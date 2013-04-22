@@ -48,14 +48,14 @@ Tent.Grid.Maximize = Ember.Mixin.create
 		@$().css('left', @get('currentLeft') + 'px')
 		@$().css('height', @get('currentHeight') + 'px')
 		@$().css('width', @get('currentWidth') + 'px')
-		@$().css('z-index', '2000')
+		@$().css('z-index', '2050')
 		@$().css('position', 'fixed')
 		@$().addClass('dialog')
 		if not @get('resizeGridSteps')
 			@hideGrid()
 
-		$('body').append('<div id="jqgrid-backdrop" class=""></div>')
-		$('#jqgrid-backdrop').animate(
+		@$('.jqgrid-backdrop').show()
+		$('.jqgrid-backdrop').animate(
 			{
 				opacity: '0.6'
 			},
@@ -121,13 +121,13 @@ Tent.Grid.Maximize = Ember.Mixin.create
 		)
 
 	removeBackdrop: ->
-		$('#jqgrid-backdrop').animate(
+		@$('.jqgrid-backdrop').animate(
 			{
 				opacity: '0.0'
 			},
 			900,
 			=>
-				$('#jqgrid-backdrop').remove()
+				@$('.jqgrid-backdrop').hide()
 				@$().css('position', 'static')
 		)
 
