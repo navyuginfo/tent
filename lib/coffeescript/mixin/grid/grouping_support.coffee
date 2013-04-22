@@ -8,6 +8,7 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 	# Determines whether groups or items are shown in the grid
 	showingGroups: false
 
+
 	# Called when a user selects a grouping option from the dropdown menu
 	newGroupSelected: (groupType, columnName)->
 		if @remoteGrouping
@@ -29,7 +30,7 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 
 			comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
 			this.getTableDom().groupingGroupBy(columnName, {
-					groupText : ['<b>' + @getTitleForColumn(columnName) + ':  {0}</b>']
+					groupText : ['<b>' + @getColumnTitle(columnName) + ':  {0}</b>']
 					range: comparator
 				}
 			)
@@ -52,6 +53,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 				columnType: @getColumnType(columnName)
 			@setShowingGroupsListState(true)
 			@get('collection').goToGroupPage(1, groupData)
+
+	# A group was row was selected from the grid
+	didSelectGroup: (itemId, status, e)->
+		@selectRemoteGroup(itemId)
 
 	selectRemoteGroup: (id)->
 		@setShowingGroupsListState(false)
@@ -111,7 +116,8 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 		@set('showingGroups', isShowing)
 		@set('collection.isShowingGroupsList', isShowing)
 	
-			
+	isShowingValidGroups: ->
+		@get('showingGroups') and @get('groupingInfo.columnName')?
 	
 		
 	

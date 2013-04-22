@@ -1,12 +1,14 @@
 require '../template/jqgrid'
 require '../mixin/grid/collection_support' 
 require '../mixin/grid/selection_support' 
+require '../mixin/grid/data_adapters'
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
 require '../mixin/toggle_visibility'
+require '../mixin/grid/maximize_grid'
 
 ###*
 * @class Tent.JqGrid
@@ -14,28 +16,34 @@ require '../mixin/toggle_visibility'
 * @mixins Tent.MandatorySupport
 * @mixins Tent.Grid.CollectionSupport
 * @mixins Tent.Grid.SelectionSupport
+* @mixins Tent.Grid.Adapters
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
+* @mixins Tent.Grid.GroupingSupport
+* @mixins Tent.Grid.ColumnChooserSupport
 * @mixins Tent.Grid.ColumnMenu
-* @mixins Tent.Grid.FilterSupport
+* @mixins Tent.Grid.Maximize
+* 
 *
 * Create a jqGrid view which displays the data provided by its content property
 *
 * ##Usage
 *		{{view Tent.JqGrid
                   label="Tasks"
-                  contentBinding="Pad.gridContent"
+                  collectionBinding="Pad.collection"
                   selectionBinding="Pad.selectedTasks"
                   multiSelect=true             
               }}
 *
-* - content: An array of objects, one for each row
-* - columns: An array of column descriptors
+* - collection: A collection representing an array of records, one for each row of the grid.
 * - selection: An array of selected objects. This will provide the initial selections, as well as 
 * contain the items selected from the grid.
+*
+* The content of the grid will be bound to the collection.
+* The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, Tent.Grid.Maximize,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
@@ -56,19 +64,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	fixedHeader: false
 
 	###*
-	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
-	* a dialog to show/hide columns. Any columns which have a property **'hideable:false'** will not be shown
-	* in this dialog
-	###
-	showColumnChooser: true
-
-	###*
-	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
-	* a dialog to maximize the grid view.
-	###
-	showMaximizeButton: true
-
-	###*
 	* @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
 	###
 	filtering: false
@@ -87,6 +82,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
+
 	fullScreen: false
 
 	###*
@@ -103,12 +99,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	###*
 	* @property {Array} selection The array of items selected in the list. This can be used as a setter
-	and a getter.
+	* and a getter.
 	###
 	selection: []
-
-	resizeGridSteps: true
-	resizeSpeed: 700
 
 	init: ->
 		@_super()
@@ -118,15 +111,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@get('selection')
 	).property('selection')
 
-	columns: (->
-		@get('collection.columnsDescriptor')
-	).property('collection.columnsDescriptor')
-
 	focus: ->
 		@getTableDom().focus()
 
 	didInsertElement: ->
-		console.log "didInsertElement"
 		@_super()
 		widget = @
 		$.subscribe("/ui/refresh", ->
@@ -138,6 +126,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@bindHeaderView()
 		@drawGrid()
 
+	# The header is a separate View, so we provide it with a reference to the grid
+	# in case it needs it.
 	bindHeaderView: ->
 		@getHeaderView().set('grid', @)
 
@@ -207,7 +197,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			resizeStop: (width, index)=>
 				# Fires when a column is finished resizing
 				@columnsDidChange(index)
-				#@replaceOriginalColumnWidthsWithNewOnes(width, index)
 			loadComplete:widget.get('content.isLoaded')
 			loadtext: '<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>',
 			forceFit: true, #column widths adapt when one is resized
@@ -225,16 +214,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
 			toolbar: [false,"top"],
-			#pgbuttons:false, 
-			#recordtext:'', 
-			#pgtext:''
-
 			grouping: @get('grouping')
-		#	groupingView: @{
-		#		groupField: [@get('groupField')]
-		#		groupText : ['<b>' + @getTitleForColumn(@get('groupField')) + ' = {0}</b>']
-		#		groupDataSorted: true
-		#	}
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -255,12 +235,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
 		)
-  
-	didSelectRow: (itemId, status, e)->
-		if not @get('multiSelect')
-			@selectItemSingleSelect(itemId)
-		else 
-			@selectItemMultiSelect(itemId, status)
 			
 	setInitialViewRecordsAttribute:()->
 	    ###
@@ -270,15 +244,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
 
-	getItemFromModel: (id, contentArray)->  ## 2
+	getItemFromModel: (id, contentArray)-> 
 		intValue = parseInt(id)
 		@get('content').find((item)->
 			item.get('id') == intValue
 		)
-
-	# A group was row was selected from the grid
-	didSelectGroup: (itemId, status, e)->
-		@selectRemoteGroup(itemId)
 
 	markErrorCell: (rowId, iCell) ->
 		@getCell(rowId, iCell).addClass('error')
@@ -310,45 +280,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		)
 
 	addNavigationBar: ->
-		tableDom = @getTableDom()
-		#@renderColumnChooser(tableDom)
-		@renderMaximizeButton()
 		@_super()
-
-	getLastColumn: ->
-		@$('.ui-th-column').filter(->
-			$(this).css('display') != 'none'
-		).last()
 
 	columnsDidChange: (colChangedIndex)->
 		@_super()
 		@adjustHeight()
 		@removeLastDragBar()
 		@storeColumnDataToCollection()
-
-
-	replaceOriginalColumnWidthsWithNewOnes: (width, index)->
-		totalSpan = 0
-		for col in @getColModel()
-			totalSpan = totalSpan + col.widthOrg if not col.hidden
-		fullWidth = @$().outerWidth()
-		newSpan = (totalSpan*width)/fullWidth
-		widthOrg = @getColModel()[index+1].widthOrg
-		@getColModel()[index+1].widthOrg = newSpan
-
-		prevCol = @findPreviousVisibleColumn(index+1)
-		if prevCol?
-			@getColModel()[prevCol].widthOrg = @getColModel()[prevCol].widthOrg - (newSpan - widthOrg) 
-
-	findPreviousVisibleColumn: (index) ->
-		colModel = @getColModel()
-		for pos in [index-1..1]
-			return pos if not colModel[pos].hidden
-		null
-
-	removeLastDragBar: ->
-		@$('.ui-th-column .ui-jqgrid-resize').show()
-		@getLastColumn().find('.ui-jqgrid-resize').hide()
 
 	# After any changes to the dimensions of the grid, re-calculate for display
 	adjustHeight: ->
@@ -360,126 +298,14 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
-	renderMaximizeButton: ->
-		widget = @
-		if @get('showMaximizeButton')
-			@$(".grid-header").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>')
-			
-			@$('a.maximize').click(() ->
-				widget.toggleFullScreen(@)
-			)
+	removeLastDragBar: ->
+		@$('.ui-th-column .ui-jqgrid-resize').show()
+		@getLastColumn().find('.ui-jqgrid-resize').hide()
 
-
-	toggleFullScreen: (a)->
-		widget = @
-
-		if @get('fullScreen')
-			@restoreSize()
-		else
-			@maximize()
-
-	maximize: () ->
-		widget = @
-		@set('currentTop', @$().offset().top - $(window).scrollTop())
-		@set('currentLeft', @$().offset().left)
-		@set('currentWidth', @$().outerWidth())
-		@set('currentHeight', @$().outerHeight())
-		@set('currentRight', $(window).width() - (@$().offset().left + @$().outerWidth()))
-		@set('currentBottom', $(window).height() - (@$().offset().top + @$().outerHeight()))
-
-		newWidth = $(window).width() - 60
-		newHeight = $(window).height() - 120
-
-		@$().css('top', @get('currentTop') + 'px')
-		@$().css('left', @get('currentLeft') + 'px')
-		@$().css('height', @get('currentHeight') + 'px')
-		@$().css('width', @get('currentWidth') + 'px')
-		@$().css('z-index', '2000')
-		@$().css('position', 'fixed')
-		@$().addClass('dialog')
-		if not @get('resizeGridSteps')
-			@hideGrid()
-
-		$('body').append('<div id="jqgrid-backdrop" class=""></div>')
-		$('#jqgrid-backdrop').animate(
-			{
-				opacity: '0.6'
-			},
-			200,
-			=>
-				@$().animate({
-						width: newWidth + 'px', 
-						height: if $(window).height() - 60 - @get('currentHeight') > 60 then 'auto' else newHeight + 'px', 
-						top: '60px', 
-						left: '30px', 
-						right: '30px', 
-						bottom: '60px'
-					},
-					{
-						duration: @get('resizeSpeed'),
-						complete: =>
-							$('span', widget).removeClass('ui-icon-arrow-4-diag')
-							$('span', widget).addClass('ui-icon-arrow-1-se')
-							@set('fullScreen', true)
-							@resizeToContainer()
-							if not @get('resizeGridSteps')
-								@showGrid()
-						,
-						step: =>
-							@resizeToContainer()
-					}
-				)
-		)
-
-		@set('resizeEscapeHandler', @get('generateResizeEscapeHandler')(@))
-		$('body').bind('keyup click', @get('resizeEscapeHandler'))	
-
-	restoreSize: ->
-		$('body').unbind('keyup click', @get('resizeEscapeHandler'))
-		if not @get('resizeGridSteps')
-			@hideGrid()
-		
-		@$().animate({
-				width: @get('currentWidth') + 'px',
-				height: @get('currentHeight') + 'px',
-				top: @get('currentTop') + 'px', 
-				left: @get('currentLeft') + 'px', 
-				right: @get('currentRight') + 'px', 
-				bottom: @get('currentBottom') + 'px'
-			}, 
-			{
-				duration: @get('resizeSpeed'),
-				complete: =>
-					@$('.maximize > span').removeClass('ui-icon-arrow-1-se')
-					@$('.maximize > span').addClass('ui-icon-arrow-4-diag')
-					@set('fullScreen', false)
-					@resizeToContainer() 
-					@$().removeClass('dialog')
-					if not @get('resizeGridSteps')
-						@showGrid()
-					@removeBackdrop()
-				,
-				step: =>
-					@resizeToContainer()
-			} 
-		)
-
-	removeBackdrop: ->
-		$('#jqgrid-backdrop').animate(
-			{
-				opacity: '0.0'
-			},
-			900,
-			=>
-				$('#jqgrid-backdrop').remove()
-				@$().css('position', 'static')
-		)
-
-	generateResizeEscapeHandler: (widget)->
-		return (e)->
-			if e.keyCode==27 or ($(e.target).attr('id') == 'jqgrid-backdrop')
-				widget.toggleFullScreen()
-				return
+	getLastColumn: ->
+		@$('.ui-th-column').filter(->
+			$(this).css('display') != 'none'
+		).last()
 
 	resizeToContainer: ->
 		if @$()?
@@ -488,116 +314,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			# @columnsDidChange()
 
 	hideGrid: ->
-		#@getTableDom().jqGrid('clearGridData')
 		@$(".gridpager").hide()
 		@$(".grid-table").hide()
 
-	
 	showGrid: ->
-		#@gridDataDidChange()
 		@$(".gridpager").show()
 		@$(".grid-table").show()
-
-	getTitleForColumn: (colName)->
-		for column in @get('columns')
-			return Tent.I18n.loc(column.title) if column.name==colName
-
-
-	# Adapter to get column names from current datastore columndescriptor version  
-	colNames: (->
-		names = []
-		for column in @get('columnModel')
-			t = Tent.I18n.loc(column.title)
-			if @get('columnInfo.titles')?
-				for name, title of @get('columnInfo.titles')
-        			t = title if column.name == name
-			names.pushObject(t)
-		names
-	).property('columns')
-
-	# Adapter to get column descriptors from current datastore columndescriptor version 
-	columnModel: (->
-		columns = Ember.A()
-		if @get('columns')?
-			for column in @get('columns')
-				item = Ember.Object.create
-					name: column.name
-					index: column.name
-					align: column.align
-					editable: column.editable
-					formatter: column.formatter
-					formatoptions: column.formatoptions
-					edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
-					editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
-					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
-					width: column.width or 20
-					position: "right"
-					hidden: if column.hidden? then column.hidden else false
-					hideable: column.hideable
-					hidedlg: true if column.hideable == false
-					sortable: column.sortable
-					groupable: column.groupable
-					resizable: true
-					title: Tent.I18n.loc column.title
-				columns.pushObject(item)
-		columns
-	).property('columns')
- 
-	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
-	gridData: (->
-		grid = []
-
-		if @get('content')?
-			models = @get('content').toArray()
-			if @isShowingValidGroups()
-				for model in models
-					grid.push(model)
-			else
-				for model in models
-					item = {"id" : model.get('id')}
-					if @get('selectedIds').contains(model.get('id'))
-						item.sel = true
-					cell = []
-					for column in @get('columnModel')
-						#item[column.name] = model.get(column.name)
-						cell.push(model.get(column.name))
-					item.cell = cell
-					grid.push(item)
-		return grid
-	).property('content','content.isLoaded', 'content.@each')
-
-	gridDataDidChange: (->
-	 @getTableDom()[0].p.viewrecords = false
-    #remove previous grid data
-		@getTableDom().jqGrid('clearGridData')
-		###
-		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
-		* calculate whether there are any records or not using the reccount attribute
-		###
-		if @get('content.isLoaded')
-			@getTableDom()[0].p.viewrecords = true
-		data = 
-			rows: @get('gridData')
-			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
-			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
-			page: @get('pagingInfo').page if @get('pagingInfo')? 
-			remoteGrouping: @isShowingValidGroups()
-		@resetGrouping()
-		if @isShowingValidGroups()
-			data.columnName = @get('groupingInfo.columnName')
-			data.columnType = @get('groupingInfo.columnType')
-			data.groupType = @get('groupingInfo.type')
-			data.columnTitle = @getColumnTitle(data.columnName)
-			grid = @getTableDom()[0]
-			@updatePagingForGroups(grid, data)
-			grid?.addGroupingData(data)
-		else
-			@getTableDom()[0]?.addJSONData(data)
-			@updateGrid()
-	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
-
-	isShowingValidGroups: ->
-		@get('showingGroups') and @get('groupingInfo.columnName')?
 
 	showSpinner: (->
 		if @get('content.isLoaded') or not @get('content.isLoaded')?
@@ -629,10 +351,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('grouping')
 			this.getTableDom().groupingSetup()
 		#this.getTableDom()[0].p.groupingView.groups=[]
-
-	selectionDidChange: (->
-		@updateGrid()
-	).observes('selection.@each')
 
 	selectedIds: (->
 		#selectedIDs should observe selection
