@@ -107,6 +107,8 @@ Tent.Grid.Maximize = Ember.Mixin.create
 					@$('.maximize > span').removeClass('ui-icon-arrow-1-se')
 					@$('.maximize > span').addClass('ui-icon-arrow-4-diag')
 					@set('fullScreen', false)
+					@$().css('height', '')
+					@$().css('width', '')
 					@resizeToContainer() 
 					@$().removeClass('dialog')
 					if not @get('resizeGridSteps')
