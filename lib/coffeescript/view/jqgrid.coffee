@@ -122,6 +122,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if widget.$()?
 				widget.columnsDidChange()
 		)
+		$.subscribe("/window/resize", ->
+			widget.resizeToContainer()
+		)
 		@setupDomIDs()
 		@bindHeaderView()
 		@drawGrid()
@@ -133,7 +136,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	getHeaderView: ->
 		Ember.View.views[@$('.grid-header').attr('id')]
-  
+
 	drawGrid: ->
 		@setupColumnTitleProperties()
 		@setupColumnWidthProperties()

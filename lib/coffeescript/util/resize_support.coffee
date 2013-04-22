@@ -6,10 +6,8 @@ Tent.ResizeSupport = Ember.Mixin.create
       child.resize?()
 
 Ember.$(document).ready -> 
-  Ember.View.reopen Tent.ResizeSupport
   window.onresize = ->
-    for view of Em.View.views
-      if !Ember.View.views[view].get('parentView')
-        break
-    rootView = Ember.View.views[view]
-    rootView.resize() if rootView && typeof(rootView.resize) == 'function'
+    $.publish('/window/resize')
+    
+
+ 
