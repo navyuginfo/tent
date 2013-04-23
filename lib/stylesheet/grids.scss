@@ -390,10 +390,7 @@ $headerHeight: 20px;
 		}
 	}
 
-
-
 	/* Grouping */
-
 	.group-row {
 		cursor: pointer;
 		background-color: #eee;
@@ -401,7 +398,7 @@ $headerHeight: 20px;
 
 } 
 
-#jqgrid-backdrop {
+.jqgrid-backdrop {
 	display: none;
 	position: fixed;
 	top: 0;
