@@ -90,6 +90,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     """
     @$(".grid-header").append(button)
 
+
     @$('.save-ui-state').bind('keyup', ((e)->
       if e.keyCode == 27 # escape key
         widget.toggleUIStatePanel()
@@ -97,7 +98,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     )
 
     @$('.save-ui-state input').bind('keyup', ((e)->
-      if e.keyCode == 13 # escape key
+      widget.observeValueInput($(this))
+      if e.keyCode == 13 # return key
         widget.saveAs($(@))
     ))
 
@@ -111,7 +113,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     )
 
     @$('.save-ui-state .saveas').click(->
-      widget.saveAs($(@))
+      if not $(this).hasClass('disabled') and widget.getInputField().val().trim() != ""
+        widget.saveAs($(@))
     )
 
     $('.keep-open').click((e)->
@@ -125,6 +128,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @disableSaveButton()
     else 
       @enableSaveButton()
+    @observeValueInput(@getInputField())
   ).observes('collection.customizationName')
 
   populateCollectionDropdown: (->
@@ -144,6 +148,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       )
   ).observes('collection.personalizations', 'collection.personalizations.@each')
   
+  getInputField: ->
+     @$('.save-ui-state input')
+
   save: ->
     @toggleUIStatePanel()
     @set('customizationName', @get('collection.customizationName'))
@@ -168,6 +175,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   enableSaveButton: ->
     @$('.save-ui-state .save').removeClass('disabled')
 
+  observeValueInput: ($input)->
+    if $input.val().trim() == ""
+        @disableSaveAsButton()
+      else 
+        @enableSaveAsButton()
+
+  disableSaveAsButton: ->
+    @$('.save-ui-state .saveas').addClass('disabled')
+
+  enableSaveAsButton: ->
+    @$('.save-ui-state .saveas').removeClass('disabled')
+  
   setupCustomizedProperties: ->
     @setupPagingProperties()
     @setupSortingProperties()

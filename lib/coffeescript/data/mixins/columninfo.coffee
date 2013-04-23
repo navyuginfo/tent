@@ -1,7 +1,10 @@
 Tent.Data.ColumnInfo = Ember.Mixin.create
-	columnInfo:
-		titles: {}
-		widths: {}
-		order: {}
-		hidden: {}
+	init: ->
+		@_super()
+		@set('columnInfo', 
+			titles: {}
+			widths: {}
+			order: {}
+			hidden: {}
+		)
 			

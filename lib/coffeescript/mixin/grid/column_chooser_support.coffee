@@ -59,6 +59,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 				else
 					widget.hideCol(column)
 				widget.columnsDidChange()
+				widget.storeColumnDataToCollection()
 				widget.resizeToContainer()
 	).observes('columnModel','columnModel.@each')
 

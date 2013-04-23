@@ -20,9 +20,11 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	liveStreaming: false
 	store: null
 	personalizable: true
-
 	isLoadable: false #Does the collection have a 'isLoaded' state
 	REQUEST_TYPE: {'ALL': 'all'}
+
+	init: ->
+		@_super()
 
 	# This is currently returning a plain array of the stripped down model (only displayed columns are included)
 	dataChanged: (->
@@ -43,10 +45,6 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType')
-
-	init: ->
-		@_super()
-		#@update(@REQUEST_TYPE.ALL)
 
 	update: (requestType)->
 		if @get('dataType')? && @get('store')?
