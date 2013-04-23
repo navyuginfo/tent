@@ -26,9 +26,12 @@ Tent.Tabs = Ember.View.extend
 	active: null
 
 	didInsertElement: ->
-		@$().on("shown", 'a[data-toggle="tab"]', (e)=>
-			$.publish("/ui/refresh", ['tab-shown'])
-		)
+    _this = @
+    _this.$().on("shown", 'a[data-toggle="tab"]', (e)->
+      _this.set('active', $(@).attr('href').replace('#',''))
+      $.publish("/ui/refresh", ['tab-shown'])
+    )
+
 
 ###*
 * @class Tent.TabPane
