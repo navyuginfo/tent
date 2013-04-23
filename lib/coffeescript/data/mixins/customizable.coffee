@@ -64,10 +64,11 @@ Tent.Data.Customizable = Ember.Mixin.create
     filtering: {
       availableFilters: []
     }
+  personalizations: []
 
   init: ->
     @_super()
-    @set('customizationName', @get('defaultName'))
+    @set('customizationName', @get('defaultName') or "")
     @set('personalizationsRecord', @fetchPersonalizations())
 
   personalizationsRecordDidChange: (->
