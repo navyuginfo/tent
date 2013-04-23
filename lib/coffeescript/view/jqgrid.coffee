@@ -200,6 +200,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			resizeStop: (width, index)=>
 				# Fires when a column is finished resizing
 				@columnsDidChange(index)
+				@storeColumnDataToCollection()
 			loadComplete:widget.get('content.isLoaded')
 			loadtext: '<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>',
 			forceFit: true, #column widths adapt when one is resized
@@ -289,7 +290,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@adjustHeight()
 		@removeLastDragBar()
-		@storeColumnDataToCollection()
 
 	# After any changes to the dimensions of the grid, re-calculate for display
 	adjustHeight: ->
