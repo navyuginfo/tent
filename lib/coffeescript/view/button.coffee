@@ -22,11 +22,21 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   * @property {String} label The label for the button
   ###
   label: 'Button'
+
+  ###*
+  * @property {String} title The title for the button (HTML title which shows on element hover)
+  ###
+  title: null
+  
   messagePanel: null
 
   localizedLabel: (->
     Tent.I18n.loc @get('label')
   ).property('label')
+
+  localizedTitle: (->
+    Tent.I18n.loc @get('title')
+  ).property('title')
 
   ###*
   * @property {String} type The type of button.
