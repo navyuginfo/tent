@@ -402,12 +402,13 @@ $headerHeight: 20px;
 } 
 
 #jqgrid-backdrop {
+	display: none;
 	position: fixed;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 1040;
+	z-index: 0;
 	background-color: black;
 	@include opacity(0.0);
 }
