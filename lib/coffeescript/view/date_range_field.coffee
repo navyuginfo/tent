@@ -117,7 +117,10 @@ Tent.DateRangeField = Tent.TextField.extend
 		@handleReadonly()
 		@handleDisabled()
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
-
+	
+	willDestroyElement: ->
+	  @flushValidationErrors()
+	
 	filterOpDidChange: (->
 		console.log("Daterange filter op = " + @get('filterOp'))
 	).observes('filterOp')
