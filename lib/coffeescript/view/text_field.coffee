@@ -49,7 +49,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	valueForMandatoryValidation: (->
 		@get('formattedValue')
 	).property('formattedValue')
-	
+	  
 	change: ->
 		@_super(arguments)
 		@set('isValid', @validate())
