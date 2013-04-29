@@ -107,7 +107,6 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @set('isDisabled', @get('disabled'))
     if @get('enabled')?
       @set('isDisabled', not @get('enabled'))
-    @setupMessageBind()
 
   targetObject: (->
     target = @get('target')
@@ -166,6 +165,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   # Cause validation to be triggered on widgets in the current form
   doValidation: ->
+    @setupMessageBind()
     form = @findParentForm()
     if form?
       @validateChildViews(form)
