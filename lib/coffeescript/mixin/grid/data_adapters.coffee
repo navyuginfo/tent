@@ -32,7 +32,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
 					editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
 					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
-					width: column.width or 20
+					width: if @get('horizontalScrolling') then null else (column.width or 20)
 					position: "right"
 					hidden: if column.hidden? then column.hidden else false
 					hideable: column.hideable

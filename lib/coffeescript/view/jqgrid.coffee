@@ -46,7 +46,7 @@ require '../mixin/grid/maximize_grid'
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
 
 	###*
 	* @property {String} title The title caption to appear above the table
@@ -82,6 +82,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
+
+	###*
+	* @property {Boolean} horizontalScrolling Defines whether the grid content will fit within the area assiged 
+	* to the grid (false), or whether the columns will disregard the grid width.
+	###
+	horizontalScrolling: false
 
 	fullScreen: false
 
@@ -191,7 +197,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			colModel: @get('columnModel'),
 			multiselect: @get('multiSelect'),
 			caption: Tent.I18n.loc(@get('title')) if @get('title')?, 
-			autowidth: true,
+			autowidth: if @get('horizontalScrolling') then false else true,
+			#width: 2000px;
 			#sortable: true, #columns can be dragged		    
 			sortable: { 
 				update: (permutation) =>
@@ -204,7 +211,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			loadComplete:widget.get('content.isLoaded')
 			loadtext: '<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>',
 			forceFit: true, #column widths adapt when one is resized
-			shrinkToFit: true,
+			shrinkToFit: if @get('horizontalScrolling') then false else true,
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
@@ -311,10 +318,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		).last()
 
 	resizeToContainer: ->
-		if @$()?
-			@getTableDom().setGridWidth(@$().width(), true)
-			# Removed for performance reasons
-			# @columnsDidChange()
+		if @$()? 
+			if @get('horizontalScrolling')
+				# Override default jqgrid sizing
+				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager').css('width','100%')
+				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
+			else
+				@getTableDom().setGridWidth(@$().width(), true)
+				# Removed for performance reasons
+				# @columnsDidChange()
 
 	hideGrid: ->
 		@$(".gridpager").hide()

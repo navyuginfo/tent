@@ -385,6 +385,22 @@ $headerHeight: 20px;
 		}
 	}
 
+	&.horizontal-scrolling {
+		.ui-jqgrid-view {
+			overflow: auto;
+		}
+		.ui-jqgrid-bdiv {
+			overflow: visible;
+			position: static;
+			> div {
+				position: static;
+			}
+		}
+	}
+
+
+
+
 	&.error {
 		.grid-table td {
 			background: rgba(255, 0, 0, 0.15);
