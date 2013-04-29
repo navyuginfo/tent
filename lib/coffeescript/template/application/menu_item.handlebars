@@ -1,0 +1,8 @@
+{{#if view.isEntitled}}
+	{{#if item.entitled}}
+    	<a href="#" class="menu-link" {{bindAttr data-route="item.route"}} {{bindAttr data-action="item.action"}} {{action menuClicked target="view"}}>
+			<i {{bindAttr class="item.icon"}} {{bindAttr data-title="view.title"}} data-placement="right" data-animation="false"></i>
+			<span class="content">{{loc item.title}}</span>
+      	</a>
+	{{/if}}
+{{/if}}

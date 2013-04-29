@@ -1,0 +1,158 @@
+/*** Left Main Menu ***/
+
+// Container of toggle button and menu items
+.main-menu { 
+  position: fixed;
+  overflow: auto;
+  top: 30px;
+  bottom: 30px;
+  left: 0px;
+  width: 15em;
+  background-color: #333;
+  
+  .mask {
+    background-color: transparent;
+    width: 100%;
+    top: 0px;
+    bottom: 0px;
+    position: relative;
+    overflow: auto;
+  }
+}
+
+// Toggle button
+.dashboard-toggle {
+  
+  height: 2em;
+  a {
+    cursor: pointer;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  i {
+    line-height: 30px;
+    margin-left: 12px;
+  }
+  
+  .hamburger {
+     color: blue;
+     @include opacity(0.4);
+     cursor: inherit;
+  }
+  .hamburger.active {
+    @include opacity(0.8);
+    &:hover {
+      @include opacity(1);
+    }
+  }
+
+  .pin {
+    float: right;
+    padding-right: 7px;
+    color: blue;
+    @include opacity(0.4);
+    &.active {
+      @include opacity(1);
+    }
+  }
+}
+
+
+// Menu Items
+.sci-main-menu{
+  position: static;
+  margin: 0px;
+  .nav-tabs{
+    border-bottom: 1px solid #383838;
+    .tent-panel {
+      margin-bottom: 1em;
+      .accordion-group {
+        border: 0px; 
+      }
+      .panel-header {
+        a:hover .caret {
+          border-top-color: transparent;
+        }
+        .caret {
+          margin: 7px 5px;
+        }
+        .content {
+          padding: 0px;
+        }
+      }
+      .panel-content {
+        padding: 0px;
+      }
+    }
+
+
+    li {
+      width: 100%;
+      display: inline-block;
+      h4 {
+        @include opacity(0);
+        @include transition(opacity .7s ease);
+        color: #eee;
+        margin: 0px;
+        padding: 0px 7px; 
+        i {
+          display: none;
+        }
+      }
+      .badge {
+        display: none;
+        float: right;
+        margin-right: 10px;
+      }
+      a {
+        display: block;
+        color: #eee;
+        padding: 0px 5px;
+        cursor: pointer;
+        .content {
+          @include opacity(0);
+          @include transition(opacity .7s ease);
+        }
+        i {
+          @include opacity(0.8);
+          margin-right: 10px;
+          margin-left: 5px;
+          margin-top: -3px;
+        }
+        &.active-menu {
+          background-color: #666;
+        }
+        &:hover {
+          text-decoration: none;
+          color: #fff;
+          i {
+            @include opacity(1);
+          }
+        }
+      }
+    }     
+  }
+}
+
+
+// Tooltip definitions for displaying on the right of menu items
+.tooltip.right {
+  margin-left: 13px;
+}
+
+.tooltip-inner {
+  @include border-radius(0px);
+  font-size:12px;
+  padding: 5px 12px;
+}
+
+
+// Copyright footer
+.sci-foot{
+  @include opacity(0);
+  @include transition(opacity .7s ease);
+  text-align: center;
+  height: auto;
+}
