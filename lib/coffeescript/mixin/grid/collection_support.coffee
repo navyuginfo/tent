@@ -177,9 +177,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   observeValueInput: ($input)->
     input = $input.val()
-    if input? and input.trim() == ""
+    if (!input? or input.trim() == "")
         @disableSaveAsButton()
-      else 
+    else 
         @enableSaveAsButton()
 
   disableSaveAsButton: ->
