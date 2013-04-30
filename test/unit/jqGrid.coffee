@@ -548,4 +548,42 @@ test 'Column Ordering bound to collection', ->
 	equal gridView.getTableDom().get(0).p.colModel[1].name, 'title', 'remap title back'
 	equal gridView.getTableDom().get(0).p.colModel[2].name, 'id', 'remap id back'
 	 
+test 'horizontal scrolling', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.JqGrid
+	          label="Tasks"
+	          collectionBinding="collection"
+	          columnsBinding="columns"
+	          multiSelect=true
+	          required=true
+	          selection=selection
+	          horizontalScrolling=true
+	    }}'
+		collection: collection
+		columns: column_data
+		selection: []
 
+	appendView()
+	ok view.$('.tent-jqgrid.horizontal-scrolling').length > 0, 'horizontal-scrolling class added'
+
+	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
+	gridProperties = gridView.getTableDom().get(0).p
+
+	equal gridProperties.autowidth, false, 'autowidth should be false'
+	equal gridProperties.shrinkToFit, false, 'shrinkToFit should be false'
+
+test 'calculateColumnWidth', ->
+	Grid = Ember.Object.extend Tent.Grid.Adapters,
+		horizontalScrolling: false
+	grid = Grid.create()
+
+	equal grid.calculateColumnWidth({title:'New Column Title'}), 80, 'no column width'
+	equal grid.calculateColumnWidth({title:'New Column Title', width: '120'}), 120, 'column width'
+
+	grid.set('horizontalScrolling', true)
+	equal grid.calculateColumnWidth({title:'New Column Title'}), 160, 'Width based on title length'
+	equal grid.calculateColumnWidth({title: null}), 80, 'No title provided'
+
+	grid.set('fixedColumnWidth', 88)
+	equal grid.calculateColumnWidth(), 88, 'fixed column width'
+	

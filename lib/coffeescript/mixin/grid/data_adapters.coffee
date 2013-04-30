@@ -47,9 +47,9 @@ Tent.Grid.Adapters = Ember.Mixin.create
 
 	calculateColumnWidth: (column)->
 		if @get('horizontalScrolling')
-			@get('fixedColumnWidth') or Tent.I18n.loc(column.title).length * 10
+			@get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
 		else
-			column.width or 20
+			column.width or 80
  
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
