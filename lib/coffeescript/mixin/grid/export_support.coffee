@@ -23,7 +23,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       params = {del: ",", headers: true, quotes: true, date: @generateExportDate()}
       jsonUrl = if @get('collection')? then @get('collection').getURL('json', params) else ""
       csvUrl = if @get('collection')? then @get('collection').getURL('csv', params) else ""
-      xslUrl = if @get('collection')? then @get('collection').getURL('xls', params) else ""
+      xlsUrl = if @get('collection')? then @get('collection').getURL('xls', params) else ""
       jsonUrlPart = jsonUrl?.split('/').pop().split('?')[0]
       button = """
         <div class="btn-group export jqgrid-title-button">
@@ -35,7 +35,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
               #{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
             <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
-            <li><a href="#{xslUrl}" class="export-xls">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
+            <li><a href="#{xlsUrl}" class="export-xls">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
             <li class="divider"></li>
             <li class="dropdown-submenu-left">
               <a href="#">Delimiter</a>
