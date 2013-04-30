@@ -176,9 +176,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     @$('.save-ui-state .save').removeClass('disabled')
 
   observeValueInput: ($input)->
-    if $input.val().trim() == ""
+    input = $input.val()
+    if (!input? or input.trim() == "")
         @disableSaveAsButton()
-      else 
+    else 
         @enableSaveAsButton()
 
   disableSaveAsButton: ->
