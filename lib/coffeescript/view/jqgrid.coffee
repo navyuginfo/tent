@@ -84,11 +84,21 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	clearAction: null
 
 	###*
-	* @property {Boolean} horizontalScrolling Defines whether the grid content will fit within the area assiged 
-	* to the grid (false), or whether the columns will disregard the grid width.
+	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
+	* This property defines whether the grid content will be forced to fit within the area assiged to the grid (false), 
+	* or whether the columns will disregard the grid width. The actual column widths will depend on the value provided for {@link #fixedColumnWidth}
 	###
 	horizontalScrolling: false
 
+	###*
+	* @property {Number} fixedColumnWidth Specify a single width to give to all columns	
+	* If {@link #horizontalScrolling} is set to true, then if this property is specified, 
+	* all of the columns will be given the specified width. If {@link #horizontalScrolling} is set to false, 
+	* this property is ignored, and the column widths will be estimated from the column title widths.
+	###
+	fixedColumnWidth: null
+
+	# An internal property identifying whether the grid is expanded or not.
 	fullScreen: false
 
 	###*

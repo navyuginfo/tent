@@ -19,7 +19,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
-		columns = Ember.A()
+		columns = Ember.A() 
 		if @get('columns')?
 			for column in @get('columns')
 				item = Ember.Object.create
@@ -32,7 +32,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
 					editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
 					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
-					width: if @get('horizontalScrolling') then null else (column.width or 20)
+					width: @calculateColumnWidth(column)
 					position: "right"
 					hidden: if column.hidden? then column.hidden else false
 					hideable: column.hideable
@@ -44,6 +44,12 @@ Tent.Grid.Adapters = Ember.Mixin.create
 				columns.pushObject(item)
 		columns
 	).property('columns')
+
+	calculateColumnWidth: (column)->
+		if @get('horizontalScrolling')
+			@get('fixedColumnWidth') or Tent.I18n.loc(column.title).length * 10
+		else
+			column.width or 20
  
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
