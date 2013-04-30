@@ -35,7 +35,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
               #{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
             <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
-            <li><a href="#{xslUrl}" class="export-xlsx">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
+            <li><a href="#{xslUrl}" class="export-xls">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
             <li class="divider"></li>
             <li class="dropdown-submenu-left">
               <a href="#">Delimiter</a>
