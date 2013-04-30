@@ -67,6 +67,7 @@ Tent.I18n.loadTranslations(
 				json: 'JSON'
 				csv: 'CSV'
 				xlsx: 'XLSX'
+				xls: 'XLS'
 				comma: 'COMMA'
 				pipe: 'PIPE'
 				semicolon:'SEMI COLON'
