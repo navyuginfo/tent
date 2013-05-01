@@ -25,6 +25,7 @@ Tent.JQWidget = Em.Mixin.create
 	# When Ember tears down the view's DOM element, it will call
 	# this method.
 	willDestroyElement: ->
+		@_super()
 		ui = @get('ui')
 
 		if (ui)
