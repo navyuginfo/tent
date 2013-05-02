@@ -21,7 +21,7 @@ Tent.Application.MainMenuView = Ember.View.extend
     @_super()
     @highlightSelectedItem()
 
-    @$('.nav-tabs a.menu-link').click((e)=>
+    @$('.nav-tabs .menu-link').click((e)=>
       @switchMenu(e)
       return true
     )
@@ -51,12 +51,12 @@ Tent.Application.MainMenuView = Ember.View.extend
 
   switchMenu: (event)->
     target = event.target
-    selected = @$('.active-menu')[0]
+    selected = @$('.active-menu')
     $(selected).removeClass('active-menu') if selected isnt `undefined`
-    if $(target).is('a')
+    if $(target).is('.menu-link')
       $(target).addClass('active-menu')
     else 
-      $(target).parents('a:first').addClass('active-menu')
+      $(target).parents('.menu-link:first').addClass('active-menu')
     @collapseDashboard() if @get('collapseAutomatically')
 
   collapseDashboard: ->
@@ -70,7 +70,7 @@ Tent.Application.MainMenuView = Ember.View.extend
         if view.get('collapsed')
           view.show()
       )
-    @$('a i').tooltip('enable')
+    @$('a i, button i').tooltip('enable')
 
 
   expandDashboard: ->
@@ -78,7 +78,7 @@ Tent.Application.MainMenuView = Ember.View.extend
       mainPanel = @getMainPanel()
       mainPanel.addClass('expanded')
       @set('collapsedDashboard', false)
-    @$('a i').tooltip('disable')
+    @$('a i, button i').tooltip('disable')
 
   toggleCollapse: ->
     if @get('collapsedDashboard') then @expandDashboard() else @collapseDashboard()
