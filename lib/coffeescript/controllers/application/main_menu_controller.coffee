@@ -17,7 +17,6 @@ Tent.Application.MainMenuController = Ember.Controller.extend
 		      if entitlement then parentEntitled = entitlement
 		      item.entitled = entitlement
 		        
-			 
 			 menuGroup.entitled = true if @isEntitled(menuGroup.operation) and parentEntitled
 
 	isEntitled: (operation)->
