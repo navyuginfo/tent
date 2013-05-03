@@ -224,7 +224,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
     modal.hide()
 
 Tent.ButtonOptions = Ember.View.extend Ember.TargetActionSupport,
-  template: Ember.Handlebars.compile '<a href="#">{{view.label}}</a>'
+  template: Ember.Handlebars.compile '<a href="#">{{#if view.content.iconClass}}<i {{bindAttr class="view.content.iconClass"}}></i>{{/if}} {{loc view.label}}</a>'
   
   optionLabelBinding: 'parentView.parentView.optionLabelPath'
   optionTargetBinding: 'parentView.parentView.optionTargetPath'
