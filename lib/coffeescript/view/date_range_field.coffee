@@ -171,12 +171,15 @@ Tent.DateRangeField = Tent.TextField.extend
 
 			endString = @getValue().split(@get('rangeSplitter'))[1]
 			if endString?
-				try 
-					endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
-					@set('endDate', endDate)
-				catch e
-					isValidEndDate = false
-					@set('endDate', null)
+			  try
+			   endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
+			   @set('endDate', endDate)
+			  catch e
+			   isValidEndDate = false
+			   @set('endDate', null)
+			else
+			  @set('endDate', @get('startDate'))
+			  
 
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless (isValidStartDate and isValidEndDate)
 		@validateWarnings() if (isValid and isValidStartDate and isValidEndDate)
