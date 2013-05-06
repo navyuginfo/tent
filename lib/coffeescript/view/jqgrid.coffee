@@ -178,6 +178,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	willDestroyElement: ->
 		if @get('fullScreen')
 			@removeBackdrop()
+		@getTableDom().GridDestroy()
 
 	setupDomIDs: ->
 		@set('tableId', @get('elementId') + '_jqgrid')
@@ -331,7 +332,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @$()? 
 			if @get('horizontalScrolling')
 				# Override default jqgrid sizing
-				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager').css('width','100%')
+				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv, .ui-jqgrid-bdiv').css('width','100%')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
 			else
 				@getTableDom().setGridWidth(@$().width(), true)
