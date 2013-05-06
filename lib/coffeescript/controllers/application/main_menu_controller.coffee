@@ -9,11 +9,22 @@ Tent.Application.MainMenuController = Ember.Controller.extend
 		for menuGroup in @get('content')
 			parentEntitled = false
 			for item in menuGroup.items
-				if @isEntitled(item.operation)
-					item.entitled = true
-					parentEntitled = true
+				hasAnyEntitlements = @processItemEntitlements(item)
+				if hasAnyEntitlements then parentEntitled = true
+			menuGroup.entitled =  @processItemEntitlements(menuGroup) and parentEntitled
 
-			menuGroup.entitled = true if @isEntitled(menuGroup.operation) and parentEntitled
+	processItemEntitlements: (item) ->
+		item.entitled = true
+		if not item.operations? then return true
+
+		hasEntitlement = false
+		if Object.prototype.toString.call(item.operations) is '[object Array]'
+			entitlement = false
+			for operation in item.operations
+				entitlement = entitlement or @isEntitled(operation)
+			if entitlement then hasEntitlement = entitlement
+			item.entitled = entitlement
+		return hasEntitlement
 
 	isEntitled: (operation)->
 		if operation?
