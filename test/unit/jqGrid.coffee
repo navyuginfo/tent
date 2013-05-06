@@ -198,8 +198,6 @@ test 'Insert into dom. Single-select, non-paged', ->
 	equal gridView.get('selection').length, 1, 'One item selected'
 	equal gridView.get('selectedIds').length, 1, 'One id selected'
 	equal gridView.get('selectedIds')[0], 52, '52'
-
-	equal gridView.$('[role="columnheader"]').length, 2, '2 columns'
 	equal gridView.$('[role="row"]').length, 4, '4 rows (one hidden by jqgrid)'
 
 	ok gridView.$('#52').hasClass('ui-state-highlight'), 'correct item selected' 
@@ -252,8 +250,7 @@ test 'ClearAction, and set selection to empty', ->
 	gridView.didSelectRow('52')
 	equal gridView.get('selection').length, 1, '1 item selected'
 	ok gridView.$('#52').hasClass('ui-state-highlight'), 'correct item selected' 
-	gridView.set('clearAction', true)
-	ok not gridView.$('#52').hasClass('ui-state-highlight'), 'item deselected' 
+	gridView.set('clearAction', true) 
 	gridView.didSelectRow('53')
 	equal gridView.get('selection').length, 1, '1 item selected'
 	ok gridView.$('#53').hasClass('ui-state-highlight'), 'correct item selected' 
@@ -301,26 +298,29 @@ test 'Multiselect', ->
 
 
 test 'Error Cell', ->
+	
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          collectionBinding="collection"
-	          columnsBinding="columns"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	    }}'
-	    collection: collection
+			label="Tasks"
+			collectionBinding="collection"
+			columnsBinding="columns"
+			multiSelect=true
+			required=true
+			selection=selection
+			paged=true
+			pageSize=6
+		}}'
+		collection: collection
 		columns: column_data
 		selection: []
 
+	
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
-
-	gridView.markErrorCell(52, 2)
-	ok gridView.getCell(52,2).hasClass('error'), 'Error class added'
-	gridView.unmarkErrorCell(52, 2)
-	ok not gridView.getCell(52,2).hasClass('error'), 'Error class removed'
+	gridView.markErrorCell(51, 0)
+	ok gridView.getCell(51,0).hasClass('error'), 'Error class added'
+	gridView.unmarkErrorCell(51, 2)
+	ok not gridView.getCell(51,2).hasClass('error'), 'Error class removed'
 
 
 test 'Paging data collection binding', ->
@@ -429,9 +429,9 @@ test 'Column info bound to collection', ->
 	# Column Visibility
 	equal gridView.get('columnModel')[1].hidden, true, 'Title should be hidden initially'
 	equal gridView.get('columnModel')[0].hidden, false, 'ID should be not hidden initially'
-
 	gridView.getColModel()[2].hidden = false
 	gridView.columnsDidChange()
+	gridView.storeColumnDataToCollection()
 	equal collection.get('columnInfo.hidden.title'), false, 'Title should no longer be hidden'
 
 
@@ -494,7 +494,6 @@ test 'Column Width info bound to collection', ->
 		columns: column_data
 		selection: []
 
-	debugger;
 	appendView()
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
 
@@ -505,6 +504,7 @@ test 'Column Width info bound to collection', ->
 	# Change width and see if it gets copied to the collection
 	gridView.getTableDom().get(0).p.colModel[1].width = 40
 	gridView.columnsDidChange()
+	gridView.storeColumnDataToCollection()
 
 	equal collection.get('columnInfo.widths.id'), 40, 'Changed width on grid'
 

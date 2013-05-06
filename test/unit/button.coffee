@@ -251,8 +251,8 @@ test "Ensure options are rendered properly,  and Event will triggered properly(w
   equal view.$('.open')[0],view.$('.button-group')[0], 'class open is applied'
   dropMenu = view.$('.dropdown-menu')
   equal dropMenu.css('display'), 'block', 'display property of dropdown-menu is block'
-  equal $('li:eq(0)>a',dropMenu).text(), "Add Event", 'Label is set to "Add Event" successfully'
-  equal $('li:eq(1)>a',dropMenu).text(), "Edit Event", 'Label is set to "Add Event" successfully' 
+  equal $('li:eq(0)>a',dropMenu).text().trim(), "Add Event", 'Label is set to "Add Event" successfully'
+  equal $('li:eq(1)>a',dropMenu).text().trim(), "Edit Event", 'Label is set to "Add Event" successfully' 
   
   #Now click an event on the list of options
   view.$('ul>li:eq(1)').trigger('click')

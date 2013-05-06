@@ -101,7 +101,7 @@ test 'test for Radio presentation', ->
 
   equal view.$('input[type=radio]').length, 3,  '3 radio buttons were created'
   
-  Ember.run ->
+  ###Ember.run ->
     view.$('.tent-radio-group label').eq(0).click()
   equal Application.get('stateSelection').stateCode, 'GA', 'Selected the correct item'
 
@@ -112,7 +112,7 @@ test 'test for Radio presentation', ->
   Ember.run ->
     widget.set('selection', Application.get('content')[0])
   equal view.$('input[type=radio]').eq(0).attr('checked'), 'checked', 'Changing selection changes the UI button selected'
-
+  ###
 
 test 'Required behaviour', ->
   view = Ember.View.create
