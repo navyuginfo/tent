@@ -1,5 +1,3 @@
-require 'sprockets'
-require 'sprockets-sass'
 require 'sass'
 require 'uglifier'
 
