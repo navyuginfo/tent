@@ -64,3 +64,16 @@ task :jshint do
     fail 'JSHint found errors.' unless ok
   end
 end
+
+
+task :rakep do
+  sh 'bundle exec rakep'
+end
+
+task :qunit => [:rakep] do
+  sh 'phantomjs public/javascript/qunit-phantom.js public/qunit.html'
+end
+
+task :ci => [:qunit] do
+end
+
