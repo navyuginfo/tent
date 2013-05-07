@@ -138,10 +138,9 @@ Tent.MessagePanel = Ember.View.extend
 			else 
 				@get('parentContainer').hide()
 	).observes('hasErrors', 'hasInfos', 'hasWarnings', 'hasSuccesses')
- 
 
 	expandoClass: (->
-		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"
+		if @get('collapsed') isnt true or @get('error.length') is 1 then "error-expando collapse in" else "error-expando collapse"
 	).property('collapsed')
 	
 	###*
