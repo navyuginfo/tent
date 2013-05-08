@@ -315,7 +315,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 			@$('.ui-jqgrid-bdiv').css('top', top)
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
-			@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
+			if not @get('horizontalScrolling')
+				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
@@ -330,9 +331,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	resizeToContainer: ->
 		if @$()? 
-			if @get('horizontalScrolling')
+			if @get('horizontalScrolling') 
 				# Override default jqgrid sizing
-				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv, .ui-jqgrid-bdiv').css('width','100%')
+				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width','100%')
+				if not @get('fixedHeader')
+					@$('.ui-jqgrid-bdiv').css('width','100%')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
 			else
 				@getTableDom().setGridWidth(@$().width(), true)

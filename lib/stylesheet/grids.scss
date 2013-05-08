@@ -389,6 +389,14 @@ $headerHeight: 20px;
 		.ui-jqgrid-view {
 			overflow: auto;
 		}
+		&.fixed-header .ui-jqgrid-view {
+			height: auto;
+		}
+
+		&.fixed-header.paged .ui-jqgrid-bdiv {
+			bottom: 0px;
+		}
+
 		.ui-jqgrid-bdiv {
 			overflow: visible;
 			position: static;
@@ -397,8 +405,6 @@ $headerHeight: 20px;
 			}
 		}
 	}
-
-
 
 
 	&.error {
