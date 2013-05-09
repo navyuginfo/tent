@@ -38,10 +38,10 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 
 Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'section'
-	classNameBindings: ['spanClass']
+	classNameBindings: ['spanClass','useTransition']
 	classNames: ['left-panel']
 	collapsible: true
-	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"></div><div class="panel-content">{{yield}}</div>'
+	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-left"></i></div><div class="panel-content">{{yield}}</div>'
 
 		
 ###*	
@@ -69,20 +69,27 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 		right = section.children('.right-panel')
 		@set('leftView', Ember.View.views[left.attr('id')])
 		@set('rightView', Ember.View.views[right.attr('id')])
+		$.subscribe("/ui/refresh", (a, data)=>
+			@resize()
+		)
 
 	resize: ->
-		section = @.$().parent('section')
-		left = section.children('.left-panel')
-		right = section.children('.right-panel')
-		leftOffset = if left.length > 0 then left.outerWidth(true) else 0
-		@.$().css('left', leftOffset + "px")
-		rightOffset = if right.length > 0 then right.outerWidth(true) else 0
-		@.$().css('right', rightOffset + "px")
+		if @.$()?
+			section = @.$().parent('section')
+			left = section.children('.left-panel')
+			leftOffset = if left.length > 0 then left.outerWidth(true) else 0
+			@.$().css('left', leftOffset + "px") if @.$().css('left') != leftOffset + "px"
+			right = section.children('.right-panel')
+			rightOffset = if right.length > 0 then right.outerWidth(true) else 0
+			@.$().css('right', rightOffset + "px") if @.$().css('right') != rightOffset + "px"
 
 	siblingDidChange: (->
 		console.log 'collapsed'
 		@resize()
 	).observes('leftView.collapsed', 'rightView.collapsed')
+
+	willDestroyElement: ->
+		$.unsubscribe("/ui/refresh")
 
 ###*
 * @class Tent.Right
@@ -98,11 +105,11 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 
 Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	tagName: 'section' 
-	classNameBindings: ['spanClass']
+	classNameBindings: ['spanClass','useTransition']
 	classNames: ['right-panel']
 	collapsible: true
 	collapsed: false
-	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"></div><div class="panel-content">{{yield}}</div>'
+	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-right"></i></div><div class="panel-content">{{yield}}</div>'
 
 			
 

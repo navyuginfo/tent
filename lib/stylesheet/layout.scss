@@ -173,16 +173,23 @@
 .tent-hsection {
 	position: relative;
 	margin-left: 0px;
+	overflow-x: hidden;
 
 	.left-panel {
 		@include fixed-width();
-
+		&.use-transition {
+			-webkit-transition: all .4s ease;
+		}
+		overflow: visible;
 		.panel-content {
 			height: 100%;
-			@include transition(all .3s ease);
-			padding-right: 10px;
 			section {
 				overflow: hidden;
+			}
+
+			// Make space in the child header
+			section:first-child header:first-child {
+				padding-right: 15px;
 			}
 		}
 		.drag-bar {
@@ -190,7 +197,16 @@
 		}
 		&.collapsed {
 			@include collapsed();
+			.drag-bar {
+				right: -14px;
+				@include rotate(180deg);
+			}
+			.panel-content {
+				display: none;
+			}
 		}
+
+		
 	}
 	.center-panel {
 		position: absolute;
@@ -198,27 +214,40 @@
 	}
 	.right-panel {
 		@include fixed-width();
+		&.use-transition {
+			-webkit-transition: all .4s ease;
+		}
+		overflow: visible;	
 		right: 0px;
 		margin-left: 0px;
 		.panel-content {
 			height: 100%;
-			padding-left: 10px;
-			@include transition(all .3s ease);
+			// Make space in the child header
+			section:first-child header:first-child {
+				padding-left: 15px;
+			}
 		}
 		.drag-bar {
 			left: 0px;
 		}
 		&.collapsed {
 			@include collapsed();
+			.drag-bar {
+				left: -14px;
+				@include rotate(180deg);
+			}
+			.panel-content {
+				display: none;
+			}
 		}
 	}
 
 	.drag-bar {
 		position: absolute;
-		top: 0px;
-		bottom: 0px;	
+		top: 5px;
 		cursor: pointer;
-		width: 10px;
+		width: 15px;
+		padding: 3px;
 		background-color: $drag-bar-color;
 		border-right: 1px solid #CCC;
 		border-left: 1px solid #CCC;
