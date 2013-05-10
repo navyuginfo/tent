@@ -31,11 +31,11 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
             <i class="icon-share"></i>Export
           </a>
           <ul class="dropdown-menu">
-            <li><a href="#{jsonUrl}" class="export-json" download="#{jsonUrlPart}">
+            <li><a href="#{if jsonUrl? then jsonUrl else '#'}" class="export-json" #{ if jsonUrlPart? then "download=#{jsonUrlPart}" else '' }>
               #{Tent.I18n.loc("tent.jqGrid.export.json")}</a></li>
             <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
-            <li><a href="#{csvUrl}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
-            <li><a href="#{xlsUrl}" class="export-xls">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
+            <li><a href="#{if csvUrl? then csvUrl else '#'}" class="export-csv">#{Tent.I18n.loc("tent.jqGrid.export.csv")}</a></li>
+            <li><a href="#{if xlsUrl? then xlsUrl else '#'}" class="export-xls">#{Tent.I18n.loc("tent.jqGrid.export.xls")}</a></li>
             <li class="divider"></li>
             <li class="dropdown-submenu-left">
               <a href="#">Delimiter</a>
@@ -98,21 +98,28 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
           </ul>
         </div>
       """
+
       @$(".grid-header .header-buttons").append(button)
 
       unless jsonUrl?
         @$('a.export-json').click =>
           ret = '{ "exportDate": "'+@generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-          @clientDownload(ret)
-
+          @clientDownload(ret,'json')
+      
       @$('a.export-xml').click =>
-        ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-        @clientDownload(ret)
+          ret = "<root>    <exportDate>"+@generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+          @clientDownload(ret,'xml')
+
 
       unless csvUrl?
         @$('a.export-csv').click =>
           ret = 'exportDate \n'+@generateExportDate()+'\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
-          @clientDownload(ret)
+          @clientDownload(ret,'csv')
+
+      unless xlsUrl?
+        @$('a.export-xls').click =>
+          ret = 'exportDate '+@generateExportDate()+'\n\n'+ @exportCSV(tableDom.getRowData(), @getColModel())
+          @clientDownload(ret,'xls')
 
       @$('#customExportForm').click (e) =>
         e.stopPropagation()
@@ -149,11 +156,16 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
           $('#delimiter').val(',')
 
 
-  clientDownload: (file) ->
+  clientDownload: (file,type) ->
     # Allow the client to save the generated file.
     # For no just print to a window
     if navigator.appName != 'Microsoft Internet Explorer'
-      window.open('data:text/csv;charset=utf-8,' + escape(file))
+      # window.open('data:text/csv;charset=utf-8,' + escape(file))
+      data='data:text/csv;charset=utf-8,' + escape(file)
+      link=document.createElement('a')
+      link.setAttribute('href',data)
+      link.setAttribute('download','data.'+type)
+      link.click()
     else
       popup = window.open('', 'csv', '')
       popup.document.body.innerHTML = '<pre>' + file + '</pre>'
