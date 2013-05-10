@@ -186,11 +186,6 @@
 			section {
 				overflow: hidden;
 			}
-
-			// Make space in the child header
-			section:first-child header:first-child {
-				padding-right: 15px;
-			}
 			// Make space in the child header
       		section header {
         		padding-right: 15px;
@@ -232,9 +227,9 @@
 		.panel-content {
 			height: 100%;
 			// Make space in the child header
-			section:first-child header:first-child {
-				padding-left: 15px;
-			}
+      		section header {
+        		padding-right: 15px;
+      		}
 		}	 
 		.drag-bar {
 			left: 0px;
