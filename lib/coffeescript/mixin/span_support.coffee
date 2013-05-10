@@ -4,11 +4,18 @@
 #
 
 ###*
- * @class Tent.SpanSupport
- * Some docs here...
-###
+ * @class Tent.SpanSupport  
+ * Some docs here... 
+### 
 
-Tent.SpanSupport = Ember.Mixin.create
+Tent.SpanSupport = Ember.Mixin.create   
+  ###*
+  * @property {Number} span The horizontal span which should be allocated to this widget
+  ###
+ 
+  ###*
+  * @property {Number} vspan The vertical span which should be allocated to this widget
+  ###
   estimateSpan: ->
     currentView = this
     while (currentView)
@@ -22,10 +29,5 @@ Tent.SpanSupport = Ember.Mixin.create
 
   vspanClass: (-> 'vspan' + @get('vspan') if @get('vspan')).property('vspan')
 
-  ###*
-  * @property {Number} span The horizontal span which should be allocated to this widget
-  ###
+ 
 
-  ###*
-  * @property {Number} vspan The vertical span which should be allocated to this widget
-  ###
