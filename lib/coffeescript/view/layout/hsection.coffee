@@ -29,6 +29,10 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 		@set('right-panel', Ember.View.views[$right.attr('id')]) if $right?
 		@listenForEvents()
 
+	willDestroyElement: ->
+		$.unsubscribe('ui/h-collapse-left')
+		$.unsubscribe('ui/h-collapse-right')
+
 	expandAll: ->
 		@get('left-panel').expand()
 		@get('right-panel').expand()
