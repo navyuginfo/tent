@@ -21,7 +21,35 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 	classNameBindings: ['spanClass', 'vspanClass', 'hClass']
 	classNames: ['tent-hsection']
 	layout: Ember.Handlebars.compile("{{yield}}")
-	
+
+	didInsertElement: ->
+		$left = @$().children('.left-panel:first')
+		@set('left-panel', Ember.View.views[$left.attr('id')]) if $left?
+		$right = @$().children('.right-panel:first')
+		@set('right-panel', Ember.View.views[$right.attr('id')]) if $right?
+		@listenForEvents()
+
+	expandAll: ->
+		@get('left-panel').expand()
+		@get('right-panel').expand()
+
+	collapseAll: ->
+		@get('left-panel').collapse()
+		@get('right-panel').collapse()
+
+	# The collapsible can be toggled using pub/sub
+	# We expect the publish to be of the form
+	#   $.publish('ui/h-collapse-dir', {source: $source})	
+	# The collapsible will be triggered if it is the first collapsible parent of the source object
+	listenForEvents: ->
+		$.subscribe('ui/h-collapse-left', (e, params)=>
+			if params.source?.closest('.tent-hsection')?.get(0) == @$('')?.get(0)
+				@get('left-panel').collapse()
+		)
+		$.subscribe('ui/h-expand-left', (e, params)=>
+			if params.source?.closest('.tent-hsection')?.get(0) == @$('')?.get(0)
+				@get('left-panel').expand()
+		)
 
 ###*
 * @class Tent.Left

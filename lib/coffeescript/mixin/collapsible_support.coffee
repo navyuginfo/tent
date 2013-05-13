@@ -18,20 +18,33 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 
 	didInsertElement: ->
 		@_super()
-		if @get('collapsible') and @isUsingCSSTransition()
-			widget = @
-			@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
-				widget.set('collapsed', widget.$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
-			)
+		if @get('collapsible') 
+			if @isUsingCSSTransition()
+				widget = @
+				@$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', ->
+					widget.set('collapsed', widget.$('').hasClass('collapsed'))
+					$.publish("/ui/refresh", ['resize'])
+				)
 
 	click: (e)->
 		target = @getClickArea(e)
-		if target.length and @get('collapsible')
-			@$('').toggleClass('collapsed')
-			if not @isUsingCSSTransition()
-				@set('collapsed', @$('').hasClass('collapsed'))
-				$.publish("/ui/refresh", ['resize'])
+		@toggle() if target.length and @get('collapsible')
+
+	toggle: ->
+		@$('').toggleClass('collapsed')
+		@triggerListenersImmediately() if not @isUsingCSSTransition()
+	
+	expand: ->
+		@$('').removeClass('collapsed')
+		@triggerListenersImmediately() if not @isUsingCSSTransition()
+
+	collapse: ->
+		@$('').addClass('collapsed')
+		@triggerListenersImmediately() if not @isUsingCSSTransition()
+		
+	triggerListenersImmediately: ->
+		@set('collapsed', @$('').hasClass('collapsed'))
+		$.publish("/ui/refresh", ['resize'])
 
 	isUsingCSSTransition: ->
 		@get('useTransition') and Modernizr.csstransitions
