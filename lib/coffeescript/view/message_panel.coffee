@@ -144,6 +144,7 @@ Tent.MessagePanel = Ember.View.extend
 		if @get('collapsed') then "error-expando collapse" else "error-expando collapse in"
 	).property('collapsed')
 	
+
 	###*
 	 * return the error messages 
 	###
@@ -216,8 +217,17 @@ Tent.MessagePanel = Ember.View.extend
 	).property('warning','warning.@each')
 
 	hasMoreThanOneError: (->
-		@get('error').length > 1
+		Ember.run.next this, =>
+			firstError = @$('.error-message:first')
+			if firstError?
+				@$('.error-expando').css('min-height', firstError.height() + "px")
+		@get('error').length > 1 
 	).property('error','error.@each')
+	
+	# adjustHeightForSingleError: ->
+	# 	firstError = @$('.error-message:first')
+	# 	if firstError?
+	# 		@$('.error-expando').css('min-height', firstError.height() + "px")
 	
 
 	clearAll: ->
