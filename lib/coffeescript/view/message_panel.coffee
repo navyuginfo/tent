@@ -224,12 +224,6 @@ Tent.MessagePanel = Ember.View.extend
 		@get('error').length > 1 
 	).property('error','error.@each')
 	
-	# adjustHeightForSingleError: ->
-	# 	firstError = @$('.error-message:first')
-	# 	if firstError?
-	# 		@$('.error-expando').css('min-height', firstError.height() + "px")
-	
-
 	clearAll: ->
 		@clearErrors()
 		@clearInfos()
