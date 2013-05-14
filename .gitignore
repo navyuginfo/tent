@@ -46,6 +46,7 @@ tests/unit/javascript/
 app/stylesheets/css/
 app/template/compiled/
 node_modules/
+.tmp/
 
 # Asset pipeline filter
 .bundle
