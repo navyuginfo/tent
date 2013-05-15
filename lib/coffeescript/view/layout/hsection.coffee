@@ -73,8 +73,15 @@ Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	classNameBindings: ['spanClass','useTransition']
 	classNames: ['left-panel']
 	collapsible: true
+	horizontalSlide: true
+	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-left"></i></div><div class="panel-content">{{yield}}</div>'
-
+	onExpandEnd: ->
+		@_super()
+	
+	onCollapseEnd: ->
+		@_super()
+		@$('.drag-bar').css('left',"0px")
 		
 ###*	
 * @class Tent.Center
@@ -101,6 +108,9 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 		right = section.children('.right-panel')
 		@set('leftView', Ember.View.views[left.attr('id')])
 		@set('rightView', Ember.View.views[right.attr('id')])
+		$.subscribe("/ui/horizontalSlide", (a, data)=>
+			@resize()
+		)
 		$.subscribe("/ui/refresh", (a, data)=>
 			@resize()
 		)
@@ -141,7 +151,15 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	classNames: ['right-panel']
 	collapsible: true
 	collapsed: false
+	horizontalSlide: true
+	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-right"></i></div><div class="panel-content">{{yield}}</div>'
+	onExpandEnd: ->
+		@_super()
+	
+	onCollapseEnd: ->
+		@_super()
+		@$('.drag-bar').css('left',"-20px")		
 
 			
 

@@ -12,10 +12,23 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 	###
 	collapsed: false
 	###*
-	 * @property {Boolean} useTransition This property determines whether a slide effect is used.
+	 * @property {Boolean} useTransition This property determines whether a CSS transition is used for sliding.
 	###
-	useTransition: false
+	useTransition: true
+	###*
+	 * @property {Boolean} horizontalSlide This property determines whether a javascript transition is used for horizontal sliding.
+	###
+	horizontalSlide: false
 
+	onTransitionStep: ->
+		$.publish("/ui/horizontalSlide")
+
+	onExpandEnd: ->
+		@set('collapsed', false)
+	
+	onCollapseEnd: ->
+		@set('collapsed', true)
+		
 	didInsertElement: ->
 		@_super()
 		if @get('collapsible') 
@@ -31,16 +44,47 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 		@toggle() if target.length and @get('collapsible')
 
 	toggle: ->
-		@$('').toggleClass('collapsed')
-		@triggerListenersImmediately() if not @isUsingCSSTransition()
+		if @get('horizontalSlide')
+			collapsible = @
+			if @get('collapsed')
+				@expand()
+			else
+				@collapse()
+		else
+			@$('').toggleClass('collapsed')
+			@triggerListenersImmediately() if not @isUsingCSSTransition()
 	
 	expand: ->
-		@$('').removeClass('collapsed')
-		@triggerListenersImmediately() if not @isUsingCSSTransition()
+		if @get('horizontalSlide')
+			collapsible = @
+			collapsible.$('.drag-bar').css('left',"inherit")
+			@$().animate({
+				width: collapsible.get('width')
+			},{
+				step: ->
+					collapsible.onTransitionStep()
+				complete: ->
+					collapsible.onExpandEnd()
+			})
+		else
+			@$('').removeClass('collapsed')
+			@triggerListenersImmediately() if not @isUsingCSSTransition()
 
 	collapse: ->
-		@$('').addClass('collapsed')
-		@triggerListenersImmediately() if not @isUsingCSSTransition()
+		if @get('horizontalSlide')
+			collapsible = @
+			collapsible.set('width', collapsible.$().width())
+			@$().animate({
+				width: "0px"
+			},{
+				step: ->
+					collapsible.onTransitionStep()
+				complete: ->
+					collapsible.onCollapseEnd()
+			})
+		else
+			@$('').addClass('collapsed')
+			@triggerListenersImmediately() if not @isUsingCSSTransition()
 		
 	triggerListenersImmediately: ->
 		@set('collapsed', @$('').hasClass('collapsed'))
