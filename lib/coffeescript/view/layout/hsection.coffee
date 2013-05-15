@@ -74,14 +74,16 @@ Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	classNames: ['left-panel']
 	collapsible: true
 	horizontalSlide: true
+	slideDirection: "left"
 	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-left"></i></div><div class="panel-content">{{yield}}</div>'
 	onExpandEnd: ->
 		@_super()
+		@$('.drag-bar').css({'left': @get('width') - 20, 'visibility':'visible'})
 	
 	onCollapseEnd: ->
 		@_super()
-		@$('.drag-bar').css('left',"0px")
+		@$('.drag-bar').css({'left': @get('width'), 'visibility':'visible'})
 		
 ###*	
 * @class Tent.Center
@@ -96,7 +98,7 @@ Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 ###
 
 Tent.Center = Ember.View.extend Tent.SpanSupport,
-	classNameBindings: ['spanClass']
+	classNameBindings: ['spanClass', 'leftCollapsed', 'rightCollapsed']
 	classNames: ['center-panel']
 	layout: Ember.Handlebars.compile '{{yield}}'
 	leftView: null
@@ -119,14 +121,15 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 		if @.$()?
 			section = @.$().parent('section')
 			left = section.children('.left-panel')
-			leftOffset = if left.length > 0 then left.outerWidth(true) else 0
+			leftOffset = if left.length > 0 then (left.outerWidth(true) + left.offset().left - section.offset().left) else 0
 			@.$().css('left', leftOffset + "px") if @.$().css('left') != leftOffset + "px"
 			right = section.children('.right-panel')
-			rightOffset = if right.length > 0 then right.outerWidth(true) else 0
+			rightOffset = if right.length > 0 then (right.outerWidth(true) - ((right.offset().left + right.outerWidth()) - (section.offset().left + section.width()))) else 0
 			@.$().css('right', rightOffset + "px") if @.$().css('right') != rightOffset + "px"
 
 	siblingDidChange: (->
-		console.log 'collapsed'
+		@set('leftCollapsed', @get('leftView.collapsed'))
+		@set('rightCollapsed', @get('rightView.collapsed'))
 		@resize()
 	).observes('leftView.collapsed', 'rightView.collapsed')
 
@@ -152,14 +155,16 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	collapsible: true
 	collapsed: false
 	horizontalSlide: true
+	slideDirection: "right"
 	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-right"></i></div><div class="panel-content">{{yield}}</div>'
 	onExpandEnd: ->
 		@_super()
-	
+		@$('.drag-bar').css({'left': 0, 'visibility': 'visible'})
+
 	onCollapseEnd: ->
 		@_super()
-		@$('.drag-bar').css('left',"-20px")		
+		@$('.drag-bar').css({'left': 0 - 20, 'visibility': 'visible'})
 
 			
 

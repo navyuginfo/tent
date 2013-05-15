@@ -19,15 +19,21 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 	 * @property {Boolean} horizontalSlide This property determines whether a javascript transition is used for horizontal sliding.
 	###
 	horizontalSlide: false
+	slideDirection: "left"
 
 	onTransitionStep: ->
 		$.publish("/ui/horizontalSlide")
+		#$.publish("/ui/refresh", ['resize'])
 
 	onExpandEnd: ->
 		@set('collapsed', false)
+		@$('').removeClass('collapsed')
+		$.publish("/ui/refresh", ['resize'])
 	
 	onCollapseEnd: ->
 		@set('collapsed', true)
+		@$('').addClass('collapsed')
+		$.publish("/ui/refresh", ['resize'])
 		
 	didInsertElement: ->
 		@_super()
@@ -57,10 +63,12 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 	expand: ->
 		if @get('horizontalSlide')
 			collapsible = @
-			collapsible.$('.drag-bar').css('left',"inherit")
-			@$().animate({
-				width: collapsible.get('width')
-			},{
+			dir = {}
+			@$('.drag-bar').css({'visibility':'hidden'})
+			dir["" + collapsible.get("slideDirection")] = "0px"
+
+			@$().animate(dir, {
+				duration: 400
 				step: ->
 					collapsible.onTransitionStep()
 				complete: ->
@@ -74,9 +82,12 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 		if @get('horizontalSlide')
 			collapsible = @
 			collapsible.set('width', collapsible.$().width())
-			@$().animate({
-				width: "0px"
-			},{
+			@$('.drag-bar').css({'visibility':'hidden'})
+			dir = {}
+			dir["" + collapsible.get("slideDirection")] = "-#{collapsible.get('width')}px"
+
+			@$().animate(dir, {
+				duration: 400
 				step: ->
 					collapsible.onTransitionStep()
 				complete: ->

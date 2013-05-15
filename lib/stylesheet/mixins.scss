@@ -30,10 +30,10 @@
 
 /* Styles applied to collapse a panel */
 @mixin collapsed {
-	width: 0px;
-	.panel-content {
-		@include opacity(0);
-	}
+	//width: 0px;
+	//.panel-content {
+	//	@include opacity(0);
+	//}
 	//overflow: hidden;
 }
 

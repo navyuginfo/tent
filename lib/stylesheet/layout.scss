@@ -206,7 +206,7 @@
       			border: 1px solid rgba(0, 0, 0, 0.32);
 			}
 			.panel-content {
-				display: none;
+				//display: none;
 			}
 		}
 	}
@@ -228,10 +228,11 @@
 		.panel-content {
 			height: 100%;
 			// Make space in the child header
-      		section header {
-        		padding-right: 15px;
-      		}
-		}	 
+      		
+		}	
+		section header {
+        	padding-left: 15px;
+      	} 
 		.drag-bar {
 			left: 0px;
 			border-bottom-right-radius: 4px;
@@ -246,7 +247,7 @@
       			border: 1px solid rgba(0, 0, 0, 0.32);
 			}
 			.panel-content {
-				display: none;
+				//display: none;
 			}
 		}
 	}
