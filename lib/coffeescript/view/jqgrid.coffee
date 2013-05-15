@@ -265,12 +265,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
-
-	getItemFromModel: (id, contentArray)-> 
-		intValue = parseInt(id)
-		@get('content').find((item)->
-			item.get('id') == intValue
-		)
+	getItemFromModel: (id)->
+		for model in @get('content').toArray()
+			return model if "#{model.get('id')}" == "#{id}"
 
 	markErrorCell: (rowId, iCell) ->
 		@getCell(rowId, iCell).addClass('error')
