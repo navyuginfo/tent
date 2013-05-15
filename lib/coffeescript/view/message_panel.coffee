@@ -216,11 +216,14 @@ Tent.MessagePanel = Ember.View.extend
 		hasW
 	).property('warning','warning.@each')
 
-	hasMoreThanOneError: (->
+	hasFirstLongTextError: (->
 		Ember.run.next this, =>
 			firstError = @$('.error-message:first')
 			if firstError?
 				@$('.error-expando').css('min-height', firstError.height() + "px")
+	).observes('error','error.@each')
+
+	hasMoreThanOneError: (->
 		@get('error').length > 1 
 	).property('error','error.@each')
 	
