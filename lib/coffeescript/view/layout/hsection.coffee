@@ -166,11 +166,12 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 
 	# Compensate for shrinking of this section due to a parent section expanding
 	keepAlignedWithRight: (data)->
-		if @get('collapsed') and not @sourceIsInMySection(data)
-			@$().css('right', "-" + @$().width() + 'px')
+		if @$()?
+			if @get('collapsed') and not @sourceIsInMySection(data)
+				@$().css('right', "-" + @$().width() + 'px')
 
 	sourceIsInMySection: (data)->
-		data? and (data.source.parent('section').get(0) == @.$().parent('section').get(0))
+		data? and (data.source?.parent('section').get(0) == @.$()?.parent('section').get(0))
 
 	onExpandEnd: ->
 		@_super()
