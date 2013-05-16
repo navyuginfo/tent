@@ -228,6 +228,14 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       if @get('columnInfo')
         if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
           permutation = [0]
+          if @getColModel() and @getColModel().length > 0 and @getColModel()[0].name != 'cb'
+            delete this.get('columnInfo.order')[0]
+            order = this.get('columnInfo.order')
+            lastkey = null
+            for k,v of order
+              order[k-1]=v-1
+              lastkey = k
+            delete this.get('columnInfo.order')[lastkey]
           for column, position in @get('columnModel')
             column = @get('columnInfo.order')[position + 1]
             permutation[column] = position + 1 if column?
@@ -260,6 +268,12 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   storeColumnOrderingToCollection: (permutation)->
     if @get('columnInfo')?
       oldOrder = @get('columnInfo.oldOrder')
+      if @getColModel() and @getColModel().length > 0 and @getColModel()[0].name != 'cb'
+        permutation.unshift(0)
+        permutation = permutation.map((item)->
+                        item+1
+                      )
+        permutation[0] = 0
       if oldOrder?
         for col, position in permutation
           #what was at position 'col' now equals 'position'
