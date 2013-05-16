@@ -51,12 +51,22 @@
 
     <div class="container-fluid flex-container">
       <div class="row-fluid flex-container">
-        {{#view Tent.HSection span="12" vspan="10"}}
-          {{#view Tent.Left span="3"}}Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title {{/view}}
-          {{#view Tent.Center }}
-               <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+        {{#view Tent.HSection span="12" vspan="10" id="outer"}}
+          {{#view Tent.Left span="3" id="outerleft"}}Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title {{/view}}
+          {{#view Tent.Center id="outercenter"}}
+                {{#view Tent.HSection span="12" vspan="10" id="inner"}}
+                   
+                  {{#view Tent.Center id="innercenter"}}
+                       <div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div><div>lorem ipsum</div>
+                  {{/view}}
+                  {{#view Tent.Right span="3" id="innerright"}}<h4>Inner Right</h4>{{/view}}
+                {{/view}}
+   
+
+
+
           {{/view}}
-          {{#view Tent.Right span="3"}}Footer{{/view}}
+           
         {{/view}}
    
         </div>

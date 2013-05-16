@@ -22,7 +22,7 @@ Tent.CollapsibleSupport = Ember.Mixin.create
 	slideDirection: "left"
 
 	onTransitionStep: ->
-		$.publish("/ui/horizontalSlide")
+		$.publish("/ui/horizontalSlide", {source: @$()})
 		#$.publish("/ui/refresh", ['resize'])
 
 	onExpandEnd: ->

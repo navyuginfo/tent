@@ -111,14 +111,14 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 		@set('leftView', Ember.View.views[left.attr('id')])
 		@set('rightView', Ember.View.views[right.attr('id')])
 		$.subscribe("/ui/horizontalSlide", (a, data)=>
-			@resize()
+			@resize(data)
 		)
 		$.subscribe("/ui/refresh", (a, data)=>
 			@resize()
 		)
 
-	resize: ->
-		if @.$()?
+	resize: (data)->
+		if @$()?
 			section = @.$().parent('section')
 			left = section.children('.left-panel')
 			leftOffset = if left.length > 0 then (left.outerWidth(true) + left.offset().left - section.offset().left) else 0
@@ -158,6 +158,20 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	slideDirection: "right"
 	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-right"></i></div><div class="panel-content">{{yield}}</div>'
+
+	didInsertElement: ->
+		$.subscribe("/ui/horizontalSlide", (a, data)=>
+			@keepAlignedWithRight(data)
+		)
+
+	# Compensate for shrinking of this section due to a parent section expanding
+	keepAlignedWithRight: (data)->
+		if @get('collapsed') and not @sourceIsInMySection(data)
+			@$().css('right', "-" + @$().width() + 'px')
+
+	sourceIsInMySection: (data)->
+		data? and (data.source.parent('section').get(0) == @.$().parent('section').get(0))
+
 	onExpandEnd: ->
 		@_super()
 		@$('.drag-bar').css({'left': 0, 'visibility': 'visible'})
