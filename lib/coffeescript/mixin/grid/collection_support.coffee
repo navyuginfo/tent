@@ -228,8 +228,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       if @get('columnInfo')
         if @get('columnInfo.order')? and not $.isEmptyObject(this.get('columnInfo.order'))
           permutation = [0]
-          if @getColModel() and @getColModel().length>0 and @getColModel()[0].name != 'cb'
-            delete this.getColModel()[0]
+          if @getColModel() and @getColModel().length > 0 and @getColModel()[0].name != 'cb'
+            delete this.get('columnInfo.order')[0]
             order = this.get('columnInfo.order')
             lastkey = null
             for k,v of order
