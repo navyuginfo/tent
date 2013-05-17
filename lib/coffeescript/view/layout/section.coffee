@@ -68,7 +68,7 @@ Tent.Section = Ember.View.extend Tent.SpanSupport,
 
 Tent.Header = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport, Tent.HideableSupport,
 	tagName: 'header'
-	classNameBindings: ['spanClass']
+	classNameBindings: ['spanClass', 'useTransition:use-transition']
 
 	###*
 	* @property {String} title The title to be displayed in the header.

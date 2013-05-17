@@ -26,16 +26,15 @@
 	height: 100%;
 	z-index: 1000;
 	overflow-x: hidden;
-	-webkit-transition: all .3s ease;
 }
 
 /* Styles applied to collapse a panel */
 @mixin collapsed {
-	width: 10px;			
-	.panel-content {
-		@include opacity(0);
-	}
-	overflow: hidden;
+	//width: 0px;
+	//.panel-content {
+	//	@include opacity(0);
+	//}
+	//overflow: hidden;
 }
 
 /* Draw the element full-screen */
