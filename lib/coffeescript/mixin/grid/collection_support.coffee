@@ -237,8 +237,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
               lastkey = k
             delete this.get('columnInfo.order')[lastkey]
           for column, position in @get('columnModel')
-            column = @get('columnInfo.order')[position + 1]
-            permutation[column] = position + 1 if column?
+            if @getColModel()[0].name == 'cb' then position = position+1
+            column = @get('columnInfo.order')[position]
+            permutation[column] = position if column?
           if permutation.length > 1
             @getTableDom().remapColumns(permutation, true, false)
         else
