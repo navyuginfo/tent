@@ -222,7 +222,7 @@ body > .modal-backdrop {
 	.alert {
 		position: relative;
  		margin: 2px 0px 6px 0px;
- 		padding: 6px;
+ 		padding: 4px 6px;
 		@include border-radius(4px);
 		border: 1px solid #EEDCB9;
 		.error-message {
@@ -283,6 +283,7 @@ body > .modal-backdrop {
 			display: inline-block;
 			list-style: none;
 			margin-left: 0px;
+			margin-bottom: 5px;
 			padding-top: 1px;
 		}
 	}
@@ -294,7 +295,7 @@ body > .modal-backdrop {
 	.error-expando, .info-expando {
 		min-height: 20px;
 		line-height: 20px;
-		position: static;
+		position: relative;
 		.in {
 			height: auto;
 		}
