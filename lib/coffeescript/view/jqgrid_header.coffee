@@ -9,7 +9,7 @@ Tent.JqGridHeaderView = Ember.View.extend
     classNames: ['btn-group', 'export', 'jqgrid-title-button']
     templateName: 'jqgrid_export'
     didInsertElement: ->
-      grid = @get('view.parentView.parentView')
+      grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       unless grid.get('jsonUrl')?
         @$('a.export-json').click =>
