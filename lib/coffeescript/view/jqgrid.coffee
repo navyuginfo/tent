@@ -323,7 +323,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$('.ui-jqgrid-bdiv').css('top', top)
 			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
-			if not @get('horizontalScrolling')
+
+			if (not @get('horizontalScrolling') and not @get('paged'))
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
