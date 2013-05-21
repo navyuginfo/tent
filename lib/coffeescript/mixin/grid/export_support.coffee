@@ -15,12 +15,21 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     tableDom = @getTableDom()
     @renderExportButton(tableDom)
 
+  getVisibleColumns: ->
+    columns = @get('collection').gatherGridData().columns.hidden
+    visibleColumns = []
+    for(own key, value of columns)
+      if key isnt "cb" and !value
+        visibleColumns.push(key.underscore())
+    visibleColumns
+
   renderExportButton: (tableDom)->
     if @get('showExportButton')
       # Ensure that the caption header is displayed
       #if not @get('title')?
       #  tableDom.setCaption('&nbsp;')
-      params = {del: ",", headers: true, quotes: true, date: @generateExportDate()}
+      visibleColumnString = @getVisibleColumns().join(',')
+      params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString}
       jsonUrl = if @get('collection')? then @get('collection').getURL('json', params) else ""
       csvUrl = if @get('collection')? then @get('collection').getURL('csv', params) else ""
       xlsUrl = if @get('collection')? then @get('collection').getURL('xls', params) else ""
