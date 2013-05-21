@@ -342,13 +342,14 @@ $headerHeight: 20px;
 			//top: 28px;
 		}
 
-		.ui-jqgrid-bdiv {
+		.ui-jqgrid-bdiv, .ui-jqgrid-sdiv {
 			overflow-y: auto; 
 			overflow-x: hidden;
 			position: absolute;
 			margin-left: 0px; 
 			bottom: 0px;
 		}
+
 	}
 
 

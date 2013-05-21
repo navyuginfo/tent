@@ -43,7 +43,7 @@ require '../mixin/grid/maximize_grid'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, 
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
@@ -100,6 +100,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	# An internal property identifying whether the grid is expanded or not.
 	fullScreen: false
+
+	###*
+	 * @property {Boolean} footerRow Displays a row at the foot of the table for summary information
+	###
+	footerRow: false
 
 	###*
 	* @property {Array} content The array of items to display in the grid.
@@ -236,7 +241,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
 			toolbar: [false,"top"],
-			grouping: @get('grouping')
+			grouping: @get('grouping'),
+			footerrow: @get('footerRow'),
+			userDataOnFooter : true, # Provide a 'userdata' property to provide information for the footer row
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -312,10 +319,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeight: ->
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
+			bottom = (@$('.ui-jqgrid-sdiv').height() + @$('.ui-jqgrid-pager')?.height()) or 0
 			@$('.ui-jqgrid-bdiv').css('top', top)
-			bottom = @$('.ui-jqgrid-pager')?.height() or 0
 			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
-
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 			if not @get('horizontalScrolling')
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
