@@ -18,7 +18,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   getVisibleColumns: ->
     columns = @get('collection').gatherGridData().columns.hidden
     visibleColumns = []
-    for(own key, value of columns)
+    for own key, value of columns
       if key isnt "cb" and !value
         visibleColumns.push(key.underscore())
     visibleColumns
