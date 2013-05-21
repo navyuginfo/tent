@@ -21,7 +21,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
         visibleColumns.push(key.underscore())
     visibleColumns
 
-  updateUrls: (->
+  updateExportUrls: ->
     visibleColumnString = @getVisibleColumns().join(',')
     params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString}
     collection = @get('collection')
@@ -31,6 +31,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       else
         @set "#{contentType}Url", ""
     @set 'jsonUrlPart', @get('jsonUrl')?.split('/').pop().split('?')[0]
+
+  gridDidChange: (->
+    @updateExportUrls()
   ).observes(
     'collection.columnInfo',
     'collection.sortingInfo', 
