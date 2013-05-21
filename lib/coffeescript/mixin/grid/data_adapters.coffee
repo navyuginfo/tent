@@ -51,6 +51,10 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		else
 			column.width or 80
  
+	userdata: (->
+		@get('content')?.filterProperty('presentationType','summary').get(0)?.toJSON()
+	).property('content','content.isLoaded')
+
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
 		grid = []
@@ -89,7 +93,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')?
-			userdata: @get('content.userdata')
+			userdata: @get('userdata')
 			remoteGrouping: @isShowingValidGroups()
 			columns: @get('columnModel')
 		@resetGrouping()
