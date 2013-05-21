@@ -50,6 +50,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
 		else
 			column.width or 80
+<<<<<<< HEAD
 
 	columnNames: (->
 		columnNames = []
@@ -73,6 +74,13 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		@get('fixedRows.length')
 	).property('fixedRows')
 
+=======
+ 
+	userdata: (->
+		@get('content')?.filterProperty('presentationType','summary').get(0)?.toJSON()
+	).property('content','content.isLoaded')
+
+>>>>>>> extracting user data from content
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
 		grid = []
