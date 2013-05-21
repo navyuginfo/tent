@@ -32,6 +32,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
         @set "#{contentType}Url", ""
     @set 'jsonUrlPart', @get('jsonUrl')?.split('/').pop().split('?')[0]
   ).observes(
+    'collection.columnInfo',
     'collection.sortingInfo', 
     'collection.filteringInfo',
     'collection.pagingInfo',
