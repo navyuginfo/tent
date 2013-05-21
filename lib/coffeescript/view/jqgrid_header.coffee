@@ -2,8 +2,8 @@ require '../template/jqgrid_header'
 require '../template/jqgrid_export'
 
 Tent.JqGridHeaderView = Ember.View.extend
-	classNames: ['grid-header', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix']
-	templateName: 'jqgrid_header'
+  classNames: ['grid-header', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix']
+  templateName: 'jqgrid_header'
 
   exportView: Ember.View.extend
     classNames: ['btn-group', 'export', 'jqgrid-title-button']
