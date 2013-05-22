@@ -31,6 +31,7 @@ setup = ->
 		clearGrouping: ->
 		goToGroupPage: ->
 		columnsDescriptor: column_data
+		columnInfo: {titles: {},widths: {},order: {},hidden: {}}
 		 
 
 teardown = ->

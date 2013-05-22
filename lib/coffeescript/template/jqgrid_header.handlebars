@@ -1,4 +1,8 @@
-<div class="btn-group header-buttons"></div>
+<div class="btn-group header-buttons">
+  {{#if view.parentView.showExportButton}}
+    {{view view.exportView}}
+  {{/if}}
+</div>
 
 {{#if view.parentView.collection}}
 	{{#if view.parentView.filtering}}
