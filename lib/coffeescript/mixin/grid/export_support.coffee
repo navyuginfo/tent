@@ -19,10 +19,8 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       (column.name isnt 'cb') and (not column.hidden)
     visibleColumns.map (column) =>
       if custom
-        userDefinedTitles = @columnInfo.titles
-        title = userDefinedTitles[column.index]
-        title = (column.t) unless title
-        title
+        userDefinedTitles = @get('columnInfo.titles')
+        userDefinedTitles[column.index] or column.t
       else
         column.name.underscore()
 
