@@ -13,17 +13,23 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   addNavigationBar: ->
     @_super()
 
-  getVisibleColumns: ->
-    columns = @get('collection').gatherGridData().columns.hidden
-    visibleColumns = []
-    for own key, value of columns
-      if key isnt "cb" and !value
-        visibleColumns.push(key.underscore())
-    visibleColumns
+  getVisibleColumns: (custom = false)->
+    #custom = true, gives the column names as displayed on UI
+    visibleColumns = @getColModel().filter (column) ->
+      (column.name isnt 'cb') and (not column.hidden)
+    visibleColumns.map (column) =>
+      if custom
+        userDefinedTitles = @columnInfo.titles
+        title = userDefinedTitles[column.index]
+        title = (column.t) unless title
+        title
+      else
+        column.name.underscore()
 
   updateExportUrls: ->
     visibleColumnString = @getVisibleColumns().join(',')
-    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString}
+    customHeaderString = @getVisibleColumns(true).join(',')
+    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString}
     collection = @get('collection')
     for contentType in ['json', 'csv', 'xls']
       if collection?
