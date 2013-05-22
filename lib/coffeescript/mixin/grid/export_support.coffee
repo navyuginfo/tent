@@ -41,8 +41,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   ).observes(
     'collection.columnInfo',
     'collection.sortingInfo', 
-    'collection.filteringInfo',
-    'collection.pagingInfo'
+    'collection.filteringInfo'
   )
 
   clientDownload: (file) ->
