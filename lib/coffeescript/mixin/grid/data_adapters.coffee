@@ -50,9 +50,19 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
 		else
 			column.width or 80
- 
-	userdata: (->
-		@get('content')?.filterProperty('presentationType','summary').get(0)?.toJSON()
+
+	columnNames: (->
+		columnNames = []
+		for column in @get('columnModel')
+			columnNames.pushObject(column.name)
+		columnNames
+ 	).property('columnModel', 'columnModel.@each')
+	
+	# Any rows which are identified as presentationType='summary' should be attached to the 
+	# bottom of the grid as fixed rows
+	fixedRows: (->
+		firstModel = @get('content')?.filterProperty('presentationType','summary').get(0)
+		firstModel?.getProperties(@get('columnNames'))
 	).property('content','content.isLoaded')
 
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
@@ -93,7 +103,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')?
-			userdata: @get('userdata')
+			userdata: @get('fixedRows')
 			remoteGrouping: @isShowingValidGroups()
 			columns: @get('columnModel')
 		@resetGrouping()
