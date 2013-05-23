@@ -37,12 +37,9 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     @set 'jsonUrlPart', @get('jsonUrl')?.split('/').pop().split('?')[0]
 
   gridDidChange: (->
-    @updateExportUrls()
-  ).observes(
-    'collection.columnInfo',
-    'collection.sortingInfo', 
-    'collection.filteringInfo'
-  )
+    Ember.run.next @, =>
+      @updateExportUrls()
+  ).observes('collection.sortingInfo', 'collection.filteringInfo')
 
   clientDownload: (file) ->
     # Allow the client to save the generated file.

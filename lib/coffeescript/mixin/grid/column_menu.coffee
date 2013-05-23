@@ -1,7 +1,8 @@
 Tent.Grid.ColumnMenu = Ember.Mixin.create
 	columnsDidChange: ->
 		@leftAlignLastDropdown()
-		@updateExportUrls()
+		Ember.run.next @, =>
+			@updateExportUrls()
 
 	addColumnDropdowns: () ->
 		if @get('columns')?
