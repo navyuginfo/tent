@@ -44,7 +44,9 @@ Tent.JqGridHeaderView = Ember.View.extend
             columnHeaders = fd.value
           if fd.name == 'includeQuotes'
             includeQuotes = fd.value
-        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate()};
+        visibleColumnString = grid.getVisibleColumns().join(',')
+        customHeaderString = grid.getVisibleColumns(true).join(',')
+        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString};
         return document.location.href = grid.get('collection').getURL(extension, customParams);
 
       @$('#delimiter').change =>
