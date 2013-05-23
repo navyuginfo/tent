@@ -77,13 +77,36 @@ Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	slideDirection: "left"
 	useTransition: false
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-left"></i></div><div class="panel-content">{{yield}}</div>'
+
+	didInsertElement: ->
+		$.subscribe('/window/resize', =>
+			@repositionDragBar()
+			@keepAlignedWithLeft()
+		)
+
+	willDestroyElement: ->
+		$.unsubscribe('/window/resize')
+
 	onExpandEnd: ->
 		@_super()
-		@$('.drag-bar').css({'left': @get('width') - 20, 'visibility':'visible'})
+		@repositionDragBar()
 	
 	onCollapseEnd: ->
 		@_super()
-		@$('.drag-bar').css({'left': @get('width'), 'visibility':'visible'})
+		@repositionDragBar()
+
+	repositionDragBar: ->
+		shift = if @get('collapsed') then 0 else 20
+		@$('.drag-bar').css({'left': @$().width() - shift, 'visibility':'visible'})
+
+	sourceIsInMySection: (data)->
+		data? and (data.source?.parent('section').get(0) == @.$()?.parent('section').get(0))
+
+	# Compensate for shrinking of this section due to a parent section expanding
+	keepAlignedWithLeft: (data)->
+		if @$()?
+			if @get('collapsed') and not @sourceIsInMySection(data)
+				@$().css('left', "-" + @$().width() + 'px')
 		
 ###*	
 * @class Tent.Center
@@ -116,6 +139,9 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 		$.subscribe("/ui/refresh", (a, data)=>
 			@resize()
 		)
+		$.subscribe("/window/resize", ()=>
+			@resize()
+		)
 
 	resize: (data)->
 		if @$()?
@@ -135,6 +161,7 @@ Tent.Center = Ember.View.extend Tent.SpanSupport,
 
 	willDestroyElement: ->
 		$.unsubscribe("/ui/refresh")
+		$.unsubscribe("/window/resize")
 
 ###*
 * @class Tent.Right
@@ -163,6 +190,13 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 		$.subscribe("/ui/horizontalSlide", (a, data)=>
 			@keepAlignedWithRight(data)
 		)
+		$.subscribe("/window/resize", (a, data)=>
+			@keepAlignedWithRight(data)
+		)
+
+	willDestroyElement: ->
+		$.unsubscribe('/window/resize')
+		$.unsubscribe('/ui/horizontalSlide')
 
 	# Compensate for shrinking of this section due to a parent section expanding
 	keepAlignedWithRight: (data)->
