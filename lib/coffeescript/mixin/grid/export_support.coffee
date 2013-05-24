@@ -24,22 +24,12 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       else
         column.name.underscore()
 
-  updateExportUrls: ->
+  getExportUrl: (contentType)->
     visibleColumnString = @getVisibleColumns().join(',')
     customHeaderString = @getVisibleColumns(true).join(',')
     params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString}
-    collection = @get('collection')
-    for contentType in ['json', 'csv', 'xls']
-      if collection?
-        @set "#{contentType}Url", collection.getURL(contentType, params)
-      else
-        @set "#{contentType}Url", ""
-    @set 'jsonUrlPart', @get('jsonUrl')?.split('/').pop().split('?')[0]
-
-  gridDidChange: (->
-    Ember.run.next @, =>
-      @updateExportUrls()
-  ).observes('collection.sortingInfo', 'collection.filteringInfo')
+    if (collection = @get('collection'))?
+      collection.getURL(contentType, params)
 
   clientDownload: (file) ->
     # Allow the client to save the generated file.
