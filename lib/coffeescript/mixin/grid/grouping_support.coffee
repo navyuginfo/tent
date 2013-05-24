@@ -84,12 +84,26 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 				content = content + comparator.rowTitle(startValue);
 			content = content + "</span>"
 
+		content = content + @addAggregateData(@get('columnModel'), selectedGroup)
+
 		headerRow = $('<tr class="group-header"><td colspan="' + @getColSpan() + '"><i class="icon-caret-left"></i>'+content+'</td></tr>')
 		@$('.ui-jqgrid-hbox .ui-jqgrid-htable').append(headerRow)
 		headerRow.click(->
 			widget.returnToGroupList()
 		)
 		@columnsDidChange()
+
+	addAggregateData: (columns, row)->
+		hasAggregates = false
+		span = '<span class="aggregate"><span class="caption">'+Tent.I18n.loc('tent.grouping.totals')+'</span>'
+		columns.forEach ((col)->
+			aggregate = row.get(col.name + "_sum")
+			if aggregate != undefined
+				hasAggregates = true;
+				span = span + '<span class="item"><span class="title">'+col.title+'</span><span class="value">'+aggregate+'</span></span>'
+		)
+		span + '</span>' if hasAggregates
+
 
 	hideGroupHeader: ->
 		headerRow = @$('.ui-jqgrid-hbox .group-header')
