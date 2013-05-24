@@ -265,9 +265,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
-	getItemFromModel: (id)->
+	getItemFromModel: (id, colName)->
+		id = @get('content').toArray()[id - 1].get(colName) if colName?
 		for model in @get('content').toArray()
-			return model if "#{model.get('id')}" == "#{id}"
+			value = if colName? then model.get(colName) else model.get('id') 
+			return model if "#{value}" == "#{id}"
 
 	markErrorCell: (rowId, iCell) ->
 		@getCell(rowId, iCell).addClass('error')
@@ -282,12 +284,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* @method sendAction send an action to the router. This is called from the 'action' formatter,
 	* which displays cell content as a link
 	###
-	sendAction: (action, element, rowId)->
+	sendAction: (action, element, rowId, colName)->
 		view = @
 		while not view.get('controller') and view.get('parentView')?
 			view = view.get('parentView')
 		if view.get('controller')?
-			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId) ) if @get('parentView.controller.namespace.router')?
+			view.get('controller.namespace.router').send(action, @getItemFromModel(rowId, colName) ) if @get('parentView.controller.namespace.router')?
 
 	# jqGrid-generated markup is not granular enough for the styling that we want.
 	# Here we add the markup rather than modifying the plugin code.

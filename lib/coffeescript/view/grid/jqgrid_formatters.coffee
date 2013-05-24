@@ -107,8 +107,7 @@ jQuery.extend $.fn.fmatter.date,
 
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->
-		'<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
-
+    '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\''+options.colModel.formatoptions.redirectColumn+'\')">' + cellvalue + '</a>'
 
 # CheckboxEdit Formatter
 ###*
