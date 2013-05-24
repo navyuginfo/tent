@@ -53,13 +53,22 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['livereload']
             },
-            karma: {
+            karma_qunit: {
                 files: [
                     '<%= yeoman.lib %>/coffeescript/**/*.coffee',
                     '<%= yeoman.app %>/templates/**/*.hbs',
-                    '<%= yeoman.test %>/unit/**/*.coffee'
+                    '<%= yeoman.test %>/qunit/**/*.coffee'
                 ],
-                tasks: ['karma-test'] //NOTE the :run flag
+                tasks: ['karma-qunit-test'] //NOTE the :run flag
+            },
+            karma_mocha: {
+                files: [
+                    '<%= yeoman.lib %>/coffeescript/**/*.coffee',
+                    '<%= yeoman.app %>/templates/**/*.hbs',
+                    '<%= yeoman.test %>/mocha/**/*.coffee',
+                    '<%= yeoman.test %>/mocha/**/*.js'
+                ],
+                tasks: ['karma-mocha-test'] //NOTE the :run flag
             }
         },
         connect: {
@@ -115,7 +124,25 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
-            test: '.tmp/test',
+            test_all: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '.tmp',
+                        '<%= yeoman.dist %>/*'
+                    ]
+                }]
+            },
+            test: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '.tmp',
+                        '<%= yeoman.dist %>/javascript/tent.js',
+                        '<%= yeoman.dist %>/javascript/test.js'
+                    ]
+                }]
+            },
             server: '.tmp'
         },
 
@@ -144,14 +171,12 @@ module.exports = function (grunt) {
             },
             tent: {
                 files: {
-                    src: ['.tmp/scripts/tent.js'],
-                    dest: 'dist/javascript/tent.js'
+                    'dist/javascript/tent.js': ['.tmp/scripts/tent.js']
                 }
             },
-            test: {
+            qunit_test: {
                 files: {
-                    src: ['.tmp/test/**/*.js'],
-                    dest: 'dist/javascript/test'
+                    'dist/javascript/qunit-test.js': ['.tmp/qunit/test/**/*.js']
                 }
             }
         },
@@ -173,9 +198,13 @@ module.exports = function (grunt) {
                 configFile: 'karma.conf.js'
             },
             unit_mocha: {
+                configFile: 'test/karma/karma.mocha.conf.js',
+                singleRun: false,
                 background: true
             },
             unit_qunit: {
+                configFile: 'test/karma/karma.qunit.conf.js',
+                singleRun: false,
                 background: true
             },
             continuous: {
@@ -183,8 +212,6 @@ module.exports = function (grunt) {
                 browsers: ['PhantomJS']
             }
         },
-
-
 
         mocha: {
             all: {
@@ -194,6 +221,8 @@ module.exports = function (grunt) {
                 }
             }
         },
+
+
         coffee: {
             dist: {
                 files: [{
@@ -208,8 +237,8 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.test %>',
-                    src: '{,*/**/}*.coffee',
-                    dest: '.tmp/test',
+                    src: ['qunit/**/*.coffee'],
+                    dest: '.tmp/qunit/test',
                     ext: '.js'
                 }]
             }
@@ -238,12 +267,14 @@ module.exports = function (grunt) {
                 separator: ';'
             },
             jq: {
-                src: ['vendor/jquery/*.js'],
-                dest: 'dist/javascript/jquery.js'
+                files: {
+                    'dist/javascript/jquery.js': ['vendor/jquery/*.js']
+                }
             },
             dist: {
-                src: ['vendor/modernizr/*.js', 'vendor/handlebars/*.js', 'vendor/ember/*.js', 'vendor/ember-data/*.js', 'vendor/bootstrap/*.js', 'vendor/jqGrid/*.js', 'vendor/accounting/*.js', 'vendor/date/*.js', 'vendor/date-range/*.js', 'vendor/pubsub/*.js', 'vendor/jquery-ui/*.js'],
-                dest: 'dist/javascript/vendor.js'
+                files: {
+                    'dist/javascript/vendor.js': ['vendor/modernizr/*.js', 'vendor/handlebars/*.js', 'vendor/ember/*.js', 'vendor/ember-data/*.js', 'vendor/bootstrap/*.js', 'vendor/jqGrid/*.js', 'vendor/accounting/*.js', 'vendor/date/*.js', 'vendor/date-range/*.js', 'vendor/pubsub/*.js', 'vendor/jquery-ui/*.js', 'vendor/html5shiv/*.js', 'vendor/history/*.js', 'vendor/eventlistener/*.js','vendor/headless-ember/*.js']
+                }
             }
         },
         // not enabled since usemin task does concat and uglify
@@ -426,19 +457,38 @@ module.exports = function (grunt) {
         //'usemin'
     ]);
 
-    grunt.registerTask('karma-watch', [
+    grunt.registerTask('karma-watch-qunit', [
+        'clean:test_all',
         'concat',
-        'karma:unit_mocha',
-        'watch:karma'
+        'karma:unit_qunit',
+        'watch:karma_qunit'
     ]);
 
-    grunt.registerTask('karma-test', [
+    grunt.registerTask('karma-qunit-test', [
         'clean:test',
         'coffee:test',
         'coffee:dist',
         'ember_templates',
         'neuter:tent',
-        //'neuter:test',
+        'neuter:qunit_test',
+        'karma:unit_qunit:run'
+    ]);
+
+
+    grunt.registerTask('karma-watch-mocha', [
+        'clean:test_all',
+        'concat',
+        'karma:unit_mocha',
+        'watch:karma_mocha'
+    ]);
+
+    grunt.registerTask('karma-mocha-test', [
+        'clean:test',
+        'coffee:test',
+        'coffee:dist',
+        'ember_templates',
+        'neuter:tent',
+        'neuter:qunit_test',
         'karma:unit_mocha:run'
     ]);
 

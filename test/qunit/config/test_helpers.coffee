@@ -20,6 +20,8 @@ oldModule = @module
   oldModule(moduleName)
 
 QUnit.testStart (opts) =>
+  $('body #qunit-fixture').remove()
+  $('body').append('<div id="qunit-fixture"></div>')
   @testSetup[opts.module].call()
 
 QUnit.testDone (opts) =>

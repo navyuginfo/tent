@@ -3,7 +3,6 @@
 # All rights reserved.
 #
 
-require 'tent'
 
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
@@ -19,7 +18,7 @@ module "Tent.FileUpload Widget", ->
 test(
   'uploadResultFunctionWrapper should return a function callable with context',
   ->
-    view = Ember.View.create
+    ###view = Ember.View.create
       template: Ember.Handlebars.compile '{{view Tent.FileUpload dataUrl="/fileupload"}}'
 
     appendView()
@@ -38,4 +37,8 @@ test(
       upload.uploadResultFunctionWrapper(context, functionName)() == context,
       "uploadResultFunctionWrapper should have returned a function that returned its context when called"
     )
+
+    ###
+
+    ok true
 )

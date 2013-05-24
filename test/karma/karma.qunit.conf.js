@@ -7,20 +7,35 @@ basePath = '';
 
 
 // list of files / patterns to load in the browser
+
 files = [
   QUNIT,
   QUNIT_ADAPTER,
+  '../../test/karma/lib/chai.js',
+  '../../dist/javascript/jquery.js',
+  '../../test/static/javascript/sinon-1.3.4.js',
+  '../../test/static/javascript/sinon-qunit-1.0.0.js',
+  '../../dist/javascript/vendor.js',
+  '../../dist/javascript/compiled-templates.js',
+  '../../dist/javascript/tent.js',
+  '../../dist/javascript/qunit-test.js'
+];
+
+
+/*files = [
+  MOCHA,
+  MOCHA_ADAPTER,
   'test/karma/lib/chai.js',
   'dist/javascript/jquery.js',
-  'dist/javascript/vendor.js',
-  'test/static/javascript/sinon-1.3.4.js',
-  'test/static/javascript/sinon-qunit-1.0.0.js',
-  'dist/javascript/compiled-templates.js',
-  'dist/javascript/tent.js',
-  '.tmp/test/lib/test_helpers.js',
-  //'test/karma/spec/testqunit.js'
-  '.tmp/test/unit/a*.js'
-];
+  //'test/static/javascript/sinon-1.3.4.js',
+  //'test/static/javascript/sinon-qunit-1.0.0.js',
+  //'dist/javascript/vendor.js',
+  //'dist/javascript/compiled-templates.js',
+  //'dist/javascript/tent.js',
+  //'.tmp/test/lib/test_helpers.js',
+  'test/karma/spec/test.js'
+];*/
+
 
 
 // list of files to exclude
@@ -29,9 +44,9 @@ exclude = [];
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots'];
 
-
+ 
 // web server port
 port = 9876;
 
@@ -61,7 +76,7 @@ autoWatch = false;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['Chrome'];
+browsers = ['PhantomJS'];
 
 
 // If browser does not capture in given timeout [ms], kill it
@@ -70,4 +85,4 @@ captureTimeout = 60000;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = false;
+singleRun = true;

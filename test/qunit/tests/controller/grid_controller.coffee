@@ -3,12 +3,25 @@
 # All rights reserved.
 #
 
-require '~test/mocks/ember_data_mocks'
-
 view = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
+
+	Tent.Mock = Tent.Mock || Ember.Namespace.create()
+	Tent.Mock.DSModel = Ember.Object.extend
+		toJSON: () ->
+			return @content
+
+	Tent.Mock.RecordArray = Ember.Object.extend
+		toArray: ->
+			return @content
+		removeArrayObserver: ->
+			console.log 'removeArrayObserver'
+		addArrayObserver: ->
+			console.log 'addArrayObserver'
+	
+
 	@controller = Tent.Controllers.GridController.create()
 	@emptyRecordArray = DS.RecordArray.create({
 		content: []
