@@ -1340,6 +1340,8 @@ $.fn.jqGrid = function( pin ) {
 				});
 				if (hasAggregates) {
 					return span + '</span>';
+				} else {
+					return "";
 				}
 			}
 

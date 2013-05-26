@@ -102,8 +102,7 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 				hasAggregates = true;
 				span = span + '<span class="item"><span class="title">'+col.title+'</span><span class="value">'+aggregate+'</span></span>'
 		)
-		span + '</span>' if hasAggregates
-
+		if hasAggregates then span + '</span>' else ""
 
 	hideGroupHeader: ->
 		headerRow = @$('.ui-jqgrid-hbox .group-header')
