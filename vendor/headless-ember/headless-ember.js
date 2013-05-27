@@ -12,11 +12,11 @@ var console = window.console = {};
 console.log = console.info = console.warn = console.error = function(){};
 
 // jQuery
-var jQuery = window.jQuery = function() { return jQuery; };
-jQuery.ready = function() { return jQuery; };
-jQuery.inArray = function() { return jQuery; };
-jQuery.jquery = "1.7.2";
-var $ = jQuery;
+//var jQuery = window.jQuery = function() { return jQuery; };
+//jQuery.ready = function() { return jQuery; };
+//jQuery.inArray = function() { return jQuery; };
+//jQuery.jquery = "1.7.2";
+//var $ = jQuery;
 
 // Ember
 function precompileEmberHandlebars(string) {

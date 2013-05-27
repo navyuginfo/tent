@@ -128,7 +128,7 @@ test 'Custom Validations with Text view and options', ->
 test 'Warnings', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.TextField 
-		}}'
+		}}'   
 
 	appendView()
 	textView = Ember.View.views[view.$('.tent-text-field').attr('id')]
@@ -160,14 +160,4 @@ test 'Warnings', ->
 	textView.set('formattedValue', 'aa@bb.com')
 	ok textView.validateWarnings(), 'Check for trim'
 
-
-###
-#test 'Custom validations with options: value', ->
-
-test 'Custom validations with error message', ->
-
-test 'Custom validations with options', ->
-
-
-
-
+ 
