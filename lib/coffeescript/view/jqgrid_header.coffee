@@ -12,18 +12,27 @@ Tent.JqGridHeaderView = Ember.View.extend
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       unless grid.get('jsonUrl')?
+        grid.set('jsonUrl','#')
+        grid.set('jsonUrlPart','') 
         @$('a.export-json').click =>
           ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-          grid.clientDownload(ret)
+          grid.clientDownload(ret,'json')
 
       @$('a.export-xml').click =>
         ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-        grid.clientDownload(ret)
+        grid.clientDownload(ret,'xml')
 
       unless grid.get('csvUrl')?
+        grid.set('csvUrl','#')
         @$('a.export-csv').click =>
           ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-          grid.clientDownload(ret)
+          grid.clientDownload(ret,'csv')
+
+      unless grid.get('xlsUrl')?
+        grid.set('xlsUrl','#')
+        @$('a.export-xls').click =>
+          ret = 'exportDate '+grid.generateExportDate()+'\n\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
+          grid.clientDownload(ret,'xls')
 
       @$('#customExportForm').click (e) =>
         e.stopPropagation()
