@@ -23,3 +23,15 @@ Unit tests may be run at: http://localhost:9292/qunit.html
 * /lib: code and assets for tent
 * /test: scaffold for testpad.html test page, and unit tests
 * /vendor: dependencies for tent
+
+## Running Tests
+
+Initial Installation:
+* Install Node: 'brew install node'
+* Install NPM: 'curl https://npmjs.org/install.sh | sudo sh'
+* Install Grunt Command Line: 'npm install -g grunt-cli'
+* Install all other dependencies: 'sudo npm install'
+* Install Karma: 'sudo npm install -g karma'
+
+Watching and executing tests:
+Run 'grunt karma-watch-qunit' in a terminal, which will watch for file changes and execute tests in the background.
