@@ -2,11 +2,11 @@
   <i class="icon-share"></i>Export
 </a>
 <ul class="dropdown-menu">
-  <li><a {{bindAttr href="view.parentView.parentView.jsonUrl" download="view.parentView.parentView.jsonUrlPart"}} class="export-json">
+  <li><a {{action exportData "view.json" target="view"}} href="#" class="export-json">
     {{loc tent.jqGrid.export.json}}</a></li>
   <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
-  <li><a {{bindAttr href="view.parentView.parentView.csvUrl"}} class="export-csv">{{loc tent.jqGrid.export.csv}}</a></li>
-  <li><a {{bindAttr href="view.parentView.parentView.xlsUrl"}} class="export-xls">{{loc tent.jqGrid.export.xls}}</a></li>
+  <li><a {{action exportData "view.csv" target="view"}} href="#" class="export-csv">{{loc tent.jqGrid.export.csv}}</a></li>
+  <li><a {{action exportData "view.xls" target="view"}} href="#" class="export-xls">{{loc tent.jqGrid.export.xls}}</a></li>
   <li class="divider"></li>
   <li class="dropdown-submenu-left">
     <a href="#">Delimiter</a>

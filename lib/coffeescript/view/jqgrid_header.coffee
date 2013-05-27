@@ -8,22 +8,36 @@ Tent.JqGridHeaderView = Ember.View.extend
   exportView: Ember.View.extend
     classNames: ['btn-group', 'export', 'jqgrid-title-button']
     templateName: 'jqgrid_export'
+    csv: 'csv'
+    json: 'json'
+    xls: 'xls'
+
+    exportData: (e) ->
+      contentType = e.context
+      grid = @get('parentView.parentView')
+      tableDom = grid.getTableDom()
+      url = grid.getExportUrl(contentType)
+      if contentType is 'json'
+        jsonUrlPart = url.split('/').pop().split('?')[0]
+        @$('.export-json').attr('download', jsonUrlPart)
+      if url?
+        document.location.href = url 
+      else 
+        switch contentType
+          when 'json'
+            ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+            grid.clientDownload(ret)
+          when 'csv'
+            ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
+            grid.clientDownload(ret)
+
     didInsertElement: ->
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
-      unless grid.get('jsonUrl')?
-        @$('a.export-json').click =>
-          ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-          grid.clientDownload(ret)
 
-      @$('a.export-xml').click =>
-        ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-        grid.clientDownload(ret)
-
-      unless grid.get('csvUrl')?
-        @$('a.export-csv').click =>
-          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-          grid.clientDownload(ret)
+      # @$('a.export-xml').click =>
+      #   ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+      #   grid.clientDownload(ret)
 
       @$('#customExportForm').click (e) =>
         e.stopPropagation()
