@@ -45,8 +45,10 @@ testpad/javascript/
 tests/unit/javascript/
 app/stylesheets/css/
 app/template/compiled/
-node_modules/
-.tmp/
+/node_modules/*
+!/node_modules/grunt-neuterall
+.tmp
+npm-debug.log
 
 # Asset pipeline filter
 .bundle

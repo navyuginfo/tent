@@ -158,7 +158,7 @@ module.exports = function (grunt) {
             }
         },
 
-        neuter: {
+        neuterall: {
             options: {
                 includeSourceURL: false,
                 filepathTransform: function(filepath){
@@ -456,7 +456,7 @@ module.exports = function (grunt) {
         'ember_templates',
         'coffeescriptee',
         //'minispade',
-        'neuter',
+        'neuterall',
         'htmlmin',
         //'cssmin',
         'concat',
@@ -485,8 +485,8 @@ module.exports = function (grunt) {
         'coffee:test',
         'coffee:tent',
         'ember_templates',
-        'neuter:tent',
-        'neuter:qunit_test',
+        'neuterall:tent',
+        'neuterall:qunit_test',
         'karma:unit_qunit_watch:run'
     ]);
 
@@ -509,8 +509,8 @@ module.exports = function (grunt) {
         'coffee:test',
         'coffee:tent',
         'ember_templates',
-        'neuter:tent',
-        'neuter:qunit_test',
+        'neuterall:tent',
+        'neuterall:qunit_test',
         'karma:unit_mocha_watch:run'
     ]);
 
@@ -525,8 +525,8 @@ module.exports = function (grunt) {
         'coffee:test',
         'coffee:tent',
         'ember_templates',
-        'neuter:tent',
-        'neuter:qunit_test',
+        'neuterall:tent',
+        'neuterall:qunit_test',
         'karma:qunit_continuous'
     ]);
 
@@ -540,8 +540,8 @@ module.exports = function (grunt) {
         'coffee:test',
         'coffee:tent',
         'ember_templates',
-        'neuter:tent',
-        'neuter:qunit_test',
+        'neuterall:tent',
+        'neuterall:qunit_test',
         'karma:mocha_continuous'
     ]);
 

@@ -28,7 +28,7 @@
     "grunt-karma": "~0.4.4",
     "grunt-ember-templates": "~0.4.4",
     "grunt-minispade": "~0.1.2",
-    "grunt-neuter": "~0.4.0"
+    "grunt-neuterall": "~0.1.0"
   },
   "engines": {
     "node": ">=0.8.0"
