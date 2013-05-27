@@ -1,3 +1,7 @@
 test:
+  pre:
+    - npm install -g karma
+  override:
+    - grunt karma-qunit-ci
   post:
     - bundle exec rake qunit
