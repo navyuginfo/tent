@@ -17,19 +17,17 @@ Tent.JqGridHeaderView = Ember.View.extend
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       url = grid.getExportUrl(contentType)
-      if contentType is 'json'
+      if contentType is 'json' and url?
         jsonUrlPart = url.split('/').pop().split('?')[0]
         @$('.export-json').attr('download', jsonUrlPart)
+        ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+        return grid.clientDownload(ret)
       if url?
         document.location.href = url 
       else 
-        switch contentType
-          when 'json'
-            ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-            grid.clientDownload(ret)
-          when 'csv'
-            ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-            grid.clientDownload(ret)
+        if contentType is 'csv'
+          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
+          grid.clientDownload(ret)
 
     didInsertElement: ->
       grid = @get('parentView.parentView')
