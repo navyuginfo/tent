@@ -104,10 +104,26 @@ jQuery.extend $.fn.fmatter.date,
 	unformat: (cellvalue, options) ->
 		Tent.Formatting.date.unformat(cellvalue)
 
-
+# Action Formatter
+###*
+* @class jqgrid.formatter.action Allows jsGrid cell content to be treated as a link.
+* This formatter should be added to a column descriptor as follows (redirectColumn is optional):
+*       {id: "some_id", ..., formatter: "action", .formatoptions({action: 'showNewRoute', redirectColumn: 'columnName'})
+* If no column name is supplied, it will redirect to 'newRoute' with context as data of the clicked row. The clicked row is 
+* searched on the basis of field 'id' in the data hash by comparing it against the clicked row Id.
+* If a column name is passed with in the format options, instead of rowId, value of the given column on the clicked row is compared
+* against the column value in the grid data.
+* This speacial redirectColumn option is required, for complicated data such that, data with single id needs to be shown
+* in different rows, with certain different column values, in that case, the 'id' for all the rows would be different
+* to meet ember data needs but the actual id for that data should be stored in some other column, so that 
+* appropriate processing and redirection can be done.
+###
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->
-    '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\''+options.colModel.formatoptions.redirectColumn+'\')">' + cellvalue + '</a>'
+		if options.colModel.formatoptions.redirectColumn?
+	    return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\''+options.colModel.formatoptions.redirectColumn+'\')">' + cellvalue + '</a>'
+		else 
+			return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
 
 # CheckboxEdit Formatter
 ###*
