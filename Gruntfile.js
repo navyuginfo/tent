@@ -522,6 +522,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-qunit-ci', [
         'clean:test',
+        'concat',
         'coffee:test',
         'coffee:tent',
         'ember_templates',
@@ -537,6 +538,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-mocha-ci', [
         'clean:test',
+        'concat',
         'coffee:test',
         'coffee:tent',
         'ember_templates',
