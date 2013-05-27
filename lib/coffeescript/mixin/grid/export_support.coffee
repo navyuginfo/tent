@@ -31,11 +31,16 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     if (collection = @get('collection'))?
       collection.getURL(contentType, params)
 
-  clientDownload: (file) ->
+  clientDownload: (file,type) ->
     # Allow the client to save the generated file.
     # For no just print to a window
     if navigator.appName != 'Microsoft Internet Explorer'
-      window.open('data:text/csv;charset=utf-8,' + escape(file))
+      # window.open('data:text/csv;charset=utf-8,' + escape(file))
+      data='data:text/csv;charset=utf-8,' + escape(file)
+      link=document.createElement('a')
+      link.setAttribute('href',data)
+      link.setAttribute('download','data.'+type)
+      link.click()
     else
       popup = window.open('', 'csv', '')
       popup.document.body.innerHTML = '<pre>' + file + '</pre>'
