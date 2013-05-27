@@ -34,7 +34,7 @@ module.exports = function (grunt) {
             },
             coffee: {
                 files: ['<%= yeoman.lib %>/coffeescript/**/*.coffee'],
-                tasks: ['coffee:dist', 'test']
+                tasks: ['coffee:tent', 'test']
             },
             coffeeTest: {
                 files: ['test/spec/{,*/}*.coffee'],
@@ -59,7 +59,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/templates/**/*.hbs',
                     '<%= yeoman.test %>/qunit/**/*.coffee'
                 ],
-                tasks: ['karma-qunit-test'] //NOTE the :run flag
+                tasks: ['karma-watch-qunit-test']
             },
             karma_mocha: {
                 files: [
@@ -68,7 +68,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.test %>/mocha/**/*.coffee',
                     '<%= yeoman.test %>/mocha/**/*.js'
                 ],
-                tasks: ['karma-mocha-test'] //NOTE the :run flag
+                tasks: ['karma-watch-mocha-test']
             }
         },
         connect: {
@@ -195,19 +195,28 @@ module.exports = function (grunt) {
 
         karma: {
             options: {
-                configFile: 'karma.conf.js'
+                configFile: 'test/karma/karma.qunit.conf.js'
             },
-            unit_mocha: {
+            unit_mocha_watch: {
                 configFile: 'test/karma/karma.mocha.conf.js',
                 singleRun: false,
                 background: true
             },
-            unit_qunit: {
+            unit_qunit_watch: {
                 configFile: 'test/karma/karma.qunit.conf.js',
                 singleRun: false,
                 background: true
             },
-            continuous: {
+            unit_qunit_ci: {
+                configFile: 'test/karma/karma.qunit.conf.js',
+                singleRun: true
+            },
+            qunit_continuous: {
+                singleRun: true,
+                browsers: ['PhantomJS']
+            },
+            mocha_continuous: {
+                configFile: 'test/karma/karma.mocha.conf.js',
                 singleRun: true,
                 browsers: ['PhantomJS']
             }
@@ -224,7 +233,7 @@ module.exports = function (grunt) {
 
 
         coffee: {
-            dist: {
+            tent: {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.lib %>/coffeescript',
@@ -379,7 +388,7 @@ module.exports = function (grunt) {
         concurrent: {
             server: [
                 'ember_templates',
-                'coffee:dist',
+                'coffee:tent',
                 'compass:server'
             ],
             test: [
@@ -457,44 +466,83 @@ module.exports = function (grunt) {
         //'usemin'
     ]);
 
+
+
+    //
+    // Start watching all tent and test coffeescript files. 
+    // On modification, build all Tent with tests and execute qUnit test suite.
+    //    
+
     grunt.registerTask('karma-watch-qunit', [
         'clean:test_all',
         'concat',
-        'karma:unit_qunit',
+        'karma:unit_qunit_watch',
         'watch:karma_qunit'
     ]);
 
-    grunt.registerTask('karma-qunit-test', [
+    grunt.registerTask('karma-watch-qunit-test', [
         'clean:test',
         'coffee:test',
-        'coffee:dist',
+        'coffee:tent',
         'ember_templates',
         'neuter:tent',
         'neuter:qunit_test',
-        'karma:unit_qunit:run'
+        'karma:unit_qunit_watch:run'
     ]);
 
+
+
+    //
+    // Start watching all tent and test coffeescript files. 
+    // On modification, build all Tent with tests and execute mocha test suite.
+    //       
 
     grunt.registerTask('karma-watch-mocha', [
         'clean:test_all',
         'concat',
-        'karma:unit_mocha',
+        'karma:unit_mocha_watch',
         'watch:karma_mocha'
     ]);
 
-    grunt.registerTask('karma-mocha-test', [
+    grunt.registerTask('karma-watch-mocha-test', [
         'clean:test',
         'coffee:test',
-        'coffee:dist',
+        'coffee:tent',
         'ember_templates',
         'neuter:tent',
         'neuter:qunit_test',
-        'karma:unit_mocha:run'
+        'karma:unit_mocha_watch:run'
     ]);
 
-    grunt.registerTask('default', [
-        'jshint',
-        'test',
-        'build'
+
+
+    //
+    // Immediately build all Tent and test files and execute qUnit test suite
+    // 
+
+    grunt.registerTask('karma-qunit-ci', [
+        'clean:test',
+        'coffee:test',
+        'coffee:tent',
+        'ember_templates',
+        'neuter:tent',
+        'neuter:qunit_test',
+        'karma:qunit_continuous'
     ]);
+
+
+    //
+    // Immediately build all Tent and test files and execute Mocha test suite
+    // 
+
+    grunt.registerTask('karma-mocha-ci', [
+        'clean:test',
+        'coffee:test',
+        'coffee:tent',
+        'ember_templates',
+        'neuter:tent',
+        'neuter:qunit_test',
+        'karma:mocha_continuous'
+    ]);
+
 };

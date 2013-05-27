@@ -11,7 +11,6 @@ basePath = '';
 files = [
   QUNIT,
   QUNIT_ADAPTER,
-  '../../test/karma/lib/chai.js',
   '../../dist/javascript/jquery.js',
   '../../test/static/javascript/sinon-1.3.4.js',
   '../../test/static/javascript/sinon-qunit-1.0.0.js',
@@ -21,23 +20,6 @@ files = [
   '../../dist/javascript/qunit-test.js'
 ];
 
-
-/*files = [
-  MOCHA,
-  MOCHA_ADAPTER,
-  'test/karma/lib/chai.js',
-  'dist/javascript/jquery.js',
-  //'test/static/javascript/sinon-1.3.4.js',
-  //'test/static/javascript/sinon-qunit-1.0.0.js',
-  //'dist/javascript/vendor.js',
-  //'dist/javascript/compiled-templates.js',
-  //'dist/javascript/tent.js',
-  //'.tmp/test/lib/test_helpers.js',
-  'test/karma/spec/test.js'
-];*/
-
-
-
 // list of files to exclude
 exclude = [];
 
@@ -46,7 +28,7 @@ exclude = [];
 // possible values: 'dots', 'progress', 'junit'
 reporters = ['dots'];
 
- 
+
 // web server port
 port = 9876;
 
