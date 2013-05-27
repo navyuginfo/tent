@@ -42,9 +42,9 @@ Tent.JqGridHeaderView = Ember.View.extend
           ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
           grid.clientDownload(ret,'json')
 
-      @$('a.export-xml').click =>
-        ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
-        grid.clientDownload(ret,'xml')
+      # @$('a.export-xml').click =>
+      #   ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
+      #   grid.clientDownload(ret,'xml')
 
       unless grid.get('csvUrl')?
         grid.set('csvUrl','#')
