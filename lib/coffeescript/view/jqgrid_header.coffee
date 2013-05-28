@@ -17,44 +17,26 @@ Tent.JqGridHeaderView = Ember.View.extend
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       url = grid.getExportUrl(contentType)
-      if contentType is 'json' and url?
-        jsonUrlPart = url.split('/').pop().split('?')[0]
-        @$('.export-json').attr('download', jsonUrlPart)
+      if contentType is 'json'
+        if url?
+          jsonUrlPart = url.split('/').pop().split('?')[0]
+          @$('.export-json').attr('download', jsonUrlPart)
         ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-        return grid.clientDownload(ret)
+        return grid.clientDownload(ret, contentType)
       if url?
         document.location.href = url 
       else 
-        if contentType is 'csv'
-          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-          grid.clientDownload(ret)
+        ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
+        grid.clientDownload(ret, contentType)
 
     didInsertElement: ->
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
 
-      unless grid.get('jsonUrl')?
-        grid.set('jsonUrl','#')
-        grid.set('jsonUrlPart','') 
-        @$('a.export-json').click =>
-          ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
-          grid.clientDownload(ret,'json')
-
       # @$('a.export-xml').click =>
       #   ret = "<root>    <exportDate>"+grid.generateExportDate()+"</exportDate>    " + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(),"    ")+"</root>"
       #   grid.clientDownload(ret,'xml')
 
-      unless grid.get('csvUrl')?
-        grid.set('csvUrl','#')
-        @$('a.export-csv').click =>
-          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-          grid.clientDownload(ret,'csv')
-
-      unless grid.get('xlsUrl')?
-        grid.set('xlsUrl','#')
-        @$('a.export-xls').click =>
-          ret = 'exportDate '+grid.generateExportDate()+'\n\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
-          grid.clientDownload(ret,'xls')
 
       @$('#customExportForm').click (e) =>
         e.stopPropagation()
