@@ -61,9 +61,17 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	# Any rows which are identified as presentationType='summary' should be attached to the 
 	# bottom of the grid as fixed rows
 	fixedRows: (->
-		firstModel = @get('content')?.filterProperty('presentationType','summary').get(0)
-		firstModel?.getProperties(@get('columnNames'))
+		allModel=[]
+		data = @get('content')?.filterProperty('presentationType','summary')
+		if data?
+			data.forEach (item)=>
+				allModel.push(item?.getProperties(@get('columnNames')))
+		allModel	
 	).property('content','content.isLoaded')
+
+	fixedRowsCount: (->
+		@get('fixedRows.length')
+	).property('fixedRows')
 
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->

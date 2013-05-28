@@ -107,6 +107,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	footerRow: false
 
 	###*
+	 * @property {Integer} fixedRowsCount Displays rows count at the foot of the table for summary information
+	###
+	fixedRowsCount: 1
+
+	###*
 	* @property {Array} content The array of items to display in the grid.
 	* By default this will be retrieved from the collection, if provided
 	###
@@ -243,6 +248,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			toolbar: [false,"top"],
 			grouping: @get('grouping'),
 			footerrow: @get('footerRow'),
+			footerrowscount: @get('fixedRowsCount'),
 			userDataOnFooter : true, # Provide a 'userdata' property to provide information for the footer row
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
