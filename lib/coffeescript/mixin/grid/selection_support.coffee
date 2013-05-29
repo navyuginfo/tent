@@ -50,26 +50,26 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
 
     ######## Select All ########
     didSelectAll: (rowIds, status) ->
-        selectedIds = @get('selectedIds')
-        if @get('paged')
-            # We can optimise when we know all items are to be selected
-            if status!=false
-                allPageItems = []
-                selection = @get('selection')
-                for id in rowIds
-                    selectedItem = @getItemFromModel(id)
-                    allPageItems.push selectedItem if (selectedItem? and not selection.contains(selectedItem))
-                selection.pushObjects(allPageItems)
-            else
-                allPageItems = []
-                for id in rowIds
-                    allPageItems.push @getItemFromModel(id)
-                @get('selection').removeObjects(allPageItems)
+      selectedIds = @get('selectedIds')
+      if @get('paged')
+        # We can optimise when we know all items are to be selected
+        if status!=false
+          allPageItems = []
+          selection = @get('selection')
+          for id in rowIds
+            selectedItem = @getItemFromModel(id)
+            allPageItems.push selectedItem if (selectedItem? and not selection.contains(selectedItem))
+          selection.pushObjects(allPageItems)
         else
-            if status!=false
-                @selectAllItems()
-            else
-                @clearSelection()
+          allPageItems = []
+          for id in rowIds
+            allPageItems.push @getItemFromModel(id)
+          @get('selection').removeObjects(allPageItems)
+      else
+        if status!=false
+          @selectAllItems()
+        else
+          @clearSelection()
 
       @get('afterSelectAll').call(@, @get('selection')) if @get('afterSelectAll')?
 
