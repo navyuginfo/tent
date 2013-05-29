@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         watch: {
             ember_templates: {
-              files: '<%= yeoman.app %>/templates/**/*.hbs',
+              files: '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
               tasks: ['ember_templates', 'livereload']
             },
             coffee: {
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
             karma_qunit: {
                 files: [
                     '<%= yeoman.lib %>/coffeescript/**/*.coffee',
-                    '<%= yeoman.app %>/templates/**/*.hbs',
+                    '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
                     '<%= yeoman.test %>/qunit/**/*.coffee'
                 ],
                 tasks: ['karma-watch-qunit-test']
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
             karma_mocha: {
                 files: [
                     '<%= yeoman.lib %>/coffeescript/**/*.coffee',
-                    '<%= yeoman.app %>/templates/**/*.hbs',
+                    '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
                     '<%= yeoman.test %>/mocha/**/*.coffee',
                     '<%= yeoman.test %>/mocha/**/*.js'
                 ],

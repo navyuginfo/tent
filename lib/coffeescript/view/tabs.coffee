@@ -15,17 +15,20 @@ require '../template/tabs'
               {{#view Tent.TabPane id="settings" title="_settings"}}
                   At vero eos et accusamus et iusto odio dignissimos ducimus
               {{/view}}
-          {{/view}}
+          {{/view}} 
 ###
 Tent.Tabs = Ember.View.extend
-	layoutName: 'tabs'
+  layoutName: 'tabs'
+  fixedHeader: false
+  classNames: ['tent-tabs']
+  classNameBindings: ['fixedHeader'] 
 
-	###*
-	* @property {String} active The id of the tabpane which should be initially displayed
-	###
-	active: null
+  ###*
+  * @property {String} active The id of the tabpane which should be initially displayed
+  ###
+  active: null
 
-	didInsertElement: ->
+  didInsertElement: ->
     _this = @
     _this.$().on("shown", 'a[data-toggle="tab"]', (e)->
       _this.set('active', $(@).attr('href').replace('#',''))
@@ -43,32 +46,34 @@ Tent.Tabs = Ember.View.extend
         {{/view}}
 ###
 Tent.TabPane = Ember.View.extend
-	classNames: ["tab-pane"]
-	layout: Ember.Handlebars.compile '{{yield}}'
+  classNames: ["tab-pane"]
+  layout: Ember.Handlebars.compile '{{yield}}'
 
-	###*
-	* @property {String} id The id of the pane. This should be unique for the page
-	###
-	id: null
+  ###*
+  * @property {String} id The id of the pane. This should be unique for the page
+  ###
+  id: null
 
-	###*
-	* @property {String} title The title for the pane. This title will be translated and displayed in a tab by the containing {@link Tent.Tabs}.	 
-	###
-	title: null
-	
-	###*
-	* The title will be updated from the bindings, but there is a race condition between the
-	* Instantiation of the view and change of title, now there are two cases
-	* 1) if the value is changed before this view is instantiated the observer
-	* will not fire because the value is set and will not change, in that case
-	* we would need to call the observer explicitely in the didInsertElement for
-	* this view to render that tab element.
-	* 2) if the value is set after this view is instantiated the observer will
-	* automatically fire and will render the required tab element, and once
-	* the value of the title is set, the observer won't do anything
-	###
-	didInsertElement:->
-	  @updateTitle()
+  ###*
+  * @property {String} title The title for the pane. This title will be translated and displayed in a tab by the containing {@link Tent.Tabs}.	 
+  ###
+  title: null  
+
+  ###*
+  * The title will be updated from the bindings, but there is a race condition between the
+  * Instantiation of the view and change of title, now there are two cases
+  * 1) if the value is changed before this view is instantiated the observer
+  * will not fire because the value is set and will not change, in that case
+  * we would need to call the observer explicitely in the didInsertElement for
+  * this view to render that tab element.
+  * 2) if the value is set after this view is instantiated the observer will
+  * automatically fire and will render the required tab element, and once
+  * the value of the title is set, the observer won't do anything
+  ###
+  didInsertElement:->
+    @updateTitle()
+    @resize()
+
   updateTitle: (->
     unless Ember.empty(@get("title"))
       title = Tent.I18n.loc(@get("title"))
@@ -93,4 +98,10 @@ Tent.TabPane = Ember.View.extend
     
   getTabWithHref: (href) ->
     @get("parentView").$ "a[href=#" + href + "]"
+
+  resize: ->
+    parentView = @get('parentView')
+    if parentView.get('fixedHeader')
+      topOffset = parentView.$('.nav-tabs').height()
+      parentView.$('.tab-content').css('top',topOffset+'px')
     
