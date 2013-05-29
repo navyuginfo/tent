@@ -154,6 +154,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupDomIDs()
 		@bindHeaderView()
 		@drawGrid()
+		
 
 	# The header is a separate View, so we provide it with a reference to the grid
 	# in case it needs it.
@@ -267,6 +268,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		#@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
+		$('tr.footrow').addClass('tent-jqgrid-footrow') if @get('footerRow')
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
 		)

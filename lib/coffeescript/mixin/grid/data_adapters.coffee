@@ -92,7 +92,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 						#item[column.name] = model.get(column.name)
 						cell.push(model.get(column.name))
 					item.cell = cell
-					grid.push(item)
+					if model.get("presentationType") is "summary" then grid else grid.push(item)
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
