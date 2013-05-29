@@ -45,7 +45,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       popup = window.open('', 'csv', '')
       popup.document.body.innerHTML = '<pre>' + file + '</pre>'
 
-  exportCSV: (data, keys)->
+  exportCSV: (data, keys, del = ',')->
     orderedData = [];
     for obj in data
       arr = []
@@ -57,7 +57,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       keys = keys[1..]
 
     str = ""
-    str += obj.name + ',' for obj in keys
+    str += obj.name + del for obj in keys
     str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
 
   generateExportDate: ->
