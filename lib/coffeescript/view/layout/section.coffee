@@ -118,6 +118,11 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 	classNameBindings: ['spanClass']
 	classNames: ['content']
 	layout: Ember.Handlebars.compile '{{yield}}'
+	###*
+	 * @property {Boolean} sizeToHeaderContent Rather than using the headers css height property, the content
+	 * should shift down to accomodate the height of the headers content.
+	###
+	sizeToHeaderContent: false
 
 	didInsertElement: ->
 		@set('section', @.$().parent('section'))
@@ -127,7 +132,13 @@ Tent.Content = Ember.View.extend Tent.SpanSupport,
 
 	resize: ->
 		@set('footer', @get('section').children('footer'))
-		headerOffset = if @get('header').length > 0 then @get('header').outerHeight(true) else 0
+
+		if @get('sizeToHeaderContent')
+			h = $('.header', @get('header'))
+			headerOffset = if h.length > 0 then h.outerHeight(true) else 0
+		else
+			headerOffset = if @get('header').length > 0 then @get('header').outerHeight(true) else 0
+
 		@.$().css('top', headerOffset + "px")
 		footerOffset = if @get('footer').length > 0 then @get('footer').outerHeight(true) else 0
 		@.$().css('bottom', footerOffset + "px")

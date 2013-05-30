@@ -26,5 +26,6 @@ Tent.HideableSupport = Ember.Mixin.create
 	show: ->
 		if @get('hideable')
 			@$('').removeClass('hidden')
+			@set('hidden', true) # Do this to trigger a change event in case it is already showing
 			@set('hidden', false)
 			$.publish("/ui/refresh", ['resize'])
