@@ -58,7 +58,11 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 
     str = ""
     str += obj.name + del for obj in keys
-    str  = str.slice(0,-1) + '\r\n' + orderedData.join('\r\n')
+    str  = str.slice(0,-1) + '\r\n'
+    orderedData.forEach (row)->
+      str += row.join(del) + '\r\n'
+    str
 
   generateExportDate: ->
     Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
+

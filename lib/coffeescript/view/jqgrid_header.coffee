@@ -42,7 +42,7 @@ Tent.JqGridHeaderView = Ember.View.extend
         e.stopPropagation()
 
       @$('#customExportForm').find('button').click  =>
-        arry = $('#customExportForm').serializeArray()
+        arry = @$('#customExportForm').serializeArray()
         extension = 'csv'
         delimiter = ','
         columnHeaders = true
