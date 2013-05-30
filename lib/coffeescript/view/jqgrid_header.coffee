@@ -17,9 +17,9 @@ Tent.JqGridHeaderView = Ember.View.extend
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       url = grid.getExportUrl(contentType)
-      visibleColumnString = grid.getVisibleColumns()
-      customHeaderString = grid.getVisibleColumns(true)
-      customParams = { del: ',' , columns: visibleColumnString, customHeaders: customHeaderString};
+      visibleColumnString = grid.getVisibleColumns().join(',')
+      customHeaderString = grid.getVisibleColumns(true).join(',')
+      customParams = { del: ',' , columns: visibleColumnString, customHeaders: customHeaderString, headers: true};
       personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)  
 
       if contentType is 'json'
@@ -60,16 +60,17 @@ Tent.JqGridHeaderView = Ember.View.extend
           if fd.name == 'customDelimiter'
             delimiter = fd.value  if fd.value.length > 0
           if fd.name == 'columnHeaders'
-            columnHeaders = fd.value
+            columnHeaders = if (fd.value == "true") then true else false
           if fd.name == 'includeQuotes'
-            includeQuotes = fd.value
-        visibleColumnString = grid.getVisibleColumns()
-        customHeaderString = grid.getVisibleColumns(true)
+            includeQuotes = if (fd.value == "true") then true else false
+            
+        visibleColumnString = grid.getVisibleColumns().join(',')
+        customHeaderString = grid.getVisibleColumns(true).join(',')
         customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString};
-        personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)
         url = grid.get('collection').getURL(extension, customParams)
     
         if !url
+          personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)
           ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(personalizedData, customParams)
           grid.clientDownload(ret, extension)
         else

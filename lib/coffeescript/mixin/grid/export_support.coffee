@@ -49,15 +49,21 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     orderedData = [];
     for obj in data
       arr = []
-      str = ""
+      str = if customParams.headers and customParams.quotes then "\'" else ""
+      del = if customParams.quotes then "\'" + customParams.del + "\'" else customParams.del
       for key, value of obj
         arr.push(value)
-        str += key + customParams.del
+        str += key + del if customParams.headers
       orderedData.push(arr);
-
-    str  = str.slice(0,-1) + '\r\n'
+  
+    if customParams.headers
+      n = if customParams.quotes then -2 else -1
+      str  = str.slice(0,n) + "\r\n"
+  
     orderedData.forEach (row)->
-      str += row.join(customParams.del) + '\r\n'
+      str += "\'" if customParams.quotes 
+      str += row.join(del) 
+      str += if customParams.quotes then "\' \r\n" else "\r\n"
     str
 
   generateExportDate: ->
@@ -65,9 +71,11 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
 
   getPersonalizedData: (data, customParams)->
     personalizedData = []
+    columns = customParams.columns.split(',')
+    customHeaders = customParams.customHeaders.split(',')
     for obj in data
       personalizedObject = {}
-      for index in [0 .. customParams.columns.length-1]
-        personalizedObject[customParams.customHeaders[index]] = obj[Ember.String.camelize(customParams.columns[index])]
+      for index in [0 .. columns.length-1]
+        personalizedObject[customHeaders[index]] = obj[Ember.String.camelize(columns[index])]
       personalizedData.pushObject(personalizedObject)
     personalizedData
