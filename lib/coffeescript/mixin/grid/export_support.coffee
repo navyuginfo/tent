@@ -27,7 +27,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   getExportUrl: (contentType)->
     visibleColumnString = @getVisibleColumns().join(',')
     customHeaderString = @getVisibleColumns(true).join(',')
-    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString}
+    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString}
     if (collection = @get('collection'))?
       collection.getURL(contentType, params)
 
@@ -45,24 +45,29 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       popup = window.open('', 'csv', '')
       popup.document.body.innerHTML = '<pre>' + file + '</pre>'
 
-  exportCSV: (data, keys, del = ',')->
+  exportCSV: (data, customParams)->
     orderedData = [];
     for obj in data
       arr = []
+      str = ""
       for key, value of obj
         arr.push(value)
+        str += key + customParams.del
       orderedData.push(arr);
 
-    if @get('multiSelect')
-      keys = keys[1..]
-
-    str = ""
-    str += obj.name + del for obj in keys
     str  = str.slice(0,-1) + '\r\n'
     orderedData.forEach (row)->
-      str += row.join(del) + '\r\n'
+      str += row.join(customParams.del) + '\r\n'
     str
 
   generateExportDate: ->
     Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
 
+  getPersonalizedData: (data, customParams)->
+    personalizedData = []
+    for obj in data
+      personalizedObject = {}
+      for index in [0 .. customParams.columns.length-1]
+        personalizedObject[customParams.customHeaders[index]] = obj[Ember.String.camelize(customParams.columns[index])]
+      personalizedData.pushObject(personalizedObject)
+    personalizedData

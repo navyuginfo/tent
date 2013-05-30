@@ -17,16 +17,22 @@ Tent.JqGridHeaderView = Ember.View.extend
       grid = @get('parentView.parentView')
       tableDom = grid.getTableDom()
       url = grid.getExportUrl(contentType)
+      visibleColumnString = grid.getVisibleColumns()
+      customHeaderString = grid.getVisibleColumns(true)
+      customParams = { del: ',' , columns: visibleColumnString, customHeaders: customHeaderString};
+      personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)  
+
       if contentType is 'json'
         if url?
           jsonUrlPart = url.split('/').pop().split('?')[0]
           @$('.export-json').attr('download', jsonUrlPart)
-        ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(tableDom.getRowData(),"data","    ",true)+'}'
+        ret = '{ "exportDate": "'+grid.generateExportDate()+'",\n'+$.fn.xmlJsonClass.toJson(personalizedData,"data","    ",true)+'}'
         return grid.clientDownload(ret, contentType)
+
       if url?
         document.location.href = url 
       else 
-        ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel())
+        ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(personalizedData, customParams)
         grid.clientDownload(ret, contentType)
 
     didInsertElement: ->
@@ -57,12 +63,14 @@ Tent.JqGridHeaderView = Ember.View.extend
             columnHeaders = fd.value
           if fd.name == 'includeQuotes'
             includeQuotes = fd.value
-        visibleColumnString = grid.getVisibleColumns().join(',')
-        customHeaderString = grid.getVisibleColumns(true).join(',')
-        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString};
+        visibleColumnString = grid.getVisibleColumns()
+        customHeaderString = grid.getVisibleColumns(true)
+        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString};
+        personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)
         url = grid.get('collection').getURL(extension, customParams)
+    
         if !url
-          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel(), delimiter)
+          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(personalizedData, customParams)
           grid.clientDownload(ret, extension)
         else
           return document.location.href = grid.get('collection').getURL(extension, customParams);
