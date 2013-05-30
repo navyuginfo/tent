@@ -42,7 +42,7 @@ Tent.JqGridHeaderView = Ember.View.extend
         e.stopPropagation()
 
       @$('#customExportForm').find('button').click  =>
-        arry = $('#customExportForm').serializeArray()
+        arry = @$('#customExportForm').serializeArray()
         extension = 'csv'
         delimiter = ','
         columnHeaders = true
@@ -60,7 +60,12 @@ Tent.JqGridHeaderView = Ember.View.extend
         visibleColumnString = grid.getVisibleColumns().join(',')
         customHeaderString = grid.getVisibleColumns(true).join(',')
         customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString};
-        return document.location.href = grid.get('collection').getURL(extension, customParams);
+        url = grid.get('collection').getURL(extension, customParams)
+        if !url
+          ret = 'exportDate \n'+grid.generateExportDate()+'\n'+ grid.exportCSV(tableDom.getRowData(), grid.getColModel(), delimiter)
+          grid.clientDownload(ret, extension)
+        else
+          return document.location.href = grid.get('collection').getURL(extension, customParams);
 
       @$('#delimiter').change =>
         if $('#delimiter').val().length > 0
