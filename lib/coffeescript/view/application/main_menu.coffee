@@ -30,13 +30,15 @@ Tent.Application.MainMenuView = Ember.View.extend
     #set the default selection on the basis of hitted url
     path = window.location.pathname
 
-    @$("a[data-route]").each(->
+    @$("[data-route],[data-route-exact]").each(->
       if path.indexOf($(this).attr('data-route')) != -1
+        $(this).addClass('active-menu')
+      if path == $(this).attr('data-route-exact')
         $(this).addClass('active-menu')
     )
 
     current = null
-    @$("a.active-menu").each(->
+    @$("active-menu").each(->
       if not current?
         current = $(this)
       else
