@@ -11,6 +11,7 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
       @selectItemSingleSelect(itemId)
     else
       @selectItemMultiSelect(itemId, status)
+    @get('afterSelectRow').call(@, itemId, status, e) if @get('afterSelectRow')?
 
   selectItemSingleSelect: (itemId) ->
     @clearSelection()
@@ -21,13 +22,11 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
   ###
   clearSelection: ->
     @set('selection', [])
-    @get('afterDeselectAll').call(@) if @get('afterDeselectAll')?
 
   selectItem: (itemId) ->
     selectedItem = @getItemFromModel(itemId)
     selection = @get('selection')
     selection.pushObject(selectedItem) if (selectedItem? and not selection.contains(selectedItem))
-    @get('afterSelectRow').call(@, itemId) if @get('afterSelectRow')?
 
 
   ####### Multiple Selection ########
@@ -46,7 +45,6 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
           item.get('id') != parseInt(id)
       )
     )
-    @get('afterDeselectRow').call(@, id) if @get('afterDeselectRow')?
 
   ######## Select All ########
   didSelectAll: (rowIds, status) ->
@@ -65,13 +63,12 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
         for id in rowIds
           allPageItems.push @getItemFromModel(id)
         @get('selection').removeObjects(allPageItems)
-      @get('afterSelectAll').call(@, rowIds, status) if @get('afterSelectAll')?
     else
       if status!=false
         @selectAllItems()
-        @get('afterSelectAll').call(@, rowIds, status) if @get('afterSelectAll')?
       else
         @clearSelection()
+    @get('afterSelectAll').call(@, rowIds, status) if @get('afterSelectAll')?
 
   selectAllItems: ->
     @set('selection', @get('content').filter(-> true))
