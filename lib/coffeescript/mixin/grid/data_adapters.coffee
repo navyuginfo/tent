@@ -90,6 +90,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')? 
 			remoteGrouping: @isShowingValidGroups()
+			columns: @get('columnModel')
 		@resetGrouping()
 		if @isShowingValidGroups()
 			data.columnName = @get('groupingInfo.columnName')

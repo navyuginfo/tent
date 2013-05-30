@@ -137,6 +137,7 @@ Tent.I18n.loadTranslations(
 			}
 			no_grouping: 'None'
 			revert: 'Revert to Original'
+			totals: 'Totals:'
 		}
 		rename: {
 			main: 'Rename'

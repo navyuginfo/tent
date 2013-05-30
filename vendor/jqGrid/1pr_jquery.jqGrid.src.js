@@ -1314,16 +1314,35 @@ $.fn.jqGrid = function( pin ) {
 
 			while (i<len) {
 				var row = data.rows[i++];
-				var comparator = Tent.JqGrid.Grouping.getComparator(data.columnType, data.groupType)
+				var comparator = Tent.JqGrid.Grouping.getComparator(data.columnType, data.groupType);
 				rowData.push(constructTr(row.get('id'), false, "", {}, row, false, 'group-row'));
 				var v = "<span class='title'>" + data.columnTitle + "</span><span class='range'>";
-				var startValue = row[data.columnName.decamelize()]
-				if (startValue != undefined) { 
+				var startValue = row[data.columnName.decamelize()];
+				if (startValue !== undefined) {
 					v = v + comparator.rowTitle(startValue);
 				}
-				v = v + "</span><i class='icon-caret-right pull-right'></i>";
+				v = v + "</span>";
+				v = v + "<i class='icon-caret-right pull-right'></i>";
+				v = v + addAggregateData(data, row);
 				rowData.push('<td colspan="'+ts.p.colModel.length+'">'+v+'</td>');
 				rowData.push( "</tr>" );
+			}
+
+			function addAggregateData(data, row) {
+				var hasAggregates = false;
+				var span = '<span class="aggregate"><span class="caption">'+Tent.I18n.loc('tent.grouping.totals')+'</span>', aggregate;
+				data.columns.forEach(function(col){
+					aggregate = row.get(col.name + "_sum");
+					if (aggregate !== undefined) {
+						hasAggregates = true;
+						span = span + '<span class="item"><span class="title">'+col.title+'</span><span class="value">'+aggregate+'</span></span>';
+					}
+				});
+				if (hasAggregates) {
+					return span + '</span>';
+				} else {
+					return "";
+				}
 			}
 
 			var container = $("#"+$.jgrid.jqID(ts.p.id)+" tbody:first");
