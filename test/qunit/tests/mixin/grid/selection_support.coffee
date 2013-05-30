@@ -91,7 +91,8 @@ test 'DidSelectAll: non-paged', ->
     equal view.get('selection').length, 0, 'Deselected all'
 
     view.set 'afterSelectAll',
-      (selection) ->
+      (rowIds, status) ->
+        selection = @get('selection')
         equal selection.length, 6, 'Selected 6'
 
     view.didSelectAll(null, isSelecting)
@@ -116,7 +117,8 @@ test 'DidSelectAll: paged', ->
 
 
     view.set 'afterSelectAll',
-      (selection) ->
+      (rowIds, status) ->
+        selection = @get('selection')
         #we're going to add [1,2,3] back to [4,5,6]
         equal selection.length, 6, 'Selected 6'
         #object 4 should be first
