@@ -135,8 +135,21 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 		box-shadow: none!important;
 		padding: 0px 0px 3px 0px;
 		width: 2em;
+	}	
+}
+
+/* tabs */
+
+.tent-tabs.fixed-header {
+	.tab-content {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		width: 100%;
+		.tent-section {
+			height: 100%;
+		}
 	}
-	
 }
 
 

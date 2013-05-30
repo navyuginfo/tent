@@ -302,7 +302,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	addNavigationBar: ->
 		@_super()
-
+ 
 	columnsDidChange: (colChangedIndex)->
 		@_super()
 		@adjustHeight()
@@ -313,6 +313,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 			@$('.ui-jqgrid-bdiv').css('top', top)
+			bottom = @$('.ui-jqgrid-pager')?.height() or 0
+			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 			if not @get('horizontalScrolling')
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
