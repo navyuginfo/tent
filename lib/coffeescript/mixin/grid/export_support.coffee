@@ -27,7 +27,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   getExportUrl: (contentType)->
     visibleColumnString = @getVisibleColumns().join(',')
     customHeaderString = @getVisibleColumns(true).join(',')
-    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString}
+    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString}
     if (collection = @get('collection'))?
       collection.getURL(contentType, params)
 
@@ -45,24 +45,37 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
       popup = window.open('', 'csv', '')
       popup.document.body.innerHTML = '<pre>' + file + '</pre>'
 
-  exportCSV: (data, keys, del = ',')->
+  exportCSV: (data, customParams)->
     orderedData = [];
     for obj in data
       arr = []
+      str = if customParams.headers and customParams.quotes then "\'" else ""
+      del = if customParams.quotes then "\'" + customParams.del + "\'" else customParams.del
       for key, value of obj
         arr.push(value)
+        str += key + del if customParams.headers
       orderedData.push(arr);
-
-    if @get('multiSelect')
-      keys = keys[1..]
-
-    str = ""
-    str += obj.name + del for obj in keys
-    str  = str.slice(0,-1) + '\r\n'
+  
+    if customParams.headers
+      n = if customParams.quotes then -2 else -1
+      str  = str.slice(0,n) + "\r\n"
+  
     orderedData.forEach (row)->
-      str += row.join(del) + '\r\n'
+      str += "\'" if customParams.quotes 
+      str += row.join(del) 
+      str += if customParams.quotes then "\' \r\n" else "\r\n"
     str
 
   generateExportDate: ->
     Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
 
+  getPersonalizedData: (data, customParams)->
+    personalizedData = []
+    columns = customParams.columns.split(',')
+    customHeaders = customParams.customHeaders.split(',')
+    for obj in data
+      personalizedObject = {}
+      for index in [0 .. columns.length-1]
+        personalizedObject[customHeaders[index]] = obj[Ember.String.camelize(columns[index])]
+      personalizedData.pushObject(personalizedObject)
+    personalizedData
