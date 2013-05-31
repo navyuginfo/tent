@@ -20,12 +20,6 @@ Tent.FilteringSupport = Ember.Mixin.create
 
 	didInsertElement: ->
 		@_super()
-		#if @get('filter')
-		#	@get('filter.values')[@get('id')] = {}
-
-	filterDidChange: (->
-		console.log 'filter changed'
-	).observes('filter')
 	
 	# Check to see if the operator requires a range presentation
 	isRangeOperator: (->
