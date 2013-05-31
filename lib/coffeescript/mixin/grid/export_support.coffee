@@ -27,7 +27,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   getExportUrl: (contentType)->
     visibleColumnString = @getVisibleColumns().join(',')
     customHeaderString = @getVisibleColumns(true).join(',')
-    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString}
+    params = {del: ",", headers: true, quotes: true, date: @generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString}
     if (collection = @get('collection'))?
       collection.getURL(contentType, params)
 
