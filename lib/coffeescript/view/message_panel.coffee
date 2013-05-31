@@ -122,7 +122,7 @@ Tent.MessagePanel = Ember.View.extend
 						)
 						if msg.messages.length > 0
 							arrayWithMessageRemoved.pushObject($.extend({}, msg))
-					@set(msg.type, arrayWithMessageRemoved)
+						@set(msg.type, arrayWithMessageRemoved)
 
 	getParentContainer: ->
 		header = @$('').parents('header.hideable:first')
@@ -222,6 +222,12 @@ Tent.MessagePanel = Ember.View.extend
 			if firstError?
 				@$('.error-expando').css('min-height', firstError.height() + "px")
 	).observes('error','error.@each')
+
+	ensureContainerResizesAfterDomRenders: (->
+		Ember.run.next this, =>
+			@showContainerWhenVisible()
+	).observes('error', 'warning', 'success', 'info', 'error.@each', 'warning.@each', 'success.@each', 'info.@each')
+
 
 	hasMoreThanOneError: (->
 		@get('error').length > 1 
