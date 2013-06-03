@@ -19,7 +19,7 @@ Tent.JqGridHeaderView = Ember.View.extend
       url = grid.getExportUrl(contentType)
       visibleColumnString = grid.getVisibleColumns().join(',')
       customHeaderString = grid.getVisibleColumns(true).join(',')
-      customParams = { del: ',' , columns: visibleColumnString, customHeaders: customHeaderString, headers: true};
+      customParams = { del: ',' , columns: visibleColumnString, custom_headers: customHeaderString, headers: true};
       personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams)  
 
       if contentType is 'json'
@@ -66,7 +66,7 @@ Tent.JqGridHeaderView = Ember.View.extend
             
         visibleColumnString = grid.getVisibleColumns().join(',')
         customHeaderString = grid.getVisibleColumns(true).join(',')
-        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, customHeaders: customHeaderString};
+        customParams = { del: delimiter, headers: columnHeaders, quotes: includeQuotes, date: grid.generateExportDate(), columns: visibleColumnString, custom_headers: customHeaderString};
         url = grid.get('collection').getURL(extension, customParams)
     
         if !url

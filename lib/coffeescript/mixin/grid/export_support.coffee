@@ -72,7 +72,7 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
   getPersonalizedData: (data, customParams)->
     personalizedData = []
     columns = customParams.columns.split(',')
-    customHeaders = customParams.customHeaders.split(',')
+    customHeaders = customParams.custom_headers.split(',')
     for obj in data
       personalizedObject = {}
       for index in [0 .. columns.length-1]
