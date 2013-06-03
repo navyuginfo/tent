@@ -627,66 +627,7 @@ test 'columnNames', ->
 	equal names.length, 2, 'two entries'
 	equal names[0], 'ireland', 'ireland'
 	equal names[1], 'china', 'china'
-
-test 'fixedRows', ->
-	r1 = store.createRecord(Country)
-	set(r1, 'name', 'Ireland')
-	set(r1, 'gdp', 2)
-	set(r1, 'presentationType', 'summary')
 	
-	content = store.find(Country)
-
-	Grid = Ember.Object.extend Tent.Grid.Adapters,
-		columnModel: colModel 
-		content: content
-			
-	grid = Grid.create()
-
-	fixedRows = grid.get('fixedRows')
-	equal fixedRows['name'], 'Ireland', 'First row, name'
-
-test 'fixedRows: 2 entries', ->
-	r1 = store.createRecord(Country)
-	set(r1, 'name', 'Ireland')
-	set(r1, 'gdp', 2)
-	set(r1, 'presentationType', 'summary')
-	r2 = store.createRecord(Country)
-	set(r2, 'name', 'China')
-	set(r2, 'gdp', 2000)
-	set(r2, 'presentationType', 'summary')
-	
-	content = store.find(Country)
-
-	Grid = Ember.Object.extend Tent.Grid.Adapters,
-		columnModel: colModel 
-		content: content
-			
-	grid = Grid.create()
-
-	fixedRows = grid.get('fixedRows')
-	equal fixedRows['name'], 'Ireland', 'First row, name'
-
-test 'fixedRows: 0 entries', ->
-	r1 = store.createRecord(Country)
-	set(r1, 'name', 'Ireland')
-	set(r1, 'gdp', 2)
-	set(r1, 'presentationType', 'x')
-	r2 = store.createRecord(Country)
-	set(r2, 'name', 'China')
-	set(r2, 'gdp', 2000)
-	set(r2, 'presentationType', 'x')
-	
-	content = store.find(Country)
-
-	Grid = Ember.Object.extend Tent.Grid.Adapters,
-		columnModel: colModel 
-		content: content
-			
-	grid = Grid.create()
-
-	fixedRows = grid.get('fixedRows')
-	equal fixedRows, undefined, '0 rows'
-
 
 	
 	

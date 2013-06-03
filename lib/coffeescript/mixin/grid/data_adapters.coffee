@@ -58,7 +58,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		columnNames
  	).property('columnModel', 'columnModel.@each')
 	
-	# Any rows which are identified as presentationType='summary' should be attached to the 
+	# Any rows which are send as totals should be attached to the 
 	# bottom of the grid as fixed rows
 	fixedRows: (->
 		@get('collection.totals')
