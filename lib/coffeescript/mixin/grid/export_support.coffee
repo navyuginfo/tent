@@ -70,12 +70,19 @@ Tent.Grid.ExportSupport = Ember.Mixin.create
     Tent.Formatting.date.format((new Date()), "dd-M-yy hh-mm tz")
 
   getPersonalizedData: (data, customParams)->
+    #data needs to hava a column known as currency in case it has amount columns or it will
+    #be rounded off to 2 decimal places by default 
+    precision = 2
+    if data[0]['currency']
+      precision = Tent.CURRENCIES_ISO_4217[data[0]['currency']].cent
     personalizedData = []
     columns = customParams.columns.split(',')
     customHeaders = customParams.custom_headers.split(',')
     for obj in data
       personalizedObject = {}
       for index in [0 .. columns.length-1]
-        personalizedObject[customHeaders[index]] = obj[Ember.String.camelize(columns[index])]
+        if typeof (value = obj[Ember.String.camelize(columns[index])]) is "number"
+          value = value.toFixed(precision)
+        personalizedObject[customHeaders[index]] = value
       personalizedData.pushObject(personalizedObject)
     personalizedData
