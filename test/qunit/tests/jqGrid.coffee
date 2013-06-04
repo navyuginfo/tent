@@ -1,4 +1,7 @@
 view = null
+get = Ember.get
+set = Ember.set
+
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
 setup = ->
@@ -53,7 +56,19 @@ setup = ->
 				title: 80
 			order: {}
 		groupingInfo: {}
-		
+	
+
+	@colModel = [{name: 'name'},{name: 'gdp'}]
+
+	@store = DS.Store.create({
+		revision: 4,
+		adapter: DS.FixtureAdapter
+	});
+
+	@Country = DS.Model.extend
+		name: DS.attr('string')
+		gdp: DS.attr('number')
+		presentationType: DS.attr('string')
 
 teardown = ->
 	
@@ -71,6 +86,10 @@ teardown = ->
 	@column_data = null
 	@collection = null
 	Tent.Formatting.date.format = @origFormat
+
+	@Country = null
+	@store = null
+	@colModel = null
 
 module 'Tent.JqGrid', setup, teardown
 
@@ -586,4 +605,29 @@ test 'calculateColumnWidth', ->
 
 	grid.set('fixedColumnWidth', 88)
 	equal grid.calculateColumnWidth(), 88, 'fixed column width'
+
+test 'columnNames', ->
+	colModel = [
+		{
+			name: 'ireland'
+			continent: 'europe'
+		}
+		{
+			name: 'china'
+			continent: 'asia'
+		}
+	]
+
+	Grid = Ember.Object.extend Tent.Grid.Adapters,
+		columnModel: colModel 
+			
+	grid = Grid.create()
+
+	names = grid.get('columnNames')
+	equal names.length, 2, 'two entries'
+	equal names[0], 'ireland', 'ireland'
+	equal names[1], 'china', 'china'
+	
+
+	
 	

@@ -50,7 +50,23 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
 		else
 			column.width or 80
- 
+
+	columnNames: (->
+		columnNames = []
+		for column in @get('columnModel')
+			columnNames.pushObject(column.name)
+		columnNames
+ 	).property('columnModel', 'columnModel.@each')
+	
+	# Any rows which are send as totals should be attached to the 
+	# bottom of the grid as fixed rows
+	fixedRows: (->
+		@get('collection.totals')
+	).property('content','content.isLoaded')
+
+	fixedRowsCount: (->
+		@get('fixedRows.length')
+	).property('fixedRows')
 	# Adapter to get grid data from current datastore in a format compatible with jqGrid 
 	gridData: (->
 		grid = []
@@ -70,7 +86,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 						#item[column.name] = model.get(column.name)
 						cell.push(model.get(column.name))
 					item.cell = cell
-					grid.push(item)
+					if model.get("presentationType") is "summary" then grid else grid.push(item)
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
@@ -88,7 +104,8 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			rows: @get('gridData')
 			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
-			page: @get('pagingInfo').page if @get('pagingInfo')? 
+			page: @get('pagingInfo').page if @get('pagingInfo')?
+			userdata: @get('fixedRows')
 			remoteGrouping: @isShowingValidGroups()
 			columns: @get('columnModel')
 		@resetGrouping()

@@ -3118,7 +3118,7 @@ $.jgrid.extend({
 			if(action == "set") { if(isEmpty(data)) { return false; } }
 			success=true;
 			$(this.p.colModel).each(function(i){
-				nm = this.name;
+				nm = this.name.decamelize();
 				if(action == "set") {
 					if( data[nm] !== undefined) {
 						vl = format ? t.formatter( "", data[nm], i, data, 'edit') : data[nm];

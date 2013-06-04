@@ -43,7 +43,7 @@ require '../mixin/grid/maximize_grid'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, 
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
@@ -102,6 +102,16 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	fullScreen: false
 
 	###*
+	 * @property {Boolean} footerRow Displays a row at the foot of the table for summary information
+	###
+	footerRow: false
+
+	###*
+	 * @property {Integer} fixedRowsCount Displays rows count at the foot of the table for summary information
+	###
+	fixedRowsCount: 1
+
+	###*
 	* @property {Array} content The array of items to display in the grid.
 	* By default this will be retrieved from the collection, if provided
 	###
@@ -144,6 +154,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@setupDomIDs()
 		@bindHeaderView()
 		@drawGrid()
+		
 
 	# The header is a separate View, so we provide it with a reference to the grid
 	# in case it needs it.
@@ -236,7 +247,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#scroll: true,
 			pager: @getPagerId() if @get('paged'),
 			toolbar: [false,"top"],
-			grouping: @get('grouping')
+			grouping: @get('grouping'),
+			footerrow: @get('footerRow'),
+			footerrowscount: @get('fixedRowsCount'),
+			userDataOnFooter : true, # Provide a 'userdata' property to provide information for the footer row
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
 			,
@@ -254,6 +268,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		#@gridDataDidChange()
 		@resizeToContainer()
 		@columnsDidChange()
+		$('tr.footrow').addClass('tent-jqgrid-footrow') if @get('footerRow')
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
 		)
@@ -312,12 +327,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeight: ->
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
+			bottom = (@$('.ui-jqgrid-sdiv').height() + @$('.ui-jqgrid-pager')?.height()) or 0
 			@$('.ui-jqgrid-bdiv').css('top', top)
-			bottom = @$('.ui-jqgrid-pager')?.height() or 0
 			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
-
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
-			if not @get('horizontalScrolling')
+
+			if (not @get('horizontalScrolling') and not @get('paged'))
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()

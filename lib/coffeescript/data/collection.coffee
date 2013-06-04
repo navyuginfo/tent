@@ -28,8 +28,9 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 
 	# This is currently returning a plain array of the stripped down model (only displayed columns are included)
 	dataChanged: (->
+		@set('totals', @get('gridTotalsData'))
 		@set('content', @get('gridData'))
-	).observes('modelData')
+	).observes('modelData', 'modelData.totals')
 
 	# Convert Ember model to deep Object
 	gridData: (->
@@ -41,6 +42,18 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			grid.push(item)
 		return grid
 	).property('modelData')
+
+	gridTotalsData: (->
+		totals = []
+		if @get('modelData.totals')?
+			for totalsRow in @get('modelData.totals')
+				newRow = {}
+				for own key,value of totalsRow
+					newKey = key.split('_sum')[0]
+					newRow[newKey] = value
+				totals.push(newRow)
+		totals
+	).property('modelData.totals')
 
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
