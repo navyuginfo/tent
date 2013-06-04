@@ -3186,6 +3186,7 @@ $.jgrid.extend({
 					}
 				});
             }
+            t.grid.footers = $(".ui-jqgrid-ftable",t.grid.sDiv)[0].rows[0].cells;
 		});
 		return action == "get" ? res : success;
 	},
