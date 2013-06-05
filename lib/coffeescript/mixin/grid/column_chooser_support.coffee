@@ -22,7 +22,7 @@ Tent.Grid.ColumnChooserSupport = Ember.Mixin.create
 			widget = this
 			button = """
 					<div class="btn-group column-chooser">
-						<a class="open-dropdown" href="#">
+						<a class="open-dropdown">
 							<i class="icon-columns"></i>#{Tent.I18n.loc("tent.jqGrid.hideShowCaption")}
 						</a>
 						<div class="dropdown-menu columns pull-right">
