@@ -281,7 +281,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
 	getItemFromModel: (id, colName)->
-		id = @get('content').toArray()[id - 1].get(colName) if colName?
+		if colName?
+			row = @get('content').toArray().find (item)->
+				return item if Number(id) is Number(item.get('id'))
+			id = row.get(colName)  
 		for model in @get('content').toArray()
 			value = if colName? then model.get(colName) else model.get('id') 
 			return model if "#{value}" == "#{id}"
