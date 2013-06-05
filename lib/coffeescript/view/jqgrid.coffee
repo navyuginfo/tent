@@ -249,7 +249,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			toolbar: [false,"top"],
 			grouping: @get('grouping'),
 			footerrow: @get('footerRow'),
-			footerrowscount: @get('fixedRowsCount'),
 			userDataOnFooter : true, # Provide a 'userdata' property to provide information for the footer row
 			onSelectRow: (itemId, status, e) ->
 				widget.didSelectRow(itemId, status, e)
