@@ -3186,7 +3186,12 @@ $.jgrid.extend({
 					}
 				});
             }
-            t.grid.footers = $(".ui-jqgrid-ftable",t.grid.sDiv)[0].rows[0].cells;
+            var rows = $(".ui-jqgrid-ftable",t.grid.sDiv)[0].rows;
+            if (rows.length > 0) {
+				t.grid.footers = rows[0].cells;
+			} else {
+				t.grid.footers = [];
+			}
 		});
 		return action == "get" ? res : success;
 	},
