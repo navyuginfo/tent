@@ -329,7 +329,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeight: ->
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
-			bottom = (@$('.ui-jqgrid-sdiv').height() + @$('.ui-jqgrid-pager')?.height()) or 0
+			bottom = (@$('.ui-jqgrid-sdiv').height() + @heightForPager()) or 0
 			@$('.ui-jqgrid-bdiv').css('top', top)
 			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
@@ -338,6 +338,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
+
+	heightForPager: ->
+		if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
