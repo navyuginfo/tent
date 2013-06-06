@@ -50,7 +50,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 				newRow = {}
 				for own key,value of totalsRow
 					newKey = key.split('_sum')[0]
-					newRow[newKey] = value
+					newRow[newKey] = if value==false then null else value
 				totals.push(newRow)
 		totals
 	).property('modelData.totals')
