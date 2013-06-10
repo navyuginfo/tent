@@ -45,9 +45,9 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		columns
 	).property('columns')
 
-	calculateColumnWidth: (column)->
+	calculateColumnWidth: (column)-> 
 		if @get('horizontalScrolling')
-			@get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
+			column.width or @get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
 		else
 			column.width or 80
 
