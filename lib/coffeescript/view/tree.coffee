@@ -1,5 +1,5 @@
 Tent.Tree = Ember.View.extend
-  
+  aria: false  
   activeVisible: true
   autoActivate: true 
   autoCollapse: false
@@ -17,12 +17,15 @@ Tent.Tree = Ember.View.extend
   minExpandLevel: 1
   radio: false
   renderTreeFromHTML: false
-  content: {}
+  content: []
   selection: []
 
   template:(->
-    guid = Ember.guidFor(@)
-    Ember.Handlebars.compile("<div id='#{guid}-tree' {{bindAttr class='radio:fancytree-radio'}}></div>")
+    unless @get('renderTreeFromHTML')
+      guid = Ember.guidFor(@)
+      Ember.Handlebars.compile("""
+        <div id="#{guid}-tree" {{bindAttr class="view.radio:fancytree-radio"}}></div>
+      """)
   ).property()
 
   selectMode: (->
@@ -43,13 +46,12 @@ Tent.Tree = Ember.View.extend
   ).property('folderOnClickShould')
 
   didInsertElement: ->
-    options = $.extend(
-      {source: @get('content')}, 
-      @getTreeEvents(), 
-      @getNodeEvents(), 
-      @getDefaultSettings()
-    )
-    @$("##{Ember.guidFor(@)}-tree").fancytree(options)
+    options = $.extend({}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
+    if @get('renderTreeFromHTML')
+      @$("##{@get('elementId')}").fancytree(options)
+    else
+      options["source"] = @get('content')
+      @$("##{Ember.guidFor(@)}-tree").fancytree(options)
 
   getTreeEvents: ->
     options = {}
@@ -70,7 +72,7 @@ Tent.Tree = Ember.View.extend
 
   getDefaultSettings: ->
     options = {}
-    defaultSettings = ['activeVisible', 'autoActivate', 'autoCollapse', 'autoScroll',
+    defaultSettings = ['aria','activeVisible', 'autoActivate', 'autoCollapse', 'autoScroll',
                       'checkbox', 'clickFolderMode', 'disabled', 'extensions', 'generateIds',
                       'icons', 'keyboard', 'nolink', 'selectMode', 'tabbable', 'minExpandLevel']
     options[setting] = @get(setting) for setting in defaultSettings
@@ -163,3 +165,16 @@ Tent.Tree = Ember.View.extend
   select: (e, data) ->
     selectedNodes = data.tree.getSelectedNodes()
     @set 'selection', selectedNodes.mapProperty('value')
+
+  optionsDidChange: (->
+    options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 
+    'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable']
+    for name in options
+      element = @getTreeDom()
+      value = @get(name)
+      optionDidChange = value isnt element.fancytree('option', name)
+      element.fancytree('option', name, value) if optionDidChange
+  ).observes(
+    'activeVisible','autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'clickFolderMode',
+    'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'
+  )

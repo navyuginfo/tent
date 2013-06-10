@@ -106,7 +106,7 @@ span.fancytree-drag-helper-img,
   vertical-align: top;
   background-repeat: no-repeat;
   background-position: left;
-  background-image: url("icons.gif");
+  background-image: url("images/icons.gif");
   background-position: 0 0;
 }
 /** Used by iconclass option */

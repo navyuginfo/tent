@@ -332,5 +332,62 @@
 	Pad.clickCancelInner = ->
 		#alert('cancel inner.')
 
+	Pad.FolderClickOptions = [
+		Ember.Object.create({value: "activate", label:"Activate"}),
+		Ember.Object.create({value: "expand", label:"Expand"}),
+		Ember.Object.create({value: "activateAndExpand", label:"Activate & Expand"}),
+		Ember.Object.create({value: "expandOnDblClick", label:"Expand on Double Click"})
+	]
+	
+	Pad.SelectOptions = [
+		Ember.Object.create({value: "singleSelect", label:"Single Select"}),
+		Ember.Object.create({value: "multiSelect", label:"Multi Select"}),
+		Ember.Object.create({value: "heirMultiSelect", label:"Heirarchical Multi Select"}),
+	]
+	
+	Pad.TreeOptions = Ember.Object.create({
+    activeVisible: true,
+    aria: false,
+    autoActivate: true,
+    autoCollapse: false,
+    autoScroll: false,
+    folderOnClickShould: "expandOnDblClick",
+    checkbox: false,
+    disabled: false,
+    icons: false,
+    keyboard: true,
+    nodeSelection: "multiSelect",
+    tabbable: true		
+	})
+
+	Pad.TreeData = [
+		{
+		  title: "RBS"
+		  tooltip: "Look, a tool tip!"
+		  folder: true
+		  children: [
+		  	{title: 'Jabil Committed(FI)'},
+		  	{title: 'Jabil Uncommitted(FI)'},
+		  	{title: 'Samsung(FI)'}
+		  ]
+		},
+		{
+		  title: "Jabil"
+		  tooltip: "Look, a tool tip!"
+		  folder: true
+		  children: [
+		  	{title: 'Jabil Committed(SU)'},
+		  	{title: 'Jabil Uncommitted(SU)'}
+		  ]
+		},
+		{
+		  title: "Samsung"
+		  tooltip: "Look, a tool tip!"
+		  folder: true
+		  children: [
+		  	{title: 'Samsung USD Program(SU)'}
+		  ]
+		}
+	]
 
 )(minispade)
