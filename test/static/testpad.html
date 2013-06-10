@@ -61,6 +61,13 @@
         height: 100px;
         position: relative;
       }
+
+      .tree-handlebars-code{
+        color: #2b1fce;
+        font-size: 15px;
+        font-family: monospace;
+        line-height: 20px;
+      }
     </style>
   </head>
   <body data-spy="scroll" >
@@ -1149,14 +1156,18 @@
               ariaBinding="Pad.TreeOptions.aria"
               autoCollapseBinding="Pad.TreeOptions.autoCollapse"
               autoScrollBinding="Pad.TreeOptions.autoScroll"
-              folderOnClickShouldBinding="Pad.TreeOptions.folderOnClickShould"
               checkboxBinding="Pad.TreeOptions.checkbox"
               disabledBinding="Pad.TreeOptions.disabled"
               iconsBinding="Pad.TreeOptions.icons"
               keyboardBinding="Pad.TreeOptions.keyboard"
-              nodeSelectionBinding="Pad.TreeOptions.nodeSelection"
               tabbableBinding="Pad.TreeOptions.tabbable" 
+              folderOnClickShouldBinding="Pad.TreeOptions.treeFolderValue"
+              nodeSelectionBinding="Pad.TreeOptions.treeSelectValue"
             }}
+            <h4>Handlebars Code for the selected options</h4>
+            <pre class="tree-handlebars-code">
+              {{Pad.TreeOptions.handlebarsCode}}
+            </pre>
           </div>
           <div class="span4 pull-right">
             <h4>Configuration</h4>
@@ -1171,11 +1182,9 @@
             {{view Tent.Checkbox label="Display node icons" checkedBinding="Pad.TreeOptions.icons"}}
             {{view Tent.Checkbox label="Whole tree behaves as one single control." checkedBinding="Pad.TreeOptions.tabbable"}}
             {{view Tent.Select label="Folder on click should" listBinding="Pad.FolderClickOptions" optionLabelPath="content.label" optionValuePath="content.value"
-              valueBinding="Pad.TreeOptions.folderOnClickShould"
-            }}
+              selectionBinding="Pad.FolderSelection" valueBinding="Pad.TreeOptions.treeFolderValue"}}
             {{view Tent.Select label="Node Select Mode" listBinding="Pad.SelectOptions"
-              optionLabelPath="content.label" optionValuePath="content.value" valueBinding="Pad.TreeOptions.nodeSelection"
-            }}
+              optionLabelPath="content.label" optionValuePath="content.value" selectionBinding="Pad.NodeSelection" valueBinding="Pad.TreeOptions.treeSelectValue"}}
           </div>
         {{/view}}
 

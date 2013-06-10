@@ -333,31 +333,47 @@
 		#alert('cancel inner.')
 
 	Pad.FolderClickOptions = [
-		Ember.Object.create({value: "activate", label:"Activate"}),
-		Ember.Object.create({value: "expand", label:"Expand"}),
-		Ember.Object.create({value: "activateAndExpand", label:"Activate & Expand"}),
-		Ember.Object.create({value: "expandOnDblClick", label:"Expand on Double Click"})
+		Em.Object.create({value: "activate", label:"Activate"}),
+		Em.Object.create({value: "expand", label:"Expand"}),
+		Em.Object.create({value: "activateAndExpand", label:"Activate & Expand"}),
+		Em.Object.create({value: "expandOnDblClick", label:"Expand on Double Click"})
 	]
-	
+
+	Pad.FolderSelection = Pad.FolderClickOptions[3]
+
 	Pad.SelectOptions = [
-		Ember.Object.create({value: "singleSelect", label:"Single Select"}),
-		Ember.Object.create({value: "multiSelect", label:"Multi Select"}),
-		Ember.Object.create({value: "heirMultiSelect", label:"Heirarchical Multi Select"}),
+		Em.Object.create({value: "singleSelect", label:"Single Select"}),
+		Em.Object.create({value: "multiSelect", label:"Multi Select"}),
+		Em.Object.create({value: "heirMultiSelect", label:"Heirarchical Multi Select"}),
 	]
-	
+
+	Pad.NodeSelection = Pad.SelectOptions[1]
+
 	Pad.TreeOptions = Ember.Object.create({
     activeVisible: true,
     aria: false,
     autoActivate: true,
     autoCollapse: false,
     autoScroll: false,
-    folderOnClickShould: "expandOnDblClick",
     checkbox: false,
     disabled: false,
     icons: false,
     keyboard: true,
-    nodeSelection: "multiSelect",
-    tabbable: true		
+    tabbable: true,
+    handlebarsCode: (->
+      options = ['activeVisible', 'aria', 'autoActivate', 'autoCollapse', 'autoScroll',
+        'checkbox', 'disabled', 'icons', 'keyboard', 'tabbable', 'nodeSelection', 'folderOnClickShould']
+      optionsString = ""
+      for option in  options
+        value = @get(option)
+        if option is 'folderOnClickShould'
+        	value = "\"#{@get('treeFolderValue') || 'expandOnDblClick'}\""
+        if option is 'nodeSelection'
+        	value = "\"#{@get('treeSelectValue') || 'multiSelect'}\""
+        optionsString += "  #{option}=#{value} \n"
+      "\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
+    ).property('activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
+      'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
 	})
 
 	Pad.TreeData = [
@@ -366,7 +382,7 @@
 		  tooltip: "Look, a tool tip!"
 		  folder: true
 		  children: [
-		  	{title: 'Jabil Committed(FI)'},
+		  	{title: 'Jabil Committed(FI)', active: true},
 		  	{title: 'Jabil Uncommitted(FI)'},
 		  	{title: 'Samsung(FI)'}
 		  ]
@@ -375,6 +391,7 @@
 		  title: "Jabil"
 		  tooltip: "Look, a tool tip!"
 		  folder: true
+		  expanded: true
 		  children: [
 		  	{title: 'Jabil Committed(SU)'},
 		  	{title: 'Jabil Uncommitted(SU)'}
@@ -389,5 +406,6 @@
 		  ]
 		}
 	]
+
 
 )(minispade)
