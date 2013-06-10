@@ -120,10 +120,13 @@ jQuery.extend $.fn.fmatter.date,
 ###
 jQuery.extend $.fn.fmatter,
 	action: (cellvalue, options, rowdata) ->
-		if options.colModel.formatoptions.redirectColumn?
-	    return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\''+options.colModel.formatoptions.redirectColumn+'\')">' + cellvalue + '</a>'
-		else 
-			return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
+		#check for cell value is required because in case of totals if null is returned we don't want
+		# a link with value "null" in the grid
+		if cellvalue
+			if options.colModel.formatoptions.redirectColumn?
+		    return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\''+options.colModel.formatoptions.redirectColumn+'\')">' + cellvalue + '</a>'
+			else 
+				return '<a onclick="Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \''+options.rowId+'\')">' + cellvalue + '</a>'
 
 # CheckboxEdit Formatter
 ###*
