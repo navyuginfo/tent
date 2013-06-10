@@ -17,7 +17,7 @@ Tent.Tree = Ember.View.extend
   minExpandLevel: 1
   radio: false
   renderTreeFromHTML: false
-  content: []
+  content: Em.A()
   selection: []
 
   template:(->
@@ -52,6 +52,13 @@ Tent.Tree = Ember.View.extend
     else
       options["source"] = @get('content')
       @$("##{Ember.guidFor(@)}-tree").fancytree(options)
+    @get('content').addArrayObserver Ember.Object.create({
+        arrayWillChange: (array, start, removeCount, addCount) ->
+          debugger
+        arrayDidChange: (array, start, removeCount, addCount) ->
+            alert array[start..] unless addCount
+
+    })
 
   getTreeEvents: ->
     options = {}

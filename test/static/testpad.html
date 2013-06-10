@@ -1181,9 +1181,9 @@
             {{view Tent.Checkbox label="Support keyboard navigation" checkedBinding="Pad.TreeOptions.keyboard"}}
             {{view Tent.Checkbox label="Display node icons" checkedBinding="Pad.TreeOptions.icons"}}
             {{view Tent.Checkbox label="Whole tree behaves as one single control." checkedBinding="Pad.TreeOptions.tabbable"}}
-            {{view Tent.Select label="Folder on click should" listBinding="Pad.FolderClickOptions" optionLabelPath="content.label" optionValuePath="content.value"
+            {{view Tent.Select label="Folder on click should(node must have folder: true)" listBinding="Pad.FolderClickOptions" optionLabelPath="content.label" optionValuePath="content.value"
               selectionBinding="Pad.FolderSelection" valueBinding="Pad.TreeOptions.treeFolderValue"}}
-            {{view Tent.Select label="Node Select Mode" listBinding="Pad.SelectOptions"
+            {{view Tent.Select label="Node Select Mode(Works when checkbox is true)" listBinding="Pad.SelectOptions"
               optionLabelPath="content.label" optionValuePath="content.value" selectionBinding="Pad.NodeSelection" valueBinding="Pad.TreeOptions.treeSelectValue"}}
           </div>
         {{/view}}

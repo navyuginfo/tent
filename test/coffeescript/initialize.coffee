@@ -382,9 +382,7 @@
 		  tooltip: "Look, a tool tip!"
 		  folder: true
 		  children: [
-		  	{title: 'Jabil Committed(FI)', active: true},
-		  	{title: 'Jabil Uncommitted(FI)'},
-		  	{title: 'Samsung(FI)'}
+		  	{title: 'Node', tooltip: 'Just a plain normal node with a tooltip'},
 		  ]
 		},
 		{
@@ -394,15 +392,29 @@
 		  expanded: true
 		  children: [
 		  	{title: 'Jabil Committed(SU)'},
-		  	{title: 'Jabil Uncommitted(SU)'}
+		  	{title: '<span>Some <b>html</b> using <code>span</code> tag</span>'}
 		  ]
 		},
 		{
-		  title: "Samsung"
+		  title: "Node at Level-1"
 		  tooltip: "Look, a tool tip!"
 		  folder: true
+		  expanded: true
 		  children: [
-		  	{title: 'Samsung USD Program(SU)'}
+		  	{
+		  		title: 'Node at Level-2'
+		  		folder: true
+		  		children: [
+		  			{
+		  				title: 'Node at Level-3',
+		  				folder: true
+		  				children: [
+		  					{title: 'Leaf Node at Level-4'}
+		  				]
+		  			}
+		  		]
+		  	},
+		  	{title: 'Can apply classes to node !', "extraClasses": 'btn-primary'}
 		  ]
 		}
 	]
