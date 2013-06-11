@@ -806,10 +806,23 @@ $.fn.jqGrid = function( pin ) {
           nw = parseInt(nw,10);
           this.resizing = false;
           $("#rs_m"+$.jgrid.jqID(p.id)).css("display","none");
+
+          /*
+            PR: Test that there is not a min-width calculated due to nowrap associated with the cell.
+            
+           */
+          this.cols[idx].style.width = nw+"px";
+          this.cols[idx].style.minWidth = nw+"px";
+          if ($(this.cols[idx]).outerWidth() != nw) {
+            nw = $(this.cols[idx]).width();
+          }
+
+          this.cols[idx].style.width = nw+"px";
+          this.cols[idx].style.minWidth = nw+"px";
           p.colModel[idx].width = nw;
           this.headers[idx].width = nw;
           this.headers[idx].el.style.width = nw + "px";
-          this.cols[idx].style.width = nw+"px";
+
           if(this.footers.length>0) {this.footers[idx].style.width = nw+"px";}
           if(p.forceFit===true){
             nw = this.headers[idx+p.nv].newWidth || this.headers[idx+p.nv].width;
@@ -1340,7 +1353,6 @@ $.fn.jqGrid = function( pin ) {
         });
         return aggregateColumns;
       }
-
 
       var container = $("#"+$.jgrid.jqID(ts.p.id)+" tbody:first");
       container.append(rowData.join(''));
@@ -3180,9 +3192,9 @@ $.jgrid.extend({
             res[nm] = $("tr.footrow td:eq("+i+")",t.grid.sDiv).html();
           }
         });
-            }
-            var rows = $(".ui-jqgrid-ftable",t.grid.sDiv)[0].rows;
-            if (rows.length > 0) {
+      }
+      var rows = $(".ui-jqgrid-ftable",t.grid.sDiv)[0].rows;
+      if (rows.length > 0) {
         t.grid.footers = rows[0].cells;
       } else {
         t.grid.footers = [];
