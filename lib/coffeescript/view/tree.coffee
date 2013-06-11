@@ -1,32 +1,170 @@
-Tent.Tree = Ember.View.extend
-  aria: false  
-  activeVisible: true
-  autoActivate: true 
-  autoCollapse: false
-  autoScroll: false
-  checkbox: false
-  folderOnClickShould: 'expandOnDblClick'
-  disabled: false
-  extensions: []
-  generateIds: false
-  icons: false
-  keyboard: true
-  nodeSelection: 'multiSelect'
-  tabbable: true
-  nolink: true
-  minExpandLevel: 1
-  radio: false
-  renderTreeFromHTML: false
-  content: Em.A()
-  selection: []
+#
+# Copyright PrimeRevenue, Inc. 2013
+# All rights reserved.
+#
 
+###*
+* @class Tent.Tree
+*
+* Usage
+*        {{view Tent.Tree
+            contentBinding="" 
+            selectionBinding="" 
+            aria=""
+            activeVisible=""
+            autoActivate=""
+            autoScroll=""
+            checkbox=""
+            folderOnClickShould=""
+            disabled=""
+            icons=""
+            keyboard=""
+            nodeSelection=""
+            tabbable=""
+            radio=""
+          }}
+
+###
+Tent.Tree = Ember.View.extend
   template:(->
-    unless @get('renderTreeFromHTML')
-      guid = Ember.guidFor(@)
-      Ember.Handlebars.compile("""
-        <div id="#{guid}-tree" {{bindAttr class="view.radio:fancytree-radio"}}></div>
-      """)
+    # Each tree needs to have a unique HTML id
+    # Ember creates a guid for every view while inserting it, so using the same and appending
+    # "-tree" to create HTML id for the fancytree instance
+    guid = Ember.guidFor(@)
+    Ember.Handlebars.compile("""
+      <div id="#{guid}-tree" {{bindAttr class="view.radio:fancytree-radio"}}></div>
+    """)
   ).property()
+
+  ###*
+  * @property {Boolean} [aria=false] A boolean property which enables/disables WAI-ARIA support.
+  ###
+  aria: false
+
+  ###*
+  * @property {Boolean} [activeVisible=true] A boolean property which makes sure active nodes
+  * are visible (expanded).
+  ###
+  activeVisible: true
+
+  ###*
+  * @property {Boolean} [autoActivate=true] A boolean property indicating whether to
+  * automatically activate a node when it is focused (using keys).
+  ###
+  autoActivate: true 
+
+  ###*
+  * @property {Boolean} [autoCollapse=false] A boolean property indicating whether to
+  * automatically collapse all siblings, when a node is expanded.
+  ###
+  autoCollapse: false
+
+  ###*
+  * @property {Boolean} [autoScroll=false] A boolean property indicating whether to
+  * automatically scroll nodes into visible area
+  ###
+  autoScroll: false
+
+  ###*
+  * @property {Boolean} [checkbox=false] A boolean property responsible for displaying
+  * checkboxes on the nodes.
+  ###
+  checkbox: false
+
+  ###*
+  * @property {String} string responsible for the folder on click behaviour
+  * If the value is 'expandOnDblClick' the folder expands only on double click
+  * If the value is 'activate' the folder gets activated (not selected) on click
+  * If the value is 'expand' the folder expands on click (not selected & activated)
+  * If the value is 'activateAndExpand' the folder is expanded & activated on click
+  ###
+  folderOnClickShould: 'expandOnDblClick'
+
+  ###*
+  * @property {Boolean} [disabled=false] A boolean property responsible for enabling/disabling
+  * the entire tree
+  ###
+  disabled: false
+
+  ###*
+  * @property {Array} extensions built for the fancytree widget which we wish to load
+  * must be specified here.
+  ###
+  extensions: []
+
+  ###*
+  * @property {Boolean} [generateIds=true] A boolean property indicating whether to generate
+  * unique ids for li elements.
+  ###
+  generateIds: false
+
+  ###*
+  * @property {Boolean} [icons=true] when true icons for the nodes are displayed on the UI
+  ###
+  icons: false
+
+  ###*
+  * @property {Boolean} [keyboard=true] A boolean property indicating keyboard navigation support
+  ###
+  keyboard: true
+
+  ###*
+  * @property {String} string resposible for selection behavior of nodes
+  * If the value is 'singleSelect' user can select only one node
+  * If the value is 'multiSelect' user can select multiple nodes
+  * If the value is 'heirMultiSelect' user can select all the children on selecting parent node
+  ###
+  nodeSelection: 'multiSelect'
+
+  ###*
+  * @property {Boolean} a boolean indicating whether the whole tree behaves as one single control
+  ###
+  tabbable: true
+
+  ###*
+  * @property {Integer} Locks expand/collapse for all the nodes on the given minExpandLevel value
+  ###
+  minExpandLevel: 1
+
+  ###*
+  * @property {Boolean} Displays radio buttons instead of checkboxes when set to true
+  * property checkbox must be set to true in order to see the radio button.
+  * To simulate radio group behavior the property nodeSelection must be set to 'singleSelect'
+  * else we will have multi-select radio buttons.
+  ###
+  radio: false
+
+  ###*
+  * @property {Array} an array of parent child relationship which is responsible for 
+  * rendering the tree.
+  * Example:
+  * [
+  *  {
+  *    title: 'Node Title', 
+  *    folder: true, // the value must be set to true else folderOnClickShould value wont have any effect
+  *    tooltip: 'tooltip that needs to be displayed for the node on hover',
+  *    extraClasses: 'class1 class2', //Adding classes to nodes,
+  *    expanded: true, //Will be expanded on load
+  *    lazy: true, //TODO, children will be loaded via AJAX call
+  *    children: [
+  *      {
+  *        title: "<span>can enter HTML too using a span tag </span>",
+  *        value: 100 // if it is a leaf node then we must specify the value, which will be 
+  *                  // collected in selection array on selection.
+  *      },
+  *      {title: 'child 2', value: 'can be any data type'}
+  *    ]
+  *  }
+  * ]
+  * 
+  ###
+  content: Em.A()
+
+  ###*
+  * @property {Array} A property which holds selected leafnode values from the tree.
+  ###
+  selection: Em.A()
+
 
   selectMode: (->
     switch @get('nodeSelection')
@@ -45,11 +183,20 @@ Tent.Tree = Ember.View.extend
       else 4
   ).property('folderOnClickShould')
 
+  # A method which adds array observers which gives us exactly the items which were added
+  # or removed. Using this method instead of reinitializing the whole tree with the changed
+  # array
   addArrayObservers: (array) ->
     array.addArrayObserver Em.Object.create({
       arrayWillChange: (array, start, removeCount, addCount) =>
+        # Here the array is the previous one which will be changed after this hook
+        # We can't get the items which were removed once the array changes
+        # so grabbing them in arrayWillChange 
         @removeNodes(array[start...start+removeCount]) if removeCount
       arrayDidChange: (array, start, removeCount, addCount) =>
+        # Here the array is the changed one
+        # We cannot get the information about newly added items until the array
+        # changes so grabbing them in arrayDidChange
         @addNodes(array[start...start+addCount]) if addCount
     })
 
@@ -72,12 +219,8 @@ Tent.Tree = Ember.View.extend
   )
 
   didInsertElement: ->
-    options = $.extend({}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
-    if @get('renderTreeFromHTML')
-      @$("##{@get('elementId')}").fancytree(options)
-    else
-      options["source"] = @get('content')
-      @$("##{Ember.guidFor(@)}-tree").fancytree(options)
+    options = $.extend({source: @get('content')}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
+    @$("##{Ember.guidFor(@)}-tree").fancytree(options)
     @addArrayObservers(@get('content'))
 
   getTreeEvents: ->
@@ -140,6 +283,7 @@ Tent.Tree = Ember.View.extend
 
   getActiveNode: (-> @getTreeDom().fancytree('getActiveNode'))
 
+  # Fetches the JSON format of the tree data
   toJSON: (-> JSON.stringify(@getTree().toDict(true)))
 
   getNode: ((id) -> @getTree().getNodeByKey(id))
@@ -205,12 +349,20 @@ Tent.Tree = Ember.View.extend
 
   beforeselect: (e, data) ->
     if data.node.isFolder()
+      # We don't need to add value of a node which is a folder(has children) to selection Array
+      # unless the nodeSelection is 'heriMultiSelect' because in this case, on clicking the node
+      # all the children will be selected 
       return unless @get('nodeSelection') is 'heirMultiSelect'
+      # As the method gets executed before the selection happens, isSelected() = true indicates
+      # that the node is about to be deselected, hence removing corresponding data
       if data.node.isSelected()
         return @recursivelyRemoveNodeChildren(data.node)
       else
         return @recursivelyAddNodeChildren(data.node)
     else
+      # If the node is a leaf node, isSelected() = true inside beforeselect hook indicates
+      # the user action for the node is deselection, hence remove that node value from
+      # selection array
       if data.node.isSelected()
         index = @get('selection').indexOf(data.node.data.value)
         @get('selection').removeAt(index)
