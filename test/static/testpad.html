@@ -1150,7 +1150,8 @@
         {{#view Tent.Panel span="10" elementId="tree-section"}}
           <div class="span5 pull-left">
             <h4>Trees</h4>
-            {{view Tent.Tree contentBinding="Pad.TreeData"
+            {{view Tent.Tree elementId="testpad-tree" 
+              contentBinding="Pad.TreeData"
               activeVisibleBinding="Pad.TreeOptions.activeVisible"
               autoActivateBinding="Pad.TreeOptions.autoActivate" 
               ariaBinding="Pad.TreeOptions.aria"
@@ -1164,6 +1165,7 @@
               folderOnClickShouldBinding="Pad.TreeOptions.treeFolderValue"
               nodeSelectionBinding="Pad.TreeOptions.treeSelectValue"
             }}
+            {{view Tent.Button label="Actions" type="primary" optionsBinding="Pad.treeActions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
             <h4>Handlebars Code for the selected options</h4>
             <pre class="tree-handlebars-code">
               {{Pad.TreeOptions.handlebarsCode}}

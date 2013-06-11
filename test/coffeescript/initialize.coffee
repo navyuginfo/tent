@@ -376,13 +376,23 @@
       'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
 	})
 
+	Pad.treeActions = [
+		Ember.Object.create({label: "Add Child to Root", target: "Pad.groupTarget", action: "addEvent"}),
+		Ember.Object.create({label: "Remove Child from Root", target: "Pad.groupTarget", action: "editEvent"}),
+		Ember.Object.create({label: "Add Child to Active Node", target: "Pad.groupTarget", action: "addEvent"}),
+		Ember.Object.create({label: "Init", target: "Pad.groupTarget", action: "deleteEvent"})
+		Ember.Object.create({label: "Destroy", target: "Pad.groupTarget", action: "deleteEvent"})
+		Ember.Object.create({label: "Expand", target: "Pad.groupTarget", action: "deleteEvent"})
+		Ember.Object.create({label: "Reload", target: "Pad.groupTarget", action: "deleteEvent"})
+	]
+
 	Pad.TreeData = [
 		{
 		  title: "RBS"
 		  tooltip: "Look, a tool tip!"
 		  folder: true
 		  children: [
-		  	{title: 'Node', tooltip: 'Just a plain normal node with a tooltip'},
+		  	{title: 'Node', tooltip: 'Just a plain normal node with a tooltip', value: 'tooltip'},
 		  ]
 		},
 		{
@@ -391,8 +401,8 @@
 		  folder: true
 		  expanded: true
 		  children: [
-		  	{title: 'Jabil Committed(SU)'},
-		  	{title: '<span>Some <b>html</b> using <code>span</code> tag</span>'}
+		  	{title: 'Jabil Committed(SU)', value: 'Jabil Committed(SU)'},
+		  	{title: '<span>Some <b>html</b> using <code>span</code> tag</span>', value: 'node with html'}
 		  ]
 		},
 		{
@@ -409,12 +419,12 @@
 		  				title: 'Node at Level-3',
 		  				folder: true
 		  				children: [
-		  					{title: 'Leaf Node at Level-4'}
+		  					{title: 'Leaf Node at Level-4', value: 'leaf node at Level-4'}
 		  				]
 		  			}
 		  		]
 		  	},
-		  	{title: 'Can apply classes to node !', "extraClasses": 'btn-primary'}
+		  	{title: 'Can apply classes to node !', "extraClasses": 'btn-primary', value: 'node with extraClasses'}
 		  ]
 		}
 	]

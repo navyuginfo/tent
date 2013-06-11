@@ -45,6 +45,32 @@ Tent.Tree = Ember.View.extend
       else 4
   ).property('folderOnClickShould')
 
+  addArrayObservers: (array) ->
+    array.addArrayObserver Em.Object.create({
+      arrayWillChange: (array, start, removeCount, addCount) =>
+        @removeNodes(array[start...start+removeCount]) if removeCount
+      arrayDidChange: (array, start, removeCount, addCount) =>
+        @addNodes(array[start...start+addCount]) if addCount
+    })
+
+  contentDidChange: (->
+    @reloadTree(@get('content'))
+    @addArrayObservers(@get('content'))
+  ).observes('content') # explicitly did not add content.@each
+
+  optionsDidChange: (->
+    options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 
+    'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable']
+    for name in options
+      element = @getTreeDom()
+      value = @get(name)
+      optionDidChange = value isnt element.fancytree('option', name)
+      element.fancytree('option', name, value) if optionDidChange
+  ).observes(
+    'activeVisible','autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'clickFolderMode',
+    'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'
+  )
+
   didInsertElement: ->
     options = $.extend({}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
     if @get('renderTreeFromHTML')
@@ -52,13 +78,7 @@ Tent.Tree = Ember.View.extend
     else
       options["source"] = @get('content')
       @$("##{Ember.guidFor(@)}-tree").fancytree(options)
-    @get('content').addArrayObserver Ember.Object.create({
-        arrayWillChange: (array, start, removeCount, addCount) ->
-          debugger
-        arrayDidChange: (array, start, removeCount, addCount) ->
-            alert array[start..] unless addCount
-
-    })
+    @addArrayObservers(@get('content'))
 
   getTreeEvents: ->
     options = {}
@@ -73,8 +93,9 @@ Tent.Tree = Ember.View.extend
                   'beforeExpand', 'collapse', 'expand', 'loadChildren', 'focustree',
                   'blurtree', 'focus', 'blur', 'click', 'dblclick', 'keydown', 'keypress',
                   'createnode', 'rendernode', 'lazyload', 'lazyread']
+    widget = @
     for event in nodeEvents
-      options[event] = ((e, data) => @[event].call(@, e, data)) if @[event]?
+      options[event] = ((e, data) -> widget[e.type.slice(9)](e, data)) if widget[event.toLowerCase()]?
     options
 
   getDefaultSettings: ->
@@ -85,11 +106,15 @@ Tent.Tree = Ember.View.extend
     options[setting] = @get(setting) for setting in defaultSettings
     options
 
-  getTreeDom: ->
-    @$("##{Ember.guidFor(@)}-tree")
+  removeNodes: (nodes) ->
+    @removeChildrenFromRootNode(node) for node in nodes
   
-  getTree: ->
-    @getTreeDom().fancytree('getTree')
+  addNodes: (nodes) ->
+    @addChildrenToRootNode(node) for node in nodes
+
+  getTreeDom: (-> @$("##{Ember.guidFor(@)}-tree"))
+  
+  getTree: (-> @getTreeDom().fancytree('getTree'))
 
   enable: ->
     @getTreeDom().fancytree('enable') if @getTreeDom().fancytree('option', 'disabled')
@@ -97,41 +122,29 @@ Tent.Tree = Ember.View.extend
   disable: ->
     @getTreeDom().fancytree('disable') if not @getTreeDom().fancytree('option', 'disabled')
 
-  getRootNode: ->
-    @getTreeDom().fancytree('getRootNode')
+  reloadTree: ((content) -> @getTree().reload(content))
+
+  getRootNode: (-> @getTreeDom().fancytree('getRootNode'))
     
-  expandAll: ->
-    @getRootNode().visit (node) ->
-      node.setExpanded(true)
+  expandAll: (-> @getRootNode().visit((node) -> node.setExpanded(true)))
 
-  collapseAll: ->
-    @getRootNode().visit (node) ->
-      node.setExpanded(false)
+  collapseAll: (-> @getRootNode().visit((node) -> node.setExpanded(false)))
 
-  toggleExpand: ->
-    @getRootNode().visit (node) ->
-      node.toggleExpanded()
+  toggleExpand: (-> @getRootNode().visit((node) -> node.toggleExpanded()))
 
-  selectAll: ->
-    @getTree().visit((node) -> node.setSelected(true))
+  selectAll: (-> @getTree().visit((node) -> node.setSelected(true)))
 
-  deselectAll: ->
-    @getTree().visit((node) -> node.setSelected(false))
+  deselectAll: (-> @getTree().visit((node) -> node.setSelected(false)))
 
-  toggleSelect: ->
-    @getTree().visit((node) -> node.toggleSelected())
+  toggleSelect: (-> @getTree().visit((node) -> node.toggleSelected()))
 
-  getActiveNode: ->
-    @getTreeDom().fancytree('getActiveNode')
+  getActiveNode: (-> @getTreeDom().fancytree('getActiveNode'))
 
-  toJSON: ->
-    JSON.stringify(@getTree().toDict(true))
+  toJSON: (-> JSON.stringify(@getTree().toDict(true)))
 
-  getNode: (id) ->
-    @getTree().getNodeByKey(id)
+  getNode: ((id) -> @getTree().getNodeByKey(id))
 
-  focusNode: (id) ->
-    @getTree().activateKey(id)
+  focusNode: ((id) -> @getTree().activateKey(id))
 
   setNodeTitle: (title, id) ->
     if id?
@@ -145,43 +158,59 @@ Tent.Tree = Ember.View.extend
   sortActiveBranch: (compareFunction, deepSort = true) ->
     @getActiveNode().sortChildren(compareFunction, deepSort)
 
-  addChildren: (node, options) ->
-    node.addChildren(options)
+  addChildren: ((node, options) -> node.addChildren(options))
 
-  addChildrenToActiveNode: (options) ->
-    @addChildren(@getActiveNode(), options)
+  addChildrenToActiveNode: ((options) -> @addChildren(@getActiveNode(), options))
 
-  addChildrenToRootNode: (options) ->
-    @addChildren(@getRootNode(), options)
+  addChildrenToRootNode: ((options) -> @addChildren(@getRootNode(), options))
 
-  addChildrenToNode: (nodeId, options) ->
-    @addChildren(@getNode(nodeId), options)
+  addChildrenToNode: ((nodeId, options) -> @addChildren(@getNode(nodeId), options))
 
-  replaceChildren: (node, options) ->
-    node.fromDict(options)
+  removeChildren: ((node, options) -> node.removeChildren(options))
+ 
+  removeChildrenFromActiveNode: ((options) -> @removeChildren(@getActiveNode(), options))
 
-  replaceRootChildren: (options) ->
-    @replaceChildren(@getRootNode(), options)
+  removeChildrenFromRootNode: ((options) -> @removeChildren(@getRootNode(), options))
 
-  replaceActiveNodeChildren: (options) ->
-    @replaceChildren(@getActiveNode(), options)
+  removeChildrenFromNode: ((nodeId, options) -> @removeChildren(@getNode(nodeId), options))
 
-  getSelectedNodes: ->
-    @getTreeDom().getSelectedNodes()
+  replaceChildren: ((node, options) -> node.fromDict(options))
 
-  select: (e, data) ->
-    selectedNodes = data.tree.getSelectedNodes()
-    @set 'selection', selectedNodes.mapProperty('value')
+  replaceRootChildren: ((options) -> @replaceChildren(@getRootNode(), options))
 
-  optionsDidChange: (->
-    options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 
-    'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable']
-    for name in options
-      element = @getTreeDom()
-      value = @get(name)
-      optionDidChange = value isnt element.fancytree('option', name)
-      element.fancytree('option', name, value) if optionDidChange
-  ).observes(
-    'activeVisible','autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'clickFolderMode',
-    'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'
-  )
+  replaceActiveNodeChildren: ((options) -> @replaceChildren(@getActiveNode(), options))
+
+  getSelectedNodes: (-> @getTreeDom().getSelectedNodes())
+
+  recursivelyAdd: (node) ->
+    if node.isFolder()
+      return @recursivelyAddNodeChildren(node)
+    else
+      return @get('selection').pushObject(node.data.value) unless node.isSelected()
+
+  recursivelyAddNodeChildren: (node) ->
+    @recursivelyAdd(child) for child in node.children
+
+  recursivelyRemove: (node) ->
+    if node.isFolder()
+      return @recursivelyRemoveNodeChildren(node)
+    else
+      index = @get('selection').indexOf(node.data.value)
+      return @get('selection').removeAt(index)
+
+  recursivelyRemoveNodeChildren: (node) ->
+    @recursivelyRemove(child) for child in node.children
+
+  beforeselect: (e, data) ->
+    if data.node.isFolder()
+      return unless @get('nodeSelection') is 'heirMultiSelect'
+      if data.node.isSelected()
+        return @recursivelyRemoveNodeChildren(data.node)
+      else
+        return @recursivelyAddNodeChildren(data.node)
+    else
+      if data.node.isSelected()
+        index = @get('selection').indexOf(data.node.data.value)
+        @get('selection').removeAt(index)
+      else
+        @get('selection').pushObject(data.node.data.value)
