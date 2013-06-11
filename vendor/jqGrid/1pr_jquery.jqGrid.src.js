@@ -1330,12 +1330,11 @@ $.fn.jqGrid = function( pin ) {
         var row = data.rows[i++];
         var comparator = Tent.JqGrid.Grouping.getComparator(data.columnType, data.groupType);
         rowData.push(constructTr(row.get('id'), false, "", {}, row, false, 'group-row'));
-        var v = "<span class='title'>" + data.columnTitle + "</span><span class='range'>";
+        var v = "";
         var startValue = row[data.columnName.decamelize()];
         if (startValue !== undefined) { 
           v = v + comparator.rowTitle(startValue);
         }
-        v = v + "</span>";
         v = v + "<i class='icon-caret-right pull-right'></i>";
         rowData.push('<td>'+v+'</td>' + addAggregateData(data, row));
         rowData.push( "</tr>" );

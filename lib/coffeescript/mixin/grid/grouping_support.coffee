@@ -71,18 +71,17 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
     columnType = @get('groupingInfo.columnType')
     groupType = @get('groupingInfo.type')
     columnTitle = @getColumnTitle(columnName)
-    
+
     for item in @get('content').toArray()
       if item.get('id') == parseInt(id,10)
         selectedGroup = item
 
     if selectedGroup?
-      content = "<span class='title'>" + @getColumnTitle(columnName) + "</span><span class='range'>"
+      content = ""
       comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
       startValue = selectedGroup[columnName.decamelize()]
       if startValue?
         content = content + comparator.rowTitle(startValue)
-      content = content + "</span>"
 
 
     aggregateColumns = @addAggregateData(@get('columnModel'), selectedGroup)
