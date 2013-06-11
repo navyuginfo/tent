@@ -180,7 +180,9 @@ Tent.Tree = Ember.View.extend
 
   replaceActiveNodeChildren: ((options) -> @replaceChildren(@getActiveNode(), options))
 
-  getSelectedNodes: (-> @getTreeDom().getSelectedNodes())
+  reinitialize: (-> @getTreeDom().fancytree())
+
+  destroy: (-> @getTreeDom().fancytree('destroy'))
 
   recursivelyAdd: (node) ->
     if node.isFolder()

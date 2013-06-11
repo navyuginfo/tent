@@ -360,30 +360,91 @@
     icons: false,
     keyboard: true,
     tabbable: true,
+    hideDefaults: false,
+    radio: false,
+    defaultCode: (->
+      defaultOptionHash = {
+        activeVisible: true,
+        aria: false,
+        autoActivate: true,
+        autoCollapse: false,
+        autoScroll: false,
+        checkbox: false,
+        disabled: false,
+        icons: false,
+        keyboard: true,
+        tabbable: true,
+        radio: false,
+        nodeSelection: 'multiSelect',
+        folderOnClickShould: 'expandOnDblClick'
+      }
+      optionsString = ""
+      for own option, value of defaultOptionHash
+        selectedValue = @get(option)
+        selectedValue = @get('treeFolderValue') || 'expandOnDblClick' if option is 'folderOnClickShould'
+        selectedValue = @get('treeSelectValue') || 'multiSelect' if option is 'nodeSelection'      	
+        unless value is selectedValue
+          selectedValue = "\"#{selectedValue}\"" if option is 'folderOnClickShould' or option is 'nodeSelection'
+          optionsString += " #{option}=#{selectedValue} \n"
+      return "\n{{view Tent.Tree}}" if optionsString is ""
+      "\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
+    ).property('activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
+      'disabled', 'icons','radio', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
     handlebarsCode: (->
-      options = ['activeVisible', 'aria', 'autoActivate', 'autoCollapse', 'autoScroll',
-        'checkbox', 'disabled', 'icons', 'keyboard', 'tabbable', 'nodeSelection', 'folderOnClickShould']
+      options = ['radio','activeVisible', 'aria', 'autoActivate', 'autoCollapse', 'autoScroll',
+        'checkbox', 'disabled', 'radio','icons', 'keyboard', 'tabbable', 'nodeSelection', 'folderOnClickShould']
       optionsString = ""
       for option in  options
         value = @get(option)
         if option is 'folderOnClickShould'
-        	value = "\"#{@get('treeFolderValue') || 'expandOnDblClick'}\""
+          value = "\"#{@get('treeFolderValue') || 'expandOnDblClick'}\""
         if option is 'nodeSelection'
         	value = "\"#{@get('treeSelectValue') || 'multiSelect'}\""
         optionsString += "  #{option}=#{value} \n"
       "\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
-    ).property('activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
+    ).property('radio','activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
       'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
 	})
 
+	Pad.treeTarget = Em.Object.create({
+		addRootChild: ->
+			Em.View.views["testpad-tree"].addChildrenToRootNode([{
+				title: "programmatically added node", 
+				folder: true,
+				children:[{title: "Child-1", value: 'child-1'}]
+			}])
+		addActiveChild: ->
+			Em.View.views["testpad-tree"].addChildrenToActiveNode([{
+				title: "programmatically added node", 
+				folder: true,
+				children:[{title: "Child-1", value: 'child-1'}]
+			}])
+		initialize: ->
+			Em.View.views["testpad-tree"].reinitialize()
+		expandAll: ->
+			Em.View.views["testpad-tree"].expandAll()
+		collapseAll: ->
+			Em.View.views["testpad-tree"].collapseAll()
+		toggleExpand: ->
+			Em.View.views["testpad-tree"].toggleExpand()
+		selectAll: ->
+			Em.View.views["testpad-tree"].selectAll()
+		deselectAll: ->
+			Em.View.views["testpad-tree"].deselectAll()
+		toggleSelection: ->
+			Em.View.views["testpad-tree"].toggleSelect()
+	})
+
 	Pad.treeActions = [
-		Ember.Object.create({label: "Add Child to Root", target: "Pad.groupTarget", action: "addEvent"}),
-		Ember.Object.create({label: "Remove Child from Root", target: "Pad.groupTarget", action: "editEvent"}),
-		Ember.Object.create({label: "Add Child to Active Node", target: "Pad.groupTarget", action: "addEvent"}),
-		Ember.Object.create({label: "Init", target: "Pad.groupTarget", action: "deleteEvent"})
-		Ember.Object.create({label: "Destroy", target: "Pad.groupTarget", action: "deleteEvent"})
-		Ember.Object.create({label: "Expand", target: "Pad.groupTarget", action: "deleteEvent"})
-		Ember.Object.create({label: "Reload", target: "Pad.groupTarget", action: "deleteEvent"})
+		Ember.Object.create({label: "Add Child to Root", target: "Pad.treeTarget", action: "addRootChild"}),
+		Ember.Object.create({label: "Add Child to Active Node", target: "Pad.treeTarget", action: "addActiveChild"}),
+		Ember.Object.create({label: "Init", target: "Pad.treeTarget", action: "initialize"})
+		Ember.Object.create({label: "Expand All", target: "Pad.treeTarget", action: "expandAll"})
+		Ember.Object.create({label: "Collapse All", target: "Pad.treeTarget", action: "collapseAll"})
+		Ember.Object.create({label: "Toggle Expand", target: "Pad.treeTarget", action: "toggleExpand"})
+		Ember.Object.create({label: "Select All", target: "Pad.treeTarget", action: "selectAll"})
+		Ember.Object.create({label: "Deselect All", target: "Pad.treeTarget", action: "deselectAll"})
+		Ember.Object.create({label: "Toggle Selection", target: "Pad.treeTarget", action: "toggleSelection"})
 	]
 
 	Pad.TreeData = [

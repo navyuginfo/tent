@@ -1164,11 +1164,17 @@
               tabbableBinding="Pad.TreeOptions.tabbable" 
               folderOnClickShouldBinding="Pad.TreeOptions.treeFolderValue"
               nodeSelectionBinding="Pad.TreeOptions.treeSelectValue"
+              radioBinding="Pad.TreeOptions.radio"
             }}
             {{view Tent.Button label="Actions" type="primary" optionsBinding="Pad.treeActions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
-            <h4>Handlebars Code for the selected options</h4>
+            <h4>Handlebars Code for the selected options</h4>            
+            {{view Tent.Checkbox label="Hide Defaults" checkedBinding="Pad.TreeOptions.hideDefaults"}}
             <pre class="tree-handlebars-code">
-              {{Pad.TreeOptions.handlebarsCode}}
+              {{#if Pad.TreeOptions.hideDefaults}}
+                {{Pad.TreeOptions.defaultCode}}
+              {{else}}
+                {{Pad.TreeOptions.handlebarsCode}}
+              {{/if}}
             </pre>
           </div>
           <div class="span4 pull-right">
@@ -1179,6 +1185,7 @@
             {{view Tent.Checkbox label="Automatically collapse all siblings, when a node is expanded." checkedBinding="Pad.TreeOptions.autoCollapse"}}
             {{view Tent.Checkbox label="Automatically scroll nodes into visible area." checkedBinding="Pad.TreeOptions.autoScroll"}}
             {{view Tent.Checkbox label="Show checkboxes" checkedBinding="Pad.TreeOptions.checkbox"}}
+            {{view Tent.Checkbox label="Show Radiobox(Must have checkbox true & Node Select Mode must be singleSelect)" checkedBinding="Pad.TreeOptions.radio"}}
             {{view Tent.Checkbox label="Disable control" checkedBinding="Pad.TreeOptions.disabled"}}
             {{view Tent.Checkbox label="Support keyboard navigation" checkedBinding="Pad.TreeOptions.keyboard"}}
             {{view Tent.Checkbox label="Display node icons" checkedBinding="Pad.TreeOptions.icons"}}
