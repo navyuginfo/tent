@@ -206,7 +206,7 @@ Tent.Tree = Ember.View.extend
   ).observes('content') # explicitly did not add content.@each
 
   optionsDidChange: (->
-    options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 
+    options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'minExpandLevel',
     'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable']
     for name in options
       element = @getTreeDom()
@@ -215,7 +215,7 @@ Tent.Tree = Ember.View.extend
       element.fancytree('option', name, value) if optionDidChange
   ).observes(
     'activeVisible','autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'clickFolderMode',
-    'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'
+    'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable', 'minExpandLevel'
   )
 
   didInsertElement: ->
@@ -325,8 +325,6 @@ Tent.Tree = Ember.View.extend
   replaceActiveNodeChildren: ((options) -> @replaceChildren(@getActiveNode(), options))
 
   reinitialize: (-> @getTreeDom().fancytree())
-
-  destroy: (-> @getTreeDom().fancytree('destroy'))
 
   recursivelyAdd: (node) ->
     if node.isFolder()

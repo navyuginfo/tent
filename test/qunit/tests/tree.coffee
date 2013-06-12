@@ -4,7 +4,45 @@
 #
 
 view = null
+tree = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
+
+initializeTree = ->
+  node1 = {
+    title: 'Node 1',
+    folder: true,
+    key: 'node1',
+    tooltip: "tooltip for node1",
+    extraclasses: 'extra-class1 extra-class2',
+    expanded: true,
+    children:[
+      {title: 'child-1 for node1', value: 'value-1'},
+      {title: 'child-2 for node2', value: 100}
+    ]
+  }
+  node2 = {
+    title: 'Node 2',
+    folder: true,
+    key: 'node2',
+    children:[{title: '<span>child with <b>html</b> title</span>', value: [1,2,3]}]
+  }
+  node3 = {title: 'Just a node', value: {name: 'Tent'}}
+  Application.set "content", [node1, node2, node3]
+  Application.stateSelection = Ember.A()
+
+  view = Ember.View.create({
+    app: Application
+    template: Ember.Handlebars.compile """
+      {{view Tent.Tree 
+        elementId="qunit-tree"
+        contentBinding="app.content" 
+        selectionBinding="Application.stateSelection"
+      }}
+    """
+  })
+
+  appendView()
+  tree = Em.View.views['qunit-tree']
 
 setup = ->
   @TemplateTests = Ember.Namespace.create()
@@ -26,21 +64,75 @@ teardown = ->
 module "Tent.Tree", setup, teardown
 
 test 'Ensure Tent.Tree renders as per specified array of parent & child nodes', ->
-  node1 = {
-    title: 'Node 1',
-    folder: true,
-    tooltip: "tooltip for node1",
-    extraclasses: 'extra-class1 extra-class2',
-    expanded: true,
-    children:[
-      {title: 'child-1 for node1', value: 'value-1'},
-      {title: 'child-2 for node2', value: 100}
-    ]
-  }
-  node2: {
-    title: 'Node 2',
-    folder: true,
-    children:[{title: '<span>child with <b>html</b> title</span>', value: [1,2,3]}]
-  }
-  node3: {title: 'Just a node', value: {name: 'Tent'}}
-  Application.set "content", [node1, node2, node3]
+  initializeTree()
+
+  ok view.$().length, 'Tree was rendered'
+  equal view.$('.fancytree-folder').length, 2, '2 Folder Nodes rendered'
+  equal view.$('.fancytree-expanded.fancytree-folder').length, 1, 'One folder is expanded on init'
+  equal view.$('.fancytree-folder.fancytree-expanded .fancytree-title').attr('title'), 'tooltip for node1', 'right folder is expanded'
+  equal tree.getNode('node1').children.length, 2, 'node1 has 2 children'
+  equal tree.getNode('node2').children.length, 1, 'node2 has 1 child'
+
+test 'Tent.Tree configuration', ->
+  initializeTree()
+  options = ['aria', 'activeVisible', 'autoActivate', 'autoCollapse', 'autoScroll', 'checkbox', 'disabled',
+              'icons', 'keyboard', 'tabbable', 'minExpandLevel', 'clickFolderMode', 'selectMode']
+
+  fancyTreeOptions = tree.getTree().options
+  for option in options
+    equal tree.get(option), fancyTreeOptions[option], "Default value of the property #{option} is set correctly to #{fancyTreeOptions[option]}"
+
+  for option in options
+    switch option
+      when 'clickFolderMode' then tree.set(option, 'activateAndExpand')
+      when 'selectMode' then tree.set(option, 'heirMultiSelect')
+      when 'minExpandLevel' then tree.set(option, 2)
+      else tree.set(option, !tree.get(option))
+
+  fancyTreeOptions = tree.getTree().options
+  for option in options
+    equal tree.get(option), fancyTreeOptions[option], "New value for the property #{option} is set to #{fancyTreeOptions[option]}"
+
+test 'Tent.Tree selections', ->
+  initializeTree()
+  tree.set('checkbox', true)
+  equal tree.get('selection').length, 0, 'Initially the selection array is empty'
+  tree.set('nodeSelection', 'heirMultiSelect')
+  tree.selectAll()
+  equal Application.stateSelection.length, 4, 'Selection has 4 children values'
+  ['value-1', 100, [1,2,3], {name: 'Tent'}]
+  equal Application.stateSelection[0], 'value-1', 'Selection has right value'
+  equal Application.stateSelection[1], 100, 'Selection has right value'
+  deepEqual Application.stateSelection[2], [1,2,3], 'Selection has right value'
+  deepEqual Application.stateSelection[3], {name: 'Tent'}, 'Selection has right value'
+  # deselecting the first folder node which should deselect it's children too
+  tree.getTree().visit (node) ->
+    node.setSelected(false) if node.key is 'node1'
+  equal Application.stateSelection.length, 2, 'New length after deselection is 2'
+  deepEqual Application.stateSelection[0], [1,2,3], 'Selection now has array as first element'
+  deepEqual Application.stateSelection[1], {name: 'Tent'}, 'Selection now has the hash object as second/last element'
+
+test 'Tent.Tree add/remove children', ->
+  initializeTree()
+  equal view.$('.fancytree-folder').length, 2, '2 Folder Nodes rendered'
+  nodes = [
+    {
+      title: 'programmatically Added Node', 
+      folder:true,
+      key: 'pNode',
+      children:[
+        {
+          title: 'programmatically added children',
+          value: 'newValue'
+        }
+      ]
+    }
+  ]
+  tree.addChildrenToRootNode(nodes)
+  ok tree.getNode('pNode'), 'New node has been added'
+  equal view.$('.fancytree-folder').length, 3, 'An extra folder node has been added to root node'
+  tree.set('checkbox', true)
+  tree.set('selectMode', 'heirMultiSelect')
+  tree.selectAll()
+  equal Application.stateSelection.length, 5, 'selection has 5 elements'
+  equal Application.stateSelection[4], 'newValue', 'programmatically added value' 
