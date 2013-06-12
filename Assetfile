@@ -222,6 +222,10 @@ input "lib" do
     concat 'stylesheet/tent.css'
   end
 
+  match /^stylesheet\/images\// do
+    concat
+  end
+
   match /^static\// do
     concat do |filename|
       filename.gsub(/^static\//, '')
