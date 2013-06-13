@@ -408,7 +408,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-bdiv').css('width','auto')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
 			else
-				@getTableDom().setGridWidth(@$().width(), true)
+				@getTableDom().setGridWidth(@$().innerWidth(), true)
+				widthWithoutScrollbar = this.$('.ui-jqgrid-bdiv').get(0).clientWidth
+				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
 
@@ -468,6 +470,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@highlightRows()
 			@showEditableCells()
 			@setHeaderWidths()
+			@resizeToContainer()
 		@validate() if doValidation
 		$.publish("/grid/rendered")
 
