@@ -70,8 +70,7 @@ Tent.Application.MainMenuView = Ember.View.extend
       @$('.tent-panel.collapsible').each(->
         view = Ember.View.views[$(this).attr('id')]
         if view.get('collapsed')
-          id = $(this).attr("id")
-          elem = $(".pull-right", "#" + id)
+          elem = $(".pull-right", $(this))
           if elem.length > 0
             elem.removeClass "collapsed"
           view.show()
