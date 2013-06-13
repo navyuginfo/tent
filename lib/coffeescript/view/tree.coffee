@@ -192,17 +192,26 @@ Tent.Tree = Ember.View.extend
         # Here the array is the previous one which will be changed after this hook
         # We can't get the items which were removed once the array changes
         # so grabbing them in arrayWillChange 
-        @removeNodes(array[start...start+removeCount]) if removeCount
+        if removeCount && removeCount is array.get('length') # don't want to iterate when all nodes are being removed
+          @get('selection').clear()
+          @reloadTree([])
+          @rerender()
+        else if removeCount
+          @removeNodes(array[start...start+removeCount])
       arrayDidChange: (array, start, removeCount, addCount) =>
         # Here the array is the changed one
         # We cannot get the information about newly added items until the array
         # changes so grabbing them in arrayDidChange
-        @addNodes(array[start...start+addCount]) if addCount
+        if addCount && addCount is array.get('length')
+          @reloadTree(array)
+        else if addCount
+          @addNodes(array[start...start+addCount])
     })
 
   contentDidChange: (->
     @reloadTree(@get('content'))
     @addArrayObservers(@get('content'))
+    @get('selection').clear()
   ).observes('content') # explicitly did not add content.@each
 
   optionsDidChange: (->
@@ -221,7 +230,9 @@ Tent.Tree = Ember.View.extend
   didInsertElement: ->
     options = $.extend({source: @get('content')}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
     @$("##{Ember.guidFor(@)}-tree").fancytree(options)
-    @addArrayObservers(@get('content'))
+    unless @get('hasArrayObservers')
+      @addArrayObservers(@get('content')) 
+      @set 'hasArrayObservers', true
 
   getTreeEvents: ->
     options = {}
@@ -306,7 +317,8 @@ Tent.Tree = Ember.View.extend
 
   addChildrenToActiveNode: ((options) -> @addChildren(@getActiveNode(), options))
 
-  addChildrenToRootNode: ((options) -> @addChildren(@getRootNode(), options))
+  addChildrenToRootNode: (options) -> 
+    @addChildren(@getRootNode(), options)
 
   addChildrenToNode: ((nodeId, options) -> @addChildren(@getNode(nodeId), options))
 
@@ -316,7 +328,7 @@ Tent.Tree = Ember.View.extend
       @recursivelyRemoveNodeChildren(childNode) if childNode.isSelected()
     else
       index = @get('selection').indexOf(childNode.data.value)
-      @get('selection').removeAt(index)
+      @get('selection').removeAt(index) unless index is -1
     node.removeChild(childNode)
  
   removeChildFromActiveNode: ((options) -> @removeChild(@getActiveNode(), options))
@@ -347,7 +359,7 @@ Tent.Tree = Ember.View.extend
       return @recursivelyRemoveNodeChildren(node)
     else
       index = @get('selection').indexOf(node.data.value)
-      return @get('selection').removeAt(index)
+      return @get('selection').removeAt(index) unless index is -1
 
   recursivelyRemoveNodeChildren: (node) ->
     @recursivelyRemove(child) for child in node.children
@@ -370,6 +382,6 @@ Tent.Tree = Ember.View.extend
       # selection array
       if data.node.isSelected()
         index = @get('selection').indexOf(data.node.data.value)
-        @get('selection').removeAt(index)
+        @get('selection').removeAt(index) unless index is -1
       else
         @get('selection').pushObject(data.node.data.value)

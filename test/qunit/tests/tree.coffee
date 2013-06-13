@@ -147,3 +147,20 @@ test 'Tent.Tree remove children', ->
   tree.get('content').removeObject(arr[0])
   equal Application.stateSelection.length, 2, 'Selection now has 2 elements as the removed node had 2 children'
   equal view.$('.fancytree-folder').length, 1, 'One folder has been removed'
+  tree.get('content').clear()
+  equal Application.stateSelection.length, 0, 'Selection cleared after all the node deletion'
+  equal view.$('.fancytree-node').length, 0, 'All the nodes removed'
+
+test 'Tent.Tree dealing with clearing the content', ->
+  initializeTree()
+  tree.set('checkbox', true)
+  tree.selectAll()
+  tree.set('content', [])
+  equal view.$('.fancytree-node').length, 0, 'All nodes removed'
+  equal tree.get('selection.length'), 0, 'Selection emptied'
+  tree.get('content').pushObjects([{title: 'New Node',key: 'newNode', folder: true, children: [{title: 'new child'}]}])
+  equal view.$('.fancytree-folder').length, 1, 'One folder node added'
+  equal tree.getNode('newNode').children.length, 1, 'New folder node has one child'
+  tree.set('content', [{title: 'normal child node 1'}, {title: 'normal child node 2'}])
+  equal view.$('.fancytree-folder').length, 0, 'No folder nodes as we did not add any'
+  equal view.$('.fancytree-node').length, 2, "2 child nodes"
