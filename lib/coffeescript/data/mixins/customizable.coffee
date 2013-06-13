@@ -72,7 +72,10 @@ Tent.Data.Customizable = Ember.Mixin.create
     @set('personalizationsRecord', @fetchPersonalizations())
 
   personalizationsRecordDidChange: (->
-    @set('personalizations', @get('personalizationsRecord').toArray()) if @get('personalizationsRecord').toArray().length > 0
+    if @get('personalizationsRecord').toArray().length > 0
+      @set('personalizations', @get('personalizationsRecord').toArray()) 
+    else
+      @set('personalizations', [])
   ).observes('personalizationsRecord','personalizationsRecord.@each')
 
   saveUIState: (name) ->
