@@ -249,8 +249,8 @@ Tent.Tree = Ember.View.extend
     options[setting] = @get(setting) for setting in defaultSettings
     options
 
-  removeNodes: (nodes) ->
-    @removeChildrenFromRootNode(node) for node in nodes
+  removeNodes: (options) ->
+    @removeChildFromRootNode(option) for option in options 
   
   addNodes: (nodes) ->
     @addChildrenToRootNode(node) for node in nodes
@@ -310,13 +310,20 @@ Tent.Tree = Ember.View.extend
 
   addChildrenToNode: ((nodeId, options) -> @addChildren(@getNode(nodeId), options))
 
-  removeChildren: ((node, options) -> node.removeChildren(options))
+  removeChild: (node, options) ->
+    childNode = node.findFirst(options.title)
+    if childNode.isFolder()
+      @recursivelyRemoveNodeChildren(childNode) if childNode.isSelected()
+    else
+      index = @get('selection').indexOf(childNode.data.value)
+      @get('selection').removeAt(index)
+    node.removeChild(childNode)
  
-  removeChildrenFromActiveNode: ((options) -> @removeChildren(@getActiveNode(), options))
+  removeChildFromActiveNode: ((options) -> @removeChild(@getActiveNode(), options))
 
-  removeChildrenFromRootNode: ((options) -> @removeChildren(@getRootNode(), options))
+  removeChildFromRootNode: ((options) -> @removeChild(@getRootNode(), options))
 
-  removeChildrenFromNode: ((nodeId, options) -> @removeChildren(@getNode(nodeId), options))
+  removeChildFromNode: ((nodeId, options) -> @removeChild(@getNode(nodeId), options))
 
   replaceChildren: ((node, options) -> node.fromDict(options))
 

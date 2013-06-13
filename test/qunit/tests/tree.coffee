@@ -112,7 +112,7 @@ test 'Tent.Tree selections', ->
   deepEqual Application.stateSelection[0], [1,2,3], 'Selection now has array as first element'
   deepEqual Application.stateSelection[1], {name: 'Tent'}, 'Selection now has the hash object as second/last element'
 
-test 'Tent.Tree add/remove children', ->
+test 'Tent.Tree add children', ->
   initializeTree()
   equal view.$('.fancytree-folder').length, 2, '2 Folder Nodes rendered'
   nodes = [
@@ -136,3 +136,14 @@ test 'Tent.Tree add/remove children', ->
   tree.selectAll()
   equal Application.stateSelection.length, 5, 'selection has 5 elements'
   equal Application.stateSelection[4], 'newValue', 'programmatically added value' 
+
+test 'Tent.Tree remove children', ->
+  initializeTree()
+  arr = tree.get('content')
+  tree.set('checkbox', true)
+  tree.selectAll()
+  equal Application.stateSelection.length, 4, 'Before deletion we had 4 elements in the selection'
+  equal view.$('.fancytree-folder').length, 2, 'Before deletion we had 2 folders in the root node'
+  tree.get('content').removeObject(arr[0])
+  equal Application.stateSelection.length, 2, 'Selection now has 2 elements as the removed node had 2 children'
+  equal view.$('.fancytree-folder').length, 1, 'One folder has been removed'
