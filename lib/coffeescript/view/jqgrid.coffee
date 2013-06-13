@@ -279,6 +279,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
 	    ###
 	    @getTableDom()[0].p.viewrecords = false
+
 	getItemFromModel: (id, colName)->
 		if colName?
 			row = @get('content').toArray().find (item)->
@@ -296,6 +297,52 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	getCell: (rowId, iCell) ->
 		return @getTableDom().find('#'+rowId ).children().eq(iCell)
+
+	# When horizontalScrolling is applied, we want the cell content to determine the width of
+	# the column. The cells should not wrap in this case 
+	setHeaderWidths: ->
+		# No column width personalization supported here
+		if @get('horizontalScrolling')
+			firstRow = @$('.jqgfirstrow td')
+			jqGridCols = @getTableDom()[0].p.colModel
+
+			# Set the width of each column to the greater of header width or cell width.
+			@$('.ui-jqgrid-htable th').each((index, col)=>
+				widthBasedOnHeader = jqGridCols[index].width or 0
+				if @get('groupingInfo.columnName')?
+					widthBasedOnContent = firstRow.eq(index).width()
+				else 
+					widthBasedOnContent = firstRow.eq(index).outerWidth()
+
+				if widthBasedOnContent > widthBasedOnHeader
+					finalWidth = widthBasedOnContent
+				else 
+					finalWidth = widthBasedOnHeader
+					firstRow.eq(index).css('width', finalWidth).css('min-width', finalWidth)
+				$(col).css('width', finalWidth).css('min-width', finalWidth)
+				jqGridCols[index].width = finalWidth	
+			)
+
+			# Expand to fit the grid area if necessary
+			totalGridWidth = @$('.ui-jqgrid-view').width()
+			totalColumnsWidth = @$('.ui-jqgrid-bdiv').width()
+			if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
+				###@$('.ui-jqgrid-htable th').each((index, col)->
+					colWidth = $(col).width()
+					remaining = totalGridWidth - totalColumnsWidth
+					finalWidth = colWidth + (remaining/jqGridCols.length) - 2
+
+					firstRow.eq(index).css('width', finalWidth).css('min-width', finalWidth)
+					$(col).css('width', finalWidth).css('min-width', finalWidth)
+					jqGridCols[index].width = finalWidth
+				)
+				###
+				remaining = totalGridWidth - totalColumnsWidth
+				lastColumn = firstRow.eq(jqGridCols.length - 1)
+				finalWidth = lastColumn.width() + remaining
+				firstRow.eq(jqGridCols.length - 1).css('width', finalWidth).css('min-width', finalWidth)
+				@$('.ui-jqgrid-htable th').eq(jqGridCols.length - 1).css('width', finalWidth).css('min-width', finalWidth)
+				jqGridCols[jqGridCols.length - 1].width = finalWidth
 
 	###*
 	* @method sendAction send an action to the router. This is called from the 'action' formatter,
@@ -324,6 +371,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@adjustHeight()
 		@removeLastDragBar()
+		@setHeaderWidths()
 
 	# After any changes to the dimensions of the grid, re-calculate for display
 	adjustHeight: ->
@@ -338,6 +386,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
+		$.publish('/grid/height-changed')
 
 	heightForPager: ->
 		if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
@@ -359,7 +408,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-bdiv').css('width','auto')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
 			else
-				@getTableDom().setGridWidth(@$().width(), true)
+				@getTableDom().setGridWidth(@$().innerWidth(), true)
+				widthWithoutScrollbar = this.$('.ui-jqgrid-bdiv').get(0).clientWidth
+				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
 
@@ -418,6 +469,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@unHighlightAllRows()
 			@highlightRows()
 			@showEditableCells()
+			@setHeaderWidths()
+			@resizeToContainer()
 		@validate() if doValidation
 		$.publish("/grid/rendered")
 
