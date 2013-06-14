@@ -72,7 +72,7 @@ Tent.Tree = Ember.View.extend
   checkbox: false
 
   ###*
-  * @property {String} string responsible for the folder on click behaviour
+  * @property {String} folderOnClickShould The property responsible for the folder click behaviour
   * If the value is 'expandOnDblClick' the folder expands only on double click
   * If the value is 'activate' the folder gets activated (not selected) on click
   * If the value is 'expand' the folder expands on click (not selected & activated)
@@ -109,7 +109,7 @@ Tent.Tree = Ember.View.extend
   keyboard: true
 
   ###*
-  * @property {String} string resposible for selection behavior of nodes
+  * @property {String} nodeSelecion The property resposible for node selection behaviour
   * If the value is 'singleSelect' user can select only one node
   * If the value is 'multiSelect' user can select multiple nodes
   * If the value is 'heirMultiSelect' user can select all the children on selecting parent node
@@ -117,17 +117,17 @@ Tent.Tree = Ember.View.extend
   nodeSelection: 'multiSelect'
 
   ###*
-  * @property {Boolean} a boolean indicating whether the whole tree behaves as one single control
+  * @property {Boolean} [tabbable=true] a boolean indicating whether the whole tree behaves as one single control
   ###
   tabbable: true
 
   ###*
-  * @property {Integer} Locks expand/collapse for all the nodes on the given minExpandLevel value
+  * @property {Integer} minExpandLevel Locks expand/collapse for all the nodes on the given minExpandLevel value
   ###
   minExpandLevel: 1
 
   ###*
-  * @property {Boolean} Displays radio buttons instead of checkboxes when set to true
+  * @property {Boolean} [radio=false] Displays radio buttons instead of checkboxes when set to true
   * property checkbox must be set to true in order to see the radio button.
   * To simulate radio group behavior the property nodeSelection must be set to 'singleSelect'
   * else we will have multi-select radio buttons.
@@ -135,7 +135,7 @@ Tent.Tree = Ember.View.extend
   radio: false
 
   ###*
-  * @property {Array} an array of parent child relationship which is responsible for 
+  * @property {Array} content an array of parent child relationship which is responsible for 
   * rendering the tree.
   * Example:
   * [
@@ -161,7 +161,7 @@ Tent.Tree = Ember.View.extend
   content: Em.A()
 
   ###*
-  * @property {Array} A property which holds selected leafnode values from the tree.
+  * @property {Array} selection an array which holds selected leafnode values from the tree.
   ###
   selection: Em.A()
 
@@ -217,8 +217,8 @@ Tent.Tree = Ember.View.extend
   optionsDidChange: (->
     options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'minExpandLevel',
     'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable']
+    element = @getTreeDom()
     for name in options
-      element = @getTreeDom()
       value = @get(name)
       optionDidChange = value isnt element.fancytree('option', name)
       element.fancytree('option', name, value) if optionDidChange
@@ -229,7 +229,7 @@ Tent.Tree = Ember.View.extend
 
   didInsertElement: ->
     options = $.extend({source: @get('content')}, @getTreeEvents(), @getNodeEvents(), @getDefaultSettings())
-    @$("##{Ember.guidFor(@)}-tree").fancytree(options)
+    @getTreeDom().fancytree(options)
     unless @get('hasArrayObservers')
       @addArrayObservers(@get('content')) 
       @set 'hasArrayObservers', true
