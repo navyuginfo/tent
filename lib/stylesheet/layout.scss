@@ -125,6 +125,7 @@
 
 	header {
 		@include fixed-height(50px);
+		z-index: 1000;
 		top: 0px;
 
 		&.hideable.hidden {
