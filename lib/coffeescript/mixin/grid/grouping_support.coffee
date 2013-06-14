@@ -5,6 +5,11 @@
 Tent.Grid.GroupingSupport = Ember.Mixin.create
   remoteGrouping: false
 
+  ###*
+   * @property {Boolean} showGroupTitle Show the title of the group in each grouping row along with the group data.
+  ###
+  showGroupTitle: true
+
   # Determines whether groups or items are shown in the grid
   showingGroups: false
 
@@ -71,13 +76,15 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
     columnType = @get('groupingInfo.columnType')
     groupType = @get('groupingInfo.type')
     columnTitle = @getColumnTitle(columnName)
-    
+
     for item in @get('content').toArray()
       if item.get('id') == parseInt(id,10)
         selectedGroup = item
 
     if selectedGroup?
-      content = "<span class='title'>" + @getColumnTitle(columnName) + "</span><span class='range'>"
+      content = "<span class='title'>" + @getColumnTitle(columnName) + "</span>" if @get('showGroupTitle')
+      content = content + "<span class='range'>"
+      
       comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
       startValue = selectedGroup[columnName.decamelize()]
       if startValue?

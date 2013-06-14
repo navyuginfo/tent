@@ -114,6 +114,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			data.columnType = @get('groupingInfo.columnType')
 			data.groupType = @get('groupingInfo.type')
 			data.columnTitle = @getColumnTitle(data.columnName)
+			data.showGroupTitle = @get('showGroupTitle')
 			grid = @getTableDom()[0]
 			@updatePagingForGroups(grid, data)
 			grid?.addGroupingData(data)
