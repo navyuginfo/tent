@@ -26,26 +26,29 @@ Tent.Application.MainMenuView = Ember.View.extend
       return true
     )
 
-  highlightSelectedItem: ->
+  highlightSelectedItem: (path)->
     #set the default selection on the basis of hitted url
-    path = window.location.pathname
+    path = path or window.location.pathname
 
-    @$("[data-route],[data-route-exact]").each(->
-      if path.indexOf($(this).attr('data-route')) != -1
-        $(this).addClass('active-menu')
-      if path == $(this).attr('data-route-exact')
-        $(this).addClass('active-menu')
-    )
+    if (@$()?)
+      @$(".active-menu").removeClass('active-menu')
 
-    current = null
-    @$("active-menu").each(->
-      if not current?
-        current = $(this)
-      else
-        if $(this).attr('data-route').length > current.attr('data-route').length
-          current.removeClass('active-menu')
+      @$("[data-route],[data-route-exact]").each(->
+        if path.indexOf($(this).attr('data-route')) != -1
+          $(this).addClass('active-menu')
+        if path == $(this).attr('data-route-exact')
+          $(this).addClass('active-menu')
+      )
+
+      current = null
+      @$("active-menu").each(->
+        if not current?
           current = $(this)
-    )
+        else
+          if $(this).attr('data-route').length > current.attr('data-route').length
+            current.removeClass('active-menu')
+            current = $(this)
+      )
 
   menuClicked: (e)->
     action = $(e.target).attr('data-action') or $(e.target).parents('[data-action]:first').attr('data-action')
