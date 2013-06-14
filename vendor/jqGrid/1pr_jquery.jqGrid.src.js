@@ -809,7 +809,6 @@ $.fn.jqGrid = function( pin ) {
 
           /*
             PR: Test that there is not a min-width calculated due to nowrap associated with the cell.
-            
            */
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
@@ -819,6 +818,7 @@ $.fn.jqGrid = function( pin ) {
 
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
+
           p.colModel[idx].width = nw;
           this.headers[idx].width = nw;
           this.headers[idx].el.style.width = nw + "px";
@@ -1331,10 +1331,15 @@ $.fn.jqGrid = function( pin ) {
         var comparator = Tent.JqGrid.Grouping.getComparator(data.columnType, data.groupType);
         rowData.push(constructTr(row.get('id'), false, "", {}, row, false, 'group-row'));
         var v = "";
+        if (data.showGroupTitle) {
+          v = v + "<span class='title'>" + data.columnTitle + "</span>";
+        }
+        v = v + "<span class='range'>";
         var startValue = row[data.columnName.decamelize()];
         if (startValue !== undefined) { 
           v = v + comparator.rowTitle(startValue);
         }
+        v = v + "</span>";
         v = v + "<i class='icon-caret-right pull-right'></i>";
         rowData.push('<td>'+v+'</td>' + addAggregateData(data, row));
         rowData.push( "</tr>" );
