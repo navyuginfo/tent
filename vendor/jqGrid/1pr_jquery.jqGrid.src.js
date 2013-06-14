@@ -1334,7 +1334,7 @@ $.fn.jqGrid = function( pin ) {
         if (data.showGroupTitle) {
           v = v + "<span class='title'>" + data.columnTitle + "</span>";
         }
-        v = v + "<span class='range'>";
+        v = v + "<span class='range'>";
         var startValue = row[data.columnName.decamelize()];
         if (startValue !== undefined) { 
           v = v + comparator.rowTitle(startValue);
