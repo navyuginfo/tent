@@ -25,6 +25,7 @@
     <script src="javascript/tent.js" type="text/javascript"></script>
     <script src="javascript/tent-tests.js" type="text/javascript"></script>
     <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
+    <script src="javascript/fancy-tree.js" type="text/javascript"></script>
     <!--[if lte IE 7]>
       <script src="javascript/eventlistener-polyfill.js" type="text/javascript"></script>
     <![endif]-->
@@ -60,6 +61,13 @@
         height: 100px;
         position: relative;
       }
+
+      .tree-handlebars-code{
+        color: #2b1fce;
+        font-size: 15px;
+        font-family: monospace;
+        line-height: 20px;
+      }
     </style>
   </head>
   <body data-spy="scroll" >
@@ -93,7 +101,7 @@
       <row>
     <script type="text/x-handlebars" data-template-name="application">
 
-      {{#view Tent.Panel span="2" id="sidebar"}}
+      {{#view Tent.Panel span="2" id="sidebar" class="span6"}}
 
         <ul class="nav nav-list affix sidenav">
           <li class="active">
@@ -119,6 +127,9 @@
           </li>
           <li>
             <a href="#modal-section"><i class="icon-chevron-right"></i> Modals</a>
+          </li>
+          <li>
+            <a href="#tree-section"><i class="icon-chevron-right"></i> Trees</a>
           </li>
         </ul>
       {{/view}}
@@ -1135,6 +1146,55 @@
                   {{/view}}
                 {{/view}}
           {{/view}}
+        {{/view}}
+        {{#view Tent.Panel span="10" elementId="tree-section"}}
+          <div class="span5 pull-left">
+            <h4>Trees</h4>
+            {{view Tent.Tree elementId="testpad-tree" 
+              contentBinding="Pad.TreeData"
+              activeVisibleBinding="Pad.TreeOptions.activeVisible"
+              autoActivateBinding="Pad.TreeOptions.autoActivate" 
+              ariaBinding="Pad.TreeOptions.aria"
+              autoCollapseBinding="Pad.TreeOptions.autoCollapse"
+              autoScrollBinding="Pad.TreeOptions.autoScroll"
+              checkboxBinding="Pad.TreeOptions.checkbox"
+              disabledBinding="Pad.TreeOptions.disabled"
+              iconsBinding="Pad.TreeOptions.icons"
+              keyboardBinding="Pad.TreeOptions.keyboard"
+              tabbableBinding="Pad.TreeOptions.tabbable" 
+              folderOnClickShouldBinding="Pad.TreeOptions.treeFolderValue"
+              nodeSelectionBinding="Pad.TreeOptions.treeSelectValue"
+              radioBinding="Pad.TreeOptions.radio"
+            }}
+            {{view Tent.Button label="Actions" type="primary" optionsBinding="Pad.treeActions" optionLabelPath="label" optionTargetPath="target" optionActionPath="action"}}
+            <h4>Handlebars Code for the selected options</h4>            
+            {{view Tent.Checkbox label="Hide Defaults" checkedBinding="Pad.TreeOptions.hideDefaults"}}
+            <pre class="tree-handlebars-code">
+              {{#if Pad.TreeOptions.hideDefaults}}
+                {{Pad.TreeOptions.defaultCode}}
+              {{else}}
+                {{Pad.TreeOptions.handlebarsCode}}
+              {{/if}}
+            </pre>
+          </div>
+          <div class="span4 pull-right">
+            <h4>Configuration</h4>
+            {{view Tent.Checkbox label="Make sure active nodes are visible" checkedBinding="Pad.TreeOptions.activeVisible"}}
+            {{view Tent.Checkbox label="Enable WAI-ARIA support" checkedBinding="Pad.TreeOptions.aria"}}
+            {{view Tent.Checkbox label="Automatically activate a node when it is focused (using keys)." checkedBinding="Pad.TreeOptions.autoActivate"}}
+            {{view Tent.Checkbox label="Automatically collapse all siblings, when a node is expanded." checkedBinding="Pad.TreeOptions.autoCollapse"}}
+            {{view Tent.Checkbox label="Automatically scroll nodes into visible area." checkedBinding="Pad.TreeOptions.autoScroll"}}
+            {{view Tent.Checkbox label="Show checkboxes" checkedBinding="Pad.TreeOptions.checkbox"}}
+            {{view Tent.Checkbox label="Show Radiobox(Must have checkbox true & Node Select Mode must be singleSelect)" checkedBinding="Pad.TreeOptions.radio"}}
+            {{view Tent.Checkbox label="Disable control" checkedBinding="Pad.TreeOptions.disabled"}}
+            {{view Tent.Checkbox label="Support keyboard navigation" checkedBinding="Pad.TreeOptions.keyboard"}}
+            {{view Tent.Checkbox label="Display node icons" checkedBinding="Pad.TreeOptions.icons"}}
+            {{view Tent.Checkbox label="Whole tree behaves as one single control." checkedBinding="Pad.TreeOptions.tabbable"}}
+            {{view Tent.Select label="Folder on click should(node must have folder: true)" listBinding="Pad.FolderClickOptions" optionLabelPath="content.label" optionValuePath="content.value"
+              selectionBinding="Pad.FolderSelection" valueBinding="Pad.TreeOptions.treeFolderValue"}}
+            {{view Tent.Select label="Node Select Mode(Works when checkbox is true)" listBinding="Pad.SelectOptions"
+              optionLabelPath="content.label" optionValuePath="content.value" selectionBinding="Pad.NodeSelection" valueBinding="Pad.TreeOptions.treeSelectValue"}}
+          </div>
         {{/view}}
 
       </div>

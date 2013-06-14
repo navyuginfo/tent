@@ -16,7 +16,7 @@ Pad.Router = Ember.Router.extend
       redirectsTo: 'content'
 
     content: Ember.Route.create
-      route: '/content'
+      route: '/testpad.html'
       title: 'state.content'
        
    

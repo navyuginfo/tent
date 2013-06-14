@@ -37,6 +37,7 @@ require './file_upload'
 require './message_panel'
 require './spinner'
 require './waiticon'
+require './tree'
 
 require './application/main_menu'
 require './application/menu_item'
