@@ -323,7 +323,9 @@ Tent.Tree = Ember.View.extend
   addChildrenToNode: ((nodeId, options) -> @addChildren(@getNode(nodeId), options))
 
   removeChild: (node, options) ->
-    childNode = node.findFirst(options.title)
+    title = options.title
+    childNode = node.findFirst (n) ->
+      n.title is title
     if childNode.isFolder()
       @recursivelyRemoveNodeChildren(childNode) if childNode.isSelected()
     else
