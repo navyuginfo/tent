@@ -7,7 +7,7 @@ teardown = ->
 
 module 'Tent.Grid.HorizontalScrollSupport', setup, teardown
 
-test 'Test that button is displayed', ->
+test 'Test that button is displayed: ', ->
 
 	Tent.HContainerView = Ember.View.extend Tent.Grid.HorizontalScrollSupport,
 		elementId: 'hcontainer'
@@ -15,6 +15,9 @@ test 'Test that button is displayed', ->
 		didInsertElement: ->
 			@addNavigationBar()
 		buildGrid: ->
+		gridDataDidChange: ->
+		updateGrid: ->
+		adjustHeight: ->
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.HContainerView horizontalScrolling=false}}'

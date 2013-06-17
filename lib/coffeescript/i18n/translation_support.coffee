@@ -62,6 +62,7 @@ Tent.I18n.loadTranslations(
 			hideShowAlt: 'Hide/Show Columns'
 			hideShowCaption: 'Columns'
 			hideShowTitle: 'Hide/Show Columns'
+			horizontalScroll: 'Horizontal Scroll'
 			export: {
 				xml: 'XML'
 				json: 'JSON'

@@ -32,7 +32,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					edittype: Tent.JqGrid.editTypes[column.formatter] or 'text'
 					editoptions: column.editoptions or Tent.JqGrid.editOptions[column.formatter]
 					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
-					width: @calculateColumnWidth(column)
+					width: column.width or 80
 					position: "right"
 					hidden: if column.hidden? then column.hidden else false
 					hideable: column.hideable
@@ -44,12 +44,6 @@ Tent.Grid.Adapters = Ember.Mixin.create
 				columns.pushObject(item)
 		columns
 	).property('columns')
-
-	calculateColumnWidth: (column)->  
-		if @get('horizontalScrolling')
-			column?.width or @get('fixedColumnWidth') or Tent.I18n.loc(column.title)?.length * 10 or 80
-		else
-			column?.width or 80
 
 	columnNames: (->
 		columnNames = []
