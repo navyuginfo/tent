@@ -17,7 +17,7 @@ initializeTree = ->
     expanded: true,
     children:[
       {title: 'child-1 for node1', value: 'value-1'},
-      {title: 'child-2 for node2', value: 100}
+      {title: 'child-2 for Node 2', value: 100}
     ]
   }
   node2 = {
