@@ -3370,7 +3370,7 @@ $.jgrid.extend({
             initwidth += cw;
             $t.grid.headers[i].width=cw;
             $t.grid.headers[i].el.style.width=cw+"px";
-            if($t.p.footerrow) { $t.grid.footers[i].style.width = cw+"px"; }
+            if($t.p.footerrow && $t.grid.footers.length > 0) { $t.grid.footers[i].style.width = cw+"px"; }
             if(cle) { $t.grid.cols[i].style.width = cw+"px"; }
             lvc = i;
           }
@@ -3398,7 +3398,7 @@ $.jgrid.extend({
         $t.grid.headers[lvc].width = cw;
         $t.grid.headers[lvc].el.style.width=cw+"px";
         if(cle) { $t.grid.cols[lvc].style.width = cw+"px"; }
-        if($t.p.footerrow) {
+        if($t.p.footerrow && $t.grid.footers.length > 0) {
           $t.grid.footers[lvc].style.width = cw+"px";
         }
       }
