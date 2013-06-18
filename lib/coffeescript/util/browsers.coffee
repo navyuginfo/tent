@@ -11,5 +11,8 @@ Tent.Browsers.getIEVersion = ->
 	version
 
 Tent.Browsers.isIE = ->
-	@.getIEVersion()?
-
+	res = @getIEVersion()?
+	# Memoize to prevent further execution.
+	@.isIE = ->
+		res
+	res
