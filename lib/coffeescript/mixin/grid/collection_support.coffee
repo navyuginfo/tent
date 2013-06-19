@@ -301,7 +301,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         @get('collection').sort
           fields: [{sortDir: postdata.sord, field: postdata.sidx}]
       else
-        @get('collection').goToPage(postdata.page)
+        unless @get('collection.personalizationsRecord') and not @get('collection.personalizationsRecord.isLoaded')
+          @get('collection').goToPage(postdata.page)
 
   shouldSort: (postdata)->
     sortable = false
