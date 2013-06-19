@@ -55,6 +55,10 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 		totals
 	).property('modelData.totals')
 
+	isLoaded: (->
+		@get('modelData.isLoaded')
+	).property('modelData.isLoaded')
+
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType')

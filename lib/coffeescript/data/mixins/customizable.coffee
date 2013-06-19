@@ -104,9 +104,9 @@ Tent.Data.Customizable = Ember.Mixin.create
   createPersonalizationRecordForClientSide: (name, uiState)->
     # To be implemented by application collection
 
-  storeFinished: (->
-    r = @get('newRecord')
-  ).observes('newRecord', 'newRecord.@each')
+  #storeFinished: (->
+  #  r = @get('newRecord')
+  #).observes('newRecord', 'newRecord.@each')
     
   gatherGridData: (name)->
     state = $.extend(

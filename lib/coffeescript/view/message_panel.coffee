@@ -131,10 +131,10 @@ Tent.MessagePanel = Ember.View.extend
 
 	# If a message panel is displayed in a container, it may wish to hide/show
 	# based on the existence of messages
-	showContainerWhenVisible: (->
+	showContainerWhenVisible: ((forceShow=false)->
 		if @get('parentContainer')?
 			if @get('hasErrors') or @get('hasInfos') or @get('hasSuccesses') or @get('hasWarnings')
-				@get('parentContainer').show()
+				@get('parentContainer').show(forceShow)
 			else 
 				@get('parentContainer').hide()
 	).observes('hasErrors', 'hasInfos', 'hasWarnings', 'hasSuccesses')
@@ -225,7 +225,7 @@ Tent.MessagePanel = Ember.View.extend
 
 	ensureContainerResizesAfterDomRenders: (->
 		Ember.run.next this, =>
-			@showContainerWhenVisible()
+			@showContainerWhenVisible(true)
 	).observes('error', 'warning', 'success', 'info', 'error.@each', 'warning.@each', 'success.@each', 'info.@each')
 
 

@@ -15,16 +15,24 @@ Tent.HideableSupport = Ember.Mixin.create
 		@_super()
 		if @get('hideable')
 			if @get('hidden')
-				@hide()
+				@hide(true)
 
-	hide: ->
-		if @get('hideable')
+	###*
+	* @method hide
+	* @param {Boolean} force execute the function even if the component is already hidden
+	###
+	hide: (force=false) ->
+		if @get('hideable') and (force or not @get('hidden'))
 			@$('').addClass('hidden')
 			@set('hidden', true)
 			$.publish("/ui/refresh", ['resize'])
 
-	show: ->
-		if @get('hideable')
+	###*
+	* @method show
+	* @param {Boolean} force execute the function even if the component is already shown
+	###
+	show: (force=false)->
+		if @get('hideable') and (force or @get('hidden'))
 			@$('').removeClass('hidden')
 			@set('hidden', true) # Do this to trigger a change event in case it is already showing
 			@set('hidden', false)

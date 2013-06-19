@@ -83,6 +83,11 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     @stopGroupingOnGrid()
     @get('collection').doFilter(@get('currentFilter'))
     #@closeFilterPanel()
+  
+  showFilterFields: (->
+    # For performance reasons, we generate the filter fields after the collection is loaded
+    @get('collection.isLoaded') 
+  ).property('collection.isLoaded')
 
   #changeFilter: ->
   #  @stopGroupingOnGrid()

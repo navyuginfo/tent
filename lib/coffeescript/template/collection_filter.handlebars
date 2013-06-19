@@ -7,7 +7,11 @@
 	<ul class="dropdown-menu filter-panel">
 		<li>
 			<div class="filter-details clearfix">
-				{{view Tent.FilterFieldsView collectionBinding="view.collection"}}
+				 
+					{{#if view.showFilterFields}}
+						{{view Tent.FilterFieldsView collectionBinding="view.collection"}}	
+					{{/if}}
+				 
 				<div class="form-inline buttons">
 				   	{{view Tent.Button label="tent.filter.clear" type="secondary" action="clearFilter" targetBinding="view" class="clear-filter pull-left"}}
 			    	{{view Tent.Button label="tent.filter.filter" type="primary" action="filter" targetBinding="view" class="close-panel pull-right"}}
