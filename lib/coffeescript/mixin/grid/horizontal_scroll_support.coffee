@@ -14,7 +14,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	###
 	fixedColumnWidth: null
 
-	addNavigationBar: ->
+	addNavigationBar: -> 
 		@_super()
 		@renderHorizontalScrollButton()
 
@@ -41,7 +41,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@gridDataDidChange()
 		@updateGrid()
 		@adjustHeight()
-	).observes('horizontalScrolling')
+	).observes('horizontalScrolling')  
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 
@@ -56,7 +56,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
 				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
 			)
-			@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
+			#@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
 			
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
@@ -94,12 +94,14 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		totalGridWidth = @$('.ui-jqgrid').width()
 		totalColumnsWidth = @$('.ui-jqgrid-bdiv').width()
 		if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
-			if @get('horizontalScrolling')
+			if @get('horizontalScrolling') and not @get('temporaryAutoFit') 
 				# The easiest way to normalize the columns is is to revert to shrinkToFit.
-				Ember.run.later =>
+				Ember.run.next this, =>
+					@set('temporaryAutoFit', true) 
 					@set('horizontalScrolling', false)
-					Ember.run.later =>
+					Ember.run.next this, =>
 						@set('horizontalScrolling', true)
+						@set('temporaryAutoFit', false)
 
 			###
 			remaining = totalGridWidth - totalColumnsWidth
