@@ -82,7 +82,7 @@ Tent.Data.Customizable = Ember.Mixin.create
     if name?
       name=name.trim()
       @set('customizationName', name) 
-    uiState = @gatherGridData(@get('customizationName'))
+    uiState = $.extend(true, {}, @gatherGridData(@get('customizationName')))
     @savePersonalization(name, uiState)
     @addPersonalizationToCollection(name, uiState)
 
