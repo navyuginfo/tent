@@ -384,6 +384,22 @@ $headerHeight: 20px;
 		.dropdown-menu a {
 			color: #222;
 		}
+
+		.horizontal-scroll-button {
+			border-top: 1px solid transparent;
+			border-left: 1px solid transparent;
+			margin-top: 2px;
+			@include border-radius(2px);
+			&.active {
+				border-color: #CCC;
+				background: #eee;
+			}
+			i {
+				margin-left: 3px;
+				padding: 1px;
+			}
+		}
+
 	}
 
 	&.horizontal-scrolling {

@@ -2,17 +2,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	###*
 	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
 	* This property defines whether the grid content will be forced to fit within the area assiged to the grid (false), 
-	* or whether the columns will disregard the grid width. The actual column widths will depend on the value provided for {@link #fixedColumnWidth}
+	* or whether the columns will disregard the grid width. The actual column widths will be the greater of the column 
+	* title width and the column content
 	###
 	horizontalScrolling: false
-
-	###*
-	* @property {Number} fixedColumnWidth Specify a single width to give to all columns	
-	* If {@link #horizontalScrolling} is set to true, then if this property is specified, 
-	* all of the columns will be given the specified width. If {@link #horizontalScrolling} is set to false, 
-	* this property is ignored, and the column widths will be estimated from the column title widths.
-	###
-	fixedColumnWidth: null
 
 	addNavigationBar: -> 
 		@_super()
@@ -24,11 +17,16 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@$('.horizontal-scroll-button').attr('title', Tent.I18n.loc("tent.jqGrid.horizontalScroll"))
 		@$('.horizontal-scroll-button').click(() ->
 			widget.set('horizontalScrolling', !widget.get('horizontalScrolling'))
-			if widget.get('horizontalScrolling')
-				$(this).addClass('active')
-			else 
-				$(this).removeClass('active')
+			widget.toggleActive($(this))
 		)
+		@toggleActive()
+
+	toggleActive: (component)->
+		component = component or @$('.horizontal-scroll-button')
+		if @get('horizontalScrolling')
+			component.removeClass('active')
+		else 
+			component.addClass('active')
 
 	horizontalScrollingDidChange: (->
 		if @get('horizontalScrolling')
