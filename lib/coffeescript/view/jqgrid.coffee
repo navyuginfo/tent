@@ -323,7 +323,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
-			if (not @get('horizontalScrolling') and not @get('paged'))
+			if (not @get('paged'))
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
@@ -343,14 +343,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	resizeToContainer: ->
 		if @$()? 
+			bdiv = @$('.ui-jqgrid-bdiv')
 			if @get('horizontalScrolling') 
 				# Override default jqgrid sizing
 				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width','100%')
-				@$('.ui-jqgrid-bdiv').css('width','auto')
+				bdiv.css('width','auto')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
+				# account for scrollbar
+				@$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth)
 			else
 				@getTableDom().setGridWidth(@$().innerWidth(), true)
-				widthWithoutScrollbar = this.$('.ui-jqgrid-bdiv').get(0).clientWidth
+				widthWithoutScrollbar = bdiv.get(0).clientWidth
 				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
