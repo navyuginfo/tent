@@ -1,7 +1,10 @@
 <div class="btn-group header-buttons">
+  {{view Tent.Grid.AutofitButton gridBinding="view.parentView"}}
+
   {{#if view.parentView.showExportButton}}
     {{view view.exportView}}
   {{/if}}
+
 </div>
 
 {{#if view.parentView.collection}}

@@ -7,20 +7,6 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	###
 	horizontalScrolling: false
 
-	addNavigationBar: -> 
-		@_super()
-		@renderHorizontalScrollButton()
-
-	renderHorizontalScrollButton: ->
-		widget = @
-		@$(".header-buttons").append('<a class="horizontal-scroll-button jqgrid-title-button"><i class="icon-resize-horizontal"></i> </a>')
-		@$('.horizontal-scroll-button').attr('title', Tent.I18n.loc("tent.jqGrid.horizontalScroll"))
-		@$('.horizontal-scroll-button').click(() ->
-			widget.set('horizontalScrolling', !widget.get('horizontalScrolling'))
-			widget.toggleActive($(this))
-		)
-		@toggleActive()
-
 	toggleActive: (component)->
 		component = component or @$('.horizontal-scroll-button')
 		if @get('horizontalScrolling')

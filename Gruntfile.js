@@ -213,7 +213,7 @@ module.exports = function (grunt) {
             },
             qunit_continuous: {
                 singleRun: true,
-                browsers: ['Chrome']
+                browsers: ['PhantomJS']
             },
             mocha_continuous: {
                 configFile: 'test/karma/karma.mocha.conf.js',
