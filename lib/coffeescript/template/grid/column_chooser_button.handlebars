@@ -1,0 +1,13 @@
+<div class="btn-group column-chooser">
+	<a class="open-dropdown">
+		<i class="icon-columns"></i>{{loc tent.jqGrid.hideShowCaption}}
+	</a>
+	<div class="dropdown-menu columns pull-right">
+		<div class="window"></div>
+		<ul>
+			{{#each view.model}}
+				<li><label><input type="checkbox" {{bindAttr data-column="name"}} {{bindAttr checked="checked"}}/><span class="title">{{loc title}}</span></label></li>
+			{{/each}}
+		</ul>
+	</div>
+</div>
