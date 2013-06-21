@@ -386,11 +386,15 @@ $headerHeight: 20px;
 		}
 
 		.horizontal-scroll-button {
+			@include transition(all 0.2s ease);
 			border-top: 1px solid transparent;
 			border-left: 1px solid transparent;
 			margin-top: 2px;
 			@include border-radius(2px);
-			&.active {
+			&:hover {
+				border-color: #CCC;
+			}
+			&.active{
 				border-color: #CCC;
 				background: #eee;
 			}
@@ -425,10 +429,10 @@ $headerHeight: 20px;
 		//	}
 		}
 
-		//.ui-jqgrid-btable {
-		//	table-layout: auto;  // Column widths depend on their content
-		//}
-
+		.ui-jqgrid-btable {
+	 		table-layout: auto; // Column widths depend on their content
+		}
+		
 		.ui-jqgrid tr.jqgrow td {
 			white-space: nowrap;
 		}
