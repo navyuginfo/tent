@@ -591,20 +591,6 @@ test 'horizontal scrolling', ->
 	equal gridProperties.autowidth, false, 'autowidth should be false'
 	equal gridProperties.shrinkToFit, false, 'shrinkToFit should be false'
 
-test 'calculateColumnWidth', ->
-	Grid = Ember.Object.extend Tent.Grid.Adapters,
-		horizontalScrolling: false
-	grid = Grid.create()
-
-	equal grid.calculateColumnWidth({title:'New Column Title'}), 80, 'no column width'
-	equal grid.calculateColumnWidth({title:'New Column Title', width: '120'}), 120, 'column width'
-
-	grid.set('horizontalScrolling', true)
-	equal grid.calculateColumnWidth({title:'New Column Title'}), 160, 'Width based on title length'
-	equal grid.calculateColumnWidth({title: null}), 80, 'No title provided'
-
-	grid.set('fixedColumnWidth', 88)
-	equal grid.calculateColumnWidth(), 88, 'fixed column width'
 
 test 'columnNames', ->
 	colModel = [

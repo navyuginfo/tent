@@ -7,8 +7,8 @@ require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
-require '../mixin/toggle_visibility'
 require '../mixin/grid/maximize_grid'
+require '../mixin/grid/horizontal_scroll_support'
 
 ###*
 * @class Tent.JqGrid
@@ -23,6 +23,7 @@ require '../mixin/grid/maximize_grid'
 * @mixins Tent.Grid.ColumnChooserSupport
 * @mixins Tent.Grid.ColumnMenu
 * @mixins Tent.Grid.Maximize
+* @mixins Tent.Grid.HorizontalScrollSupport
 * 
 *
 * Create a jqGrid view which displays the data provided by its content property
@@ -43,7 +44,7 @@ require '../mixin/grid/maximize_grid'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility,
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
@@ -82,21 +83,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields. 
 	###
 	clearAction: null
-
-	###*
-	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
-	* This property defines whether the grid content will be forced to fit within the area assiged to the grid (false), 
-	* or whether the columns will disregard the grid width. The actual column widths will depend on the value provided for {@link #fixedColumnWidth}
-	###
-	horizontalScrolling: false
-
-	###*
-	* @property {Number} fixedColumnWidth Specify a single width to give to all columns	
-	* If {@link #horizontalScrolling} is set to true, then if this property is specified, 
-	* all of the columns will be given the specified width. If {@link #horizontalScrolling} is set to false, 
-	* this property is ignored, and the column widths will be estimated from the column title widths.
-	###
-	fixedColumnWidth: null
 
 	# An internal property identifying whether the grid is expanded or not.
 	fullScreen: false
@@ -298,52 +284,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	getCell: (rowId, iCell) ->
 		return @getTableDom().find('#'+rowId ).children().eq(iCell)
 
-	# When horizontalScrolling is applied, we want the cell content to determine the width of
-	# the column. The cells should not wrap in this case 
-	setHeaderWidths: ->
-		# No column width personalization supported here
-		if @get('horizontalScrolling')
-			firstRow = @$('.jqgfirstrow td')
-			jqGridCols = @getTableDom()[0].p.colModel
-
-			# Set the width of each column to the greater of header width or cell width.
-			@$('.ui-jqgrid-htable th').each((index, col)=>
-				widthBasedOnHeader = jqGridCols[index].width or 0
-				if @get('groupingInfo.columnName')?
-					widthBasedOnContent = firstRow.eq(index).width()
-				else 
-					widthBasedOnContent = firstRow.eq(index).outerWidth()
-
-				if widthBasedOnContent > widthBasedOnHeader
-					finalWidth = widthBasedOnContent
-				else 
-					finalWidth = widthBasedOnHeader
-					firstRow.eq(index).css('width', finalWidth).css('min-width', finalWidth)
-				$(col).css('width', finalWidth).css('min-width', finalWidth)
-				jqGridCols[index].width = finalWidth	
-			)
-
-			# Expand to fit the grid area if necessary
-			totalGridWidth = @$('.ui-jqgrid-view').width()
-			totalColumnsWidth = @$('.ui-jqgrid-bdiv').width()
-			if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
-				###@$('.ui-jqgrid-htable th').each((index, col)->
-					colWidth = $(col).width()
-					remaining = totalGridWidth - totalColumnsWidth
-					finalWidth = colWidth + (remaining/jqGridCols.length) - 2
-
-					firstRow.eq(index).css('width', finalWidth).css('min-width', finalWidth)
-					$(col).css('width', finalWidth).css('min-width', finalWidth)
-					jqGridCols[index].width = finalWidth
-				)
-				###
-				remaining = totalGridWidth - totalColumnsWidth
-				lastColumn = firstRow.eq(jqGridCols.length - 1)
-				finalWidth = lastColumn.width() + remaining
-				firstRow.eq(jqGridCols.length - 1).css('width', finalWidth).css('min-width', finalWidth)
-				@$('.ui-jqgrid-htable th').eq(jqGridCols.length - 1).css('width', finalWidth).css('min-width', finalWidth)
-				jqGridCols[jqGridCols.length - 1].width = finalWidth
-
 	###*
 	* @method sendAction send an action to the router. This is called from the 'action' formatter,
 	* which displays cell content as a link
@@ -379,17 +319,19 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 			bottom = (@$('.ui-jqgrid-sdiv').height() + @heightForPager()) or 0
 			@$('.ui-jqgrid-bdiv').css('top', top)
-			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+			#@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+			@$('.ui-jqgrid-view').css('bottom', bottom);
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
-			if (not @get('horizontalScrolling') and not @get('paged'))
+			if (not @get('paged'))
 				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 		$.publish('/grid/height-changed')
 
 	heightForPager: ->
-		if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
+		#if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
+		@$('.ui-jqgrid-pager')?.height()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -402,14 +344,17 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	resizeToContainer: ->
 		if @$()? 
+			bdiv = @$('.ui-jqgrid-bdiv')
 			if @get('horizontalScrolling') 
 				# Override default jqgrid sizing
 				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width','100%')
-				@$('.ui-jqgrid-bdiv').css('width','auto')
+				bdiv.css('width','auto')
 				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
+				# account for scrollbar
+				@$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth)
 			else
 				@getTableDom().setGridWidth(@$().innerWidth(), true)
-				widthWithoutScrollbar = this.$('.ui-jqgrid-bdiv').get(0).clientWidth
+				widthWithoutScrollbar = bdiv.get(0).clientWidth
 				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()

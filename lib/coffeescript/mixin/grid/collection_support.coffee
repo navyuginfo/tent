@@ -214,7 +214,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       for name, hidden of @get('columnInfo.hidden')
         for column in @get('columnModel')
           column.hidden = hidden if column.name == name
-    @renderColumnChooser()
+    #@renderColumnChooser()
 
   setupColumnWidthProperties: ->
     # Copy any column width information provided by the collection

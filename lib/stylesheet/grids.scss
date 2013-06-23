@@ -384,14 +384,34 @@ $headerHeight: 20px;
 		.dropdown-menu a {
 			color: #222;
 		}
+
+		.horizontal-scroll-button {
+			@include transition(all 0.2s ease);
+			border-top: 1px solid transparent;
+			border-left: 1px solid transparent;
+			margin-top: 2px;
+			@include border-radius(2px);
+			&:hover {
+				border-color: #CCC;
+			}
+			&.active{
+				border-color: #CCC;
+				background: #eee;
+			}
+			i {
+				margin-left: 3px;
+				padding: 1px;
+			}
+		}
+
 	}
 
 	&.horizontal-scrolling {
 		.ui-jqgrid-view {
 			overflow: auto;
 		}
-		&.fixed-header .ui-jqgrid-view {
-			height: auto;
+		&.fixed-header .ui-jqgrid {
+			overflow-x: auto;
 		}
 
 		&.fixed-header.paged .ui-jqgrid-bdiv {
@@ -399,11 +419,22 @@ $headerHeight: 20px;
 		}
 
 		.ui-jqgrid-bdiv {
-			overflow: visible;
-			position: static;
-			> div {
-				position: static;
-			}
+			overflow-x: hidden;
+			overflow-y: visible;
+			position: absolute; // For internal scrollbar
+  			//position: relative; // For wrapping scrollbar (including header)
+
+		//	> div {
+		//		position: static;
+		//	}
+		}
+
+		.ui-jqgrid-btable {
+	 		table-layout: auto; // Column widths depend on their content
+		}
+		
+		.ui-jqgrid tr.jqgrow td {
+			white-space: nowrap;
 		}
 	}
 
