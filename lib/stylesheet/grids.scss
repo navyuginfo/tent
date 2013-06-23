@@ -407,9 +407,9 @@ $headerHeight: 20px;
 	}
 
 	&.horizontal-scrolling {
-		//.ui-jqgrid-view {
-		//	overflow: auto;
-		//}
+		.ui-jqgrid-view {
+			overflow: auto;
+		}
 		&.fixed-header .ui-jqgrid {
 			overflow-x: auto;
 		}

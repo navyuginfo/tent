@@ -7,7 +7,6 @@ require '../mixin/grid/editable_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
-require '../mixin/toggle_visibility'
 require '../mixin/grid/maximize_grid'
 require '../mixin/grid/horizontal_scroll_support'
 
@@ -45,7 +44,7 @@ require '../mixin/grid/horizontal_scroll_support'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, 
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
@@ -320,7 +319,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 			bottom = (@$('.ui-jqgrid-sdiv').height() + @heightForPager()) or 0
 			@$('.ui-jqgrid-bdiv').css('top', top)
-			@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+			#@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+			@$('.ui-jqgrid-view').css('bottom', bottom);
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
 			if (not @get('paged'))
@@ -330,7 +330,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		$.publish('/grid/height-changed')
 
 	heightForPager: ->
-		if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
+		#if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
+		@$('.ui-jqgrid-pager')?.height()
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()

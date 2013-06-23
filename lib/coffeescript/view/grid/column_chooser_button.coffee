@@ -1,4 +1,6 @@
 require '../../template/grid/column_chooser_button'
+require '../../mixin/toggle_visibility'
+
 
 Tent.Grid.ColumnChooserButton = Ember.View.extend Tent.ToggleVisibility,
 	classNames: ['tent-column-chooser-button']
