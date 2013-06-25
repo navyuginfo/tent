@@ -22,7 +22,6 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			@getTableDom().get(0).p.forceFit = true
 			@getTableDom().get(0).p.shrinkToFit = true
 
-		@gridDataDidChange()
 		@updateGrid()
 		@adjustHeight()
 	).observes('horizontalScrolling')  
