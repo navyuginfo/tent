@@ -39,8 +39,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			@$('.ui-jqgrid-htable th').each((index, col)=>
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
 				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
+				@changeFooterWidth(index, finalWidth)
 			)
-			#@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
+			if @get('footerRow')
+          		@getTableDom()[0].grid.sDiv.style.width = "auto"
 			
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
@@ -73,35 +75,8 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		else 
 			widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
 
-	ensureColumnsExpandToAvailableSpace: (firstRowOfGrid, jqGridCols)->
-		# Expand to fit the grid area if necessary
-		totalGridWidth = @$('.ui-jqgrid').width()
-		totalColumnsWidth = @$('.ui-jqgrid-bdiv').width()
-		if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
-			if @get('horizontalScrolling') and not @get('temporaryAutoFit') 
-				# The easiest way to normalize the columns is is to revert to shrinkToFit.
-				Ember.run.next this, =>
-					@set('temporaryAutoFit', true) 
-					@set('horizontalScrolling', false)
-					Ember.run.next this, =>
-						@set('horizontalScrolling', true)
-						@set('temporaryAutoFit', false)
-
-			###
-			remaining = totalGridWidth - totalColumnsWidth
-			lastVisibleIndex = jqGridCols.length - 1
-			visibleColumns = firstRowOfGrid.filter((index, col)->
-				if $(this).css('display') != 'none'
-					lastVisibleIndex = index
-					true
-				else
-					false 
-			)
-			lastColumn = visibleColumns.last()
-			finalWidth = lastColumn.width() + remaining
-
-			lastColumn.css('width', finalWidth).css('min-width', finalWidth)
-			@$('.ui-jqgrid-htable th').eq(lastVisibleIndex).css('width', finalWidth).css('min-width', finalWidth)
-			jqGridCols[lastVisibleIndex].width = finalWidth
-			###
-
+	changeFooterWidth: (index, finalWidth)->
+		if @get('footerRow')
+			# review for performance
+			footers = @getTableDom()[0].grid.footers;
+			footers[index].style.width = finalWidth + 'px';
