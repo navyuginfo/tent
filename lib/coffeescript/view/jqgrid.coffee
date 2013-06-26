@@ -159,6 +159,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@addNavigationBar()
 		@setupColumnGroupingProperties()
 		@setupColumnOrderingProperties()
+		@gridDidRender()
 
 	applyStoredPropertiesToGrid: ->
 		if @get('collection.personalizable')
@@ -171,6 +172,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			@buildGrid();
 			@setupColumnGroupingProperties();
 			@setupColumnOrderingProperties();
+			@gridDidRender()
 
 	willDestroyElement: ->
 		if @get('fullScreen')
@@ -306,7 +308,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 	addNavigationBar: ->
 		@_super()
- 
+
+	gridDidRender: ->
+ 		@_super()
+
 	columnsDidChange: (colChangedIndex)->
 		@_super()
 		@adjustHeight()
@@ -318,13 +323,19 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
 			bottom = (@$('.ui-jqgrid-sdiv').height() + @heightForPager()) or 0
-			@$('.ui-jqgrid-bdiv').css('top', top)
-			#@$('.ui-jqgrid-bdiv').css('bottom', bottom)
+			if @get('horizontalScrolling')
+				@$('.ui-jqgrid-bdiv').css('top', 0)
+			else
+				@$('.ui-jqgrid-bdiv').css('top', top)
+
 			@$('.ui-jqgrid-view').css('bottom', bottom);
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 
-			if (not @get('paged'))
-				@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
+			if not @get('paged')
+				if @get('horizontalScrolling')
+					@$('.ui-jqgrid-view').css('height', 'auto')
+				else
+					@$('.ui-jqgrid-view').css('height', '100%') if not Tent.Browsers.isIE()
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 		$.publish('/grid/height-changed')

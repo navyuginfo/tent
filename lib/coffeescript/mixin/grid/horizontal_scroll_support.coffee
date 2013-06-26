@@ -6,6 +6,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	* title width and the column content
 	###
 	horizontalScrolling: false
+	isHorizontalScrolling: false
+
+	gridDidRender: ->
+		@modifyGridForAutofit()
 
 	toggleActive: (component)->
 		component = component or @$('.horizontal-scroll-button')
@@ -14,18 +18,53 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		else 
 			component.addClass('active')
 
-	horizontalScrollingDidChange: (->
-		if @get('horizontalScrolling')
-			@getTableDom().get(0).p.forceFit = false
-			@getTableDom().get(0).p.shrinkToFit = false
-		else 
-			@getTableDom().get(0).p.forceFit = true
-			@getTableDom().get(0).p.shrinkToFit = true
+	horizontalScrollingDidChange: (()->
+		@modifyGridForAutofit()
+	).observes('horizontalScrolling')
 
-		@gridDataDidChange()
+	modifyGridForAutofit: ()->
+		if @get('horizontalScrolling') 
+			if not @get('isHorizontalScrolling') # optimization. Don't update if not necessary
+				@addHorizontalScroll()
+		else
+			if @get('isHorizontalScrolling')
+				@removeHorizontalScroll()
+
+	addHorizontalScroll: ->
+		@set('isHorizontalScrolling', true)
+		@getTableDom().get(0).p.forceFit = false
+		@getTableDom().get(0).p.shrinkToFit = false
+
+		@moveHeaderAboveViewDiv()
 		@updateGrid()
 		@adjustHeight()
-	).observes('horizontalScrolling')  
+
+	removeHorizontalScroll: ->
+		@set('isHorizontalScrolling', false)
+		@getTableDom().get(0).p.forceFit = true
+		@getTableDom().get(0).p.shrinkToFit = true
+
+		@revertHeaderIntoViewDiv()
+		@updateGrid()
+		@adjustHeight()
+
+	moveHeaderAboveViewDiv: ->
+		hdiv = $('.ui-jqgrid-hdiv', @$())
+		view = $('.ui-jqgrid-view', @$())
+		hdiv.detach()
+		view.before(hdiv)
+		view.scroll((event)->
+			hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+		)
+
+	revertHeaderIntoViewDiv: ->
+		hdiv = $('.ui-jqgrid-hdiv', @$())
+		view = $('.ui-jqgrid-view', @$())
+		bdiv = $('.ui-jqgrid-bdiv', @$())
+		hdiv.detach()
+		bdiv.before(hdiv)
+		hdiv.css("margin-left", "0px")
+		view.unbind('scroll')
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 
@@ -39,8 +78,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			@$('.ui-jqgrid-htable th').each((index, col)=>
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
 				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
+				@changeFooterWidth(index, finalWidth)
 			)
-			#@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
+			if @get('footerRow')
+          		@getTableDom()[0].grid.sDiv.style.width = "auto"
 			
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
@@ -73,35 +114,8 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		else 
 			widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
 
-	ensureColumnsExpandToAvailableSpace: (firstRowOfGrid, jqGridCols)->
-		# Expand to fit the grid area if necessary
-		totalGridWidth = @$('.ui-jqgrid').width()
-		totalColumnsWidth = @$('.ui-jqgrid-bdiv').width()
-		if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
-			if @get('horizontalScrolling') and not @get('temporaryAutoFit') 
-				# The easiest way to normalize the columns is is to revert to shrinkToFit.
-				Ember.run.next this, =>
-					@set('temporaryAutoFit', true) 
-					@set('horizontalScrolling', false)
-					Ember.run.next this, =>
-						@set('horizontalScrolling', true)
-						@set('temporaryAutoFit', false)
-
-			###
-			remaining = totalGridWidth - totalColumnsWidth
-			lastVisibleIndex = jqGridCols.length - 1
-			visibleColumns = firstRowOfGrid.filter((index, col)->
-				if $(this).css('display') != 'none'
-					lastVisibleIndex = index
-					true
-				else
-					false 
-			)
-			lastColumn = visibleColumns.last()
-			finalWidth = lastColumn.width() + remaining
-
-			lastColumn.css('width', finalWidth).css('min-width', finalWidth)
-			@$('.ui-jqgrid-htable th').eq(lastVisibleIndex).css('width', finalWidth).css('min-width', finalWidth)
-			jqGridCols[lastVisibleIndex].width = finalWidth
-			###
-
+	changeFooterWidth: (index, finalWidth)->
+		if @get('footerRow')
+			# review for performance
+			footers = @getTableDom()[0].grid.footers;
+			footers[index].style.width = finalWidth + 'px';
