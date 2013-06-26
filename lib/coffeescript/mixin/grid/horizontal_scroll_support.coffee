@@ -6,6 +6,11 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	* title width and the column content
 	###
 	horizontalScrolling: false
+	isHorizontalScrolling: false
+
+	gridDidRender: ->
+		@_super.apply(arguments) if @_super?
+		@modifyGridForAutofit()
 
 	toggleActive: (component)->
 		component = component or @$('.horizontal-scroll-button')
@@ -14,17 +19,42 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		else 
 			component.addClass('active')
 
-	horizontalScrollingDidChange: (->
-		if @get('horizontalScrolling')
-			@getTableDom().get(0).p.forceFit = false
-			@getTableDom().get(0).p.shrinkToFit = false
-		else 
-			@getTableDom().get(0).p.forceFit = true
-			@getTableDom().get(0).p.shrinkToFit = true
+	horizontalScrollingDidChange: (()->
+		@modifyGridForAutofit()
+	).observes('horizontalScrolling')
 
-		@updateGrid()
-		@adjustHeight()
-	).observes('horizontalScrolling')  
+	modifyGridForAutofit: ()->
+		if @get('horizontalScrolling') 
+			if not @get('isHorizontalScrolling') # optimization. Don't update if not necessary
+				@set('isHorizontalScrolling', true)
+				@getTableDom().get(0).p.forceFit = false
+				@getTableDom().get(0).p.shrinkToFit = false
+
+				hdiv = $('.ui-jqgrid-hdiv', @$())
+				view = $('.ui-jqgrid-view', @$())
+				hdiv.detach()
+				view.before(hdiv)
+				view.scroll((event)->
+					hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+				)
+				@updateGrid()
+				@adjustHeight()
+		else
+			if @get('isHorizontalScrolling')
+				@set('isHorizontalScrolling', false)
+				@getTableDom().get(0).p.forceFit = true
+				@getTableDom().get(0).p.shrinkToFit = true
+
+				hdiv = $('.ui-jqgrid-hdiv', @$())
+				view = $('.ui-jqgrid-view', @$())
+				bdiv = $('.ui-jqgrid-bdiv', @$())
+				hdiv.detach()
+				bdiv.before(hdiv)
+				hdiv.css("margin-left", "0px")
+				@updateGrid()
+				@adjustHeight()
+
+		
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 

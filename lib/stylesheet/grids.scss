@@ -439,6 +439,29 @@ $headerHeight: 20px;
 	}
 
 
+
+	&.horizontal-scrolling, &.horizontal-scrolling.fixed-header {
+		.ui-jqgrid {
+			overflow-x: hidden;
+
+			.ui-jqgrid-view {
+				height: auto;
+				top: 20px;
+				position: absolute;
+			}
+
+			.ui-jqgrid-hdiv {
+				position: absolute;
+			}
+
+			.ui-jqgrid-bdiv {
+				top: 0px;
+				overflow-x: visible;
+				overflow-y: visible;
+			}
+		}
+	}
+
 	&.error {
 		.grid-table td {
 			background: rgba(255, 0, 0, 0.15);
