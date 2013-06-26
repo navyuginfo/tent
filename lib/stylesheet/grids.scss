@@ -406,27 +406,31 @@ $headerHeight: 20px;
 
 	}
 
-	&.horizontal-scrolling {
+	&.horizontal-scrolling.fixed-header {
 		.ui-jqgrid-view {
-			overflow: auto;
-		}
-		&.fixed-header .ui-jqgrid {
+			height: auto;
+			top: 20px;
+			position: absolute;
 			overflow-x: auto;
 		}
+		.ui-jqgrid {
+			overflow-x: hidden;
+		}
 
-		&.fixed-header.paged .ui-jqgrid-bdiv {
+		&.paged .ui-jqgrid-bdiv {
 			bottom: 0px;
 		}
 
 		.ui-jqgrid-bdiv {
-			overflow-x: hidden;
-			overflow-y: visible;
 			position: absolute; // For internal scrollbar
   			//position: relative; // For wrapping scrollbar (including header)
+  			top: 0px;
+			overflow-x: visible;
+			overflow-y: visible;
+		}
 
-		//	> div {
-		//		position: static;
-		//	}
+		.ui-jqgrid-hdiv {
+			position: absolute;
 		}
 
 		.ui-jqgrid-btable {
@@ -438,29 +442,6 @@ $headerHeight: 20px;
 		}
 	}
 
-
-
-	&.horizontal-scrolling, &.horizontal-scrolling.fixed-header {
-		.ui-jqgrid {
-			overflow-x: hidden;
-
-			.ui-jqgrid-view {
-				height: auto;
-				top: 20px;
-				position: absolute;
-			}
-
-			.ui-jqgrid-hdiv {
-				position: absolute;
-			}
-
-			.ui-jqgrid-bdiv {
-				top: 0px;
-				overflow-x: visible;
-				overflow-y: visible;
-			}
-		}
-	}
 
 	&.error {
 		.grid-table td {

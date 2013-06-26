@@ -9,7 +9,6 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	isHorizontalScrolling: false
 
 	gridDidRender: ->
-		@_super.apply(arguments) if @_super?
 		@modifyGridForAutofit()
 
 	toggleActive: (component)->
@@ -26,35 +25,46 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	modifyGridForAutofit: ()->
 		if @get('horizontalScrolling') 
 			if not @get('isHorizontalScrolling') # optimization. Don't update if not necessary
-				@set('isHorizontalScrolling', true)
-				@getTableDom().get(0).p.forceFit = false
-				@getTableDom().get(0).p.shrinkToFit = false
-
-				hdiv = $('.ui-jqgrid-hdiv', @$())
-				view = $('.ui-jqgrid-view', @$())
-				hdiv.detach()
-				view.before(hdiv)
-				view.scroll((event)->
-					hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
-				)
-				@updateGrid()
-				@adjustHeight()
+				@addHorizontalScroll()
 		else
 			if @get('isHorizontalScrolling')
-				@set('isHorizontalScrolling', false)
-				@getTableDom().get(0).p.forceFit = true
-				@getTableDom().get(0).p.shrinkToFit = true
+				@removeHorizontalScroll()
 
-				hdiv = $('.ui-jqgrid-hdiv', @$())
-				view = $('.ui-jqgrid-view', @$())
-				bdiv = $('.ui-jqgrid-bdiv', @$())
-				hdiv.detach()
-				bdiv.before(hdiv)
-				hdiv.css("margin-left", "0px")
-				@updateGrid()
-				@adjustHeight()
+	addHorizontalScroll: ->
+		@set('isHorizontalScrolling', true)
+		@getTableDom().get(0).p.forceFit = false
+		@getTableDom().get(0).p.shrinkToFit = false
 
-		
+		@moveHeaderAboveViewDiv()
+		@updateGrid()
+		@adjustHeight()
+
+	removeHorizontalScroll: ->
+		@set('isHorizontalScrolling', false)
+		@getTableDom().get(0).p.forceFit = true
+		@getTableDom().get(0).p.shrinkToFit = true
+
+		@revertHeaderIntoViewDiv()
+		@updateGrid()
+		@adjustHeight()
+
+	moveHeaderAboveViewDiv: ->
+		hdiv = $('.ui-jqgrid-hdiv', @$())
+		view = $('.ui-jqgrid-view', @$())
+		hdiv.detach()
+		view.before(hdiv)
+		view.scroll((event)->
+			hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+		)
+
+	revertHeaderIntoViewDiv: ->
+		hdiv = $('.ui-jqgrid-hdiv', @$())
+		view = $('.ui-jqgrid-view', @$())
+		bdiv = $('.ui-jqgrid-bdiv', @$())
+		hdiv.detach()
+		bdiv.before(hdiv)
+		hdiv.css("margin-left", "0px")
+		view.unbind('scroll')
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 
