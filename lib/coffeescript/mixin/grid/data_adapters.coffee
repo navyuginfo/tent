@@ -41,6 +41,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					groupable: column.groupable
 					resizable: true
 					title: Tent.I18n.loc column.title
+					t: Tent.I18n.loc column.title
 				columns.pushObject(item)
 		columns
 	).property('columns')
