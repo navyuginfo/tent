@@ -20,6 +20,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	horizontalScrollingDidChange: (()->
 		@modifyGridForAutofit()
+		@adjustHeight()
 	).observes('horizontalScrolling')
 
 	modifyGridForAutofit: ()->
@@ -50,21 +51,41 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	moveHeaderAboveViewDiv: ->
 		hdiv = $('.ui-jqgrid-hdiv', @$())
+		bdiv = $('.ui-jqgrid-bdiv', @$())
 		view = $('.ui-jqgrid-view', @$())
+		sdiv = $('.ui-jqgrid-sdiv', @$())
 		hdiv.detach()
 		view.before(hdiv)
-		view.scroll((event)->
-			hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
-		)
+		if sdiv.length > 0
+			sdiv.detach()
+			view.after(sdiv)
+
+		if @get('footerRow')
+			sdiv.scroll((event)->
+				hdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+				bdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+			)
+		else
+			view.scroll((event)->
+				hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+			)
+
 
 	revertHeaderIntoViewDiv: ->
 		hdiv = $('.ui-jqgrid-hdiv', @$())
 		view = $('.ui-jqgrid-view', @$())
 		bdiv = $('.ui-jqgrid-bdiv', @$())
+		sdiv = $('.ui-jqgrid-sdiv', @$())
 		hdiv.detach()
 		bdiv.before(hdiv)
 		hdiv.css("margin-left", "0px")
+		bdiv.css("margin-left", "0px")
 		view.unbind('scroll')
+		sdiv.unbind('scroll')
+		if sdiv.length > 0
+			sdiv.detach()
+			bdiv.after(sdiv)
+
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 
