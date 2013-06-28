@@ -11,6 +11,7 @@ module 'Tent.Grid.Autofitbutton', setup, teardown
 test 'Test hscrolling attribute', ->
 	grid = Ember.Object.create
 		horizontalScrolling: true
+		showAutofitButton: true
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.Grid.AutofitButton gridBinding="view.grid"}}'
@@ -21,7 +22,7 @@ test 'Test hscrolling attribute', ->
 	autoFit = Ember.View.views[view.$('.tent-autofit-button').attr('id')]
 
 	button = view.$('.horizontal-scroll-button')
-	ok button.length, 1, 'Anchor should be displayed'
+	equal button.length, 1, 'Anchor should be displayed'
 	#equal hContainer.get('horizontalScrolling'), false, 'start with scrolling false'
 	equal button.hasClass('active'), false, 'active'
 	equal button.attr('title'), 'Auto-Fit', 'Check that the title is set'

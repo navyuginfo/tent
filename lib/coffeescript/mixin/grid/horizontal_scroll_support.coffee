@@ -6,6 +6,18 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	* title width and the column content
 	###
 	horizontalScrolling: false
+
+	###*
+	 * @property {Boolean} ShowAutofitButton Show or hide the autofit button on the grid header panel.
+	 *
+	 * The autofit button will allow the grid to toggle between two modes
+	 * 
+	 * - **Autofit**: All columns are resized to fit within the grid viewing area
+	 * - **Non-Autofit**: All columns assume their natural width (using no wrapping) and a horizontal scrollbar is
+	 * displayed if necessary
+	###
+	showAutofitButton: true
+
 	isHorizontalScrolling: false
 
 	gridDidRender: ->
