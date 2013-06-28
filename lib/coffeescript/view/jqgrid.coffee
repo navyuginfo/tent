@@ -380,6 +380,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
+			@adjustHeight()
 
 	hideGrid: ->
 		@$(".gridpager").hide()

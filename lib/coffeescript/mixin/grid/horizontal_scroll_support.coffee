@@ -20,7 +20,6 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	horizontalScrollingDidChange: (()->
 		@modifyGridForAutofit()
-		@adjustHeight()
 	).observes('horizontalScrolling')
 
 	modifyGridForAutofit: ()->
