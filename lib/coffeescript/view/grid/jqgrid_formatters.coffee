@@ -11,7 +11,13 @@
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0) and cell?
-			cellvalue = $('input', cell).attr('value') or 0
+			partiallyLoadedColumns = Ember.View.views[options.gid.split("_")[0]].get("columnModel")
+				.filterProperty("partiallyFiltered").mapProperty("name")
+			if partiallyLoadedColumns.contains(options.colModel.name)
+				message = Tent.I18n.loc('unentitledCellMessage')
+				return "<span class=\"unentitled-cell\" title=\"#{message}\"></span>"
+			else
+				cellvalue = $('input', cell).attr('value') or 0
 		formattedVal = Tent.Formatting.amount.format(cellvalue)
 		if options? and options.colModel.formatoptions? and options.colModel.formatoptions.negative and cellvalue < 0
 			'<span class="negative">'+formattedVal+'</span>'

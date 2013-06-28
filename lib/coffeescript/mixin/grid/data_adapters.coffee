@@ -3,7 +3,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	
 	columns: (->
 		@get('collection.columnsDescriptor')
-	).property('collection.columnsDescriptor')
+	).property('collection.columnsDescriptor', 'content.isLoaded')
 
 	# Adapter to get column names from columnModel
 	colNames: (->
@@ -19,7 +19,8 @@ Tent.Grid.Adapters = Ember.Mixin.create
 
 	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
-		columns = Ember.A() 
+		columns = Ember.A()
+		filteredColumnData = @get('collection.modelData.filteredColumns')
 		if @get('columns')?
 			for column in @get('columns')
 				item = Ember.Object.create

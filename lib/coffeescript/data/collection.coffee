@@ -60,8 +60,10 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	).property('modelData.isLoaded')
 
 	columnsDescriptor: (->
-		@get('store').getColumnsForType(@get('dataType'))
-	).property('dataType')
+		filteredColumns = @get('modelData.filteredColumns.filtered') || []
+		return @get('store').getColumnsForType(@get('dataType')) unless filteredColumns.length
+		@get('store').getColumnsForType(@get('dataType')).filter((column) => !filteredColumns.contains(column))
+	).property('dataType', 'isLoaded')
 
 	update: (requestType)->
 		if @get('dataType')? && @get('store')?
