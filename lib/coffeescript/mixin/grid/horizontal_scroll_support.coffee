@@ -18,6 +18,13 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	###
 	showAutofitButton: true
 
+	###*
+	 * @property {Boolean} autofitIfSpaceAvailable If autofit is turned off, and there is free space in the grid, expand the
+	 * columns to fit the free space.
+	###
+	autofitIfSpaceAvailable: false
+
+
 	isHorizontalScrolling: false
 
 	gridDidRender: ->
@@ -114,7 +121,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			)
 			if @get('footerRow')
           		@getTableDom()[0].grid.sDiv.style.width = "auto"
-			
+			@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols) if @get('autofitIfSpaceAvailable')
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
 		widthBasedOnHeader = @calculateHeaderColumnWidth(index, col)
@@ -151,3 +158,18 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			# review for performance
 			footers = @getTableDom()[0].grid.footers;
 			footers[index].style.width = finalWidth + 'px';
+
+	ensureColumnsExpandToAvailableSpace: (firstRowOfGrid, jqGridCols)->
+		# Expand to fit the grid area if necessary
+		totalGridWidth = @$('.ui-jqgrid').width()
+		totalColumnsWidth = @$('.ui-jqgrid-btable').width()
+		if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
+			if @get('horizontalScrolling') and not @get('temporaryAutoFit') 
+				# The easiest way to normalize the columns is is to revert to shrinkToFit.
+				Ember.run.next this, =>
+					@set('temporaryAutoFit', true) 
+					@set('horizontalScrolling', false)
+				Ember.run.next this, =>
+					@set('horizontalScrolling', true)
+					@set('temporaryAutoFit', false)
+
