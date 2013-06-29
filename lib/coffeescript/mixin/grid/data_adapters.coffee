@@ -21,8 +21,13 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	columnModel: (->
 		columns = Ember.A()
 		filteredColumnData = @get('collection.modelData.filteredColumns')
+		filteredColumns = filteredColumnData?.filtered
 		if @get('columns')?
 			for column in @get('columns')
+				if filteredColumns && filteredColumns.contains(column.name)
+					hidden = true
+				else
+					hidden = if column.hidden? then column.hidden else false
 				item = Ember.Object.create
 					name: column.name
 					index: column.name
@@ -35,7 +40,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
 					width: column.width or 80
 					position: "right"
-					hidden: if column.hidden? then column.hidden else false
+					hidden: hidden
 					hideable: column.hideable
 					hidedlg: true if column.hideable == false
 					sortable: column.sortable
