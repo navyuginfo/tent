@@ -8,14 +8,15 @@
 * When 'negative' is set to true, then negative values will be displayed in different style to
 * non-negative amounts (usually colored red).
 ###
+partiallyLoadedCell = (options) ->
+	partiallyLoadedColumns = Ember.View.views[options.gid.split("_")[0]].get("content.filteredColumns.partiallyFiltered")
+	partiallyLoadedColumns.contains(options.colModel.name)
+
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0) and cell?
-			partiallyLoadedColumns = Ember.View.views[options.gid.split("_")[0]].get("columnModel")
-				.filterProperty("partiallyFiltered").mapProperty("name")
-			if partiallyLoadedColumns.contains(options.colModel.name)
-				message = Tent.I18n.loc('unentitledCellMessage')
-				return "<span class=\"unentitled-cell\" title=\"#{message}\"></span>"
+			if partiallyLoadedCell(options)
+				return "<span class=\"unentitled-cell\" title=\"#{Tent.I18n.loc('unentitledCellMessage')}\"></span>"
 			else
 				cellvalue = $('input', cell).attr('value') or 0
 		formattedVal = Tent.Formatting.amount.format(cellvalue)
@@ -51,7 +52,10 @@ jQuery.extend $.fn.fmatter.amount,
 jQuery.extend $.fn.fmatter, 
 	number: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0) and cell?
-			cellvalue = $('input', cell).attr('value') or 0
+			if partiallyLoadedCell(options)
+				return "<span class=\"unentitled-cell\" title=\"#{Tent.I18n.loc('unentitledCellMessage')}\"></span>"
+			else
+				cellvalue = $('input', cell).attr('value') or 0
 		formattedVal = Tent.Formatting.number.format(cellvalue)
 		if options? and options.colModel.formatoptions? and options.colModel.formatoptions.negative and cellvalue < 0
 			'<span class="negative">'+formattedVal+'</span>'
@@ -74,7 +78,10 @@ jQuery.extend $.fn.fmatter.number,
 jQuery.extend $.fn.fmatter, 
 	percent: (cellvalue, opts, cell) ->
 		if (not cellvalue) and (cellvalue != 0) and cell?
-			cellvalue = $('input', cell).attr('value') or 0
+			if partiallyLoadedCell(opts)
+				return "<span class=\"unentitled-cell\" title=\"#{Tent.I18n.loc('unentitledCellMessage')}\"></span>"
+			else
+				cellvalue = $('input', cell).attr('value') or 0
 		Tent.Formatting.percent.format(cellvalue)
 
 jQuery.extend $.fn.fmatter.percent,

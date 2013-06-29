@@ -61,7 +61,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 
 	columnsDescriptor: (->
 		@get('store').getColumnsForType(@get('dataType'))
-	).property('dataType', 'isLoaded')
+	).property('dataType')
 
 	update: (requestType)->
 		if @get('dataType')? && @get('store')?
