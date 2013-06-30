@@ -24,6 +24,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		if @get('columns')?
 			for column in @get('columns')
 				if filteredColumns && filteredColumns.contains(column.name)
+					console.log "#{column.name} is filtered & will be hidden"
 					hidden = true
 				else
 					hidden = if column.hidden? then column.hidden else false
@@ -49,7 +50,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					t: Tent.I18n.loc column.title
 				columns.pushObject(item)
 		columns
-	).property('columns')
+	).property('columns', 'collection.modelData.filteredColumns.filtered')
 
 	columnNames: (->
 		columnNames = []
