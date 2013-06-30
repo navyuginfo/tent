@@ -79,14 +79,22 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 			view.after(sdiv)
 
 		if @get('footerRow')
-			sdiv.scroll((event)->
-				hdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
-				bdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+			sdiv.scroll((event)=>
+				@trackFooterScrollPosition(hdiv, bdiv, sdiv)
 			)
+			@trackFooterScrollPosition(hdiv, bdiv, sdiv)
 		else
-			view.scroll((event)->
-				hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+			view.scroll((event)=>
+				@trackContentScrollPosition(hdiv, view)
 			)
+			@trackContentScrollPosition(hdiv, view)
+
+	trackFooterScrollPosition: (hdiv, bdiv, sdiv)->
+		hdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+		bdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+
+	trackContentScrollPosition: (hdiv, view)->
+		hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
 
 
 	revertHeaderIntoViewDiv: ->

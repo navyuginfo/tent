@@ -79,7 +79,7 @@
     	height: $modal-footer-height;
   	}
 
-  	.tent-form, .tent-panel, .tent-jqgrid .ui-jqgrid  {
+  	.tent-form, .tent-panel {
     	height: auto; // Was 100%, doesn't play well in an absolutely positioned container
     	overflow: visible;
   	}
