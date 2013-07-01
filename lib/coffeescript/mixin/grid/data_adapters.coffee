@@ -17,16 +17,16 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		names
 	).property('columns')
 
+	hideFilteredColumns: (->
+		if @get('content.isLoaded')
+			filteredColumns = @get('content.filteredColumns.filtered') || []
+			@hideCol(columnName) for columnName in filteredColumns
+	).observes('content.isLoaded', 'content.filteredColumns.filtered')
+
 	columnModel: (->
 		columns = Ember.A()
-		filteredColumns = @get('collection.modelData.filteredColumns.filtered')
 		if @get('columns')?
 			for column in @get('columns')
-				if filteredColumns && filteredColumns.contains(column.name)
-					console.log "#{column.name} is filtered & will be hidden"
-					hidden = true
-				else
-					hidden = if column.hidden? then column.hidden else false
 				item = Ember.Object.create
 					name: column.name
 					index: column.name
@@ -39,7 +39,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					editrules: column.editrules or Tent.JqGrid.editRules[column.formatter]
 					width: column.width or 80
 					position: "right"
-					hidden: hidden
+					hidden: if column.hidden? then column.hidden else false
 					hideable: column.hideable
 					hidedlg: true if column.hideable == false
 					sortable: column.sortable
@@ -49,7 +49,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					t: Tent.I18n.loc column.title
 				columns.pushObject(item)
 		columns
-	).property('columns', 'collection.modelData.filteredColumns.filtered')
+	).property('columns')
 
 	columnNames: (->
 		columnNames = []
@@ -100,25 +100,25 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		###
 		if @get('content.isLoaded')
 			@getTableDom()[0].p.viewrecords = true
-			data = 
-				rows: @get('gridData')
-				total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
-				records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
-				page: @get('pagingInfo').page if @get('pagingInfo')?
-				userdata: @get('fixedRows')
-				remoteGrouping: @isShowingValidGroups()
-				columns: @get('columnModel')
-			@resetGrouping()
-			if @isShowingValidGroups()
-				data.columnName = @get('groupingInfo.columnName')
-				data.columnType = @get('groupingInfo.columnType')
-				data.groupType = @get('groupingInfo.type')
-				data.columnTitle = @getColumnTitle(data.columnName)
-				data.showGroupTitle = @get('showGroupTitle')
-				grid = @getTableDom()[0]
-				@updatePagingForGroups(grid, data)
-				grid?.addGroupingData(data)
-			else
-				@getTableDom()[0]?.addJSONData(data)
-			@updateGrid()
+		data = 
+			rows: @get('gridData')
+			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
+			page: @get('pagingInfo').page if @get('pagingInfo')?
+			userdata: @get('fixedRows')
+			remoteGrouping: @isShowingValidGroups()
+			columns: @get('columnModel')
+		@resetGrouping()
+		if @isShowingValidGroups()
+			data.columnName = @get('groupingInfo.columnName')
+			data.columnType = @get('groupingInfo.columnType')
+			data.groupType = @get('groupingInfo.type')
+			data.columnTitle = @getColumnTitle(data.columnName)
+			data.showGroupTitle = @get('showGroupTitle')
+			grid = @getTableDom()[0]
+			@updatePagingForGroups(grid, data)
+			grid?.addGroupingData(data)
+		else
+			@getTableDom()[0]?.addJSONData(data)
+		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
