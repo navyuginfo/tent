@@ -120,16 +120,22 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('horizontalScrolling')
 			firstRowOfGrid = @$('.jqgfirstrow td')
 			jqGridCols = @getTableDom()[0].p.colModel
-
+			totalWidth = 0
 			# Set the width of each column to the greater of header width or cell width.
 			@$('.ui-jqgrid-htable th').each((index, col)=>
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
+				if not jqGridCols[index].hidden
+					totalWidth = totalWidth + parseInt(finalWidth)
 				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
 				@changeFooterWidth(index, finalWidth)
 			)
 			if @get('footerRow')
           		@getTableDom()[0].grid.sDiv.style.width = "auto"
-			@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols) if @get('autofitIfSpaceAvailable')
+
+			if @get('autofitIfSpaceAvailable')
+				@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
+			else
+				@resizeTableToColumnsWidth(totalWidth)
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
 		widthBasedOnHeader = @calculateHeaderColumnWidth(index, col)
@@ -147,7 +153,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	calculateHeaderColumnWidth: (index, col)->
 		if (@get('multiSelect') and index==0)
-			$(col).width()
+			col.style.width.split('px')[0]
 		else
 			column = @get('columnModel')[index - (if @get('multiSelect') then 1 else 0)]
 			if column?
@@ -159,13 +165,22 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('groupingInfo.columnName')?
 			widthBasedOnContent = firstRowOfGrid.eq(index).width()
 		else 
-			widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
+			if firstRowOfGrid.eq(index).css('min-width') != '0px'
+				widthBasedOnContent = firstRowOfGrid.eq(index).css('min-width').split('px')[0]
+			else
+				widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
+			widthBasedOnContent
 
 	changeFooterWidth: (index, finalWidth)->
 		if @get('footerRow')
 			# review for performance
 			footers = @getTableDom()[0].grid.footers;
 			footers[index].style.width = finalWidth + 'px';
+
+	resizeTableToColumnsWidth: (totalWidth) ->
+		@$('.ui-jqgrid-htable').width(totalWidth)
+		@$('.ui-jqgrid-btable').width(totalWidth)
+		@$('.ui-jqgrid-ftable').width(totalWidth)
 
 	ensureColumnsExpandToAvailableSpace: (firstRowOfGrid, jqGridCols)->
 		# Expand to fit the grid area if necessary
