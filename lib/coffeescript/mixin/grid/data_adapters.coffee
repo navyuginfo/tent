@@ -17,7 +17,6 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		names
 	).property('columns')
 
-	# Adapter to get column descriptors from current datastore columndescriptor version 
 	columnModel: (->
 		columns = Ember.A()
 		filteredColumns = @get('collection.modelData.filteredColumns.filtered')
@@ -92,7 +91,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-	 @getTableDom()[0].p.viewrecords = false
+		@getTableDom()[0].p.viewrecords = false
     #remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###
@@ -101,25 +100,25 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		###
 		if @get('content.isLoaded')
 			@getTableDom()[0].p.viewrecords = true
-		data = 
-			rows: @get('gridData')
-			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
-			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
-			page: @get('pagingInfo').page if @get('pagingInfo')?
-			userdata: @get('fixedRows')
-			remoteGrouping: @isShowingValidGroups()
-			columns: @get('columnModel')
-		@resetGrouping()
-		if @isShowingValidGroups()
-			data.columnName = @get('groupingInfo.columnName')
-			data.columnType = @get('groupingInfo.columnType')
-			data.groupType = @get('groupingInfo.type')
-			data.columnTitle = @getColumnTitle(data.columnName)
-			data.showGroupTitle = @get('showGroupTitle')
-			grid = @getTableDom()[0]
-			@updatePagingForGroups(grid, data)
-			grid?.addGroupingData(data)
-		else
-			@getTableDom()[0]?.addJSONData(data)
-		@updateGrid()
+			data = 
+				rows: @get('gridData')
+				total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+				records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
+				page: @get('pagingInfo').page if @get('pagingInfo')?
+				userdata: @get('fixedRows')
+				remoteGrouping: @isShowingValidGroups()
+				columns: @get('columnModel')
+			@resetGrouping()
+			if @isShowingValidGroups()
+				data.columnName = @get('groupingInfo.columnName')
+				data.columnType = @get('groupingInfo.columnType')
+				data.groupType = @get('groupingInfo.type')
+				data.columnTitle = @getColumnTitle(data.columnName)
+				data.showGroupTitle = @get('showGroupTitle')
+				grid = @getTableDom()[0]
+				@updatePagingForGroups(grid, data)
+				grid?.addGroupingData(data)
+			else
+				@getTableDom()[0]?.addJSONData(data)
+			@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
