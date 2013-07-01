@@ -68,6 +68,7 @@ Tent.Data.Customizable = Ember.Mixin.create
 
   init: ->
     @_super()
+    @set('terms',@fetchTerms())
     @set('customizationName', @get('defaultName') or "")
     @set('personalizationsRecord', @fetchPersonalizations())
 
