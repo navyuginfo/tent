@@ -211,9 +211,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   setupColumnVisibilityProperties: ->
     # Copy any hidden column information provided by the collection
     if this.get('collection.personalizable')
-      filteredColumns = @get('collection.modelData.filteredColumns.filtered') || []
       for name, hidden of @get('columnInfo.hidden')
-        hidden = true if filteredColumns.contains(name)
         for column in @get('columnModel')
           column.hidden = hidden if column.name == name
     #@renderColumnChooser()
