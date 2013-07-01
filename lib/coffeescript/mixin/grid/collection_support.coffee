@@ -323,12 +323,15 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ).observes('collection.personalizations')
 
   initializeWithNewPersonalization: (index)->
+    @set('terms', @get('collection.terms').toArray())
     if @get('customizationName') != @get('collection.customizationName')
       #if @get('collection.personalizations').toArray().length > 0
       if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
       else 
         uiState = @get('collection.defaultPersonalization')
+
+      @applyTerms(uiState)
       @set('collection.customizationName',  uiState.customizationName);
       @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
       @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
@@ -337,6 +340,14 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
       @applyStoredPropertiesToGrid()
       @populateCollectionDropdown()
+
+  applyTerms: (uiState)->
+    for col in @get('columnModel')
+      for term in @get('terms')
+        if term.get('existing') is col.title
+          unless uiState.columns.titles[col.index]?
+            uiState.columns.titles[col.index] = term.get('new')
+            break   
         
 
 
