@@ -24,10 +24,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	###
 	autofitIfSpaceAvailable: false
 
-
 	isHorizontalScrolling: false
 
 	gridDidRender: ->
+		@est('isHorizontalScrolling', false)
 		@modifyGridForAutofit()
 
 	toggleActive: (component)->
