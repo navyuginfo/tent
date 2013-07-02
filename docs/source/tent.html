@@ -110,6 +110,7 @@
         hideShowAlt: 'Hide/Show Columns',
         hideShowCaption: 'Columns',
         hideShowTitle: 'Hide/Show Columns',
+        horizontalScroll: 'Auto-Fit',
         &quot;export&quot;: {
           xml: 'XML',
           json: 'JSON',
@@ -183,7 +184,8 @@
           year: 'Year'
         },
         no_grouping: 'None',
-        revert: 'Revert to Original'
+        revert: 'Revert to Original',
+        totals: 'Totals:'
       },
       rename: {
         main: 'Rename'
@@ -1689,7 +1691,12 @@
   };
 
   Tent.Browsers.isIE = function() {
-    return this.getIEVersion() != null;
+    var res;
+    res = this.getIEVersion() != null;
+    this.isIE = function() {
+      return res;
+    };
+    return res;
   };
 
 }).call(this);
@@ -2666,7 +2673,7 @@
 
 
 <span id='Tent-SpanSupport'>/**
-</span> * @class Tent.SpanSupport
+</span> * @class Tent.SpanSupport  
  * Some docs here...
 */
 
@@ -2674,6 +2681,14 @@
 (function() {
 
   Tent.SpanSupport = Ember.Mixin.create({
+<span id='Tent-SpanSupport-property-span'>    /**
+</span>    * @property {Number} span The horizontal span which should be allocated to this widget
+    */
+
+<span id='Tent-SpanSupport-property-vspan'>    /**
+</span>    * @property {Number} vspan The vertical span which should be allocated to this widget
+    */
+
     estimateSpan: function() {
       var currentView, span;
       currentView = this;
@@ -2696,14 +2711,6 @@
         return 'vspan' + this.get('vspan');
       }
     }).property('vspan')
-<span id='Tent-SpanSupport-property-span'>    /**
-</span>    * @property {Number} span The horizontal span which should be allocated to this widget
-    */
-
-<span id='Tent-SpanSupport-property-vspan'>    /**
-</span>    * @property {Number} vspan The vertical span which should be allocated to this widget
-    */
-
   });
 
 }).call(this);
@@ -3280,9 +3287,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     didInsertElement: function() {
       return this._super();
     },
-    filterDidChange: (function() {
-      return console.log('filter changed');
-    }).observes('filter'),
     isRangeOperator: (function() {
       var currentFilterOperator;
       currentFilterOperator = this.get('filterOp');
@@ -4140,21 +4144,29 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       return this.set('colNames', []);
     },
     setupColumnVisibilityProperties: function() {
-      var column, hidden, name, _i, _len, _ref, _ref1;
+      var column, hidden, name, _ref, _results;
       if (this.get('collection.personalizable')) {
         _ref = this.get('columnInfo.hidden');
+        _results = [];
         for (name in _ref) {
           hidden = _ref[name];
-          _ref1 = this.get('columnModel');
-          for (_i = 0, _len = _ref1.length; _i &lt; _len; _i++) {
-            column = _ref1[_i];
-            if (column.name === name) {
-              column.hidden = hidden;
+          _results.push((function() {
+            var _i, _len, _ref1, _results1;
+            _ref1 = this.get('columnModel');
+            _results1 = [];
+            for (_i = 0, _len = _ref1.length; _i &lt; _len; _i++) {
+              column = _ref1[_i];
+              if (column.name === name) {
+                _results1.push(column.hidden = hidden);
+              } else {
+                _results1.push(void 0);
+              }
             }
-          }
+            return _results1;
+          }).call(this));
         }
+        return _results;
       }
-      return this.renderColumnChooser();
     },
     setupColumnWidthProperties: function() {
       var column, name, width, _ref, _results;
@@ -4182,17 +4194,31 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       }
     },
     setupColumnOrderingProperties: function() {
-      var column, permutation, position, _i, _j, _len, _len1, _ref, _ref1;
+      var column, k, lastkey, order, permutation, position, v, _i, _j, _len, _len1, _ref, _ref1;
       if (this.get('collection.personalizable')) {
         if (this.get('columnInfo')) {
           if ((this.get('columnInfo.order') != null) &amp;&amp; !$.isEmptyObject(this.get('columnInfo.order'))) {
             permutation = [0];
+            if (this.getColModel() &amp;&amp; this.getColModel().length &gt; 0 &amp;&amp; this.getColModel()[0].name !== 'cb') {
+              delete this.get('columnInfo.order')[0];
+              order = this.get('columnInfo.order');
+              lastkey = null;
+              for (k in order) {
+                v = order[k];
+                order[k - 1] = v - 1;
+                lastkey = k;
+              }
+              delete this.get('columnInfo.order')[lastkey];
+            }
             _ref = this.get('columnModel');
             for (position = _i = 0, _len = _ref.length; _i &lt; _len; position = ++_i) {
               column = _ref[position];
-              column = this.get('columnInfo.order')[position + 1];
+              if (this.getColModel()[0].name === 'cb') {
+                position = position + 1;
+              }
+              column = this.get('columnInfo.order')[position];
               if (column != null) {
-                permutation[column] = position + 1;
+                permutation[column] = position;
               }
             }
             if (permutation.length &gt; 1) {
@@ -4240,6 +4266,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       var col, field, match, oldOrder, position, _i, _len;
       if (this.get('columnInfo') != null) {
         oldOrder = this.get('columnInfo.oldOrder');
+        if (this.getColModel() &amp;&amp; this.getColModel().length &gt; 0 &amp;&amp; this.getColModel()[0].name !== 'cb') {
+          permutation.unshift(0);
+          permutation = permutation.map(function(item) {
+            return item + 1;
+          });
+          permutation[0] = 0;
+        }
         if (oldOrder != null) {
           for (position = _i = 0, _len = permutation.length; _i &lt; _len; position = ++_i) {
             col = permutation[position];
@@ -4276,7 +4309,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
             ]
           });
         } else {
-          return this.get('collection').goToPage(postdata.page);
+          if (!(this.get('collection.personalizationsRecord') &amp;&amp; !this.get('collection.personalizationsRecord.isLoaded'))) {
+            return this.get('collection').goToPage(postdata.page);
+          }
         }
       }
     },
@@ -4346,9 +4381,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
   Tent.Grid.SelectionSupport = Ember.Mixin.create({
     didSelectRow: function(itemId, status, e) {
       if (!this.get('multiSelect')) {
-        return this.selectItemSingleSelect(itemId);
+        this.selectItemSingleSelect(itemId);
       } else {
-        return this.selectItemMultiSelect(itemId, status);
+        this.selectItemMultiSelect(itemId, status);
+      }
+      if (this.get('afterSelectRow') != null) {
+        return this.get('afterSelectRow').call(this, itemId, status, e);
       }
     },
     selectItemSingleSelect: function(itemId) {
@@ -4356,7 +4394,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       return this.selectItem(itemId);
     },
 <span id='Tent-Grid-SelectionSupport-method-clearSelection'>    /**
-</span>    	* @method  clearSelection Removes all items from the selection array and resets the grid
+</span>    * @method  clearSelection Removes all items from the selection array and resets the grid
     */
 
     clearSelection: function() {
@@ -4399,21 +4437,24 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
               allPageItems.push(selectedItem);
             }
           }
-          return selection.pushObjects(allPageItems);
+          selection.pushObjects(allPageItems);
         } else {
           allPageItems = [];
           for (_j = 0, _len1 = rowIds.length; _j &lt; _len1; _j++) {
             id = rowIds[_j];
             allPageItems.push(this.getItemFromModel(id));
           }
-          return this.get('selection').removeObjects(allPageItems);
+          this.get('selection').removeObjects(allPageItems);
         }
       } else {
         if (status !== false) {
-          return this.selectAllItems();
+          this.selectAllItems();
         } else {
-          return this.clearSelection();
+          this.clearSelection();
         }
+      }
+      if (this.get('afterSelectAll') != null) {
+        return this.get('afterSelectAll').call(this, rowIds, status);
       }
     },
     selectAllItems: function() {
@@ -4472,7 +4513,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
             edittype: Tent.JqGrid.editTypes[column.formatter] || 'text',
             editoptions: column.editoptions || Tent.JqGrid.editOptions[column.formatter],
             editrules: column.editrules || Tent.JqGrid.editRules[column.formatter],
-            width: this.calculateColumnWidth(column),
+            width: column.width || 80,
             position: &quot;right&quot;,
             hidden: column.hidden != null ? column.hidden : false,
             hideable: column.hideable,
@@ -4480,21 +4521,30 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
             sortable: column.sortable,
             groupable: column.groupable,
             resizable: true,
-            title: Tent.I18n.loc(column.title)
+            title: Tent.I18n.loc(column.title),
+            t: Tent.I18n.loc(column.title)
           });
           columns.pushObject(item);
         }
       }
       return columns;
     }).property('columns'),
-    calculateColumnWidth: function(column) {
-      var _ref;
-      if (this.get('horizontalScrolling')) {
-        return this.get('fixedColumnWidth') || ((_ref = Tent.I18n.loc(column.title)) != null ? _ref.length : void 0) * 10 || 80;
-      } else {
-        return column.width || 80;
+    columnNames: (function() {
+      var column, columnNames, _i, _len, _ref;
+      columnNames = [];
+      _ref = this.get('columnModel');
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        column = _ref[_i];
+        columnNames.pushObject(column.name);
       }
-    },
+      return columnNames;
+    }).property('columnModel', 'columnModel.@each'),
+    fixedRows: (function() {
+      return this.get('collection.totals');
+    }).property('content', 'content.isLoaded'),
+    fixedRowsCount: (function() {
+      return this.get('fixedRows.length');
+    }).property('fixedRows'),
     gridData: (function() {
       var cell, column, grid, item, model, models, _i, _j, _k, _len, _len1, _len2, _ref;
       grid = [];
@@ -4521,7 +4571,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
               cell.push(model.get(column.name));
             }
             item.cell = cell;
-            grid.push(item);
+            if (model.get(&quot;presentationType&quot;) === &quot;summary&quot;) {
+              grid;
+
+            } else {
+              grid.push(item);
+            }
           }
         }
       }
@@ -4544,7 +4599,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         total: this.get('pagingInfo') != null ? this.get('pagingInfo.totalPages') : void 0,
         records: this.get('pagingInfo') != null ? this.get('pagingInfo.totalRows') : void 0,
         page: this.get('pagingInfo') != null ? this.get('pagingInfo').page : void 0,
-        remoteGrouping: this.isShowingValidGroups()
+        userdata: this.get('fixedRows'),
+        remoteGrouping: this.isShowingValidGroups(),
+        columns: this.get('columnModel')
       };
       this.resetGrouping();
       if (this.isShowingValidGroups()) {
@@ -4552,15 +4609,18 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         data.columnType = this.get('groupingInfo.columnType');
         data.groupType = this.get('groupingInfo.type');
         data.columnTitle = this.getColumnTitle(data.columnName);
+        data.showGroupTitle = this.get('showGroupTitle');
         grid = this.getTableDom()[0];
         this.updatePagingForGroups(grid, data);
-        return grid != null ? grid.addGroupingData(data) : void 0;
+        if (grid != null) {
+          grid.addGroupingData(data);
+        }
       } else {
         if ((_ref = this.getTableDom()[0]) != null) {
           _ref.addJSONData(data);
         }
-        return this.updateGrid();
       }
+      return this.updateGrid();
     }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
   });
 
@@ -4584,132 +4644,110 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 
     showExportButton: true,
     addNavigationBar: function() {
-      var tableDom;
-      this._super();
-      tableDom = this.getTableDom();
-      return this.renderExportButton(tableDom);
+      return this._super();
     },
-    renderExportButton: function(tableDom) {
-      var button, csvUrl, jsonUrl, jsonUrlPart, params, xlsUrl,
+    getVisibleColumns: function(custom) {
+      var visibleColumns,
         _this = this;
-      if (this.get('showExportButton')) {
-        params = {
-          del: &quot;,&quot;,
-          headers: true,
-          quotes: true,
-          date: this.generateExportDate()
-        };
-        jsonUrl = this.get('collection') != null ? this.get('collection').getURL('json', params) : &quot;&quot;;
-        csvUrl = this.get('collection') != null ? this.get('collection').getURL('csv', params) : &quot;&quot;;
-        xlsUrl = this.get('collection') != null ? this.get('collection').getURL('xls', params) : &quot;&quot;;
-        jsonUrlPart = jsonUrl != null ? jsonUrl.split('/').pop().split('?')[0] : void 0;
-        button = &quot;&lt;div class=\&quot;btn-group export jqgrid-title-button\&quot;&gt;\n  &lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n    &lt;i class=\&quot;icon-share\&quot;&gt;&lt;/i&gt;Export\n  &lt;/a&gt;\n  &lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n    &lt;li&gt;&lt;a href=\&quot;&quot; + jsonUrl + &quot;\&quot; class=\&quot;export-json\&quot; download=\&quot;&quot; + jsonUrlPart + &quot;\&quot;&gt;\n      &quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.json&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n    &lt;!-- &lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.xml&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt; --&gt;\n    &lt;li&gt;&lt;a href=\&quot;&quot; + csvUrl + &quot;\&quot; class=\&quot;export-csv\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.csv&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n    &lt;li&gt;&lt;a href=\&quot;&quot; + xlsUrl + &quot;\&quot; class=\&quot;export-xls\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.xls&quot;)) + &quot;&lt;/a&gt;&lt;/li&gt;\n    &lt;li class=\&quot;divider\&quot;&gt;&lt;/li&gt;\n    &lt;li class=\&quot;dropdown-submenu-left\&quot;&gt;\n      &lt;a href=\&quot;#\&quot;&gt;Delimiter&lt;/a&gt;\n      &lt;ul class=\&quot;dropdown-menu custom-export\&quot;&gt;\n        &lt;li&gt;\n          &lt;form class=\&quot;form-horizontal well\&quot; id=\&quot;customExportForm\&quot;&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;label class=\&quot;control-label\&quot;&gt;Delimiter&lt;/label&gt;\n              &lt;div class=\&quot;controls\&quot;&gt;\n                  &lt;select name=\&quot;delimiter\&quot; class=\&quot;input-small\&quot; id=\&quot;delimiter\&quot;&gt;\n                  &lt;option value=\&quot;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.pleaseSelect&quot;)) + &quot;&lt;/option&gt;\n                  &lt;option value=\&quot;,\&quot; selected&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.comma&quot;)) + &quot;&lt;/option&gt;\n                  &lt;option value=\&quot;|\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.pipe&quot;)) + &quot;&lt;/option&gt;\n                  &lt;option value=\&quot;;\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.semicolon&quot;)) + &quot;&lt;/option&gt;\n                  &lt;option value=\&quot;:\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.colon&quot;)) + &quot;&lt;/option&gt;\n                &lt;/select&gt;\n              &lt;/div&gt;\n            &lt;/div&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export._or&quot;)) + &quot;&lt;/label&gt;\n            &lt;/div&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.enterDelimiter&quot;)) + &quot;&lt;/label&gt;\n              &lt;div class=\&quot;controls\&quot;&gt;\n                &lt;input type=\&quot;text\&quot; name=\&quot;customDelimiter\&quot; id=\&quot;customDelimiter\&quot;  maxlength=\&quot;1\&quot; class=\&quot;input-small\&quot;&gt;\n              &lt;/div&gt;\n            &lt;/div&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.headers&quot;)) + &quot;&lt;/label&gt;\n              &lt;div class=\&quot;controls\&quot;&gt;\n                &lt;label class=\&quot;radio inline\&quot;&gt;\n                  &lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;true\&quot; checked&gt;&quot; + (Tent.I18n.loc(&quot;tent.on&quot;)) + &quot;\n                &lt;/label&gt;\n                &lt;label class=\&quot;radio inline\&quot;&gt;\n                  &lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;false\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.off&quot;)) + &quot;\n                &lt;/label&gt;\n              &lt;/div&gt;\n            &lt;/div&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;label class=\&quot;control-label\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.inclQuotes&quot;)) + &quot;&lt;/label&gt;\n              &lt;div class=\&quot;controls\&quot;&gt;\n                &lt;label class=\&quot;radio inline\&quot;&gt;\n                  &lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;true\&quot; checked&gt;&quot; + (Tent.I18n.loc(&quot;tent.on&quot;)) + &quot;\n                &lt;/label&gt;\n                &lt;label class=\&quot;radio inline\&quot;&gt;\n                  &lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;false\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.off&quot;)) + &quot;\n                &lt;/label&gt;\n              &lt;/div&gt;\n            &lt;/div&gt;\n            &lt;div class=\&quot;control-group\&quot;&gt;\n              &lt;div class=\&quot;controls\&quot;&gt;\n                &lt;button type=\&quot;button\&quot; class=\&quot;btn\&quot;&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.export.export&quot;)) + &quot;&lt;/button&gt;\n              &lt;/div&gt;\n            &lt;/div&gt;\n\n          &lt;/form&gt;\n        &lt;/li&gt;\n      &lt;/ul&gt;\n    &lt;/li&gt;\n  &lt;/ul&gt;\n&lt;/div&gt;&quot;;
-        this.$(&quot;.grid-header .header-buttons&quot;).append(button);
-        if (jsonUrl == null) {
-          this.$('a.export-json').click(function() {
-            var ret;
-            ret = '{ &quot;exportDate&quot;: &quot;' + _this.generateExportDate() + '&quot;,\n' + $.fn.xmlJsonClass.toJson(tableDom.getRowData(), &quot;data&quot;, &quot;    &quot;, true) + '}';
-            return _this.clientDownload(ret);
-          });
+      if (custom == null) {
+        custom = false;
+      }
+      visibleColumns = this.getColModel().filter(function(column) {
+        return (column.name !== 'cb') &amp;&amp; (!column.hidden);
+      });
+      return visibleColumns.map(function(column) {
+        var userDefinedTitles;
+        if (custom) {
+          userDefinedTitles = _this.get('columnInfo.titles');
+          return userDefinedTitles[column.index] || column.t;
+        } else {
+          return column.name.underscore();
         }
-        this.$('a.export-xml').click(function() {
-          var ret;
-          ret = &quot;&lt;root&gt;    &lt;exportDate&gt;&quot; + _this.generateExportDate() + &quot;&lt;/exportDate&gt;    &quot; + $.fn.xmlJsonClass.json2xml(tableDom.getRowData(), &quot;    &quot;) + &quot;&lt;/root&gt;&quot;;
-          return _this.clientDownload(ret);
-        });
-        if (csvUrl == null) {
-          this.$('a.export-csv').click(function() {
-            var ret;
-            ret = 'exportDate \n' + _this.generateExportDate() + '\n' + _this.exportCSV(tableDom.getRowData(), _this.getColModel());
-            return _this.clientDownload(ret);
-          });
-        }
-        this.$('#customExportForm').click(function(e) {
-          return e.stopPropagation();
-        });
-        this.$('#customExportForm').find('button').click(function() {
-          var arry, columnHeaders, customParams, delimiter, extension, includeQuotes;
-          arry = $('#customExportForm').serializeArray();
-          extension = 'csv';
-          delimiter = ',';
-          columnHeaders = true;
-          includeQuotes = true;
-          $.each(arry, function(i, fd) {
-            if (fd.name === 'delimiter' &amp;&amp; fd.value !== ',') {
-              extension = 'txt';
-              delimiter = fd.value;
-            }
-            if (fd.name === 'customDelimiter') {
-              if (fd.value.length &gt; 0) {
-                delimiter = fd.value;
-              }
-            }
-            if (fd.name === 'columnHeaders') {
-              columnHeaders = fd.value;
-            }
-            if (fd.name === 'includeQuotes') {
-              return includeQuotes = fd.value;
-            }
-          });
-          customParams = {
-            del: delimiter,
-            headers: columnHeaders,
-            quotes: includeQuotes,
-            date: _this.generateExportDate()
-          };
-          return document.location.href = _this.get('collection').getURL(extension, customParams);
-        });
-        this.$('#delimiter').change(function() {
-          if ($('#delimiter').val().length &gt; 0) {
-            return $('#customDelimiter').val('');
-          } else {
-            if ($('#customDelimiter').val().length === 0) {
-              return $('#delimiter').val(',');
-            }
-          }
-        });
-        return this.$('#customDelimiter').blur(function() {
-          if ($('#customDelimiter').val().length &gt; 0) {
-            return $('#delimiter').val('');
-          } else {
-            return $('#delimiter').val(',');
-          }
-        });
+      });
+    },
+    getExportUrl: function(contentType) {
+      var collection, customHeaderString, params, visibleColumnString;
+      visibleColumnString = this.getVisibleColumns().join(',');
+      customHeaderString = this.getVisibleColumns(true).join(',');
+      params = {
+        del: &quot;,&quot;,
+        headers: true,
+        quotes: true,
+        date: this.generateExportDate(),
+        columns: visibleColumnString,
+        custom_headers: customHeaderString
+      };
+      if ((collection = this.get('collection')) != null) {
+        return collection.getURL(contentType, params);
       }
     },
-    clientDownload: function(file) {
-      var popup;
+    clientDownload: function(file, type) {
+      var data, link, popup;
       if (navigator.appName !== 'Microsoft Internet Explorer') {
-        return window.open('data:text/csv;charset=utf-8,' + escape(file));
+        data = 'data:text/csv;charset=utf-8,' + escape(file);
+        link = document.createElement('a');
+        link.setAttribute('href', data);
+        link.setAttribute('download', 'data.' + type);
+        return link.click();
       } else {
         popup = window.open('', 'csv', '');
         return popup.document.body.innerHTML = '&lt;pre&gt;' + file + '&lt;/pre&gt;';
       }
     },
-    exportCSV: function(data, keys) {
-      var arr, key, obj, orderedData, str, value, _i, _j, _len, _len1;
+    exportCSV: function(data, customParams) {
+      var arr, del, key, n, obj, orderedData, str, value, _i, _len;
       orderedData = [];
       for (_i = 0, _len = data.length; _i &lt; _len; _i++) {
         obj = data[_i];
         arr = [];
+        str = customParams.headers &amp;&amp; customParams.quotes ? &quot;\'&quot; : &quot;&quot;;
+        del = customParams.quotes ? &quot;\'&quot; + customParams.del + &quot;\'&quot; : customParams.del;
         for (key in obj) {
           value = obj[key];
           arr.push(value);
+          if (customParams.headers) {
+            str += key + del;
+          }
         }
         orderedData.push(arr);
       }
-      if (this.get('multiSelect')) {
-        keys = keys.slice(1);
+      if (customParams.headers) {
+        n = customParams.quotes ? -2 : -1;
+        str = str.slice(0, n) + &quot;\r\n&quot;;
       }
-      str = &quot;&quot;;
-      for (_j = 0, _len1 = keys.length; _j &lt; _len1; _j++) {
-        obj = keys[_j];
-        str += obj.name + ',';
-      }
-      return str = str.slice(0, -1) + '\r\n' + orderedData.join('\r\n');
+      orderedData.forEach(function(row) {
+        if (customParams.quotes) {
+          str += &quot;\'&quot;;
+        }
+        str += row.join(del);
+        return str += customParams.quotes ? &quot;\' \r\n&quot; : &quot;\r\n&quot;;
+      });
+      return str;
     },
     generateExportDate: function() {
       return Tent.Formatting.date.format(new Date(), &quot;dd-M-yy hh-mm tz&quot;);
+    },
+    getPersonalizedData: function(data, customParams) {
+      var columns, customHeaders, index, obj, personalizedData, personalizedObject, precision, value, _i, _j, _len, _ref;
+      precision = 2;
+      if (data[0]['currency']) {
+        precision = Tent.CURRENCIES_ISO_4217[data[0]['currency']].cent;
+      }
+      personalizedData = [];
+      columns = customParams.columns.split(',');
+      customHeaders = customParams.custom_headers.split(',');
+      for (_i = 0, _len = data.length; _i &lt; _len; _i++) {
+        obj = data[_i];
+        personalizedObject = {};
+        for (index = _j = 0, _ref = columns.length - 1; 0 &lt;= _ref ? _j &lt;= _ref : _j &gt;= _ref; index = 0 &lt;= _ref ? ++_j : --_j) {
+          if (typeof (value = obj[Ember.String.camelize(columns[index])]) === &quot;number&quot;) {
+            value = value.toFixed(precision);
+          }
+          personalizedObject[customHeaders[index]] = value;
+        }
+        personalizedData.pushObject(personalizedObject);
+      }
+      return personalizedData;
     }
   });
 
@@ -4909,6 +4947,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 
   Tent.Grid.GroupingSupport = Ember.Mixin.create({
     remoteGrouping: false,
+<span id='Tent-Grid-GroupingSupport-property-showGroupTitle'>    /**
+</span>     * @property {Boolean} showGroupTitle Show the title of the group in each grouping row along with the group data.
+    */
+
+    showGroupTitle: true,
     showingGroups: false,
     newGroupSelected: function(groupType, columnName) {
       if (this.remoteGrouping) {
@@ -4978,7 +5021,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       return this.get('collection').goToPage(1);
     },
     showGroupHeader: function(id) {
-      var columnName, columnTitle, columnType, comparator, content, groupType, headerRow, item, selectedGroup, startValue, widget, _i, _len, _ref;
+      var aggregateColumns, columnName, columnTitle, columnType, comparator, content, groupType, headerRow, item, selectedGroup, startValue, widget, _i, _len, _ref;
       widget = this;
       columnName = this.get('groupingInfo.columnName');
       columnType = this.get('groupingInfo.columnType');
@@ -4992,7 +5035,10 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         }
       }
       if (selectedGroup != null) {
-        content = &quot;&lt;span class='title'&gt;&quot; + this.getColumnTitle(columnName) + &quot;&lt;/span&gt;&lt;span class='range'&gt;&quot;;
+        if (this.get('showGroupTitle')) {
+          content = &quot;&lt;span class='title'&gt;&quot; + this.getColumnTitle(columnName) + &quot;&lt;/span&gt;&quot;;
+        }
+        content = content + &quot;&lt;span class='range'&gt;&quot;;
         comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
         startValue = selectedGroup[columnName.decamelize()];
         if (startValue != null) {
@@ -5000,12 +5046,30 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         }
         content = content + &quot;&lt;/span&gt;&quot;;
       }
-      headerRow = $('&lt;tr class=&quot;group-header&quot;&gt;&lt;td colspan=&quot;' + this.getColSpan() + '&quot;&gt;&lt;i class=&quot;icon-caret-left&quot;&gt;&lt;/i&gt;' + content + '&lt;/td&gt;&lt;/tr&gt;');
+      aggregateColumns = this.addAggregateData(this.get('columnModel'), selectedGroup);
+      headerRow = $('&lt;tr class=&quot;group-header&quot;&gt;&lt;td&gt;&lt;i class=&quot;icon-caret-left&quot;&gt;&lt;/i&gt;' + content + '&lt;/td&gt;' + aggregateColumns + '&lt;/tr&gt;');
       this.$('.ui-jqgrid-hbox .ui-jqgrid-htable').append(headerRow);
       headerRow.click(function() {
         return widget.returnToGroupList();
       });
       return this.columnsDidChange();
+    },
+    addAggregateData: function(columns, row) {
+      var aggregateColumns, hasAggregates;
+      hasAggregates = false;
+      aggregateColumns = '';
+      columns.forEach((function(col, i) {
+        var aggregate;
+        if (i === 0) {
+          return;
+        }
+        aggregate = row.get(col.name + &quot;_sum&quot;);
+        if (aggregate === void 0) {
+          aggregate = &quot;&quot;;
+        }
+        return aggregateColumns += &quot;&lt;td&gt;&quot; + aggregate + &quot;&lt;/td&gt;&quot;;
+      }));
+      return aggregateColumns;
     },
     hideGroupHeader: function() {
       var headerRow;
@@ -5060,50 +5124,20 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 
     showColumnChooser: true,
     addNavigationBar: function() {
-      this._super();
-      if (this.get('showColumnChooser')) {
-        return this.renderColumnChooser();
-      }
+      return this._super();
     },
-    renderColumnChooser: (function() {
-      var button, columns, context, tableDom, template, widget;
-      if (this.$() != null) {
-        tableDom = this.getTableDom();
-        widget = this;
-        button = &quot;&lt;div class=\&quot;btn-group column-chooser\&quot;&gt;\n	&lt;a class=\&quot;open-dropdown\&quot; href=\&quot;#\&quot;&gt;\n		&lt;i class=\&quot;icon-columns\&quot;&gt;&lt;/i&gt;&quot; + (Tent.I18n.loc(&quot;tent.jqGrid.hideShowCaption&quot;)) + &quot;\n	&lt;/a&gt;\n	&lt;div class=\&quot;dropdown-menu columns pull-right\&quot;&gt;\n		&lt;div class=\&quot;window\&quot;&gt;&lt;/div&gt;\n		&lt;ul&gt;\n			{{#each columns}}\n				&lt;li&gt;&lt;label&gt;&lt;input type=\&quot;checkbox\&quot; data-column=\&quot;{{name}}\&quot; {{#unless hidden}}checked=\&quot;checked\&quot;{{/unless}}/&gt;&lt;span class=\&quot;title\&quot;&gt;{{t}}&lt;/span&gt;&lt;/label&gt;&lt;/li&gt;\n			{{/each}}\n		&lt;/ul&gt;\n	&lt;/div&gt;\n&lt;/div&gt;&quot;;
-        template = Handlebars.compile(button);
-        columns = this.get('columnModel').map(function(item) {
-          item.t = Tent.I18n.loc(item.title);
-          return item;
-        });
-        columns = columns.filter(function(item) {
-          return item.hideable !== false;
-        });
-        context = {
-          columns: columns
-        };
-        this.$(&quot;.grid-header .column-chooser&quot;).remove();
-        this.$(&quot;.grid-header .header-buttons&quot;).append(template(context));
-        this.bindToggleVisibility(this.$(&quot;.column-chooser .open-dropdown&quot;), this.$(&quot;.column-chooser .dropdown-menu&quot;));
-        return this.$('.column-chooser input').click(function(e) {
-          var column;
-          column = $(this).attr('data-column');
-          if ($(this).is(':checked')) {
-            widget.showCol(column);
-          } else {
-            widget.hideCol(column);
-          }
-          widget.columnsDidChange();
-          widget.storeColumnDataToCollection();
-          return widget.resizeToContainer();
-        });
-      }
-    }).observes('columnModel', 'columnModel.@each'),
     showCol: function(column) {
-      return this.getTableDom().jqGrid(&quot;showCol&quot;, column);
+      this.getTableDom().jqGrid(&quot;showCol&quot;, column);
+      return this.refreshGrid();
     },
     hideCol: function(column) {
-      return this.getTableDom().jqGrid(&quot;hideCol&quot;, column);
+      this.getTableDom().jqGrid(&quot;hideCol&quot;, column);
+      return this.refreshGrid();
+    },
+    refreshGrid: function() {
+      this.columnsDidChange();
+      this.storeColumnDataToCollection();
+      return this.resizeToContainer();
     }
   });
 
@@ -5309,71 +5343,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 
 
 
-<span id='Tent-Grid-ColumnChooserSupport-property-'>/**
-</span>* @mixin Tent.ToggleVisibility 
-* Mixes in the ability to show/hide a subcomponent by calling {@link #toggleVisibility}.
-* The subcomponent will also be hidden by clicking outside of its area, or pressing the 'escape'
-*/
-
-
-(function() {
-
-  Tent.ToggleVisibility = Ember.Mixin.create({
-<span id='Tent-Grid-ColumnChooserSupport-method-bindToggleVisibility'>    /**
-</span>    	* @method bindToggleVisibility Attach an event handle to an element to allow it to toggle the visibility of another element.
-    	* @param {Object} source The source jQuery object which triggers the toggle
-    	* @param {Object} dest The jQuery object to show and hide
-    */
-
-    bindToggleVisibility: function(source, dest) {
-      var widget;
-      widget = this;
-      return source.click(function(e) {
-        return widget.toggleVisibility(dest, source);
-      });
-    },
-    toggleVisibility: function(component, source) {
-      if (component.css('display') === 'none') {
-        return this.showComponent(component, source);
-      } else {
-        return this.hideComponent(component);
-      }
-    },
-<span id='Tent-Grid-ColumnChooserSupport-method-hideComponent'>    /**
-</span>    	* @method hideComponent Hides a toggleable component
-    	* @param {Object} component The jQuery object to hide
-    */
-
-    hideComponent: function(component) {
-      component.css('display', 'none');
-      $('body').get(0).removeEventListener('click', this.get('hideHandler'), true);
-      return $('body').get(0).removeEventListener('keyup', this.get('hideHandler'), true);
-    },
-<span id='Tent-Grid-ColumnChooserSupport-method-showComponent'>    /**
-</span>    	* @method showComponent Shows a toggleable component
-    	* @param {Object} component The jQuery object to show
-    */
-
-    showComponent: function(component, source) {
-      component.css('display', 'block');
-      this.set('hideHandler', this.get('generateHideHandler')(this, component, source));
-      $('body').get(0).addEventListener('click', this.get('hideHandler'), true);
-      return $('body').get(0).addEventListener('keyup', this.get('hideHandler'), true);
-    },
-    generateHideHandler: function(widget, component, source) {
-      return function(e) {
-        if (e.keyCode === 27 || (($(e.target).closest(component).length === 0) &amp;&amp; (e.target !== source.get(0)))) {
-          widget.hideComponent(component);
-          e.stopPropagation();
-        }
-      };
-    }
-  });
-
-}).call(this);
-
-
-
 <span id='Tent-Grid-Maximize'>/**
 </span>* @class Tent.Grid.Maximize
 * Adds maximize/restore support to a grid
@@ -5520,6 +5489,144 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 
 
 (function() {
+
+  Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create({
+<span id='Tent-Grid-Maximize-property-horizontalScrolling'>    /**
+</span>    	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
+    	* This property defines whether the grid content will be forced to fit within the area assiged to the grid (false), 
+    	* or whether the columns will disregard the grid width. The actual column widths will be the greater of the column 
+    	* title width and the column content
+    */
+
+    horizontalScrolling: false,
+    isHorizontalScrolling: false,
+    gridDidRender: function() {
+      return this.modifyGridForAutofit();
+    },
+    toggleActive: function(component) {
+      component = component || this.$('.horizontal-scroll-button');
+      if (this.get('horizontalScrolling')) {
+        return component.removeClass('active');
+      } else {
+        return component.addClass('active');
+      }
+    },
+    horizontalScrollingDidChange: (function() {
+      return this.modifyGridForAutofit();
+    }).observes('horizontalScrolling'),
+    modifyGridForAutofit: function() {
+      if (this.get('horizontalScrolling')) {
+        if (!this.get('isHorizontalScrolling')) {
+          return this.addHorizontalScroll();
+        }
+      } else {
+        if (this.get('isHorizontalScrolling')) {
+          return this.removeHorizontalScroll();
+        }
+      }
+    },
+    addHorizontalScroll: function() {
+      this.set('isHorizontalScrolling', true);
+      this.getTableDom().get(0).p.forceFit = false;
+      this.getTableDom().get(0).p.shrinkToFit = false;
+      this.moveHeaderAboveViewDiv();
+      this.updateGrid();
+      return this.adjustHeight();
+    },
+    removeHorizontalScroll: function() {
+      this.set('isHorizontalScrolling', false);
+      this.getTableDom().get(0).p.forceFit = true;
+      this.getTableDom().get(0).p.shrinkToFit = true;
+      this.revertHeaderIntoViewDiv();
+      this.updateGrid();
+      return this.adjustHeight();
+    },
+    moveHeaderAboveViewDiv: function() {
+      var hdiv, view;
+      hdiv = $('.ui-jqgrid-hdiv', this.$());
+      view = $('.ui-jqgrid-view', this.$());
+      hdiv.detach();
+      view.before(hdiv);
+      return view.scroll(function(event) {
+        return hdiv.css(&quot;margin-left&quot;, &quot;-&quot; + view.scrollLeft() + 'px');
+      });
+    },
+    revertHeaderIntoViewDiv: function() {
+      var bdiv, hdiv, view;
+      hdiv = $('.ui-jqgrid-hdiv', this.$());
+      view = $('.ui-jqgrid-view', this.$());
+      bdiv = $('.ui-jqgrid-bdiv', this.$());
+      hdiv.detach();
+      bdiv.before(hdiv);
+      hdiv.css(&quot;margin-left&quot;, &quot;0px&quot;);
+      return view.unbind('scroll');
+    },
+    setHeaderWidths: function() {
+      var firstRowOfGrid, jqGridCols,
+        _this = this;
+      if (this.get('horizontalScrolling')) {
+        firstRowOfGrid = this.$('.jqgfirstrow td');
+        jqGridCols = this.getTableDom()[0].p.colModel;
+        this.$('.ui-jqgrid-htable th').each(function(index, col) {
+          var finalWidth;
+          finalWidth = _this.calculateColumnWidth(index, col, firstRowOfGrid);
+          _this.changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols);
+          return _this.changeFooterWidth(index, finalWidth);
+        });
+        if (this.get('footerRow')) {
+          return this.getTableDom()[0].grid.sDiv.style.width = &quot;auto&quot;;
+        }
+      }
+    },
+    calculateColumnWidth: function(index, col, firstRowOfGrid) {
+      var widthBasedOnContent, widthBasedOnHeader;
+      widthBasedOnHeader = this.calculateHeaderColumnWidth(index, col);
+      widthBasedOnContent = this.calculateWidthBasedOnContent(index, firstRowOfGrid);
+      if (widthBasedOnContent &gt; widthBasedOnHeader) {
+        return widthBasedOnContent;
+      } else {
+        return widthBasedOnHeader;
+      }
+    },
+    changeColumnWidth: function(index, col, finalWidth, firstRowOfGrid, jqGridCols) {
+      firstRowOfGrid.eq(index).css('width', finalWidth).css('min-width', finalWidth);
+      $(col).css('width', finalWidth);
+      return jqGridCols[index].width = finalWidth;
+    },
+    calculateHeaderColumnWidth: function(index, col) {
+      var column;
+      if (this.get('multiSelect') &amp;&amp; index === 0) {
+        return $(col).width();
+      } else {
+        column = this.get('columnModel')[index - (this.get('multiSelect') ? 1 : 0)];
+        if (column != null) {
+          return column.title.length * 10;
+        } else {
+          return 80;
+        }
+      }
+    },
+    calculateWidthBasedOnContent: function(index, firstRowOfGrid) {
+      var widthBasedOnContent;
+      if (this.get('groupingInfo.columnName') != null) {
+        return widthBasedOnContent = firstRowOfGrid.eq(index).width();
+      } else {
+        return widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth();
+      }
+    },
+    changeFooterWidth: function(index, finalWidth) {
+      var footers;
+      if (this.get('footerRow')) {
+        footers = this.getTableDom()[0].grid.footers;
+        return footers[index].style.width = finalWidth + 'px';
+      }
+    }
+  });
+
+}).call(this);
+
+
+(function() {
 <span id='Tent-JqGrid'>/**
 </span>  * @class Tent.JqGrid
   * @mixins Tent.ValidationSupport
@@ -5533,6 +5640,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
   * @mixins Tent.Grid.ColumnChooserSupport
   * @mixins Tent.Grid.ColumnMenu
   * @mixins Tent.Grid.Maximize
+  * @mixins Tent.Grid.HorizontalScrollSupport
   * 
   *
   * Create a jqGrid view which displays the data provided by its content property
@@ -5554,7 +5662,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
   */
 
 
-  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.ToggleVisibility, {
+  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, {
     templateName: 'jqgrid',
     classNames: ['tent-jqgrid'],
     classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling'],
@@ -5593,22 +5701,17 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
     */
 
     clearAction: null,
-<span id='Tent-JqGrid-property-horizontalScrolling'>    /**
-</span>    	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
-    	* This property defines whether the grid content will be forced to fit within the area assiged to the grid (false), 
-    	* or whether the columns will disregard the grid width. The actual column widths will depend on the value provided for {@link #fixedColumnWidth}
-    */
-
-    horizontalScrolling: false,
-<span id='Tent-JqGrid-property-fixedColumnWidth'>    /**
-</span>    	* @property {Number} fixedColumnWidth Specify a single width to give to all columns	
-    	* If {@link #horizontalScrolling} is set to true, then if this property is specified, 
-    	* all of the columns will be given the specified width. If {@link #horizontalScrolling} is set to false, 
-    	* this property is ignored, and the column widths will be estimated from the column title widths.
-    */
-
-    fixedColumnWidth: null,
     fullScreen: false,
+<span id='Tent-JqGrid-property-footerRow'>    /**
+</span>    	 * @property {Boolean} footerRow Displays a row at the foot of the table for summary information
+    */
+
+    footerRow: false,
+<span id='Tent-JqGrid-property-fixedRowsCount'>    /**
+</span>    	 * @property {Integer} fixedRowsCount Displays rows count at the foot of the table for summary information
+    */
+
+    fixedRowsCount: 1,
 <span id='Tent-JqGrid-property-content'>    /**
 </span>    	* @property {Array} content The array of items to display in the grid.
     	* By default this will be retrieved from the collection, if provided
@@ -5666,7 +5769,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       this.gridDataDidChange();
       this.addNavigationBar();
       this.setupColumnGroupingProperties();
-      return this.setupColumnOrderingProperties();
+      this.setupColumnOrderingProperties();
+      return this.gridDidRender();
     },
     applyStoredPropertiesToGrid: function() {
       if (this.get('collection.personalizable')) {
@@ -5678,7 +5782,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         this.getTableDom().GridUnload();
         this.buildGrid();
         this.setupColumnGroupingProperties();
-        return this.setupColumnOrderingProperties();
+        this.setupColumnOrderingProperties();
+        return this.gridDidRender();
       }
     },
     willDestroyElement: function() {
@@ -5743,6 +5848,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         pager: this.get('paged') ? this.getPagerId() : void 0,
         toolbar: [false, &quot;top&quot;],
         grouping: this.get('grouping'),
+        footerrow: this.get('footerRow'),
+        userDataOnFooter: true,
         onSelectRow: function(itemId, status, e) {
           return widget.didSelectRow(itemId, status, e);
         },
@@ -5758,6 +5865,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       this.addColumnDropdowns();
       this.resizeToContainer();
       this.columnsDidChange();
+      if (this.get('footerRow')) {
+        $('tr.footrow').addClass('tent-jqgrid-footrow');
+      }
       return this.getTableDom().bind('jqGridRemapColumns', function(e, permutation, updateCells, keepHeader) {
         if (keepHeader) {
           return _this.storeColumnOrderingToCollection(permutation);
@@ -5772,12 +5882,24 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       */
       return this.getTableDom()[0].p.viewrecords = false;
     },
-    getItemFromModel: function(id, contentArray) {
-      var intValue;
-      intValue = parseInt(id);
-      return this.get('content').find(function(item) {
-        return item.get('id') === intValue;
-      });
+    getItemFromModel: function(id, colName) {
+      var model, row, value, _i, _len, _ref;
+      if (colName != null) {
+        row = this.get('content').toArray().find(function(item) {
+          if (Number(id) === Number(item.get('id'))) {
+            return item;
+          }
+        });
+        id = row.get(colName);
+      }
+      _ref = this.get('content').toArray();
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        model = _ref[_i];
+        value = colName != null ? model.get(colName) : model.get('id');
+        if ((&quot;&quot; + value) === (&quot;&quot; + id)) {
+          return model;
+        }
+      }
     },
     markErrorCell: function(rowId, iCell) {
       return this.getCell(rowId, iCell).addClass('error');
@@ -5793,7 +5915,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
     	* which displays cell content as a link
     */
 
-    sendAction: function(action, element, rowId) {
+    sendAction: function(action, element, rowId, colName) {
       var view;
       view = this;
       while (!view.get('controller') &amp;&amp; (view.get('parentView') != null)) {
@@ -5801,7 +5923,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       }
       if (view.get('controller') != null) {
         if (this.get('parentView.controller.namespace.router') != null) {
-          return view.get('controller.namespace.router').send(action, this.getItemFromModel(rowId));
+          return view.get('controller.namespace.router').send(action, this.getItemFromModel(rowId, colName));
         }
       }
     },
@@ -5815,27 +5937,48 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
     addNavigationBar: function() {
       return this._super();
     },
+    gridDidRender: function() {
+      return this._super();
+    },
     columnsDidChange: function(colChangedIndex) {
       this._super();
       this.adjustHeight();
-      return this.removeLastDragBar();
+      this.removeLastDragBar();
+      return this.setHeaderWidths();
     },
     adjustHeight: function() {
-      var top;
+      var bottom, top;
       if (this.get('fixedHeader')) {
         top = this.$('.ui-jqgrid-htable').height();
-        this.$('.ui-jqgrid-bdiv').css('top', top);
+        bottom = (this.$('.ui-jqgrid-sdiv').height() + this.heightForPager()) || 0;
+        if (this.get('horizontalScrolling')) {
+          this.$('.ui-jqgrid-bdiv').css('top', 0);
+        } else {
+          this.$('.ui-jqgrid-bdiv').css('top', top);
+        }
+        this.$('.ui-jqgrid-view').css('bottom', bottom);
         if (Tent.Browsers.isIE()) {
           this.$('.ui-jqgrid-bdiv').css('height', 'auto');
         }
-        if (!Tent.Browsers.isIE()) {
-          return this.$('.ui-jqgrid-view').css('height', '100%');
+        if (!this.get('paged')) {
+          if (this.get('horizontalScrolling')) {
+            this.$('.ui-jqgrid-view').css('height', 'auto');
+          } else {
+            if (!Tent.Browsers.isIE()) {
+              this.$('.ui-jqgrid-view').css('height', '100%');
+            }
+          }
         }
       } else {
         if (Tent.Browsers.isIE()) {
-          return this.$('.ui-jqgrid-bdiv').css('height', 'auto');
+          this.$('.ui-jqgrid-bdiv').css('height', 'auto');
         }
       }
+      return $.publish('/grid/height-changed');
+    },
+    heightForPager: function() {
+      var _ref;
+      return (_ref = this.$('.ui-jqgrid-pager')) != null ? _ref.height() : void 0;
     },
     removeLastDragBar: function() {
       this.$('.ui-th-column .ui-jqgrid-resize').show();
@@ -5847,12 +5990,18 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
       }).last();
     },
     resizeToContainer: function() {
+      var bdiv, widthWithoutScrollbar;
       if (this.$() != null) {
+        bdiv = this.$('.ui-jqgrid-bdiv');
         if (this.get('horizontalScrolling')) {
-          this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv, .ui-jqgrid-bdiv').css('width', '100%');
-          return this.$('.ui-jqgrid-bdiv &gt; div').css('position', 'static');
+          this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width', '100%');
+          bdiv.css('width', 'auto');
+          this.$('.ui-jqgrid-bdiv &gt; div').css('position', 'static');
+          return this.$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth);
         } else {
-          return this.getTableDom().setGridWidth(this.$().width(), true);
+          this.getTableDom().setGridWidth(this.$().innerWidth(), true);
+          widthWithoutScrollbar = bdiv.get(0).clientWidth;
+          return this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
         }
       }
     },
@@ -5915,6 +6064,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
         this.unHighlightAllRows();
         this.highlightRows();
         this.showEditableCells();
+        this.setHeaderWidths();
+        this.resizeToContainer();
       }
       if (doValidation) {
         this.validate();
@@ -6019,12 +6170,119 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile(&quot;{{#if view.content.isLo
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;btn-group header-buttons\&quot;&gt;&lt;/div&gt;\n\n{{#if view.parentView.collection}}\n\t{{#if view.parentView.filtering}}\n\t\t{{view Tent.CollectionFilter collectionBinding=\&quot;view.parentView.collection\&quot;}}\n\t{{/if}}\n{{/if}}\t&quot;);
+Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;btn-group header-buttons\&quot;&gt;\n\t{{view Tent.Grid.AutofitButton gridBinding=\&quot;view.parentView\&quot;}}\n\n  \t{{#if view.parentView.showExportButton}}\n    \t{{view view.exportView}}\n  \t{{/if}}\n\n  \t{{#if view.parentView.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\&quot;view.parentView\&quot;}}  \n\t{{/if}}\n&lt;/div&gt;\n\n{{#if view.parentView.collection}}\n\t{{#if view.parentView.filtering}}\n\t\t{{view Tent.CollectionFilter collectionBinding=\&quot;view.parentView.collection\&quot;}}\n\t{{/if}}\n{{/if}}\t&quot;);
+
+Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile(&quot;&lt;a class=\&quot;\&quot; data-toggle=\&quot;dropdown\&quot; href=\&quot;#\&quot;&gt;\n  &lt;i class=\&quot;icon-share\&quot;&gt;&lt;/i&gt;Export\n&lt;/a&gt;\n&lt;ul class=\&quot;dropdown-menu\&quot;&gt;\n  &lt;li&gt;&lt;a {{action exportData \&quot;view.xls\&quot; target=\&quot;view\&quot;}} href=\&quot;#\&quot; class=\&quot;export-xls\&quot;&gt;{{loc tent.jqGrid.export.xls}}&lt;/a&gt;&lt;/li&gt;\n  &lt;li&gt;&lt;a {{action exportData \&quot;view.csv\&quot; target=\&quot;view\&quot;}} href=\&quot;#\&quot; class=\&quot;export-csv\&quot;&gt;{{loc tent.jqGrid.export.csv}}&lt;/a&gt;&lt;/li&gt;\n  &lt;!-- &lt;li&gt;&lt;a class=\&quot;export-xml\&quot;&gt;#{Tent.I18n.loc(\&quot;tent.jqGrid.export.xml\&quot;)}&lt;/a&gt;&lt;/li&gt; --&gt;\n  &lt;li class=\&quot;divider\&quot;&gt;&lt;/li&gt;\n  &lt;li class=\&quot;dropdown-submenu-left\&quot;&gt;\n    &lt;a href=\&quot;#\&quot;&gt;Delimiter&lt;/a&gt;\n    &lt;ul class=\&quot;dropdown-menu custom-export\&quot;&gt;\n      &lt;li&gt;\n        &lt;form class=\&quot;form-horizontal well\&quot; id=\&quot;customExportForm\&quot;&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;label class=\&quot;control-label\&quot;&gt;Delimiter&lt;/label&gt;\n            &lt;div class=\&quot;controls\&quot;&gt;\n                &lt;select name=\&quot;delimiter\&quot; class=\&quot;input-small\&quot; id=\&quot;delimiter\&quot;&gt;\n                &lt;option value=\&quot;\&quot;&gt;{{loc tent.pleaseSelect}}&lt;/option&gt;\n                &lt;option value=\&quot;,\&quot; selected&gt;{{loc tent.jqGrid.export.comma}}&lt;/option&gt;\n                &lt;option value=\&quot;|\&quot;&gt;{{loc tent.jqGrid.export.pipe}}&lt;/option&gt;\n                &lt;option value=\&quot;;\&quot;&gt;{{loc tent.jqGrid.export.semicolon}}&lt;/option&gt;\n                &lt;option value=\&quot;:\&quot;&gt;{{loc tent.jqGrid.export.colon}}&lt;/option&gt;\n              &lt;/select&gt;\n            &lt;/div&gt;\n          &lt;/div&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;label class=\&quot;control-label\&quot;&gt;{{loc tent.jqGrid.export._or}}&lt;/label&gt;\n          &lt;/div&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;label class=\&quot;control-label\&quot;&gt;{{loc tent.jqGrid.export.enterDelimiter}}&lt;/label&gt;\n            &lt;div class=\&quot;controls\&quot;&gt;\n              &lt;input type=\&quot;text\&quot; name=\&quot;customDelimiter\&quot; id=\&quot;customDelimiter\&quot;  maxlength=\&quot;1\&quot; class=\&quot;input-small\&quot;&gt;\n            &lt;/div&gt;\n          &lt;/div&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;label class=\&quot;control-label\&quot;&gt;{{loc tent.jqGrid.export.headers}}&lt;/label&gt;\n            &lt;div class=\&quot;controls\&quot;&gt;\n              &lt;label class=\&quot;radio inline\&quot;&gt;\n                &lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;true\&quot; checked&gt;{{loc tent.on}}\n              &lt;/label&gt;\n              &lt;label class=\&quot;radio inline\&quot;&gt;\n                &lt;input type=\&quot;radio\&quot; name=\&quot;columnHeaders\&quot; value=\&quot;false\&quot;&gt;{{loc tent.off}}\n              &lt;/label&gt;\n            &lt;/div&gt;\n          &lt;/div&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;label class=\&quot;control-label\&quot;&gt;{{loc tent.jqGrid.export.inclQuotes}}&lt;/label&gt;\n            &lt;div class=\&quot;controls\&quot;&gt;\n              &lt;label class=\&quot;radio inline\&quot;&gt;\n                &lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;true\&quot; checked&gt;{{loc tent.on}}\n              &lt;/label&gt;\n              &lt;label class=\&quot;radio inline\&quot;&gt;\n                &lt;input type=\&quot;radio\&quot; name=\&quot;includeQuotes\&quot; value=\&quot;false\&quot;&gt;{{loc tent.off}}\n              &lt;/label&gt;\n            &lt;/div&gt;\n          &lt;/div&gt;\n          &lt;div class=\&quot;control-group\&quot;&gt;\n            &lt;div class=\&quot;controls\&quot;&gt;\n              &lt;button type=\&quot;button\&quot; class=\&quot;btn\&quot;&gt;{{loc tent.jqGrid.export.export}}&lt;/button&gt;\n            &lt;/div&gt;\n          &lt;/div&gt;\n\n        &lt;/form&gt;\n      &lt;/li&gt;\n    &lt;/ul&gt;\n  &lt;/li&gt;\n  &lt;li class=\&quot;divider\&quot;&gt;&lt;/li&gt;\n  &lt;li&gt;&lt;a {{action exportData \&quot;view.json\&quot; target=\&quot;view\&quot;}} href=\&quot;#\&quot; class=\&quot;export-json\&quot;&gt;\n    {{loc tent.jqGrid.export.json}}&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&quot;);
 
 (function() {
 Tent.JqGridHeaderView = Ember.View.extend({
     classNames: ['grid-header', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix'],
-    templateName: 'jqgrid_header'
+    templateName: 'jqgrid_header',
+    exportView: Ember.View.extend({
+      classNames: ['btn-group', 'export', 'jqgrid-title-button'],
+      templateName: 'jqgrid_export',
+      csv: 'csv',
+      json: 'json',
+      xls: 'xls',
+      exportData: function(e) {
+        var contentType, customHeaderString, customParams, grid, jsonUrlPart, personalizedData, ret, tableDom, url, visibleColumnString;
+        contentType = e.context;
+        grid = this.get('parentView.parentView');
+        tableDom = grid.getTableDom();
+        url = grid.getExportUrl(contentType);
+        visibleColumnString = grid.getVisibleColumns().join(',');
+        customHeaderString = grid.getVisibleColumns(true).join(',');
+        customParams = {
+          del: ',',
+          columns: visibleColumnString,
+          custom_headers: customHeaderString,
+          headers: true
+        };
+        personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams);
+        if (contentType === 'json') {
+          if (url != null) {
+            jsonUrlPart = url.split('/').pop().split('?')[0];
+            this.$('.export-json').attr('download', jsonUrlPart);
+          }
+          ret = '{ &quot;exportDate&quot;: &quot;' + grid.generateExportDate() + '&quot;,\n' + $.fn.xmlJsonClass.toJson(personalizedData, &quot;data&quot;, &quot;    &quot;, true) + '}';
+          return grid.clientDownload(ret, contentType);
+        }
+        if (url != null) {
+          return document.location.href = url;
+        } else {
+          ret = 'exportDate \n' + grid.generateExportDate() + '\n' + grid.exportCSV(personalizedData, customParams);
+          return grid.clientDownload(ret, contentType);
+        }
+      },
+      didInsertElement: function() {
+        var grid, tableDom,
+          _this = this;
+        grid = this.get('parentView.parentView');
+        tableDom = grid.getTableDom();
+        this.$('#customExportForm').click(function(e) {
+          return e.stopPropagation();
+        });
+        this.$('#customExportForm').find('button').click(function() {
+          var arry, columnHeaders, customHeaderString, customParams, delimiter, extension, includeQuotes, personalizedData, ret, url, visibleColumnString;
+          arry = _this.$('#customExportForm').serializeArray();
+          extension = 'csv';
+          delimiter = ',';
+          columnHeaders = true;
+          includeQuotes = true;
+          $.each(arry, function(i, fd) {
+            if (fd.name === 'delimiter' &amp;&amp; fd.value !== ',') {
+              extension = 'txt';
+              delimiter = fd.value;
+            }
+            if (fd.name === 'customDelimiter') {
+              if (fd.value.length &gt; 0) {
+                delimiter = fd.value;
+              }
+            }
+            if (fd.name === 'columnHeaders') {
+              columnHeaders = fd.value === &quot;true&quot; ? true : false;
+            }
+            if (fd.name === 'includeQuotes') {
+              return includeQuotes = fd.value === &quot;true&quot; ? true : false;
+            }
+          });
+          visibleColumnString = grid.getVisibleColumns().join(',');
+          customHeaderString = grid.getVisibleColumns(true).join(',');
+          customParams = {
+            del: delimiter,
+            headers: columnHeaders,
+            quotes: includeQuotes,
+            date: grid.generateExportDate(),
+            columns: visibleColumnString,
+            custom_headers: customHeaderString
+          };
+          url = grid.get('collection').getURL(extension, customParams);
+          if (!url) {
+            personalizedData = grid.getPersonalizedData(tableDom.getRowData(), customParams);
+            ret = 'exportDate \n' + grid.generateExportDate() + '\n' + grid.exportCSV(personalizedData, customParams);
+            return grid.clientDownload(ret, extension);
+          } else {
+            return document.location.href = grid.get('collection').getURL(extension, customParams);
+          }
+        });
+        this.$('#delimiter').change(function() {
+          if ($('#delimiter').val().length &gt; 0) {
+            return $('#customDelimiter').val('');
+          } else {
+            if ($('#customDelimiter').val().length === 0) {
+              return $('#delimiter').val(',');
+            }
+          }
+        });
+        return this.$('#customDelimiter').blur(function() {
+          if ($('#customDelimiter').val().length &gt; 0) {
+            return $('#delimiter').val('');
+          } else {
+            return $('#delimiter').val(',');
+          }
+        });
+      }
+    })
   });
 
 }).call(this);
@@ -6171,9 +6429,30 @@ Tent.JqGridHeaderView = Ember.View.extend({
     }
   });
 
+<span id='jqgrid-formatter-action'>  /**
+</span>  * @class jqgrid.formatter.action Allows jsGrid cell content to be treated as a link.
+  * This formatter should be added to a column descriptor as follows (redirectColumn is optional):
+  *       {id: &quot;some_id&quot;, ..., formatter: &quot;action&quot;, .formatoptions({action: 'showNewRoute', redirectColumn: 'columnName'})
+  * If no column name is supplied, it will redirect to 'newRoute' with context as data of the clicked row. The clicked row is 
+  * searched on the basis of field 'id' in the data hash by comparing it against the clicked row Id.
+  * If a column name is passed with in the format options, instead of rowId, value of the given column on the clicked row is compared
+  * against the column value in the grid data.
+  * This speacial redirectColumn option is required, for complicated data such that, data with single id needs to be shown
+  * in different rows, with certain different column values, in that case, the 'id' for all the rows would be different
+  * to meet ember data needs but the actual id for that data should be stored in some other column, so that 
+  * appropriate processing and redirection can be done.
+  */
+
+
   jQuery.extend($.fn.fmatter, {
     action: function(cellvalue, options, rowdata) {
-      return '&lt;a onclick=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\')&quot;&gt;' + cellvalue + '&lt;/a&gt;';
+      if (cellvalue) {
+        if (options.colModel.formatoptions.redirectColumn != null) {
+          return '&lt;a onclick=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\',\'' + options.colModel.formatoptions.redirectColumn + '\')&quot;&gt;' + cellvalue + '&lt;/a&gt;';
+        } else {
+          return '&lt;a onclick=&quot;Ember.View.views[$(this).parents(\'.tent-jqgrid\').attr(\'id\')].sendAction(\'' + options.colModel.formatoptions.action + '\', this, \'' + options.rowId + '\')&quot;&gt;' + cellvalue + '&lt;/a&gt;';
+        }
+      }
     }
   });
 
@@ -6734,6 +7013,126 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
+Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile(&quot;&lt;a {{bindAttr title=\&quot;view.title\&quot;}} {{bindAttr class=\&quot;:horizontal-scroll-button :jqgrid-title-button view.active:active\&quot;}}&gt;\n\t&lt;i class=\&quot;icon-resize-horizontal\&quot;&gt;&lt;/i&gt;\n&lt;/a&gt;&quot;);
+
+(function() {
+Tent.Grid.AutofitButton = Ember.View.extend({
+    classNames: ['tent-autofit-button'],
+    templateName: 'grid/autofit_button',
+    title: Tent.I18n.loc(&quot;tent.jqGrid.horizontalScroll&quot;),
+    grid: null,
+    active: (function() {
+      return !this.get('grid.horizontalScrolling');
+    }).property('grid.horizontalScrolling'),
+    click: function() {
+      return this.get('grid').set('horizontalScrolling', !this.get('grid').get('horizontalScrolling'));
+    }
+  });
+
+}).call(this);
+
+
+Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;btn-group column-chooser\&quot;&gt;\n\t&lt;a class=\&quot;open-dropdown\&quot;&gt;\n\t\t&lt;i class=\&quot;icon-columns\&quot;&gt;&lt;/i&gt;{{loc tent.jqGrid.hideShowCaption}}\n\t&lt;/a&gt;\n\t&lt;div class=\&quot;dropdown-menu columns pull-right\&quot;&gt;\n\t\t&lt;div class=\&quot;window\&quot;&gt;&lt;/div&gt;\n\t\t&lt;ul&gt;\n\t\t\t{{#each view.model}}\n\t\t\t\t&lt;li&gt;&lt;label&gt;&lt;input type=\&quot;checkbox\&quot; {{bindAttr data-column=\&quot;name\&quot;}} {{bindAttr checked=\&quot;checked\&quot;}}/&gt;&lt;span class=\&quot;title\&quot;&gt;{{loc title}}&lt;/span&gt;&lt;/label&gt;&lt;/li&gt;\n\t\t\t{{/each}}\n\t\t&lt;/ul&gt;\n\t&lt;/div&gt;\n&lt;/div&gt;&quot;);
+
+
+<span id='Tent-JqGrid-Grouping-ranges-utcdate-property-'>/**
+</span>* @mixin Tent.ToggleVisibility 
+* Mixes in the ability to show/hide a subcomponent by calling {@link #toggleVisibility}.
+* The subcomponent will also be hidden by clicking outside of its area, or pressing the 'escape'
+*/
+
+
+(function() {
+
+  Tent.ToggleVisibility = Ember.Mixin.create({
+<span id='Tent-JqGrid-Grouping-ranges-utcdate-method-bindToggleVisibility'>    /**
+</span>    	* @method bindToggleVisibility Attach an event handle to an element to allow it to toggle the visibility of another element.
+    	* @param {Object} source The source jQuery object which triggers the toggle
+    	* @param {Object} dest The jQuery object to show and hide
+    */
+
+    bindToggleVisibility: function(source, dest) {
+      var widget;
+      widget = this;
+      return source.click(function(e) {
+        return widget.toggleVisibility(dest, source);
+      });
+    },
+    toggleVisibility: function(component, source) {
+      if (component.css('display') === 'none') {
+        return this.showComponent(component, source);
+      } else {
+        return this.hideComponent(component);
+      }
+    },
+<span id='Tent-JqGrid-Grouping-ranges-utcdate-method-hideComponent'>    /**
+</span>    	* @method hideComponent Hides a toggleable component
+    	* @param {Object} component The jQuery object to hide
+    */
+
+    hideComponent: function(component) {
+      component.css('display', 'none');
+      $('body').get(0).removeEventListener('click', this.get('hideHandler'), true);
+      return $('body').get(0).removeEventListener('keyup', this.get('hideHandler'), true);
+    },
+<span id='Tent-JqGrid-Grouping-ranges-utcdate-method-showComponent'>    /**
+</span>    	* @method showComponent Shows a toggleable component
+    	* @param {Object} component The jQuery object to show
+    */
+
+    showComponent: function(component, source) {
+      component.css('display', 'block');
+      this.set('hideHandler', this.get('generateHideHandler')(this, component, source));
+      $('body').get(0).addEventListener('click', this.get('hideHandler'), true);
+      return $('body').get(0).addEventListener('keyup', this.get('hideHandler'), true);
+    },
+    generateHideHandler: function(widget, component, source) {
+      return function(e) {
+        if (e.keyCode === 27 || (($(e.target).closest(component).length === 0) &amp;&amp; (e.target !== source.get(0)))) {
+          widget.hideComponent(component);
+          e.stopPropagation();
+        }
+      };
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
+    classNames: ['tent-column-chooser-button'],
+    templateName: 'grid/column_chooser_button',
+    grid: null,
+    model: (function() {
+      var annotatedModel;
+      annotatedModel = this.get('grid.columnModel').map(function(item) {
+        item.checked = !item.hidden;
+        return item;
+      });
+      return annotatedModel.filter(function(item) {
+        return item.hideable !== false;
+      });
+    }).property('grid.columnModel', 'grid.columnModel.@each'),
+    didInsertElement: function() {
+      var grid;
+      grid = this.get('grid');
+      this.bindToggleVisibility(this.$(&quot;.column-chooser .open-dropdown&quot;), this.$(&quot;.column-chooser .dropdown-menu&quot;));
+      return this.$('.column-chooser').on('click', 'input', function(e) {
+        var column;
+        column = $(this).attr('data-column');
+        if ($(this).is(':checked')) {
+          return grid.showCol(column);
+        } else {
+          return grid.hideCol(column);
+        }
+      });
+    }
+  });
+
+}).call(this);
+
+
 Ember.TEMPLATES['panel']=Ember.Handlebars.compile(&quot;{{#if view.hasChildViews}}\n\t&lt;div class=\&quot;section accordion-group\&quot;&gt;\n\t\t{{yield}}\n\t&lt;/div&gt;\n{{else}}\n\t{{#if view.collapsible}}\n\t\t&lt;div class=\&quot;section accordion-group\&quot;&gt;\n\t\t   \t&lt;div class=\&quot;panel-header clearfix\&quot;&gt;\n\t\t    \t&lt;h3&gt;{{loc view.name}}&lt;/h3&gt;\n\t\t    \t&lt;a class=\&quot;pull-right\&quot; data-toggle=\&quot;collapse\&quot; {{bindAttr href=\&quot;view.href\&quot;}}&gt;\n\t\t\t      &lt;span class=\&quot;caret\&quot; &gt;&lt;/span&gt;\n\t\t\t    &lt;/a&gt;\n\t\t    &lt;/div&gt;\n\t\t    &lt;div {{bindAttr class=\&quot;view.collapsedClass\&quot;}}&gt;\n\t\t      &lt;div class=\&quot;panel-content\&quot;&gt;\n\t\t        {{yield}}\n\t\t      &lt;/div&gt;\n\t\t    &lt;/div&gt;\n\t\t&lt;/div&gt;\n\t \n\t{{else}}\n\t\t{{#if view.name}}&lt;h3&gt;{{loc view.name}}&lt;/h3&gt;{{/if}}{{yield}}\n\t{{/if}}\n{{/if}}&quot;);
 
 
@@ -6957,27 +7356,136 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     */
 
     collapsible: false,
+<span id='Tent-PanelLink-property-collapsed'>    /**
+</span>    	 * @property {Boolean} collapsed Defines whether the collapsible is collapsed initially.
+    */
+
     collapsed: false,
+<span id='Tent-PanelLink-property-useTransition'>    /**
+</span>    	 * @property {Boolean} useTransition This property determines whether a CSS transition is used for sliding.
+    */
+
+    useTransition: true,
+<span id='Tent-PanelLink-property-horizontalSlide'>    /**
+</span>    	 * @property {Boolean} horizontalSlide This property determines whether a javascript transition is used for horizontal sliding.
+    */
+
+    horizontalSlide: false,
+    slideDirection: &quot;left&quot;,
+    onTransitionStep: function() {
+      return $.publish(&quot;/ui/horizontalSlide&quot;, {
+        source: this.$()
+      });
+    },
+    onExpandEnd: function() {
+      this.set('collapsed', false);
+      this.$('').removeClass('collapsed');
+      return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+    },
+    onCollapseEnd: function() {
+      this.set('collapsed', true);
+      this.$('').addClass('collapsed');
+      return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+    },
     didInsertElement: function() {
       var widget;
       this._super();
-      if (this.get('collapsible') &amp;&amp; Modernizr.csstransitions) {
-        widget = this;
-        return this.$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', function() {
-          widget.set('collapsed', widget.$('').hasClass('collapsed'));
-          return $.publish(&quot;/ui/refresh&quot;, ['resize']);
-        });
+      if (this.get('collapsible')) {
+        if (this.isUsingCSSTransition()) {
+          widget = this;
+          return this.$('').bind('webkitTransitionEnd oTransitionEnd transitionend msTransitionEnd', function() {
+            widget.set('collapsed', widget.$('').hasClass('collapsed'));
+            return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+          });
+        }
       }
     },
     click: function(e) {
-      if ($(e.target).hasClass('clickarea')) {
-        if (this.get('collapsible')) {
-          this.$('').toggleClass('collapsed');
-          if (!Modernizr.csstransitions) {
-            this.set('collapsed', this.$('').hasClass('collapsed'));
-            return $.publish(&quot;/ui/refresh&quot;, ['resize']);
-          }
+      var target;
+      target = this.getClickArea(e);
+      if (target.length &amp;&amp; this.get('collapsible')) {
+        return this.toggle();
+      }
+    },
+    toggle: function() {
+      var collapsible;
+      if (this.get('horizontalSlide')) {
+        collapsible = this;
+        if (this.get('collapsed')) {
+          return this.expand();
+        } else {
+          return this.collapse();
         }
+      } else {
+        this.$('').toggleClass('collapsed');
+        if (!this.isUsingCSSTransition()) {
+          return this.triggerListenersImmediately();
+        }
+      }
+    },
+    expand: function() {
+      var collapsible, dir;
+      if (this.get('horizontalSlide')) {
+        collapsible = this;
+        dir = {};
+        this.$('.drag-bar').css({
+          'visibility': 'hidden'
+        });
+        dir[&quot;&quot; + collapsible.get(&quot;slideDirection&quot;)] = &quot;0px&quot;;
+        return this.$().animate(dir, {
+          duration: 400,
+          step: function() {
+            return collapsible.onTransitionStep();
+          },
+          complete: function() {
+            return collapsible.onExpandEnd();
+          }
+        });
+      } else {
+        this.$('').removeClass('collapsed');
+        if (!this.isUsingCSSTransition()) {
+          return this.triggerListenersImmediately();
+        }
+      }
+    },
+    collapse: function() {
+      var collapsible, dir;
+      if (this.get('horizontalSlide')) {
+        collapsible = this;
+        collapsible.set('width', collapsible.$().width());
+        this.$('.drag-bar').css({
+          'visibility': 'hidden'
+        });
+        dir = {};
+        dir[&quot;&quot; + collapsible.get(&quot;slideDirection&quot;)] = &quot;-&quot; + (collapsible.get('width')) + &quot;px&quot;;
+        return this.$().animate(dir, {
+          duration: 400,
+          step: function() {
+            return collapsible.onTransitionStep();
+          },
+          complete: function() {
+            return collapsible.onCollapseEnd();
+          }
+        });
+      } else {
+        this.$('').addClass('collapsed');
+        if (!this.isUsingCSSTransition()) {
+          return this.triggerListenersImmediately();
+        }
+      }
+    },
+    triggerListenersImmediately: function() {
+      this.set('collapsed', this.$('').hasClass('collapsed'));
+      return $.publish(&quot;/ui/refresh&quot;, ['resize']);
+    },
+    isUsingCSSTransition: function() {
+      return this.get('useTransition') &amp;&amp; Modernizr.csstransitions;
+    },
+    getClickArea: function(e) {
+      if ($(e.target).hasClass('clickarea')) {
+        return $(e.target);
+      } else {
+        return $(e.target).parentsUntil(this.$(), '.clickarea').eq(0);
       }
     }
   });
@@ -7003,20 +7511,37 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
       this._super();
       if (this.get('hideable')) {
         if (this.get('hidden')) {
-          return this.hide();
+          return this.hide(true);
         }
       }
     },
-    hide: function() {
-      if (this.get('hideable')) {
+<span id='Tent-PanelLink-method-hide'>    /**
+</span>    	* @method hide
+    	* @param {Boolean} force execute the function even if the component is already hidden
+    */
+
+    hide: function(force) {
+      if (force == null) {
+        force = false;
+      }
+      if (this.get('hideable') &amp;&amp; (force || !this.get('hidden'))) {
         this.$('').addClass('hidden');
         this.set('hidden', true);
         return $.publish(&quot;/ui/refresh&quot;, ['resize']);
       }
     },
-    show: function() {
-      if (this.get('hideable')) {
+<span id='Tent-PanelLink-method-show'>    /**
+</span>    	* @method show
+    	* @param {Boolean} force execute the function even if the component is already shown
+    */
+
+    show: function(force) {
+      if (force == null) {
+        force = false;
+      }
+      if (this.get('hideable') &amp;&amp; (force || this.get('hidden'))) {
         this.$('').removeClass('hidden');
+        this.set('hidden', true);
         this.set('hidden', false);
         return $.publish(&quot;/ui/refresh&quot;, ['resize']);
       }
@@ -7102,7 +7627,7 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 
   Tent.Header = Ember.View.extend(Tent.SpanSupport, Tent.CollapsibleSupport, Tent.HideableSupport, {
     tagName: 'header',
-    classNameBindings: ['spanClass'],
+    classNameBindings: ['spanClass', 'useTransition:use-transition'],
 <span id='Tent-Header-property-title'>    /**
 </span>    	* @property {String} title The title to be displayed in the header.
     	* You may provide a title explicitly using the title property. You may also nest content
@@ -7160,6 +7685,12 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     classNameBindings: ['spanClass'],
     classNames: ['content'],
     layout: Ember.Handlebars.compile('{{yield}}'),
+<span id='Tent-Content-property-sizeToHeaderContent'>    /**
+</span>    	 * @property {Boolean} sizeToHeaderContent Rather than using the headers css height property, the content
+    	 * should shift down to accomodate the height of the headers content.
+    */
+
+    sizeToHeaderContent: false,
     didInsertElement: function() {
       this.set('section', this.$().parent('section'));
       this.set('header', this.get('section').children('header'));
@@ -7167,9 +7698,14 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
       return this.resize();
     },
     resize: function() {
-      var footerOffset, headerOffset;
+      var footerOffset, h, headerOffset;
       this.set('footer', this.get('section').children('footer'));
-      headerOffset = this.get('header').length &gt; 0 ? this.get('header').outerHeight(true) : 0;
+      if (this.get('sizeToHeaderContent')) {
+        h = $('.header', this.get('header'));
+        headerOffset = h.length &gt; 0 ? h.outerHeight(true) : 0;
+      } else {
+        headerOffset = this.get('header').length &gt; 0 ? this.get('header').outerHeight(true) : 0;
+      }
       this.$().css('top', headerOffset + &quot;px&quot;);
       footerOffset = this.get('footer').length &gt; 0 ? this.get('footer').outerHeight(true) : 0;
       return this.$().css('bottom', footerOffset + &quot;px&quot;);
@@ -7231,7 +7767,46 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     tagName: 'section',
     classNameBindings: ['spanClass', 'vspanClass', 'hClass'],
     classNames: ['tent-hsection'],
-    layout: Ember.Handlebars.compile(&quot;{{yield}}&quot;)
+    layout: Ember.Handlebars.compile(&quot;{{yield}}&quot;),
+    didInsertElement: function() {
+      var $left, $right;
+      $left = this.$().children('.left-panel:first');
+      if ($left != null) {
+        this.set('left-panel', Ember.View.views[$left.attr('id')]);
+      }
+      $right = this.$().children('.right-panel:first');
+      if ($right != null) {
+        this.set('right-panel', Ember.View.views[$right.attr('id')]);
+      }
+      return this.listenForEvents();
+    },
+    willDestroyElement: function() {
+      $.unsubscribe('ui/h-collapse-left');
+      return $.unsubscribe('ui/h-collapse-right');
+    },
+    expandAll: function() {
+      this.get('left-panel').expand();
+      return this.get('right-panel').expand();
+    },
+    collapseAll: function() {
+      this.get('left-panel').collapse();
+      return this.get('right-panel').collapse();
+    },
+    listenForEvents: function() {
+      var _this = this;
+      $.subscribe('ui/h-collapse-left', function(e, params) {
+        var _ref, _ref1, _ref2;
+        if (((_ref = params.source) != null ? (_ref1 = _ref.closest('.tent-hsection')) != null ? _ref1.get(0) : void 0 : void 0) === ((_ref2 = _this.$('')) != null ? _ref2.get(0) : void 0)) {
+          return _this.get('left-panel').collapse();
+        }
+      });
+      return $.subscribe('ui/h-expand-left', function(e, params) {
+        var _ref, _ref1, _ref2;
+        if (((_ref = params.source) != null ? (_ref1 = _ref.closest('.tent-hsection')) != null ? _ref1.get(0) : void 0 : void 0) === ((_ref2 = _this.$('')) != null ? _ref2.get(0) : void 0)) {
+          return _this.get('left-panel').expand();
+        }
+      });
+    }
   });
 
 <span id='Tent-Left'>  /**
@@ -7250,10 +7825,50 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 
   Tent.Left = Ember.View.extend(Tent.SpanSupport, Tent.CollapsibleSupport, {
     tagName: 'section',
-    classNameBindings: ['spanClass'],
+    classNameBindings: ['spanClass', 'useTransition'],
     classNames: ['left-panel'],
     collapsible: true,
-    layout: Ember.Handlebars.compile('&lt;div class=&quot;drag-bar clickarea&quot;&gt;&lt;/div&gt;&lt;div class=&quot;panel-content&quot;&gt;{{yield}}&lt;/div&gt;')
+    horizontalSlide: true,
+    slideDirection: &quot;left&quot;,
+    useTransition: false,
+    layout: Ember.Handlebars.compile('&lt;div class=&quot;drag-bar clickarea&quot;&gt;&lt;i class=&quot;icon-caret-left&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&quot;panel-content&quot;&gt;{{yield}}&lt;/div&gt;'),
+    didInsertElement: function() {
+      var _this = this;
+      return $.subscribe('/window/resize', function() {
+        _this.repositionDragBar();
+        return _this.keepAlignedWithLeft();
+      });
+    },
+    willDestroyElement: function() {
+      return $.unsubscribe('/window/resize');
+    },
+    onExpandEnd: function() {
+      this._super();
+      return this.repositionDragBar();
+    },
+    onCollapseEnd: function() {
+      this._super();
+      return this.repositionDragBar();
+    },
+    repositionDragBar: function() {
+      var shift;
+      shift = this.get('collapsed') ? 0 : 20;
+      return this.$('.drag-bar').css({
+        'left': this.$().width() - shift,
+        'visibility': 'visible'
+      });
+    },
+    sourceIsInMySection: function(data) {
+      var _ref, _ref1;
+      return (data != null) &amp;&amp; (((_ref = data.source) != null ? _ref.parent('section').get(0) : void 0) === ((_ref1 = this.$()) != null ? _ref1.parent('section').get(0) : void 0));
+    },
+    keepAlignedWithLeft: function(data) {
+      if (this.$() != null) {
+        if (this.get('collapsed') &amp;&amp; !this.sourceIsInMySection(data)) {
+          return this.$().css('left', &quot;-&quot; + this.$().width() + 'px');
+        }
+      }
+    }
   });
 
 <span id='Tent-Center'>  /**	
@@ -7270,33 +7885,54 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 
 
   Tent.Center = Ember.View.extend(Tent.SpanSupport, {
-    classNameBindings: ['spanClass'],
+    classNameBindings: ['spanClass', 'leftCollapsed', 'rightCollapsed'],
     classNames: ['center-panel'],
     layout: Ember.Handlebars.compile('{{yield}}'),
     leftView: null,
     didInsertElement: function() {
-      var left, right, section;
+      var left, right, section,
+        _this = this;
       this.resize();
       section = this.$().parent('section');
       left = section.children('.left-panel');
       right = section.children('.right-panel');
       this.set('leftView', Ember.View.views[left.attr('id')]);
-      return this.set('rightView', Ember.View.views[right.attr('id')]);
+      this.set('rightView', Ember.View.views[right.attr('id')]);
+      $.subscribe(&quot;/ui/horizontalSlide&quot;, function(a, data) {
+        return _this.resize(data);
+      });
+      $.subscribe(&quot;/ui/refresh&quot;, function(a, data) {
+        return _this.resize();
+      });
+      return $.subscribe(&quot;/window/resize&quot;, function() {
+        return _this.resize();
+      });
     },
-    resize: function() {
+    resize: function(data) {
       var left, leftOffset, right, rightOffset, section;
-      section = this.$().parent('section');
-      left = section.children('.left-panel');
-      right = section.children('.right-panel');
-      leftOffset = left.length &gt; 0 ? left.outerWidth(true) : 0;
-      this.$().css('left', leftOffset + &quot;px&quot;);
-      rightOffset = right.length &gt; 0 ? right.outerWidth(true) : 0;
-      return this.$().css('right', rightOffset + &quot;px&quot;);
+      if (this.$() != null) {
+        section = this.$().parent('section');
+        left = section.children('.left-panel');
+        leftOffset = left.length &gt; 0 ? left.outerWidth(true) + left.offset().left - section.offset().left : 0;
+        if (this.$().css('left') !== leftOffset + &quot;px&quot;) {
+          this.$().css('left', leftOffset + &quot;px&quot;);
+        }
+        right = section.children('.right-panel');
+        rightOffset = right.length &gt; 0 ? right.outerWidth(true) - ((right.offset().left + right.outerWidth()) - (section.offset().left + section.width())) : 0;
+        if (this.$().css('right') !== rightOffset + &quot;px&quot;) {
+          return this.$().css('right', rightOffset + &quot;px&quot;);
+        }
+      }
     },
     siblingDidChange: (function() {
-      console.log('collapsed');
+      this.set('leftCollapsed', this.get('leftView.collapsed'));
+      this.set('rightCollapsed', this.get('rightView.collapsed'));
       return this.resize();
-    }).observes('leftView.collapsed', 'rightView.collapsed')
+    }).observes('leftView.collapsed', 'rightView.collapsed'),
+    willDestroyElement: function() {
+      $.unsubscribe(&quot;/ui/refresh&quot;);
+      return $.unsubscribe(&quot;/window/resize&quot;);
+    }
   });
 
 <span id='Tent-Right'>  /**
@@ -7314,11 +7950,52 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 
   Tent.Right = Ember.View.extend(Tent.SpanSupport, Tent.CollapsibleSupport, {
     tagName: 'section',
-    classNameBindings: ['spanClass'],
+    classNameBindings: ['spanClass', 'useTransition'],
     classNames: ['right-panel'],
     collapsible: true,
     collapsed: false,
-    layout: Ember.Handlebars.compile('&lt;div class=&quot;drag-bar clickarea&quot;&gt;&lt;/div&gt;&lt;div class=&quot;panel-content&quot;&gt;{{yield}}&lt;/div&gt;')
+    horizontalSlide: true,
+    slideDirection: &quot;right&quot;,
+    useTransition: false,
+    layout: Ember.Handlebars.compile('&lt;div class=&quot;drag-bar clickarea&quot;&gt;&lt;i class=&quot;icon-caret-right&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&quot;panel-content&quot;&gt;{{yield}}&lt;/div&gt;'),
+    didInsertElement: function() {
+      var _this = this;
+      $.subscribe(&quot;/ui/horizontalSlide&quot;, function(a, data) {
+        return _this.keepAlignedWithRight(data);
+      });
+      return $.subscribe(&quot;/window/resize&quot;, function(a, data) {
+        return _this.keepAlignedWithRight(data);
+      });
+    },
+    willDestroyElement: function() {
+      $.unsubscribe('/window/resize');
+      return $.unsubscribe('/ui/horizontalSlide');
+    },
+    keepAlignedWithRight: function(data) {
+      if (this.$() != null) {
+        if (this.get('collapsed') &amp;&amp; !this.sourceIsInMySection(data)) {
+          return this.$().css('right', &quot;-&quot; + this.$().width() + 'px');
+        }
+      }
+    },
+    sourceIsInMySection: function(data) {
+      var _ref, _ref1;
+      return (data != null) &amp;&amp; (((_ref = data.source) != null ? _ref.parent('section').get(0) : void 0) === ((_ref1 = this.$()) != null ? _ref1.parent('section').get(0) : void 0));
+    },
+    onExpandEnd: function() {
+      this._super();
+      return this.$('.drag-bar').css({
+        'left': 0,
+        'visibility': 'visible'
+      });
+    },
+    onCollapseEnd: function() {
+      this._super();
+      return this.$('.drag-bar').css({
+        'left': 0 - 20,
+        'visibility': 'visible'
+      });
+    }
   });
 
 }).call(this);
@@ -7342,7 +8019,7 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}\n    &lt;span class='tent-required'&gt;&lt;/span&gt;\n&lt;/label&gt;\n\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{loc view.currentSelectedLabel}}&lt;/span&gt;\n    {{else}}\n      {{#if view.isRadioGroup}}\n        &lt;div class=\&quot;radio-group\&quot;&gt;\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               class=\&quot;tent-radio-group\&quot;\n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               valueBinding = \&quot;view.value\&quot;\n               tagName = \&quot;div\&quot;\n               templateName = \&quot;radio_group\&quot;\n        }} \n        &lt;/div&gt;\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               classBinding=\&quot;view.inputSizeClass\&quot; \n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               multipleBinding=\&quot;view.multiple\&quot;\n               promptBinding = \&quot;view._prompt\&quot; \n               valueBinding = \&quot;view.value\&quot;}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasWarnings}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.warningId\&quot;}}&gt;{{#each warning in view.validationWarnings}}&lt;li&gt;{{loc warning}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n  &lt;/div&gt;\n&lt;/div&gt;&quot;);
+Ember.TEMPLATES['select']=Ember.Handlebars.compile(&quot;&lt;label class=\&quot;control-label\&quot; {{bindAttr for=\&quot;view.forId\&quot;}}&gt;{{loc view.label}}\n    &lt;span class='tent-required'&gt;&lt;/span&gt;\n&lt;/label&gt;\n\n&lt;div class=\&quot;controls\&quot;&gt;\n  &lt;div class=\&quot;input-prepend\&quot;&gt;\n    {{#if view.isLoading}}\n      &lt;div class=\&quot;wait\&quot;&gt;&lt;i class=\&quot;icon-spinner icon-spin\&quot;&gt;&lt;/i&gt;&lt;/div&gt;\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      &lt;span class=\&quot;text-display\&quot;&gt;{{loc view.currentSelectedLabel}}&lt;/span&gt;\n    {{else}}\n      {{#if view.isRadioGroup}}\n        &lt;div class=\&quot;radio-group\&quot;&gt;\n          {{view Tent.SelectElement \n                 contentBinding=\&quot;view.list\&quot; \n                 class=\&quot;tent-radio-group\&quot;\n                 optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n                 optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n                 selectionBinding=\&quot;view.selection\&quot;\n                 valueBinding = \&quot;view.value\&quot;\n                 tagName = \&quot;div\&quot;\n                 templateName = \&quot;radio_group\&quot;\n          }} \n        &lt;/div&gt;\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\&quot;view.list\&quot; \n               classBinding=\&quot;view.inputSizeClass\&quot; \n               optionLabelPathBinding=\&quot;view.optionLabelPath\&quot; \n               optionValuePathBinding =\&quot;view.optionValuePath\&quot; \n               selectionBinding=\&quot;view.selection\&quot;\n               multipleBinding=\&quot;view.multiple\&quot;\n               promptBinding = \&quot;view._prompt\&quot; \n               valueBinding = \&quot;view.value\&quot;}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        &lt;span class=\&quot;help-block\&quot; {{bindAttr id=\&quot;view.helpId\&quot;}}&gt;{{loc view.helpBlock}}&lt;/span&gt;\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      &lt;a href=\&quot;#\&quot; rel=\&quot;tooltip\&quot; data-placement=\&quot;right\&quot; {{bindAttr data-original-title=\&quot;view.tooltipT\&quot;}}&gt;&lt;/a&gt;\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t&lt;span class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.errorId\&quot;}}&gt;{{#each error in view.validationErrors}}{{error}}{{/each}}&lt;/span&gt;\n    {{/if}}\n    {{#if view.hasWarnings}}\n      &lt;ul class=\&quot;help-inline\&quot; {{bindAttr id=\&quot;view.warningId\&quot;}}&gt;{{#each warning in view.validationWarnings}}&lt;li&gt;{{loc warning}}&lt;/li&gt;{{/each}}&lt;/ul&gt;\n    {{/if}}  \n  &lt;/div&gt;\n&lt;/div&gt;&quot;);
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile(&quot;{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t&lt;label&gt;{{view Tent.RadioOption contentBinding=\&quot;this\&quot;}}&lt;/label&gt;\n{{/each}}&quot;);
 
@@ -7412,6 +8089,12 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     */
 
     preselectSingleElement: false,
+<span id='Tent-Select-property-isLoading'>    /**
+</span>     * @property {Boolean} isLoading A boolean to indicate that the content for the control has not yet loaded.
+     * This will usually be represented in the UI by a spinning icon.
+    */
+
+    isLoading: false,
     init: function() {
       this._super();
       if (this.get('list.length') === 1 &amp;&amp; this.get('preselectSingleElement')) {
@@ -8533,8 +9216,11 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile(&quot;&lt;ul {{bindAttr id=\&qu
 
   Tent.Tabs = Ember.View.extend({
     layoutName: 'tabs',
+    fixedHeader: false,
+    classNames: ['tent-tabs'],
+    classNameBindings: ['fixedHeader'],
 <span id='Tent-Tabs-property-active'>    /**
-</span>    	* @property {String} active The id of the tabpane which should be initially displayed
+</span>    * @property {String} active The id of the tabpane which should be initially displayed
     */
 
     active: null,
@@ -8563,29 +9249,30 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile(&quot;&lt;ul {{bindAttr id=\&qu
     classNames: [&quot;tab-pane&quot;],
     layout: Ember.Handlebars.compile('{{yield}}'),
 <span id='Tent-TabPane-property-id'>    /**
-</span>    	* @property {String} id The id of the pane. This should be unique for the page
+</span>    * @property {String} id The id of the pane. This should be unique for the page
     */
 
     id: null,
 <span id='Tent-TabPane-property-title'>    /**
-</span>    	* @property {String} title The title for the pane. This title will be translated and displayed in a tab by the containing {@link Tent.Tabs}.
+</span>    * @property {String} title The title for the pane. This title will be translated and displayed in a tab by the containing {@link Tent.Tabs}.
     */
 
     title: null,
 <span id='Tent-TabPane-method-didInsertElement'>    /**
-</span>    	* The title will be updated from the bindings, but there is a race condition between the
-    	* Instantiation of the view and change of title, now there are two cases
-    	* 1) if the value is changed before this view is instantiated the observer
-    	* will not fire because the value is set and will not change, in that case
-    	* we would need to call the observer explicitely in the didInsertElement for
-    	* this view to render that tab element.
-    	* 2) if the value is set after this view is instantiated the observer will
-    	* automatically fire and will render the required tab element, and once
-    	* the value of the title is set, the observer won't do anything
+</span>    * The title will be updated from the bindings, but there is a race condition between the
+    * Instantiation of the view and change of title, now there are two cases
+    * 1) if the value is changed before this view is instantiated the observer
+    * will not fire because the value is set and will not change, in that case
+    * we would need to call the observer explicitely in the didInsertElement for
+    * this view to render that tab element.
+    * 2) if the value is set after this view is instantiated the observer will
+    * automatically fire and will render the required tab element, and once
+    * the value of the title is set, the observer won't do anything
     */
 
     didInsertElement: function() {
-      return this.updateTitle();
+      this.updateTitle();
+      return this.resize();
     },
     updateTitle: (function() {
       var href, title;
@@ -8620,6 +9307,14 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile(&quot;&lt;ul {{bindAttr id=\&qu
     },
     getTabWithHref: function(href) {
       return this.get(&quot;parentView&quot;).$(&quot;a[href=#&quot; + href + &quot;]&quot;);
+    },
+    resize: function() {
+      var parentView, topOffset;
+      parentView = this.get('parentView');
+      if (parentView.get('fixedHeader')) {
+        topOffset = parentView.$('.nav-tabs').height();
+        return parentView.$('.tab-content').css('top', topOffset + 'px');
+      }
     }
   });
 
@@ -8888,9 +9583,6 @@ Tent.DateRangeField = Tent.TextField.extend({
       this.handleDisabled();
       return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
     },
-    filterOpDidChange: (function() {
-      return console.log(&quot;Daterange filter op = &quot; + this.get('filterOp'));
-    }).observes('filterOp'),
 <span id='Tent-DateRangeField-method-getValue'>    /**
 </span>    	* @method getValue Return the current value of the input field
     	* @return {String}
@@ -9052,7 +9744,7 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
 }).call(this);
 
 
-Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;btn-group jqgrid-title-button filter\&quot;&gt;\n\t&lt;a class=\&quot;open-dropdown\&quot; href=\&quot;#\&quot;&gt;\n\t\t&lt;i class=\&quot;icon-filter\&quot;&gt;&lt;/i&gt;\n\t\t{{loc tent.filter.filter}}\n\t\t&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n\t&lt;/a&gt;\n\t&lt;ul class=\&quot;dropdown-menu filter-panel\&quot;&gt;\n\t\t&lt;li&gt;\n\t\t\t&lt;div class=\&quot;filter-details clearfix\&quot;&gt;\n\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\&quot;view.collection\&quot;}}\n\t\t\t\t&lt;div class=\&quot;form-inline buttons\&quot;&gt;\n\t\t\t\t   \t{{view Tent.Button label=\&quot;tent.filter.clear\&quot; type=\&quot;secondary\&quot; action=\&quot;clearFilter\&quot; targetBinding=\&quot;view\&quot; class=\&quot;clear-filter pull-left\&quot;}}\n\t\t\t    \t{{view Tent.Button label=\&quot;tent.filter.filter\&quot; type=\&quot;primary\&quot; action=\&quot;filter\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close-panel pull-right\&quot;}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t\t\n\t\t&lt;/li&gt;\n\t&lt;/ul&gt;\n&lt;/div&gt;\n\n\n\n\n\n&quot;);
+Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;&lt;div class=\&quot;btn-group jqgrid-title-button filter\&quot;&gt;\n\t&lt;a class=\&quot;open-dropdown\&quot; href=\&quot;#\&quot;&gt;\n\t\t&lt;i class=\&quot;icon-filter\&quot;&gt;&lt;/i&gt;\n\t\t{{loc tent.filter.filter}}\n\t\t&lt;span class=\&quot;caret\&quot;&gt;&lt;/span&gt;\n\t&lt;/a&gt;\n\t&lt;ul class=\&quot;dropdown-menu filter-panel\&quot;&gt;\n\t\t&lt;li&gt;\n\t\t\t&lt;div class=\&quot;filter-details clearfix\&quot;&gt;\n\t\t\t\t \n\t\t\t\t\t{{#if view.showFilterFields}}\n\t\t\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\&quot;view.collection\&quot;}}\t\n\t\t\t\t\t{{/if}}\n\t\t\t\t \n\t\t\t\t&lt;div class=\&quot;form-inline buttons\&quot;&gt;\n\t\t\t\t   \t{{view Tent.Button label=\&quot;tent.filter.clear\&quot; type=\&quot;secondary\&quot; action=\&quot;clearFilter\&quot; targetBinding=\&quot;view\&quot; class=\&quot;clear-filter pull-left\&quot;}}\n\t\t\t    \t{{view Tent.Button label=\&quot;tent.filter.filter\&quot; type=\&quot;primary\&quot; action=\&quot;filter\&quot; targetBinding=\&quot;view\&quot; class=\&quot;close-panel pull-right\&quot;}}\n\t\t\t\t&lt;/div&gt;\n\t\t\t&lt;/div&gt;\n\t\t\t\n\t\t&lt;/li&gt;\n\t&lt;/ul&gt;\n&lt;/div&gt;\n\n\n\n\n\n&quot;);
 
 (function() {
 <span id='Tent-CollectionFilter'>/**
@@ -9171,6 +9863,9 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile(&quot;&lt;div clas
       this.stopGroupingOnGrid();
       return this.get('collection').doFilter(this.get('currentFilter'));
     },
+    showFilterFields: (function() {
+      return this.get('collection.isLoaded');
+    }).property('collection.isLoaded'),
     stopGroupingOnGrid: function() {
       if (this.get('grid') != null) {
         return this.get('grid').clearAllGrouping();
@@ -9493,8 +10188,8 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
               if (msg.messages.length &gt; 0) {
                 arrayWithMessageRemoved.pushObject($.extend({}, msg));
               }
+              return this.set(msg.type, arrayWithMessageRemoved);
             }
-            return this.set(msg.type, arrayWithMessageRemoved);
           }
         }
       };
@@ -9506,10 +10201,13 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
         return this.set('parentContainer', Ember.View.views[header.attr('id')]);
       }
     },
-    showContainerWhenVisible: (function() {
+    showContainerWhenVisible: (function(forceShow) {
+      if (forceShow == null) {
+        forceShow = false;
+      }
       if (this.get('parentContainer') != null) {
         if (this.get('hasErrors') || this.get('hasInfos') || this.get('hasSuccesses') || this.get('hasWarnings')) {
-          return this.get('parentContainer').show();
+          return this.get('parentContainer').show(forceShow);
         } else {
           return this.get('parentContainer').hide();
         }
@@ -9609,6 +10307,22 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile(&quot;{{#if view.hasEr
       }
       return hasW;
     }).property('warning', 'warning.@each'),
+    hasFirstLongTextError: (function() {
+      var _this = this;
+      return Ember.run.next(this, function() {
+        var firstError;
+        firstError = _this.$('.error-message:first');
+        if (firstError != null) {
+          return _this.$('.error-expando').css('min-height', firstError.height() + &quot;px&quot;);
+        }
+      });
+    }).observes('error', 'error.@each'),
+    ensureContainerResizesAfterDomRenders: (function() {
+      var _this = this;
+      return Ember.run.next(this, function() {
+        return _this.showContainerWhenVisible(true);
+      });
+    }).observes('error', 'warning', 'success', 'info', 'error.@each', 'warning.@each', 'success.@each', 'info.@each'),
     hasMoreThanOneError: (function() {
       return this.get('error').length &gt; 1;
     }).property('error', 'error.@each'),
@@ -9738,6 +10452,506 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+
+<span id='Tent-Tree'>/**
+</span>* @class Tent.Tree
+*
+* Usage
+*        {{view Tent.Tree
+            contentBinding=&quot;&quot; 
+            selectionBinding=&quot;&quot; 
+            aria=&quot;&quot;
+            activeVisible=&quot;&quot;
+            autoActivate=&quot;&quot;
+            autoScroll=&quot;&quot;
+            checkbox=&quot;&quot;
+            folderOnClickShould=&quot;&quot;
+            disabled=&quot;&quot;
+            icons=&quot;&quot;
+            keyboard=&quot;&quot;
+            nodeSelection=&quot;&quot;
+            tabbable=&quot;&quot;
+            radio=&quot;&quot;
+          }}
+*/
+
+
+(function() {
+
+  Tent.Tree = Ember.View.extend({
+    template: (function() {
+      var guid;
+      guid = Ember.guidFor(this);
+      return Ember.Handlebars.compile(&quot;&lt;div id=\&quot;&quot; + guid + &quot;-tree\&quot; {{bindAttr class=\&quot;view.radio:fancytree-radio\&quot;}}&gt;&lt;/div&gt;&quot;);
+    }).property(),
+<span id='Tent-Tree-property-aria'>    /**
+</span>    * @property {Boolean} [aria=false] A boolean property which enables/disables WAI-ARIA support.
+    */
+
+    aria: false,
+<span id='Tent-Tree-property-activeVisible'>    /**
+</span>    * @property {Boolean} [activeVisible=true] A boolean property which makes sure active nodes
+    * are visible (expanded).
+    */
+
+    activeVisible: true,
+<span id='Tent-Tree-property-autoActivate'>    /**
+</span>    * @property {Boolean} [autoActivate=true] A boolean property indicating whether to
+    * automatically activate a node when it is focused (using keys).
+    */
+
+    autoActivate: true,
+<span id='Tent-Tree-property-autoCollapse'>    /**
+</span>    * @property {Boolean} [autoCollapse=false] A boolean property indicating whether to
+    * automatically collapse all siblings, when a node is expanded.
+    */
+
+    autoCollapse: false,
+<span id='Tent-Tree-property-autoScroll'>    /**
+</span>    * @property {Boolean} [autoScroll=false] A boolean property indicating whether to
+    * automatically scroll nodes into visible area
+    */
+
+    autoScroll: false,
+<span id='Tent-Tree-property-checkbox'>    /**
+</span>    * @property {Boolean} [checkbox=false] A boolean property responsible for displaying
+    * checkboxes on the nodes.
+    */
+
+    checkbox: false,
+<span id='Tent-Tree-property-folderOnClickShould'>    /**
+</span>    * @property {String} folderOnClickShould The property responsible for the folder click behaviour
+    * If the value is 'expandOnDblClick' the folder expands only on double click
+    * If the value is 'activate' the folder gets activated (not selected) on click
+    * If the value is 'expand' the folder expands on click (not selected &amp; activated)
+    * If the value is 'activateAndExpand' the folder is expanded &amp; activated on click
+    */
+
+    folderOnClickShould: 'expandOnDblClick',
+<span id='Tent-Tree-property-disabled'>    /**
+</span>    * @property {Boolean} [disabled=false] A boolean property responsible for enabling/disabling
+    * the entire tree
+    */
+
+    disabled: false,
+<span id='Tent-Tree-property-extensions'>    /**
+</span>    * @property {Array} extensions built for the fancytree widget which we wish to load
+    * must be specified here.
+    */
+
+    extensions: [],
+<span id='Tent-Tree-property-generateIds'>    /**
+</span>    * @property {Boolean} [generateIds=true] A boolean property indicating whether to generate
+    * unique ids for li elements.
+    */
+
+    generateIds: false,
+<span id='Tent-Tree-property-icons'>    /**
+</span>    * @property {Boolean} [icons=true] when true icons for the nodes are displayed on the UI
+    */
+
+    icons: false,
+<span id='Tent-Tree-property-keyboard'>    /**
+</span>    * @property {Boolean} [keyboard=true] A boolean property indicating keyboard navigation support
+    */
+
+    keyboard: true,
+<span id='Tent-Tree-property-nodeSelecion'>    /**
+</span>    * @property {String} nodeSelecion The property resposible for node selection behaviour
+    * If the value is 'singleSelect' user can select only one node
+    * If the value is 'multiSelect' user can select multiple nodes
+    * If the value is 'heirMultiSelect' user can select all the children on selecting parent node
+    */
+
+    nodeSelection: 'multiSelect',
+<span id='Tent-Tree-property-tabbable'>    /**
+</span>    * @property {Boolean} [tabbable=true] a boolean indicating whether the whole tree behaves as one single control
+    */
+
+    tabbable: true,
+<span id='Tent-Tree-property-minExpandLevel'>    /**
+</span>    * @property {Integer} minExpandLevel Locks expand/collapse for all the nodes on the given minExpandLevel value
+    */
+
+    minExpandLevel: 1,
+<span id='Tent-Tree-property-radio'>    /**
+</span>    * @property {Boolean} [radio=false] Displays radio buttons instead of checkboxes when set to true
+    * property checkbox must be set to true in order to see the radio button.
+    * To simulate radio group behavior the property nodeSelection must be set to 'singleSelect'
+    * else we will have multi-select radio buttons.
+    */
+
+    radio: false,
+<span id='Tent-Tree-property-content'>    /**
+</span>    * @property {Array} content an array of parent child relationship which is responsible for 
+    * rendering the tree.
+    * Example:
+    * [
+    *  {
+    *    title: 'Node Title', 
+    *    folder: true, // the value must be set to true else folderOnClickShould value wont have any effect
+    *    tooltip: 'tooltip that needs to be displayed for the node on hover',
+    *    extraClasses: 'class1 class2', //Adding classes to nodes,
+    *    expanded: true, //Will be expanded on load
+    *    lazy: true, //TODO, children will be loaded via AJAX call
+    *    children: [
+    *      {
+    *        title: &quot;&lt;span&gt;can enter HTML too using a span tag &lt;/span&gt;&quot;,
+    *        value: 100 // if it is a leaf node then we must specify the value, which will be 
+    *                  // collected in selection array on selection.
+    *      },
+    *      {title: 'child 2', value: 'can be any data type'}
+    *    ]
+    *  }
+    * ]
+    *
+    */
+
+    content: Em.A(),
+<span id='Tent-Tree-property-selection'>    /**
+</span>    * @property {Array} selection an array which holds selected leafnode values from the tree.
+    */
+
+    selection: Em.A(),
+    selectMode: (function() {
+      switch (this.get('nodeSelection')) {
+        case 'singleSelect':
+          return 1;
+        case 'multiSelect':
+          return 2;
+        case 'heirMultiSelect':
+          return 3;
+        default:
+          return 2;
+      }
+    }).property('nodeSelection'),
+    clickFolderMode: (function() {
+      switch (this.get('folderOnClickShould')) {
+        case 'activate':
+          return 1;
+        case 'expand':
+          return 2;
+        case 'activateAndExpand':
+          return 3;
+        case 'expandOnDblClick':
+          return 4;
+        default:
+          return 4;
+      }
+    }).property('folderOnClickShould'),
+    addArrayObservers: function(array) {
+      var _this = this;
+      return array.addArrayObserver(Em.Object.create({
+        arrayWillChange: function(array, start, removeCount, addCount) {
+          if (removeCount &amp;&amp; removeCount === array.get('length')) {
+            _this.get('selection').clear();
+            _this.reloadTree([]);
+            return _this.rerender();
+          } else if (removeCount) {
+            return _this.removeNodes(array.slice(start, start + removeCount));
+          }
+        },
+        arrayDidChange: function(array, start, removeCount, addCount) {
+          if (addCount &amp;&amp; addCount === array.get('length')) {
+            return _this.reloadTree(array);
+          } else if (addCount) {
+            return _this.addNodes(array.slice(start, start + addCount));
+          }
+        }
+      }));
+    },
+    contentDidChange: (function() {
+      this.reloadTree(this.get('content'));
+      this.addArrayObservers(this.get('content'));
+      return this.get('selection').clear();
+    }).observes('content'),
+    optionsDidChange: (function() {
+      var element, name, optionDidChange, options, value, _i, _len, _results;
+      options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'minExpandLevel', 'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'];
+      element = this.getTreeDom();
+      _results = [];
+      for (_i = 0, _len = options.length; _i &lt; _len; _i++) {
+        name = options[_i];
+        value = this.get(name);
+        optionDidChange = value !== element.fancytree('option', name);
+        if (optionDidChange) {
+          _results.push(element.fancytree('option', name, value));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).observes('activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable', 'minExpandLevel'),
+    didInsertElement: function() {
+      var options;
+      options = $.extend({
+        source: this.get('content')
+      }, this.getTreeEvents(), this.getNodeEvents(), this.getDefaultSettings());
+      this.getTreeDom().fancytree(options);
+      if (!this.get('hasArrayObservers')) {
+        this.addArrayObservers(this.get('content'));
+        return this.set('hasArrayObservers', true);
+      }
+    },
+    getTreeEvents: function() {
+      var event, options, treeEvents, _i, _len,
+        _this = this;
+      options = {};
+      treeEvents = ['treeInit', 'create'];
+      for (_i = 0, _len = treeEvents.length; _i &lt; _len; _i++) {
+        event = treeEvents[_i];
+        if (this[event] != null) {
+          options[event] = (function(e, data, flag) {
+            return _this[event].call(_this, e, data, flag);
+          });
+        }
+      }
+      return options;
+    },
+    getNodeEvents: function() {
+      var event, nodeEvents, options, widget, _i, _len;
+      options = {};
+      nodeEvents = ['beforeActivate', 'activate', 'deactivate', 'beforeSelect', 'select', 'beforeExpand', 'collapse', 'expand', 'loadChildren', 'focustree', 'blurtree', 'focus', 'blur', 'click', 'dblclick', 'keydown', 'keypress', 'createnode', 'rendernode', 'lazyload', 'lazyread'];
+      widget = this;
+      for (_i = 0, _len = nodeEvents.length; _i &lt; _len; _i++) {
+        event = nodeEvents[_i];
+        if (widget[event.toLowerCase()] != null) {
+          options[event] = (function(e, data) {
+            return widget[e.type.slice(9)](e, data);
+          });
+        }
+      }
+      return options;
+    },
+    getDefaultSettings: function() {
+      var defaultSettings, options, setting, _i, _len;
+      options = {};
+      defaultSettings = ['aria', 'activeVisible', 'autoActivate', 'autoCollapse', 'autoScroll', 'checkbox', 'clickFolderMode', 'disabled', 'extensions', 'generateIds', 'icons', 'keyboard', 'nolink', 'selectMode', 'tabbable', 'minExpandLevel'];
+      for (_i = 0, _len = defaultSettings.length; _i &lt; _len; _i++) {
+        setting = defaultSettings[_i];
+        options[setting] = this.get(setting);
+      }
+      return options;
+    },
+    removeNodes: function(options) {
+      var option, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = options.length; _i &lt; _len; _i++) {
+        option = options[_i];
+        _results.push(this.removeChildFromRootNode(option));
+      }
+      return _results;
+    },
+    addNodes: function(nodes) {
+      var node, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = nodes.length; _i &lt; _len; _i++) {
+        node = nodes[_i];
+        _results.push(this.addChildrenToRootNode(node));
+      }
+      return _results;
+    },
+    getTreeDom: (function() {
+      return this.$(&quot;#&quot; + (Ember.guidFor(this)) + &quot;-tree&quot;);
+    }),
+    getTree: (function() {
+      return this.getTreeDom().fancytree('getTree');
+    }),
+    enable: function() {
+      if (this.getTreeDom().fancytree('option', 'disabled')) {
+        return this.getTreeDom().fancytree('enable');
+      }
+    },
+    disable: function() {
+      if (!this.getTreeDom().fancytree('option', 'disabled')) {
+        return this.getTreeDom().fancytree('disable');
+      }
+    },
+    reloadTree: (function(content) {
+      return this.getTree().reload(content);
+    }),
+    getRootNode: (function() {
+      return this.getTreeDom().fancytree('getRootNode');
+    }),
+    expandAll: (function() {
+      return this.getRootNode().visit(function(node) {
+        return node.setExpanded(true);
+      });
+    }),
+    collapseAll: (function() {
+      return this.getRootNode().visit(function(node) {
+        return node.setExpanded(false);
+      });
+    }),
+    toggleExpand: (function() {
+      return this.getRootNode().visit(function(node) {
+        return node.toggleExpanded();
+      });
+    }),
+    selectAll: (function() {
+      return this.getTree().visit(function(node) {
+        return node.setSelected(true);
+      });
+    }),
+    deselectAll: (function() {
+      return this.getTree().visit(function(node) {
+        return node.setSelected(false);
+      });
+    }),
+    toggleSelect: (function() {
+      return this.getTree().visit(function(node) {
+        return node.toggleSelected();
+      });
+    }),
+    getActiveNode: (function() {
+      return this.getTreeDom().fancytree('getActiveNode');
+    }),
+    toJSON: (function() {
+      return JSON.stringify(this.getTree().toDict(true));
+    }),
+    getNode: (function(id) {
+      return this.getTree().getNodeByKey(id);
+    }),
+    focusNode: (function(id) {
+      return this.getTree().activateKey(id);
+    }),
+    setNodeTitle: function(title, id) {
+      if (id != null) {
+        return this.getNode(id).setTitle(title);
+      } else {
+        return this.getActiveNode().setTitle(title);
+      }
+    },
+    sortTree: function(compareFunction, deepSort) {
+      if (deepSort == null) {
+        deepSort = true;
+      }
+      return this.getRootNode().sortChildren(compareFunction, deepSort);
+    },
+    sortActiveBranch: function(compareFunction, deepSort) {
+      if (deepSort == null) {
+        deepSort = true;
+      }
+      return this.getActiveNode().sortChildren(compareFunction, deepSort);
+    },
+    addChildren: (function(node, options) {
+      return node.addChildren(options);
+    }),
+    addChildrenToActiveNode: (function(options) {
+      return this.addChildren(this.getActiveNode(), options);
+    }),
+    addChildrenToRootNode: function(options) {
+      return this.addChildren(this.getRootNode(), options);
+    },
+    addChildrenToNode: (function(nodeId, options) {
+      return this.addChildren(this.getNode(nodeId), options);
+    }),
+    removeChild: function(node, options) {
+      var childNode, index, title;
+      title = options.title;
+      childNode = node.findFirst(function(n) {
+        return n.title === title;
+      });
+      if (childNode.isFolder()) {
+        if (childNode.isSelected()) {
+          this.recursivelyRemoveNodeChildren(childNode);
+        }
+      } else {
+        index = this.get('selection').indexOf(childNode.data.value);
+        if (index !== -1) {
+          this.get('selection').removeAt(index);
+        }
+      }
+      return node.removeChild(childNode);
+    },
+    removeChildFromActiveNode: (function(options) {
+      return this.removeChild(this.getActiveNode(), options);
+    }),
+    removeChildFromRootNode: (function(options) {
+      return this.removeChild(this.getRootNode(), options);
+    }),
+    removeChildFromNode: (function(nodeId, options) {
+      return this.removeChild(this.getNode(nodeId), options);
+    }),
+    replaceChildren: (function(node, options) {
+      return node.fromDict(options);
+    }),
+    replaceRootChildren: (function(options) {
+      return this.replaceChildren(this.getRootNode(), options);
+    }),
+    replaceActiveNodeChildren: (function(options) {
+      return this.replaceChildren(this.getActiveNode(), options);
+    }),
+    reinitialize: (function() {
+      return this.getTreeDom().fancytree();
+    }),
+    recursivelyAdd: function(node) {
+      if (node.isFolder()) {
+        return this.recursivelyAddNodeChildren(node);
+      } else {
+        if (!node.isSelected()) {
+          return this.get('selection').pushObject(node.data.value);
+        }
+      }
+    },
+    recursivelyAddNodeChildren: function(node) {
+      var child, _i, _len, _ref, _results;
+      _ref = node.children;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        child = _ref[_i];
+        _results.push(this.recursivelyAdd(child));
+      }
+      return _results;
+    },
+    recursivelyRemove: function(node) {
+      var index;
+      if (node.isFolder()) {
+        return this.recursivelyRemoveNodeChildren(node);
+      } else {
+        index = this.get('selection').indexOf(node.data.value);
+        if (index !== -1) {
+          return this.get('selection').removeAt(index);
+        }
+      }
+    },
+    recursivelyRemoveNodeChildren: function(node) {
+      var child, _i, _len, _ref, _results;
+      _ref = node.children;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+        child = _ref[_i];
+        _results.push(this.recursivelyRemove(child));
+      }
+      return _results;
+    },
+    beforeselect: function(e, data) {
+      var index;
+      if (data.node.isFolder()) {
+        if (this.get('nodeSelection') !== 'heirMultiSelect') {
+          return;
+        }
+        if (data.node.isSelected()) {
+          return this.recursivelyRemoveNodeChildren(data.node);
+        } else {
+          return this.recursivelyAddNodeChildren(data.node);
+        }
+      } else {
+        if (data.node.isSelected()) {
+          index = this.get('selection').indexOf(data.node.data.value);
+          if (index !== -1) {
+            return this.get('selection').removeAt(index);
+          }
+        } else {
+          return this.get('selection').pushObject(data.node.data.value);
+        }
+      }
+    }
+  });
+
+}).call(this);
+
+
 Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile(&quot;&lt;ul class=\&quot;sci-main-menu nav-tabs\&quot;&gt;\n\t{{#each menugroup in content}}\n\t\t{{#if menugroup.entitled}}\n\t\t\t&lt;li&gt;\n\t\t\t\t{{#if view.isFlattened}}\n\t\t\t\t\t{{#each item in menugroup.items}}\n\t\t\t\t\t\t{{view Tent.Application.MenuItemView contentBinding=\&quot;item\&quot;}}\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{else}}\n\t\t\t\t\t{{#view Tent.Panel collapsible=true collapsedBinding=\&quot;menugroup.collapsed\&quot; hasChildViews=true}}\n\t\t\t\t        {{#view Tent.PanelHead}}\n\t\t\t\t          &lt;h4&gt;&lt;i {{bindAttr class=\&quot;menugroup.icon\&quot;}}&gt;&lt;/i&gt; {{loc menugroup.title}}&lt;/h4&gt;  \n\t\t\t\t        {{/view}}\n\t\t\t\t        {{#view Tent.PanelBody}}\n\t\t\t\t        \t{{#each item in menugroup.items}}\n\t\t\t\t        \t\t{{view Tent.Application.MenuItemView contentBinding=\&quot;item\&quot;}}\n\t\t\t\t\t        {{/each}}\n\t\t\t\t        {{/view}}\n\t\t\t\t    {{/view}}\n\t\t\t\t{{/if}}\n\t\t\t&lt;/li&gt;\n\t\t{{/if}}\n\t{{/each}}\n&lt;/ul&gt;&quot;);
 
 (function() {
@@ -9747,12 +10961,12 @@ Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
     classNames: ['sci-main-menu'],
     collapsedDashboard: false,
-<span id='Tent-Spinner-property-collapseAutomatically'>    /**
+<span id='Tent-Tree-property-collapseAutomatically'>    /**
 </span>    * @property {Boolean} collapseAutomatically Defines whether the menu should collapse when the content area recieves focus.
     */
 
     collapseAutomatically: true,
-<span id='Tent-Spinner-property-isFlattened'>    /**
+<span id='Tent-Tree-property-isFlattened'>    /**
 </span>    * @property {Boolean} isFlattened Render all menu items in a single hierarchy, ignoring grouping.
     */
 
@@ -9766,25 +10980,31 @@ Tent.Application.MainMenuView = Ember.View.extend({
         return true;
       });
     },
-    highlightSelectedItem: function() {
-      var current, path;
-      path = window.location.pathname;
-      this.$(&quot;a[data-route]&quot;).each(function() {
-        if (path.indexOf($(this).attr('data-route')) !== -1) {
-          return $(this).addClass('active-menu');
-        }
-      });
-      current = null;
-      return this.$(&quot;a.active-menu&quot;).each(function() {
-        if (!(current != null)) {
-          return current = $(this);
-        } else {
-          if ($(this).attr('data-route').length &gt; current.attr('data-route').length) {
-            current.removeClass('active-menu');
-            return current = $(this);
+    highlightSelectedItem: function(path) {
+      var current;
+      path = path || window.location.pathname;
+      if ((this.$() != null)) {
+        this.$(&quot;.active-menu&quot;).removeClass('active-menu');
+        this.$(&quot;[data-route],[data-route-exact]&quot;).each(function() {
+          if (path.indexOf($(this).attr('data-route')) !== -1) {
+            $(this).addClass('active-menu');
           }
-        }
-      });
+          if (path === $(this).attr('data-route-exact')) {
+            return $(this).addClass('active-menu');
+          }
+        });
+        current = null;
+        return this.$(&quot;active-menu&quot;).each(function() {
+          if (!(current != null)) {
+            return current = $(this);
+          } else {
+            if ($(this).attr('data-route').length &gt; current.attr('data-route').length) {
+              current.removeClass('active-menu');
+              return current = $(this);
+            }
+          }
+        });
+      }
     },
     menuClicked: function(e) {
       var action;
@@ -9815,9 +11035,13 @@ Tent.Application.MainMenuView = Ember.View.extend({
         this.set('collapsedDashboard', true);
         this.$(&quot;span[rel=tooltip]&quot;).tooltip('enable');
         this.$('.tent-panel.collapsible').each(function() {
-          var view;
+          var elem, view;
           view = Ember.View.views[$(this).attr('id')];
           if (view.get('collapsed')) {
+            elem = $(&quot;.pull-right&quot;, $(this));
+            if (elem.length &gt; 0) {
+              elem.removeClass(&quot;collapsed&quot;);
+            }
             return view.show();
           }
         });
@@ -10683,39 +11907,43 @@ grouping: {
     personalizationsRecordDidChange: (function() {
       if (this.get('personalizationsRecord').toArray().length &gt; 0) {
         return this.set('personalizations', this.get('personalizationsRecord').toArray());
+      } else {
+        return this.set('personalizations', []);
       }
     }).observes('personalizationsRecord', 'personalizationsRecord.@each'),
     saveUIState: function(name) {
-      var newRecord, uiState;
+      var uiState;
       if (name != null) {
+        name = name.trim();
         this.set('customizationName', name);
       }
-      uiState = this.gatherGridData(this.get('customizationName'));
-      this.set('newRecord', this.get('store').savePersonalization('collection', this.get('dataType'), name, uiState));
-      if (!this.customizationAlreadyExists(name)) {
-        newRecord = this.createPersonalizationRecordForClientSide(name, uiState);
-        if (newRecord != null) {
-          return this.get('personalizations').pushObject(newRecord);
-        }
+      uiState = $.extend(true, {}, this.gatherGridData(this.get('customizationName')));
+      this.savePersonalization(name, uiState);
+      return this.addPersonalizationToCollection(name, uiState);
+    },
+    savePersonalization: function(name, uiState) {
+      return this.set('newRecord', this.get('store').savePersonalization('collection', this.get('dataType'), name, uiState));
+    },
+    addPersonalizationToCollection: function(name, uiState) {
+      var newRecord;
+      newRecord = this.createPersonalizationRecordForClientSide(name, uiState);
+      if (newRecord != null) {
+        this.removeExistingCustomization(name);
+        return this.get('personalizations').pushObject(newRecord);
       }
     },
-    customizationAlreadyExists: function(name) {
-      var exists, p, _i, _len, _ref;
-      exists = false;
-      _ref = this.get('personalizations').toArray();
-      for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
-        p = _ref[_i];
+    removeExistingCustomization: function(name) {
+      var index, p, _i, _len, _ref;
+      _ref = this.get('personalizations');
+      for (index = _i = 0, _len = _ref.length; _i &lt; _len; index = ++_i) {
+        p = _ref[index];
         if (p.get('name') === name) {
-          exists = true;
+          this.get('personalizations').splice(index, 1);
+          return;
         }
       }
-      return exists;
     },
     createPersonalizationRecordForClientSide: function(name, uiState) {},
-    storeFinished: (function() {
-      var r;
-      return r = this.get('newRecord');
-    }).observes('newRecord', 'newRecord.@each'),
     gatherGridData: function(name) {
       var state;
       return state = $.extend({
@@ -10744,6 +11972,7 @@ grouping: {
 
 
 (function() {
+  var __hasProp = {}.hasOwnProperty;
 <span id='Tent-Data-Collection'>/**
 </span>  * @class Tent.Data.Collection
   * An object used to wrap an array of objects, with a facade for paging, sorting and filtering,
@@ -10766,8 +11995,9 @@ grouping: {
       return this._super();
     },
     dataChanged: (function() {
+      this.set('totals', this.get('gridTotalsData'));
       return this.set('content', this.get('gridData'));
-    }).observes('modelData'),
+    }).observes('modelData', 'modelData.totals'),
     gridData: (function() {
       var column, grid, item, model, _i, _j, _len, _len1, _ref, _ref1;
       grid = [];
@@ -10788,6 +12018,28 @@ grouping: {
       }
       return grid;
     }).property('modelData'),
+    gridTotalsData: (function() {
+      var key, newKey, newRow, totals, totalsRow, value, _i, _len, _ref;
+      totals = [];
+      if (this.get('modelData.totals') != null) {
+        _ref = this.get('modelData.totals');
+        for (_i = 0, _len = _ref.length; _i &lt; _len; _i++) {
+          totalsRow = _ref[_i];
+          newRow = {};
+          for (key in totalsRow) {
+            if (!__hasProp.call(totalsRow, key)) continue;
+            value = totalsRow[key];
+            newKey = key.split('_sum')[0];
+            newRow[newKey] = value === false ? null : value;
+          }
+          totals.push(newRow);
+        }
+      }
+      return totals;
+    }).property('modelData.totals'),
+    isLoaded: (function() {
+      return this.get('modelData.isLoaded');
+    }).property('modelData.isLoaded'),
     columnsDescriptor: (function() {
       return this.get('store').getColumnsForType(this.get('dataType'));
     }).property('dataType'),

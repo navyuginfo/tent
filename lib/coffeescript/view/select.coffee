@@ -73,6 +73,12 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   preselectSingleElement: false
 
+  ###*
+   * @property {Boolean} isLoading A boolean to indicate that the content for the control has not yet loaded.
+   * This will usually be represented in the UI by a spinning icon.
+  ###
+  isLoading: false
+
   init: ->
     @_super()
     if @get('list.length') is 1 and @get('preselectSingleElement')
