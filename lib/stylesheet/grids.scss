@@ -442,6 +442,20 @@ $headerHeight: 20px;
 		}
 	}
 
+	&.horizontal-scrolling.fixed-header.footer-row {
+		.ui-jqgrid-sdiv {
+			left: 0px;
+			right: 0px;
+			overflow-x: auto;
+		}
+		.ui-jqgrid-bdiv {
+			bottom: 0px;
+		}
+		.ui-jqgrid-view {
+			overflow-x: hidden;
+		}
+	}
+
 
 	&.error {
 		.grid-table td {

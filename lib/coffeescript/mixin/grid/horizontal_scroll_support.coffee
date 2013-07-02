@@ -6,6 +6,25 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 	* title width and the column content
 	###
 	horizontalScrolling: false
+
+	###*
+	 * @property {Boolean} ShowAutofitButton Show or hide the autofit button on the grid header panel.
+	 *
+	 * The autofit button will allow the grid to toggle between two modes
+	 * 
+	 * - **Autofit**: All columns are resized to fit within the grid viewing area
+	 * - **Non-Autofit**: All columns assume their natural width (using no wrapping) and a horizontal scrollbar is
+	 * displayed if necessary
+	###
+	showAutofitButton: true
+
+	###*
+	 * @property {Boolean} autofitIfSpaceAvailable If autofit is turned off, and there is free space in the grid, expand the
+	 * columns to fit the free space.
+	###
+	autofitIfSpaceAvailable: false
+
+
 	isHorizontalScrolling: false
 
 	gridDidRender: ->
@@ -50,21 +69,49 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	moveHeaderAboveViewDiv: ->
 		hdiv = $('.ui-jqgrid-hdiv', @$())
+		bdiv = $('.ui-jqgrid-bdiv', @$())
 		view = $('.ui-jqgrid-view', @$())
+		sdiv = $('.ui-jqgrid-sdiv', @$())
 		hdiv.detach()
 		view.before(hdiv)
-		view.scroll((event)->
-			hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
-		)
+		if sdiv.length > 0
+			sdiv.detach()
+			view.after(sdiv)
+
+		if @get('footerRow')
+			sdiv.scroll((event)=>
+				@trackFooterScrollPosition(hdiv, bdiv, sdiv)
+			)
+			@trackFooterScrollPosition(hdiv, bdiv, sdiv)
+		else
+			view.scroll((event)=>
+				@trackContentScrollPosition(hdiv, view)
+			)
+			@trackContentScrollPosition(hdiv, view)
+
+	trackFooterScrollPosition: (hdiv, bdiv, sdiv)->
+		hdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+		bdiv.css("margin-left", "-" + sdiv.scrollLeft() + 'px')
+
+	trackContentScrollPosition: (hdiv, view)->
+		hdiv.css("margin-left", "-" + view.scrollLeft() + 'px')
+
 
 	revertHeaderIntoViewDiv: ->
 		hdiv = $('.ui-jqgrid-hdiv', @$())
 		view = $('.ui-jqgrid-view', @$())
 		bdiv = $('.ui-jqgrid-bdiv', @$())
+		sdiv = $('.ui-jqgrid-sdiv', @$())
 		hdiv.detach()
 		bdiv.before(hdiv)
 		hdiv.css("margin-left", "0px")
+		bdiv.css("margin-left", "0px")
 		view.unbind('scroll')
+		sdiv.unbind('scroll')
+		if sdiv.length > 0
+			sdiv.detach()
+			bdiv.after(sdiv)
+
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
 	# the column. The cells should not wrap in this case 
@@ -73,16 +120,22 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('horizontalScrolling')
 			firstRowOfGrid = @$('.jqgfirstrow td')
 			jqGridCols = @getTableDom()[0].p.colModel
-
+			totalWidth = 0
 			# Set the width of each column to the greater of header width or cell width.
 			@$('.ui-jqgrid-htable th').each((index, col)=>
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
+				if not jqGridCols[index].hidden
+					totalWidth = totalWidth + parseInt(finalWidth)
 				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
 				@changeFooterWidth(index, finalWidth)
 			)
 			if @get('footerRow')
           		@getTableDom()[0].grid.sDiv.style.width = "auto"
-			
+
+			if @get('autofitIfSpaceAvailable')
+				@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)
+			else
+				@resizeTableToColumnsWidth(totalWidth)
 
 	calculateColumnWidth: (index, col, firstRowOfGrid) ->
 		widthBasedOnHeader = @calculateHeaderColumnWidth(index, col)
@@ -100,7 +153,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 
 	calculateHeaderColumnWidth: (index, col)->
 		if (@get('multiSelect') and index==0)
-			$(col).width()
+			col.style.width.split('px')[0]
 		else
 			column = @get('columnModel')[index - (if @get('multiSelect') then 1 else 0)]
 			if column?
@@ -112,10 +165,34 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('groupingInfo.columnName')?
 			widthBasedOnContent = firstRowOfGrid.eq(index).width()
 		else 
-			widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
+			if firstRowOfGrid.eq(index).css('min-width') != '0px'
+				widthBasedOnContent = firstRowOfGrid.eq(index).css('min-width').split('px')[0]
+			else
+				widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
+			widthBasedOnContent
 
 	changeFooterWidth: (index, finalWidth)->
 		if @get('footerRow')
 			# review for performance
 			footers = @getTableDom()[0].grid.footers;
 			footers[index].style.width = finalWidth + 'px';
+
+	resizeTableToColumnsWidth: (totalWidth) ->
+		@$('.ui-jqgrid-htable').width(totalWidth)
+		@$('.ui-jqgrid-btable').width(totalWidth)
+		@$('.ui-jqgrid-ftable').width(totalWidth)
+
+	ensureColumnsExpandToAvailableSpace: (firstRowOfGrid, jqGridCols)->
+		# Expand to fit the grid area if necessary
+		totalGridWidth = @$('.ui-jqgrid').width()
+		totalColumnsWidth = @$('.ui-jqgrid-btable').width()
+		if (totalColumnsWidth > 0) and (totalGridWidth > totalColumnsWidth)
+			if @get('horizontalScrolling') and not @get('temporaryAutoFit') 
+				# The easiest way to normalize the columns is is to revert to shrinkToFit.
+				Ember.run.next this, =>
+					@set('temporaryAutoFit', true) 
+					@set('horizontalScrolling', false)
+				Ember.run.next this, =>
+					@set('horizontalScrolling', true)
+					@set('temporaryAutoFit', false)
+

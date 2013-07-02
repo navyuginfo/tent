@@ -47,7 +47,7 @@ require '../mixin/grid/horizontal_scroll_support'
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow']
 
 	###*
 	* @property {String} title The title caption to appear above the table
@@ -322,14 +322,23 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	adjustHeight: ->
 		if @get('fixedHeader')
 			top = @$('.ui-jqgrid-htable').height() # + @$('.grid-header').height() + 6
-			bottom = (@$('.ui-jqgrid-sdiv').height() + @heightForPager()) or 0
 			if @get('horizontalScrolling')
 				@$('.ui-jqgrid-bdiv').css('top', 0)
 			else
 				@$('.ui-jqgrid-bdiv').css('top', top)
 
-			@$('.ui-jqgrid-view').css('bottom', bottom);
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
+			
+			@$('.ui-jqgrid-bdiv').css('bottom', @heightForFooter())
+			if @get('footerRow')
+				if @get('horizontalScrolling')
+					@$('.ui-jqgrid-sdiv').css('bottom', @heightForPager())
+					@$('.ui-jqgrid-view').css('bottom', @heightForFooter() + this.heightForPager())
+				else 
+					@$('.ui-jqgrid-view').css('bottom', @heightForPager())
+					@$('.ui-jqgrid-sdiv').css('bottom', '0px')
+			else 
+				@$('.ui-jqgrid-view').css('bottom', @heightForPager())
 
 			if not @get('paged')
 				if @get('horizontalScrolling')
@@ -341,8 +350,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		$.publish('/grid/height-changed')
 
 	heightForPager: ->
-		#if @get('horizontalScrolling') then 0 else @$('.ui-jqgrid-pager')?.height()
-		@$('.ui-jqgrid-pager')?.height()
+		@$('.ui-jqgrid-pager')?.height() or 0
+
+	heightForFooter: ->
+		@$('.ui-jqgrid-sdiv')?.height() or 0
 
 	removeLastDragBar: ->
 		@$('.ui-th-column .ui-jqgrid-resize').show()
@@ -369,6 +380,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
+			@adjustHeight()
 
 	hideGrid: ->
 		@$(".gridpager").hide()
