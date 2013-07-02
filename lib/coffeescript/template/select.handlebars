@@ -4,21 +4,24 @@
 
 <div class="controls">
   <div class="input-prepend">
+    {{#if view.isLoading}}
+      <div class="wait"><i class="icon-spinner icon-spin"></i></div>
+    {{/if}}
     {{#if view.isTextDisplay}}
       <span class="text-display">{{loc view.currentSelectedLabel}}</span>
     {{else}}
       {{#if view.isRadioGroup}}
         <div class="radio-group">
-        {{view Tent.SelectElement 
-               contentBinding="view.list" 
-               class="tent-radio-group"
-               optionLabelPathBinding="view.optionLabelPath" 
-               optionValuePathBinding ="view.optionValuePath" 
-               selectionBinding="view.selection"
-               valueBinding = "view.value"
-               tagName = "div"
-               templateName = "radio_group"
-        }} 
+          {{view Tent.SelectElement 
+                 contentBinding="view.list" 
+                 class="tent-radio-group"
+                 optionLabelPathBinding="view.optionLabelPath" 
+                 optionValuePathBinding ="view.optionValuePath" 
+                 selectionBinding="view.selection"
+                 valueBinding = "view.value"
+                 tagName = "div"
+                 templateName = "radio_group"
+          }} 
         </div>
       {{else}}
         {{view Tent.SelectElement 
