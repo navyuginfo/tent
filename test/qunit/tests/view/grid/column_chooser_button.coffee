@@ -14,10 +14,10 @@ test 'Test that', ->
 		showCol: ->
 		hideCol: ->
 		columnModel: [
-			{name: 'col1', hidden: false, checked: true, title: 'title1'}
-			{name: 'col2', hidden: false, checked: true, title: 'title2'}
-			{name: 'col3', hidden: true, checked: false, title: 'title3'}
-			{name: 'col3', hidden: true, checked: false, title: 'title3', hideable: false}
+			Ember.Object.create({name: 'col1', hidden: false, checked: true, title: 'title1'})
+			Ember.Object.create({name: 'col2', hidden: false, checked: true, title: 'title2'})
+			Ember.Object.create({name: 'col3', hidden: true, checked: false, title: 'title3'})
+			Ember.Object.create({name: 'col3', hidden: true, checked: false, title: 'title3', hideable: false})
 		]
 
 	view = Ember.View.create
