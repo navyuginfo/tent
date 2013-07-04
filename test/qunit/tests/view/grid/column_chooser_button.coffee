@@ -13,11 +13,16 @@ test 'Test that', ->
 		bindToggleVisibility: ->
 		showCol: ->
 		hideCol: ->
+		content: Ember.Object.create
+			filteredColumns: {
+				filtered: ['col4']
+			}
 		columnModel: [
 			Ember.Object.create({name: 'col1', hidden: false, checked: true, title: 'title1'})
 			Ember.Object.create({name: 'col2', hidden: false, checked: true, title: 'title2'})
 			Ember.Object.create({name: 'col3', hidden: true, checked: false, title: 'title3'})
 			Ember.Object.create({name: 'col3', hidden: true, checked: false, title: 'title3', hideable: false})
+			Ember.Object.create({name: 'col4', hidden: false, checked: false, title:'title4', hideable: true})
 		]
 
 	view = Ember.View.create
