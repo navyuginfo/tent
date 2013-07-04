@@ -152,6 +152,10 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 	}
 }
 
+/* Spinner icon for Select controls*/
 
-
-
+.control-group .wait {
+  position: relative;
+  top: .3em;
+}
+ 
