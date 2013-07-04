@@ -17,9 +17,14 @@ Tent.Grid.Adapters = Ember.Mixin.create
 		names
 	).property('columns')
 
-	# Adapter to get column descriptors from current datastore columndescriptor version 
+	hideFilteredColumns: (->
+		if @get('content.isLoaded')
+			filteredColumns = @get('content.filteredColumns.filtered') || []
+			@hideCol(columnName) for columnName in filteredColumns
+	).observes('content.isLoaded', 'content.filteredColumns.filtered')
+
 	columnModel: (->
-		columns = Ember.A() 
+		columns = Ember.A()
 		if @get('columns')?
 			for column in @get('columns')
 				item = Ember.Object.create
@@ -86,7 +91,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-	 @getTableDom()[0].p.viewrecords = false
+		@getTableDom()[0].p.viewrecords = false
     #remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###

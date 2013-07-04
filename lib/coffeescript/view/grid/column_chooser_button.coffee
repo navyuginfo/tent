@@ -9,14 +9,16 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend Tent.ToggleVisibility,
 	grid: null
 
 	model: (->
+		filteredColumns = @get('grid.content.filteredColumns.filtered') || []
 		annotatedModel = @get('grid.columnModel').map((item)->
-			item.checked = !item.hidden
+			item.set('checked', !item.hidden)
 			item
 		)
 		annotatedModel.filter((item)->
-			item.hideable != false
+			unfiltered = if filteredColumns.length then !filteredColumns.contains(item.name) else true
+			unfiltered and item.hideable != false
 		)
-	).property('grid.columnModel', 'grid.columnModel.@each')
+	).property('grid.columnModel', 'grid.columnModel.@each', 'grid.content.isLoaded')
 
 	didInsertElement: ->
 		grid = @get('grid')
