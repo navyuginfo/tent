@@ -8,14 +8,14 @@
 * When 'negative' is set to true, then negative values will be displayed in different style to
 * non-negative amounts (usually colored red).
 ###
-partiallyLoadedCell = (gid) ->
-	partiallyLoadedColumns = Ember.View.views[gid.split("_")[0]].get("content.filteredColumns.partiallyFiltered")
+partiallyLoadedCell = (options) ->
+	partiallyLoadedColumns = Ember.View.views[optios.gid.split("_")[0]].get("content.filteredColumns.partiallyFiltered")
 	partiallyLoadedColumns.contains(options.colModel.name)
 
 jQuery.extend $.fn.fmatter, 
 	amount: (cellvalue, options, cell) ->
 		if (not cellvalue) and (cellvalue != 0) and cell?
-			if options?.gid and partiallyLoadedCell(options.gid)
+			if options?.gid and options.colModel?.name and partiallyLoadedCell(options)
 				return "<span class=\"unentitled-cell\" title=\"#{Tent.I18n.loc('unentitledCellMessage')}\"></span>"
 			else
 				cellvalue = $('input', cell).attr('value') or 0
