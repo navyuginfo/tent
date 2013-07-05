@@ -9,7 +9,7 @@
 * non-negative amounts (usually colored red).
 ###
 partiallyLoadedCell = (options) ->
-	partiallyLoadedColumns = Ember.View.views[optios.gid.split("_")[0]].get("content.filteredColumns.partiallyFiltered")
+	partiallyLoadedColumns = Ember.View.views[options.gid.split("_")[0]].get("content.filteredColumns.partiallyFiltered")
 	partiallyLoadedColumns.contains(options.colModel.name)
 
 jQuery.extend $.fn.fmatter, 
