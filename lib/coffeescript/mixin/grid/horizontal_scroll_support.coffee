@@ -165,7 +165,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('groupingInfo.columnName')?
 			widthBasedOnContent = firstRowOfGrid.eq(index).width()
 		else 
-			if doesColumnHaveMinWidth(index, firstRowOfGrid)
+			if @doesColumnHaveMinWidth(index, firstRowOfGrid)
 				widthBasedOnContent = firstRowOfGrid.eq(index).css('min-width').split('px')[0]
 			else
 				widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
