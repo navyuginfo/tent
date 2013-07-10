@@ -20,5 +20,5 @@ Tent.messages.MIN_VALUE_ERROR = "error.minValue"
 Tent.messages.MAX_VALUE_ERROR = "error.maxValue"
 Tent.messages.VALUE_BETWEEN_ERROR = "error.valueBetween"
 Tent.messages.POSITIVE_ERROR = "error.positive"
-
+Tent.messages.UNIQUE_VALUE_ERROR = "error.uniqueValue"
 
