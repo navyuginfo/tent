@@ -62,8 +62,24 @@ test "Positive Validations", ->
 	equal Tent.Validations.positive.validate("2,456,555.99"), true, 'string formatted'
 	equal Tent.Validations.positive.validate("-2,456.55"), false, 'string formatted fail'
 
+test 'Unique value validation with parameters', ->
+	value = 1
+	testArr = [2,3,4]
+	item = 'Id'
+	property = 'value'
+	ok Tent.Validations.uniqueValue.validate(value, {testArr:testArr, item:item, property: property}), 'Should be Ok'
 
+	value = 1
+	testArr = [1,2,3,4]
+	ok not Tent.Validations.uniqueValue.validate(value, {testArr:testArr, item:item, property: property}), 'Should be invalid(duplicate value)'
 
+	value = 1
+	ok not Tent.Validations.uniqueValue.validate(value), 'No options provided'
 
+	value = 1
+	testArr = [1,2,3,4]
+	ok not Tent.Validations.uniqueValue.validate(value, {testArr:testArr, property:null, item: item}), 'Property is null'
 
-
+	value = 1
+	testArr = 'testArr'
+	ok not Tent.Validations.uniqueValue.validate(value, {testArr:testArr, property:property, item: item}), 'testArr is not an array'

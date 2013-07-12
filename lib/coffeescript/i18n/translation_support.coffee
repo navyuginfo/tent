@@ -167,6 +167,7 @@ Tent.I18n.loadTranslations(
 	    minValue: 'Value must be greater than or equal to %@min'
 	    maxValue: 'Value must be less than or equal to %@max'
 	    valueBetween: 'Value must be between %@min and %@max'
+	    uniqueValue: '%@item with this %@property already exists'
 	}
  
 )

@@ -187,3 +187,24 @@ Tent.Validations.positive = Tent.Validation.create
 
   ERROR_MESSAGE: Tent.messages.POSITIVE_ERROR
 
+Tent.Validations.uniqueValue = Tent.Validation.create
+  ###*
+  * @method validate
+  * @param {String} value the value to test
+  * @param {Object} options the options to pass to the validation. 
+  *  options must contain
+  *  a 'testArr' string of comma separated values to test against
+  *  a 'item' string - the name of field/item for which duplicacy is checked.
+  *                     This is required for proper formation of error message in case of validation failure.
+  *  a 'property' string - the property of above field/item which should be unique.
+  *                     This is required for proper formation of error message in case of validation failure.
+  * @param {String} message an optional message to display if the validation fails
+  * Message string will be formed as: "'item' with this 'property' already exists"
+  * @return {Boolean} the result of the validation
+  ###
+  validate: (value, options, message, view)->
+    if not options? or not options.testArr? or not options.item? or not options.property? or not(options.testArr instanceof Array)
+      return false
+    !(options.testArr.contains(value))
+
+  ERROR_MESSAGE: Tent.messages.UNIQUE_VALUE_ERROR
