@@ -31,7 +31,7 @@ Tent.HSection = Ember.View.extend Tent.SpanSupport,
 
 	willDestroyElement: ->
 		$.unsubscribe('ui/h-collapse-left')
-		$.unsubscribe('ui/h-collapse-right')
+		$.unsubscribe('ui/h-expand-left')
 
 	expandAll: ->
 		@get('left-panel').expand()
