@@ -200,9 +200,8 @@ Tent.Validations.uniqueValue = Tent.Validation.create
   * @return {Boolean} the result of the validation
   ###
   validate: (value, options, message, view)->
-    if not options? or not options.testArr?
+    if not options? or not options.testArr? or not options.item? or not options.property? or not(options.testArr instanceof Array)
       return false
-    value=value.trim() if value?
     !(options.testArr.contains(value))
 
   ERROR_MESSAGE: Tent.messages.UNIQUE_VALUE_ERROR
