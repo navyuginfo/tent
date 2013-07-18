@@ -22,11 +22,11 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
       @doLocalGrouping(groupType, columnName)
 
   doLocalGrouping: (groupType, columnName)->
-    if groupType == 'none'      
+    if groupType == 'none'
       @getTableDom().jqGrid('groupingRemove', true)
-    else 
+    else
       columnType = @getColumnType(columnName)
-      
+
       lastSort = @getTableDom()[0].p.sortname
       for columnDef in @get('columns')
         if columnDef.name == columnName and columnDef.sortable? and columnDef.sortable
@@ -49,10 +49,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 
   doRemoteGrouping: (groupType, columnName) ->
     @clearAllGrouping()
-    if groupType == 'none'      
+    if groupType == 'none'
       @get('collection').goToPage(1)
-    else 
-      groupData = 
+    else
+      groupData =
         columnName: columnName
         type: groupType
         columnType: @getColumnType(columnName)
@@ -82,9 +82,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
         selectedGroup = item
 
     if selectedGroup?
+      content = ""
       content = "<span class='title'>" + @getColumnTitle(columnName) + "</span>" if @get('showGroupTitle')
       content = content + "<span class='range'>"
-      
+
       comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
       startValue = selectedGroup[columnName.decamelize()]
       if startValue?
@@ -135,9 +136,6 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
   setShowingGroupsListState: (isShowing) ->
     @set('showingGroups', isShowing)
     @set('collection.isShowingGroupsList', isShowing)
-  
+
   isShowingValidGroups: ->
     @get('showingGroups') and @get('groupingInfo.columnName')?
-  
-    
-  
