@@ -148,6 +148,9 @@ Tent.I18n.loadTranslations(
 			ascending: 'Ascending'
 			descending: 'Descending'
 		}
+		upload: {
+			buttonLabel: 'Select file to Upload'
+		}
 
 	}
 	error: {
