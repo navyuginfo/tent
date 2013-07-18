@@ -1027,9 +1027,19 @@
                     </div>
 
                     <h3>File Upload</h3>
+                      <div class="dropZone" style="width:100px;height: 100px;border:2px solid green;"></div>
+                      <div class="dropZone1" style="width:100px;height: 100px;border:2px solid green;"></div>
                       {{view Tent.FileUpload dataUrl="/fileupload"
-                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"}}
-
+                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"
+                        helpText="tent.pleaseSelect"
+                        dropZone="dropZone"
+                      }}
+                      {{view Tent.FileUpload dataUrl="/fileupload"
+                        uploadSuccessFunctionBinding="Pad.uploadSuccessFunction"
+                        helpText="tent.pleaseSelect"
+                        disabled=true
+                        dropZone="dropZone2"
+                      }}
         
         {{/view}}
 
