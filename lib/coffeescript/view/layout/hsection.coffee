@@ -187,6 +187,7 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	layout: Ember.Handlebars.compile '<div class="drag-bar clickarea"><i class="icon-caret-right"></i></div><div class="panel-content">{{yield}}</div>'
 
 	didInsertElement: ->
+		$.publish('/window/resize');
 		$.subscribe("/ui/horizontalSlide", (a, data)=>
 			@keepAlignedWithRight(data)
 		)
