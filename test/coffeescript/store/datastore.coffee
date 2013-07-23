@@ -21,7 +21,10 @@ Pad.DataStore = Ember.Object.extend
 		#$(elem).val($(this).getCell(rowId,3))
 
 	fetchPersonalizations: ->
-		[]
+		Ember.Object.create
+			isLoaded: true
+			toArray: ->
+				[]
 		###customizationName:'Default'
 		paging: {
 		  pageSize: 12
