@@ -141,44 +141,57 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
   populateContainer: ()->
     if @get('collection.columnsDescriptor')?
       for column in @get('collection.columnsDescriptor')
-        fieldView = null
-        if column.filterable!=false
-          switch column.type
-            when "string"
-              fieldView = Tent.TextField.create
-                label: Tent.I18n.loc(column.title) 
-                isFilter: true 
-                valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.collectionFilter.currentFilter"
-                field: column.name
-            when "date", "utcdate"
-              fieldView = Tent.DateRangeField.create
-                label: Tent.I18n.loc(column.title) 
-                isFilter: true 
-                valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
-                closeOnSelect:true
-                arrows:true
-                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
-                dateFormat: "yy-mm-dd"
-                #filterBinding: "parentView.grid.currentFilter"
-                #field: column.name
-            when "number", "amount"
-              fieldView = Tent.NumericTextField.create
-                label: Tent.I18n.loc(column.title) 
-                isFilter: true 
-                serializer: Tent.Formatting.number.serializer
-                rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.collectionFilter.currentFilter"
-                field: column.name
-            when "boolean"
-              fieldView = Tent.Checkbox.create
-                label: Tent.I18n.loc(column.title) 
-                isFilter: true 
-                checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
-                filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
-                filterBinding: "parentView.collectionFilter.currentFilter"
-                field: column.name
+        # IE8 : processing of filter fields was triggering a script timeout.
+        # Wrap in setTimeout to avoid this. 
+        # TODO: review for later removal
+        (()=>
+          col = column # use a local closure to ensure that the setTimeout gets each column rather than just the last one.
+          setTimeout(=>
+            if col.filterable!=false
+              fieldView = @generateField(col)
+              @get('childViews').pushObject(fieldView) if fieldView?
+          ,10)
+        )()
+  
+  generateField: (column)->
+    fieldView = null
+    switch column.type
+      when "string"
+        fieldView = Tent.TextField.create
+          label: Tent.I18n.loc(column.title) 
+          isFilter: true 
+          valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+          filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+          filterBinding: "parentView.collectionFilter.currentFilter"
+          field: column.name
+      when "date", "utcdate"
+        fieldView = Tent.DateRangeField.create
+          label: Tent.I18n.loc(column.title) 
+          isFilter: true 
+          valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+          closeOnSelect:true
+          arrows:true
+          filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+          dateFormat: "yy-mm-dd"
+          #filterBinding: "parentView.grid.currentFilter"
+          #field: column.name
+      when "number", "amount"
+        fieldView = Tent.NumericTextField.create
+          label: Tent.I18n.loc(column.title) 
+          isFilter: true 
+          serializer: Tent.Formatting.number.serializer
+          rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+          filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+          filterBinding: "parentView.collectionFilter.currentFilter"
+          field: column.name
+      when "boolean"
+        fieldView = Tent.Checkbox.create
+          label: Tent.I18n.loc(column.title) 
+          isFilter: true 
+          checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data" 
+          filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
+          filterBinding: "parentView.collectionFilter.currentFilter"
+          field: column.name
 
-          @get('childViews').pushObject(fieldView) if fieldView?
+    return fieldView
+
