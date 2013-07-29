@@ -6,12 +6,19 @@ Tent.JqGridHeaderView = Ember.View.extend
   templateName: 'jqgrid_header'
   grid: null
 
+  someExportsAreAllowed: (->
+    @get('grid.allowCsvExport') or @get('grid.allowXlsExport') or @get('grid.allowJsonExport')
+  ).property()
+
   exportView: Ember.View.extend
     classNames: ['btn-group', 'export', 'jqgrid-title-button']
     templateName: 'jqgrid_export'
     csv: 'csv'
     json: 'json'
     xls: 'xls'
+    allowCsvExportBinding: 'parentView.grid.allowCsvExport'
+    allowXlsExportBinding: 'parentView.grid.allowXlsExport'
+    allowJsonExportBinding: 'parentView.grid.allowJsonExport'
 
     exportData: (e) ->
       contentType = e.context
