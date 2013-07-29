@@ -65,21 +65,24 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
 
   selectRemoteGroup: (id)->
     @setShowingGroupsListState(false)
-    @showGroupHeader(id)
+    @set('currentGroup', @getSelectedGroup(id))
+    @showGroupHeader(id, @get('currentGroup'))
     @get('collection').setCurrentGroupId(id)
     @get('collection').goToPage(1)
 
-  showGroupHeader: (id)->
+  getSelectedGroup: (id)->
+    for item in @get('content').toArray()
+      if item.get('id') == parseInt(id,10)
+        selectedGroup = item
+    return selectedGroup
+
+  showGroupHeader: (id, selectedGroup)->
     widget = this
 
     columnName = @get('groupingInfo.columnName')
     columnType = @get('groupingInfo.columnType')
     groupType = @get('groupingInfo.type')
     columnTitle = @getColumnTitle(columnName)
-
-    for item in @get('content').toArray()
-      if item.get('id') == parseInt(id,10)
-        selectedGroup = item
 
     if selectedGroup?
       content = ""
@@ -92,25 +95,22 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
         content = content + comparator.rowTitle(startValue)
       content = content + "</span>"
 
-
-    aggregateColumns = @addAggregateData(@get('columnModel'), selectedGroup)
-    headerRow = $('<tr class="group-header"><td><i class="icon-caret-left"></i>'+content+'</td>'+aggregateColumns+'</tr>')
+    #aggregateColumns = @addAggregateData(@get('columnModel'), selectedGroup)
+    aggregateColumns = @getTableDom()[0].getAggregateDataForGroupHeaderRow( {columns: @get('columnModel')}, selectedGroup, true)
+    headerRow = $('<tbody><tr class="group-header"><td><i class="icon-caret-left"></i>'+content+'</td>'+aggregateColumns+'</tr></tbody>')
+    @$('.ui-jqgrid-hbox .ui-jqgrid-htable tbody').remove()
     @$('.ui-jqgrid-hbox .ui-jqgrid-htable').append(headerRow)
     headerRow.click(->
       widget.returnToGroupList()
     )
     @columnsDidChange()
 
-  addAggregateData: (columns, row)->
-    hasAggregates = false
-    aggregateColumns = ''
-    columns.forEach ((col, i)->
-      return if i == 0
-      aggregate = row.get(col.name + "_sum")
-      aggregate = "" if aggregate == undefined
-      aggregateColumns += "<td>#{aggregate}</td>"
-    )
-    aggregateColumns
+  refreshGroupHeader: ->
+    @showGroupHeader(@get('collection.groupingInfo.currentGroupId'), @get('currentGroup'), true) if @get('collection.groupingInfo.currentGroupId')
+
+  columnOrderDidChange: (->
+    @refreshGroupHeader()
+  ).observes('columnInfo.order')
 
   hideGroupHeader: ->
     headerRow = @$('.ui-jqgrid-hbox .group-header')

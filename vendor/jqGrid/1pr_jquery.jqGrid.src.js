@@ -808,7 +808,7 @@ $.fn.jqGrid = function( pin ) {
           $("#rs_m"+$.jgrid.jqID(p.id)).css("display","none");
 
           /*
-            PR: Test that there is not a min-width calculated due to nowrap associated with the cell.
+            PR: Test that there is not a min-width calculated due to nowrap associated with the cell
            */
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
@@ -1341,21 +1341,8 @@ $.fn.jqGrid = function( pin ) {
         }
         v = v + "</span>";
         v = v + "<i class='icon-caret-right pull-right'></i>";
-        rowData.push('<td>'+v+'</td>' + addAggregateData(data, row));
+        rowData.push('<td>'+v+'</td>' + getAggregateDataForGroupHeaderRow(data, row));
         rowData.push( "</tr>" );
-      }
-
-      function addAggregateData(data, row) {
-        var hasAggregates = false;
-        var aggregateColumns, aggregate;
-        data.columns.forEach(function(col, i){
-          if (i == 0) { return; }
-          aggregate = row.get(col.name + "_sum");
-          if (aggregate == undefined)
-            aggregate = "";
-          aggregateColumns += '<td>'+aggregate+'</td>';
-        });
-        return aggregateColumns;
       }
 
       var container = $("#"+$.jgrid.jqID(ts.p.id)+" tbody:first");
@@ -1370,6 +1357,26 @@ $.fn.jqGrid = function( pin ) {
           e.stopPropagation();
         });
       });
+    },
+
+    /* PR: return the html for aggregate cells to be added to a group header row */
+    getAggregateDataForGroupHeaderRow = function(data, row, manageHiddenCells) {
+      var aggregateColumns, aggregate, orderIndex;
+      var isMultiSelect = ts.p.multiselect?1:0;
+      var showSubgrid = ts.p.subGrid?1:0;
+      var showRowNumbers = ts.p.rownumbers===true?1:0;
+      var order = orderedCols(isMultiSelect + showSubgrid + showRowNumbers );
+
+      for (orderIndex=1; orderIndex < order.length; orderIndex++) {
+        var cell = $.jgrid.getAccessor(data.columns, order[orderIndex]);
+        aggregate = row.get(cell.name + "_sum");
+        if (aggregate === undefined) {
+          aggregate = cell.name;
+        }
+        var hiddenString = (manageHiddenCells && cell.hidden) ? ' style="display:none;"' : " ";
+        aggregateColumns += '<td role="gridcell" ' + hiddenString + '>'+aggregate+'</td>';
+      }
+      return aggregateColumns;
     },
 
     addJSONData = function(data,t, rcnt, more, adjust) {
@@ -2728,6 +2735,7 @@ $.fn.jqGrid = function( pin ) {
     ts.addJSONData = function(d) {addJSONData(d,ts.grid.bDiv);};
     /* PR: adding remote grouping support */
     ts.addGroupingData = function(d) {addGroupingData(d,ts.grid.bDiv);};
+    ts.getAggregateDataForGroupHeaderRow = function(data, row, manageHiddenCells) {return getAggregateDataForGroupHeaderRow(data, row, manageHiddenCells);};
     ts.beginReq = function(d) {beginReq();};
     ts.endReq = function(d) {endReq();};
     /* end of PR*/
