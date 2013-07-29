@@ -1371,7 +1371,7 @@ $.fn.jqGrid = function( pin ) {
         var cell = $.jgrid.getAccessor(data.columns, order[orderIndex]);
         aggregate = row.get(cell.name + "_sum");
         if (aggregate === undefined) {
-          aggregate = cell.name;
+          aggregate = "";
         }
         var hiddenString = (manageHiddenCells && cell.hidden) ? ' style="display:none;"' : " ";
         aggregateColumns += '<td role="gridcell" ' + hiddenString + '>'+aggregate+'</td>';
