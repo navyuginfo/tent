@@ -258,6 +258,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		$('tr.footrow').addClass('tent-jqgrid-footrow') if @get('footerRow')
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
+			@refreshGroupHeader()
 		)
 			
 	setInitialViewRecordsAttribute:()->

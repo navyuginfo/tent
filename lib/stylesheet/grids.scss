@@ -434,7 +434,7 @@ $headerHeight: 20px;
 		}
 
 		.ui-jqgrid-btable {
-	 		table-layout: auto; // Column widths depend on their content
+	 		table-layout: fixed; // Column widths depend on their content
 		}
 		
 		.ui-jqgrid tr.jqgrow td {
