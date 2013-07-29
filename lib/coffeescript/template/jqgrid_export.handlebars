@@ -2,69 +2,74 @@
   <i class="icon-share"></i>Export
 </a>
 <ul class="dropdown-menu">
-  <li><a {{action exportData "view.xls" target="view"}} href="#" class="export-xls">{{loc tent.jqGrid.export.xls}}</a></li>
-  <li><a {{action exportData "view.csv" target="view"}} href="#" class="export-csv">{{loc tent.jqGrid.export.csv}}</a></li>
-  <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
-  <li class="divider"></li>
-  <li class="dropdown-submenu-left">
-    <a href="#">Delimiter</a>
-    <ul class="dropdown-menu custom-export">
-      <li>
-        <form class="form-horizontal well" id="customExportForm">
-          <div class="control-group">
-            <label class="control-label">Delimiter</label>
-            <div class="controls">
-                <select name="delimiter" class="input-small" id="delimiter">
-                <option value="">{{loc tent.pleaseSelect}}</option>
-                <option value="," selected>{{loc tent.jqGrid.export.comma}}</option>
-                <option value="|">{{loc tent.jqGrid.export.pipe}}</option>
-                <option value=";">{{loc tent.jqGrid.export.semicolon}}</option>
-                <option value=":">{{loc tent.jqGrid.export.colon}}</option>
-              </select>
+  {{#if view.allowXlsExport}}
+    <li><a {{action exportData "view.xls" target="view"}} href="#" class="export-xls">{{loc tent.jqGrid.export.xls}}</a></li>
+  {{/if}}
+  {{#if view.allowCsvExport}}
+    <li><a {{action exportData "view.csv" target="view"}} href="#" class="export-csv">{{loc tent.jqGrid.export.csv}}</a></li>
+    <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
+    <li class="divider"></li>
+    <li class="dropdown-submenu-left">
+      <a href="#">Delimiter</a>
+      <ul class="dropdown-menu custom-export">
+        <li>
+          <form class="form-horizontal well" id="customExportForm">
+            <div class="control-group">
+              <label class="control-label">Delimiter</label>
+              <div class="controls">
+                  <select name="delimiter" class="input-small" id="delimiter">
+                  <option value="">{{loc tent.pleaseSelect}}</option>
+                  <option value="," selected>{{loc tent.jqGrid.export.comma}}</option>
+                  <option value="|">{{loc tent.jqGrid.export.pipe}}</option>
+                  <option value=";">{{loc tent.jqGrid.export.semicolon}}</option>
+                  <option value=":">{{loc tent.jqGrid.export.colon}}</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">{{loc tent.jqGrid.export._or}}</label>
-          </div>
-          <div class="control-group">
-            <label class="control-label">{{loc tent.jqGrid.export.enterDelimiter}}</label>
-            <div class="controls">
-              <input type="text" name="customDelimiter" id="customDelimiter"  maxlength="1" class="input-small">
+            <div class="control-group">
+              <label class="control-label">{{loc tent.jqGrid.export._or}}</label>
             </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">{{loc tent.jqGrid.export.headers}}</label>
-            <div class="controls">
-              <label class="radio inline">
-                <input type="radio" name="columnHeaders" value="true" checked>{{loc tent.on}}
-              </label>
-              <label class="radio inline">
-                <input type="radio" name="columnHeaders" value="false">{{loc tent.off}}
-              </label>
+            <div class="control-group">
+              <label class="control-label">{{loc tent.jqGrid.export.enterDelimiter}}</label>
+              <div class="controls">
+                <input type="text" name="customDelimiter" id="customDelimiter"  maxlength="1" class="input-small">
+              </div>
             </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label">{{loc tent.jqGrid.export.inclQuotes}}</label>
-            <div class="controls">
-              <label class="radio inline">
-                <input type="radio" name="includeQuotes" value="true" checked>{{loc tent.on}}
-              </label>
-              <label class="radio inline">
-                <input type="radio" name="includeQuotes" value="false">{{loc tent.off}}
-              </label>
+            <div class="control-group">
+              <label class="control-label">{{loc tent.jqGrid.export.headers}}</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="columnHeaders" value="true" checked>{{loc tent.on}}
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="columnHeaders" value="false">{{loc tent.off}}
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="control-group">
-            <div class="controls">
-              <button type="button" class="btn">{{loc tent.jqGrid.export.export}}</button>
+            <div class="control-group">
+              <label class="control-label">{{loc tent.jqGrid.export.inclQuotes}}</label>
+              <div class="controls">
+                <label class="radio inline">
+                  <input type="radio" name="includeQuotes" value="true" checked>{{loc tent.on}}
+                </label>
+                <label class="radio inline">
+                  <input type="radio" name="includeQuotes" value="false">{{loc tent.off}}
+                </label>
+              </div>
             </div>
-          </div>
+            <div class="control-group">
+              <div class="controls">
+                <button type="button" class="btn">{{loc tent.jqGrid.export.export}}</button>
+              </div>
+            </div>
 
-        </form>
-      </li>
-    </ul>
-  </li>
-  <li class="divider"></li>
-  <li><a {{action exportData "view.json" target="view"}} href="#" class="export-json">
-    {{loc tent.jqGrid.export.json}}</a></li>
+          </form>
+        </li>
+      </ul>
+    </li>
+    <li class="divider"></li>
+  {{/if}}
+  {{#if view.allowJsonExport}}
+    <li><a {{action exportData "view.json" target="view"}} href="#" class="export-json">{{loc tent.jqGrid.export.json}}</a></li>
+  {{/if}}
 </ul>

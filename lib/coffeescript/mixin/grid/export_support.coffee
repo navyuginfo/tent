@@ -6,9 +6,22 @@
 Tent.Grid.ExportSupport = Ember.Mixin.create
   ###*
   * @property {Boolean} showExportButton Display a button in the header which allows the table data to
-  * be exported a selected format.
+  * be exported to a selected format.
   ###
   showExportButton: true
+
+  ###*
+  * @property {Boolean} allowCsvExport Show a CSV option in the export dropdown
+  ###
+  allowCsvExport: true
+  ###*
+  * @property {Boolean} allowXlsExport Show an Xls option in the export dropdown
+  ###
+  allowXlsExport: true
+  ###*
+  * @property {Boolean} allowJsonExport Show a Json option in the export dropdown
+  ###
+  allowJsonExport: true
 
   addNavigationBar: ->
     @_super()

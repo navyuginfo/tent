@@ -4,7 +4,9 @@
 	{{/if}}
 
   	{{#if view.grid.showExportButton}}
-    	{{view view.exportView}}
+  		{{#if view.someExportsAreAllowed}}
+    		{{view view.exportView}}
+    	{{/if}}
   	{{/if}}
 
   	{{#if view.grid.showColumnChooser}}
