@@ -69,6 +69,7 @@ test 'selectedColumn binding', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 
+	ok true
 	
 ###
 
@@ -89,7 +90,8 @@ test 'get stored filter values', ->
 						effortdriven: {field:"effortdriven",op: "equal", data: "-1"}
 						start: {field:"start",op: "equal", data: ""}
 						finish: {field:"finish",op: "equal", data: ""}
-						completed: {field:"completed",op: "equal", data: true}
+						completed: {field:"completed",op: "equal", data: true
+						}
 					}
 				}
 			]
