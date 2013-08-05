@@ -36,7 +36,7 @@ Tent.FilterPanelView = Ember.View.extend
 	init: ->
 		@_super()
 		@set('controller', Tent.FilterPanelController.create(
-			collectionBinding: 'collection'
+			collection: @get('collection')
 		))
 
 	collectionDidChange: (->
@@ -78,7 +78,6 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 	isDisabled: (->
 		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
 	).property('locked','usageContext')
-
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
@@ -132,7 +131,6 @@ Tent.FilterFieldView = Ember.View.extend
 
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
-	classNames: ['filter-field-control']
 	content: null
 	column: null
 	isDisabled: false
@@ -235,5 +233,6 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		if fieldView?
 			@set('fieldView', fieldView)
 			@get('childViews').pushObject(fieldView)
+
 
 
