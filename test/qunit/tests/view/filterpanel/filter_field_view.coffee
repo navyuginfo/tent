@@ -7,7 +7,10 @@ teardown = ->
     
 module 'Tent.FilterFieldView', setup, teardown
 
-test 'Ensure collection is created', ->
-
-	ok true
+test 'typeIsSelected property', ->
+	view = Tent.FilterFieldView.create
+		content: {}
+	ok not view.get('typeIsSelected')
 	
+	view.set('content', {field: 'title'})
+	ok view.get('typeIsSelected')
