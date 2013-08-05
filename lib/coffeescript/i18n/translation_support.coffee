@@ -87,6 +87,9 @@ Tent.I18n.loadTranslations(
 		}
 		filter: {
 			filter: 'Filter'
+			add: 'Add Field'
+			del: 'Delete Field'
+			fieldname: 'Field Name'
 			availableFilters: 'Available Filters'
 			selectedFilter: 'Selected Filter'
 			currentFilter: 'Current Filter'

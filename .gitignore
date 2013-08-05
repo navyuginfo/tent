@@ -37,6 +37,8 @@ profile
 application.css
 
 # Generated stuff
+bower/
+bower_components/
 public/
 temp/
 bower_components/

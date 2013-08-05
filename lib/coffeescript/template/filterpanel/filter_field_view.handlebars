@@ -1,0 +1,8 @@
+{{view Tent.Select listBinding="controller.content.columns" valueBinding="controller.content.type" label="tent.filter.fieldname" optionLabelPath="content.isoCode" optionValuePath="content.isoCode" multiple=false tooltip="Select Field" required="true" preselectSingleElement=true}}
+
+{{#if view.typeIsSelected}}
+	{{view Tent.FilterFieldControlView typeBinding="controller.content.type"}}
+{{/if}}
+	
+
+ 

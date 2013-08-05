@@ -312,6 +312,8 @@
               <h4>jqGrid</h4>
                
               <h5>Remote Paging, Sorting, Filtering</h5>
+
+              {{view Tent.FilterPanelView collectionBinding="Pad.jqRemoteCollection"}}
  
                {{view Tent.JqGrid
                   label="Tasks"
@@ -355,7 +357,7 @@
                   selectionBinding="Pad.jqClientSideGridSelection"
                   fixedHeader=false
                   showMaximizeButton=true
-                  paged=false
+                  paged=true
                   multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
