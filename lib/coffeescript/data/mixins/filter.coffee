@@ -11,15 +11,14 @@ Tent.Data.Filter = Ember.Mixin.create
 				name: "default"
 				label: Tent.I18n.loc 'tent.filter.noFilter'
 				description: ""
-				values: {
-					
-				}
+				values: []
 			}
 		]
 	
 	init: ->
 		@applyDefaultFilter()
 		@_super()
+		@REQUEST_TYPE = @REQUEST_TYPE || {}
 		@REQUEST_TYPE.FILTER = 'filtering'
 
 		###@set('filteringInfo', 
@@ -121,6 +120,24 @@ Tent.Data.Filter = Ember.Mixin.create
 
 	getFilteringInfo: ->
 		@getSelectedFilter()
+
+	#addFieldToFilter: (field)->
+	#		@get('selectedFilter.values')[]
+
+	# Add a new field to the value array of the currently selected filter, 
+	# ready to be populated with a filter field value for the specified column.
+	createBlankFilterFieldValue: (columnName)->
+		@get('selectedFilter.values').pushObject({field:columnName, op:"", data:""})
+
+	removeFilterFieldValue: (value)->
+		@get('selectedFilter.values').removeAt(@get('selectedFilter.values').indexOf(value))
+
+	# Return the filter value for the specified column from the currently selected filter.
+	getFilterValueForColumn: (columnName)->
+		@get('selectedFilter.values').filter((value)->
+			value.field == columnName
+		)
+
 
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated

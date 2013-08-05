@@ -28,7 +28,7 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     name: ""
     label: ""
     description: ""
-    values: {}
+    values: []
 
   init: ->
     @_super()
@@ -70,8 +70,8 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     filter = @get('currentFilter')
     for column in @get('collection.columnsDescriptor')
       if column.filterable!=false
-        if not filter.values[column.name]?
-          @set('currentFilter.values.' + column.name, {field:column.name, op:"", data:""})
+        if not @get('collection').getFilterValueForColumn(column.name)
+          @get('collection').createBlankFilterFieldValue(column.name)
 
   clearFilter: ->
     @clearView(@)
@@ -131,7 +131,7 @@ Tent.FilterDefinition = Ember.Object.extend
   name: ""
   label: ""
   description: ""
-  values: {}
+  values: []
 
 
 Tent.FilterFieldsView = Ember.ContainerView.extend

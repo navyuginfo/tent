@@ -1,7 +1,7 @@
-{{view Tent.Select listBinding="controller.content.columns" valueBinding="controller.content.type" label="tent.filter.fieldname" optionLabelPath="content.isoCode" optionValuePath="content.isoCode" multiple=false tooltip="Select Field" required="true" preselectSingleElement=true}}
+{{view Tent.Select listBinding="controller.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false tooltip="Select Field" required="true" preselectSingleElement=true}}
 
 {{#if view.typeIsSelected}}
-	{{view Tent.FilterFieldControlView typeBinding="controller.content.type"}}
+	{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content"}}
 {{/if}}
 	
 
