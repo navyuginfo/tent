@@ -7,6 +7,7 @@ teardown = ->
     
 module 'Tent.FilterFieldView', setup, teardown
 
+
 test 'typeIsSelected property', ->
 	view = Tent.FilterFieldView.create
 		content: {}
