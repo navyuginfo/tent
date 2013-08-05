@@ -49,6 +49,7 @@
 	Pad.lowes = {name:'Lowes', program:'Lowes Pgm', total: '562849.46', min: '2,000.00 USD'}
 	Pad.currencies = ['USD','JPY','XXX','CNY', 'YYY']
 	Pad.changingCurrency = 'XXX'
+	Pad.enabledExports=['csv']
 	#Pad.presetRanges = [
     #	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
   	#]

@@ -35,22 +35,19 @@ test 'showAutofitButton property', ->
 	button = view.$('.horizontal-scroll-button')
 	equal button.length, 0, 'button should not be displayed'
 
+
 test 'someExportsAreAllowed : true', ->
 	grid = Ember.Object.create
-		allowCsvExport: true
-		allowXlsExport: true
-		allowJsonExport: true
-
+		enabledExports: ['csv', 'xls', 'json']
+		
 	view = Tent.JqGridHeaderView.create()
 	view.set('grid', grid)
 	ok view.get('someExportsAreAllowed'), 'default is true'
 
 test 'someExportsAreAllowed : false', ->
 	grid = Ember.Object.create
-		allowCsvExport: false
-		allowXlsExport: false
-		allowJsonExport: false
-
+		enabledExports: []
+		
 	view = Tent.JqGridHeaderView.create()
 	view.set('grid', grid)
 	equal view.get('someExportsAreAllowed'), false, 'value is false when all items are false'

@@ -7,7 +7,8 @@ Tent.JqGridHeaderView = Ember.View.extend
   grid: null
 
   someExportsAreAllowed: (->
-    @get('grid.allowCsvExport') or @get('grid.allowXlsExport') or @get('grid.allowJsonExport')
+    #@get('grid.allowCsvExport') or @get('grid.allowXlsExport') or @get('grid.allowJsonExport')
+    @get('grid.enabledExports')? and (@get('grid.enabledExports')?.length > 0)
   ).property()
 
   exportView: Ember.View.extend
@@ -16,9 +17,15 @@ Tent.JqGridHeaderView = Ember.View.extend
     csv: 'csv'
     json: 'json'
     xls: 'xls'
-    allowCsvExportBinding: 'parentView.grid.allowCsvExport'
-    allowXlsExportBinding: 'parentView.grid.allowXlsExport'
-    allowJsonExportBinding: 'parentView.grid.allowJsonExport'
+    allowCsvExport: (->
+      @get('parentView.grid.enabledExports').contains(@get('csv'))
+    ).property('parentView.grid.enabledExports')
+    allowJsonExport: (->
+      @get('parentView.grid.enabledExports').contains(@get('json'))
+    ).property('parentView.grid.enabledExports')
+    allowXlsExport: (->
+      @get('parentView.grid.enabledExports').contains(@get('xls'))
+    ).property('parentView.grid.enabledExports')
 
     exportData: (e) ->
       contentType = e.context
