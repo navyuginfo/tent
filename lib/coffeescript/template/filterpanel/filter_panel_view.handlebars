@@ -2,6 +2,7 @@
 	{{#view Tent.Header class=""}}
 		<h3>Filter</h3>
 		{{view Tent.Button label="tent.filter.add" type="secondary" action="addFilterField" targetBinding="controller" class="pull-right"}}
+		{{view Tent.Button label="tent.filter.filter" type="secondary" action="applyFilter" targetBinding="controller" class="pull-right"}}
 	{{/view}}
 	{{#view Tent.Content}}
 		<section>

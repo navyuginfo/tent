@@ -11,6 +11,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	removeFilterField: (fieldContent)->
 		@get('collection').removeFilterFieldValue(fieldContent)
 
+	applyFilter: ->
+		@get('collection').doFilter()
+
 	# Called from the view
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)
@@ -43,10 +46,6 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 
 	filterableColumnsBinding: 'parentController.filterableColumns'
 
-	contentDidChange: (->
-		console.log @get('content.field')
-	).property('content')
-
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
@@ -62,7 +61,7 @@ Tent.FilterFieldView = Ember.View.extend
 
 	contentDidChange: (->
 		console.log @get('content.field')
-	).property('content')
+	).property('content.data')
 		
 	typeIsSelected: (->
 		@get('content.field')?
@@ -78,22 +77,26 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		@_super()
 		@populateContainer()
 
+	columnDidChange: (->
+		@populateContainer()
+	).observes('column')
+
 	populateContainer: ()->
-		fieldView = null
+		@get('childViews').removeObject(@get('fieldView')) if @get('fieldView')?
 		switch @get('column.type')
 			when "string"
 				fieldView = Tent.TextField.create
 					label: Tent.I18n.loc(@get('column.title'))
 					isFilter: true 
-					valueBinding: "content.data"
-					filterOpBinding: "content.op"
+					valueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					valueBinding: "content.data"
-					filterOpBinding: "content.op"
+					valueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"
@@ -103,15 +106,17 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
 					serializer: Tent.Formatting.number.serializer
-					rangeValueBinding: "content.data"
-					filterOpBinding: "content.op"
+					rangeValueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 			when "boolean"
 				fieldView = Tent.Checkbox.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					checkedBinding: "content.data" 
-					filterOpBinding: "content.op"
+					checkedBinding: "parentView.content.data" 
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
-		@get('childViews').pushObject(fieldView) if fieldView?
+		if fieldView?
+			@set('fieldView', fieldView)
+			@get('childViews').pushObject(fieldView)
 
