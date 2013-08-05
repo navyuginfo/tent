@@ -1,4 +1,4 @@
-
+###
 setup = ->
 	@collection = Ember.ArrayController.create
 		paged: true		 
@@ -34,6 +34,9 @@ setup = ->
 				}
 			]
 
+		createBlankFilterFieldValue: ->
+		getFilterValueForColumn: ->
+
 teardown = ->
 	@collection = null
 
@@ -67,20 +70,6 @@ test 'All filterable fields have properties in the current filter', ->
 	equal filter.get('currentFilter').values.id.field, "id", 'id'
 	equal filter.get('currentFilter').values.title.field, "title", 'title'
 
-###test 'Clear filter', ->
-	filter = Tent.CollectionFilter.create
-		collection: collection
-	
-	equal filter.get('currentFilter').name, "task1", 'name'
-	
-	filter.clearFilter()
-	equal filter.get('currentFilter').name, "", 'name'
-	equal filter.get('currentFilter').label, "", 'label'
-	equal filter.get('currentFilter').description, "", 'description'
-	for value in filter.get('currentFilter').values
-		throw new Error('Should be no values')
-###
-
 test 'Filter', ->
 	sinon.spy(collection, "doFilter")
 	filter = Tent.CollectionFilter.create
@@ -101,7 +90,7 @@ test 'Save Filter', ->
 	ok collection.saveFilter.calledOnce, 'saveFilter was called on collection'
 	equal collection.saveFilter.getCall(0).args[0].name, 'task1', 'passed the correct filter'
 
-
+###
 
 	
 
