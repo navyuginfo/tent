@@ -177,6 +177,9 @@
         main: 'Sort',
         ascending: 'Ascending',
         descending: 'Descending'
+      },
+      upload: {
+        buttonLabel: 'Select file to Upload'
       }
     },
     error: {
@@ -1698,9 +1701,16 @@
   });
 
   Ember.$(document).ready(function() {
-    return window.onresize = function() {
-      return $.publish('/window/resize');
-    };
+    var lastWindowHeightForResize, lastWindowWidthForResize;
+    lastWindowHeightForResize = $(window).height();
+    lastWindowWidthForResize = $(window).width();
+    return $(window).resize(function(e) {
+      if (($(window).height() !== lastWindowHeightForResize) || ($(window).width() !== lastWindowWidthForResize)) {
+        lastWindowHeightForResize = $(window).height();
+        lastWindowWidthForResize = $(window).width();
+        return $.publish('/window/resize');
+      }
+    });
   });
 
 }).call(this);
@@ -4667,20 +4677,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
     showExportButton: true,
     /**
-    * @property {Boolean} allowCsvExport Show a CSV option in the export dropdown
+    * @property {Array} enabledExports The list of export types which are allowed
+    * Any types listed here will appear as options in the grids Exports dropdown.
     */
 
-    allowCsvExport: true,
-    /**
-    * @property {Boolean} allowXlsExport Show an Xls option in the export dropdown
-    */
-
-    allowXlsExport: true,
-    /**
-    * @property {Boolean} allowJsonExport Show a Json option in the export dropdown
-    */
-
-    allowJsonExport: true,
+    enabledExports: ['xls', 'csv', 'json'],
     addNavigationBar: function() {
       return this._super();
     },
@@ -4696,7 +4697,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return visibleColumns.map(function(column) {
         var userDefinedTitles;
         if (custom) {
-          userDefinedTitles = _this.get('columnInfo.titles');
+          userDefinedTitles = _this.get('collection.columnInfo.titles');
           return userDefinedTitles[column.index] || column.t;
         } else {
           return column.name.underscore();
@@ -5658,9 +5659,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           finalWidth = _this.calculateColumnWidth(index, col, firstRowOfGrid);
           if (!jqGridCols[index].hidden) {
             totalWidth = totalWidth + parseInt(finalWidth);
+            _this.changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols);
+            return _this.changeFooterWidth(index, finalWidth);
           }
-          _this.changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols);
-          return _this.changeFooterWidth(index, finalWidth);
         });
         if (this.get('footerRow')) {
           this.getTableDom()[0].grid.sDiv.style.width = "auto";
@@ -5705,13 +5706,18 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       if (this.get('groupingInfo.columnName') != null) {
         return widthBasedOnContent = firstRowOfGrid.eq(index).width();
       } else {
-        if (firstRowOfGrid.eq(index).css('min-width') !== '0px') {
+        if (this.doesColumnHaveMinWidth(index, firstRowOfGrid)) {
           widthBasedOnContent = firstRowOfGrid.eq(index).css('min-width').split('px')[0];
         } else {
           widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth();
         }
         return widthBasedOnContent;
       }
+    },
+    doesColumnHaveMinWidth: function(index, firstRowOfGrid) {
+      var minWidth;
+      minWidth = firstRowOfGrid.eq(index).css('min-width');
+      return minWidth !== '0px' && !isNaN(minWidth);
     },
     changeFooterWidth: function(index, finalWidth) {
       var footers;
@@ -6318,7 +6324,8 @@ Tent.JqGridHeaderView = Ember.View.extend({
     templateName: 'jqgrid_header',
     grid: null,
     someExportsAreAllowed: (function() {
-      return this.get('grid.allowCsvExport') || this.get('grid.allowXlsExport') || this.get('grid.allowJsonExport');
+      var _ref;
+      return (this.get('grid.enabledExports') != null) && (((_ref = this.get('grid.enabledExports')) != null ? _ref.length : void 0) > 0);
     }).property(),
     exportView: Ember.View.extend({
       classNames: ['btn-group', 'export', 'jqgrid-title-button'],
@@ -6326,9 +6333,15 @@ Tent.JqGridHeaderView = Ember.View.extend({
       csv: 'csv',
       json: 'json',
       xls: 'xls',
-      allowCsvExportBinding: 'parentView.grid.allowCsvExport',
-      allowXlsExportBinding: 'parentView.grid.allowXlsExport',
-      allowJsonExportBinding: 'parentView.grid.allowJsonExport',
+      allowCsvExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('csv'));
+      }).property('parentView.grid.enabledExports'),
+      allowJsonExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('json'));
+      }).property('parentView.grid.enabledExports'),
+      allowXlsExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('xls'));
+      }).property('parentView.grid.enabledExports'),
       exportData: function(e) {
         var contentType, customHeaderString, customParams, grid, jsonUrlPart, personalizedData, ret, tableDom, url, visibleColumnString;
         contentType = e.context;
@@ -8021,8 +8034,11 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     repositionDragBar: function() {
       var shift;
       shift = this.get('collapsed') ? 0 : 20;
-      return this.$('.drag-bar').css({
+      this.$('.drag-bar').css({
         'left': this.$().width() - shift,
+        'visibility': 'visible'
+      });
+      return this.$('.drag-bar i').css({
         'visibility': 'visible'
       });
     },
@@ -8132,9 +8148,10 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
       $.subscribe("/ui/horizontalSlide", function(a, data) {
         return _this.keepAlignedWithRight(data);
       });
-      return $.subscribe("/window/resize", function(a, data) {
+      $.subscribe("/window/resize", function(a, data) {
         return _this.keepAlignedWithRight(data);
       });
+      return $.publish('/window/resize');
     },
     willDestroyElement: function() {
       $.unsubscribe('/window/resize');
@@ -8153,15 +8170,21 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     },
     onExpandEnd: function() {
       this._super();
-      return this.$('.drag-bar').css({
+      this.$('.drag-bar').css({
         'left': 0,
+        'visibility': 'visible'
+      });
+      return this.$('.drag-bar i').css({
         'visibility': 'visible'
       });
     },
     onCollapseEnd: function() {
       this._super();
-      return this.$('.drag-bar').css({
+      this.$('.drag-bar').css({
         'left': 0 - 20,
+        'visibility': 'visible'
+      });
+      return this.$('.drag-bar i').css({
         'visibility': 'visible'
       });
     }
@@ -10076,70 +10099,79 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
       return this.populateContainer();
     },
     populateContainer: function() {
-      var column, fieldView, _i, _len, _ref, _results;
+      var column, _i, _len, _ref, _results,
+        _this = this;
       if (this.get('collection.columnsDescriptor') != null) {
         _ref = this.get('collection.columnsDescriptor');
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           column = _ref[_i];
-          fieldView = null;
-          if (column.filterable !== false) {
-            switch (column.type) {
-              case "string":
-                fieldView = Tent.TextField.create({
-                  label: Tent.I18n.loc(column.title),
-                  isFilter: true,
-                  valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-                  filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-                  filterBinding: "parentView.collectionFilter.currentFilter",
-                  field: column.name
-                });
-                break;
-              case "date":
-              case "utcdate":
-                fieldView = Tent.DateRangeField.create({
-                  label: Tent.I18n.loc(column.title),
-                  isFilter: true,
-                  valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-                  closeOnSelect: true,
-                  arrows: true,
-                  filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-                  dateFormat: "yy-mm-dd"
-                });
-                break;
-              case "number":
-              case "amount":
-                fieldView = Tent.NumericTextField.create({
-                  label: Tent.I18n.loc(column.title),
-                  isFilter: true,
-                  serializer: Tent.Formatting.number.serializer,
-                  rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-                  filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-                  filterBinding: "parentView.collectionFilter.currentFilter",
-                  field: column.name
-                });
-                break;
-              case "boolean":
-                fieldView = Tent.Checkbox.create({
-                  label: Tent.I18n.loc(column.title),
-                  isFilter: true,
-                  checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-                  filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-                  filterBinding: "parentView.collectionFilter.currentFilter",
-                  field: column.name
-                });
-            }
-            if (fieldView != null) {
-              _results.push(this.get('childViews').pushObject(fieldView));
-            } else {
-              _results.push(void 0);
-            }
-          } else {
-            _results.push(void 0);
-          }
+          _results.push((function() {
+            var col;
+            col = column;
+            return setTimeout(function() {
+              var fieldView;
+              if (col.filterable !== false) {
+                fieldView = _this.generateField(col);
+                if (fieldView != null) {
+                  return _this.get('childViews').pushObject(fieldView);
+                }
+              }
+            }, 10);
+          })());
         }
         return _results;
       }
+    },
+    generateField: function(column) {
+      var fieldView;
+      fieldView = null;
+      switch (column.type) {
+        case "string":
+          fieldView = Tent.TextField.create({
+            label: Tent.I18n.loc(column.title),
+            isFilter: true,
+            valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
+            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
+            filterBinding: "parentView.collectionFilter.currentFilter",
+            field: column.name
+          });
+          break;
+        case "date":
+        case "utcdate":
+          fieldView = Tent.DateRangeField.create({
+            label: Tent.I18n.loc(column.title),
+            isFilter: true,
+            valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
+            closeOnSelect: true,
+            arrows: true,
+            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
+            dateFormat: "yy-mm-dd"
+          });
+          break;
+        case "number":
+        case "amount":
+          fieldView = Tent.NumericTextField.create({
+            label: Tent.I18n.loc(column.title),
+            isFilter: true,
+            serializer: Tent.Formatting.number.serializer,
+            rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
+            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
+            filterBinding: "parentView.collectionFilter.currentFilter",
+            field: column.name
+          });
+          break;
+        case "boolean":
+          fieldView = Tent.Checkbox.create({
+            label: Tent.I18n.loc(column.title),
+            isFilter: true,
+            checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
+            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
+            filterBinding: "parentView.collectionFilter.currentFilter",
+            field: column.name
+          });
+      }
+      return fieldView;
     }
   });
 
@@ -10195,21 +10227,50 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
 }).call(this);
 
 
-Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile("<span>\n  {{#if view.helpText}}<span>Drag &amp; Drop files here...</span>{{/if}}\n  <input type=\"file\" name=\"files[]\" {{bindAttr data-url=\"view.dataUrl\"}} multiple>\n  {{#if view.applyWait}}\n     {{view Tent.WaitIcon}}\n  {{/if}}\n</span>\n");
+Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile("<span class='btn btn-primary fileinput-button'>\n  {{#if view.helpText}}\n  \t<span><i class=\"icon-upload-alt\"></i>&nbsp; &nbsp;{{loc view.helpText}}</span>\n  {{/if}}\n  <input type=\"file\" name=\"files[]\" {{bindAttr data-url=\"view.dataUrl\" disabled=\"view.disabled\"}} multiple >\n  {{#if view.applyWait}}\n     {{view Tent.WaitIcon}}\n  {{/if}}\n</span>\n\n\n\n ");
 
 (function() {
 Tent.FileUpload = Ember.View.extend({
     templateName: 'file_upload',
     classNameBindings: ['tent-file-upload'],
-    helpText: true,
+    /**
+    * @property {helpText} helpText The text to appear on the file upload button
+    */
+
+    helpText: 'tent.upload.buttonLabel',
+    /**
+    * @property {disabled} disabled A boolean to enable or disable the widget
+    */
+
+    disabled: false,
+    /**
+    * @property {Boolean} dropZone The classname associated with an element which is to act as the 
+    * target for drag and drop
+    */
+
+    dropZone: null,
     didInsertElement: function() {
       var _this = this;
       return this.$('input').fileupload({
+        dropZone: this.getDropZone(),
         add: function(e, data) {
           _this.set('applyWait', true);
           return data.submit().success(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Success')).error(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Error'));
         }
       });
+      /*
+          @getDropZone()?.bind('mouseenter', ->
+            $(@).addClass('hover')
+          ).bind('mouseleave',->
+            $(@).removeClass('hover')
+          )
+      */
+
+    },
+    getDropZone: function() {
+      if (this.get('dropZone') != null) {
+        return $('.' + this.get('dropZone'));
+      }
     },
     uploadResultFunctionWrapper: function(context, name) {
       var resultFunction, self;
