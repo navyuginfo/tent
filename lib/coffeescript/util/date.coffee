@@ -55,7 +55,7 @@ Tent.Date = Ember.Object.create
       offset = "GMT+#{hours}#{min}"
     else
       offset = "GMT-#{hours}#{min}"
-    dateString = date.toLongDateString()
+    dateString = date.toString("D")
     if Tent.Browsers.isIE()
       match = /[A-Z]{3}/.exec(dateString)
     else
@@ -71,7 +71,7 @@ Tent.Date = Ember.Object.create
   ###
   getFullTZFromDate: (date)->
     return null unless date?
-    dateString = date.toLongDateString()
+    dateString = date.toString("D")
     tz = dateString.substring(35,dateString.length-1)
     if tz.split(" ").length != 1 then tz else Tent.Date.getFullTZFromUTCOffsetAndAbbreviation(dateString.substring(25,33), tz)
 
