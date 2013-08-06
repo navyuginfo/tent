@@ -2527,7 +2527,7 @@
       } else {
         offset = "GMT-" + hours + min;
       }
-      dateString = date.toLongDateString();
+      dateString = date.toString("D");
       if (Tent.Browsers.isIE()) {
         match = /[A-Z]{3}/.exec(dateString);
       } else {
@@ -2554,7 +2554,7 @@
       if (date == null) {
         return null;
       }
-      dateString = date.toLongDateString();
+      dateString = date.toString("D");
       tz = dateString.substring(35, dateString.length - 1);
       if (tz.split(" ").length !== 1) {
         return tz;
