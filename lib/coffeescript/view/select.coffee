@@ -113,7 +113,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
         @set "selection", null
         Ember.run =>
           @set "showPrompt", true
-  ).observes("list", "list@each")
+  ).observes("list", "list.length", "list@each")
 
   currentSelectedLabel: (->
     content = @get('selection')
