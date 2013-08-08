@@ -67,6 +67,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	fixedHeader: false
 
 	###*
+	* @property	{Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
+	###
+	scroll: false
+
+	###*
 	* @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
 	###
 	filtering: false
@@ -211,8 +216,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		@getTableDom().jqGrid({
 			parentView: widget
-			datatype: (postdata) ->
-			  widget.onPageOrSort(postdata)
+			datatype: (postdata, id, rcnt) ->
+			  widget.onPageOrSort(postdata, id, rcnt)
 			height: @get('height') or 'auto',
 			colNames: @get('colNames'),
 			colModel: @get('columnModel'),
@@ -234,6 +239,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: if @get('horizontalScrolling') then false else true,
 			viewsortcols: [true,'vertical',false],
+			scroll: @get('scroll')
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: if @get('paged') then @get('collection.pagingInfo.pageSize') else -1,
@@ -278,7 +284,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if Tent.Browsers.getIEVersion() == 8 and not @get('horizontalScrolling')
 				@revertHeaderIntoViewDiv()
 		)
-			
+		# override the native scrolling behavior of the grid
+		@getTableDom()[0].p.useCollectionScrolling = @get('scroll')
+
 	setInitialViewRecordsAttribute:()->
 	    ###
 	    * Set initial value of viewrecords to be false so that the text "no records to view" does not

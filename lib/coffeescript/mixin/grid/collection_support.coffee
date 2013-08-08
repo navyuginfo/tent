@@ -197,9 +197,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setPageSize: ->
     # If the collection has a pageSize specified, use that.
-    if @get('pagingInfo')?
-      if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
-        @set('pagingInfo.pageSize', @get('pageSize'))
+
+    #if @get('scroll')
+    #  @calculatePageSizeFromGridHeight()
+
+    if @get('pageSize')
+      @set('collection.pageSize', @get('pageSize'))
+      @set('pagingInfo.pageSize', @get('pageSize'))
+    else
+      if @get('pagingInfo')?
+        if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
+          @set('pagingInfo.pageSize', @get('pageSize'))
+          #@set('collection.pageSize', @get('pageSize'))
 
   setupSortingProperties: ->
 
@@ -292,8 +301,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @setupCustomizedProperties()
       #@get('collection').goToPage(1)
 
-  onPageOrSort: (postdata)->
+  onPageOrSort: (postdata, id, rcnt)->
     if @get('collection')?
+      if @get('scroll')
+        @set('rcnt', rcnt or 0)
       #  postdata is of the form:
       #       _search: false,  nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
       if @shouldSort(postdata)

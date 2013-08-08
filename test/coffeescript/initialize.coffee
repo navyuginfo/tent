@@ -217,7 +217,7 @@
 		store: Pad.dataStore
 		dataType: Pad.Models.TaskModel
 		paged: true
-
+		pageSize: 5
 
 
 

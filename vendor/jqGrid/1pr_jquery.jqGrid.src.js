@@ -755,7 +755,7 @@ $.fn.jqGrid = function( pin ) {
       direction : "ltr",
       toppager: false,
       headertitles: false,
-      scrollTimeout: 40,
+      scrollTimeout: 200,
       data : [],
       _index : {},
       grouping : false,
@@ -853,10 +853,12 @@ $.fn.jqGrid = function( pin ) {
       populateVisible: function() {
         if (grid.timer) { clearTimeout(grid.timer); }
         grid.timer = null;
-        var dh = $(grid.bDiv).height();
-        if (!dh) { return; }
+
+        var windowHeight = $(grid.bDiv).height();
+        if (!windowHeight) { return; }
         var table = $("table:first", grid.bDiv);
         var rows, rh;
+
         if(table[0].rows.length) {
           try {
             rows = table[0].rows[1];
@@ -873,10 +875,10 @@ $.fn.jqGrid = function( pin ) {
         var tbot = ttop + table.height();
         var div = rh * rn;
         var page, npage, empty;
-        if ( tbot < dh && ttop <= 0 &&
+        if ( tbot < windowHeight && ttop <= 0 &&
           (p.lastpage===undefined||parseInt((tbot + scrollTop + div - 1) / div,10) <= p.lastpage))
         {
-          npage = parseInt((dh - tbot + div - 1) / div,10);
+          npage = parseInt((windowHeight - tbot + div - 1) / div,10);
           if (tbot >= 0 || npage < 2 || p.scroll === true) {
             page = Math.round((tbot + scrollTop) / div) + 1;
             ttop = -1;
@@ -886,7 +888,7 @@ $.fn.jqGrid = function( pin ) {
         }
         if (ttop > 0) {
           page = parseInt(scrollTop / div,10) + 1;
-          npage = parseInt((scrollTop + dh) / div,10) + 2 - page;
+          npage = parseInt((scrollTop + windowHeight) / div,10) + 2 - page;
           empty = true;
         }
         if (npage) {
@@ -905,22 +907,70 @@ $.fn.jqGrid = function( pin ) {
           }
         }
       },
+
       scrollGrid: function( e ) {
-        if(p.scroll) {
-          var scrollTop = grid.bDiv.scrollTop;
-          if(grid.scrollTop === undefined) { grid.scrollTop = 0; }
-          if (scrollTop != grid.scrollTop) {
-            grid.scrollTop = scrollTop;
-            if (grid.timer) { clearTimeout(grid.timer); }
-            grid.timer = setTimeout(grid.populateVisible, p.scrollTimeout);
+        if (p.useCollectionScrolling) {
+          if (grid.scrollTimer) { clearTimeout(grid.scrollTimer); }
+          grid.scrollTimer = setTimeout(grid.scrollCollection, p.scrollTimeout);
+        } else {
+          if(p.scroll) {
+            var scrollTop = grid.bDiv.scrollTop;
+            if(grid.scrollTop === undefined) { grid.scrollTop = 0; }
+            if (scrollTop != grid.scrollTop) {
+              grid.scrollTop = scrollTop;
+              if (grid.timer) { clearTimeout(grid.timer); }
+              grid.timer = setTimeout(grid.populateVisible, p.scrollTimeout);
+            }
           }
+          grid.hDiv.scrollLeft = grid.bDiv.scrollLeft;
+          if(p.footerrow) {
+            grid.sDiv.scrollLeft = grid.bDiv.scrollLeft;
+          }
+          if( e ) { e.stopPropagation(); }
         }
-        grid.hDiv.scrollLeft = grid.bDiv.scrollLeft;
-        if(p.footerrow) {
-          grid.sDiv.scrollLeft = grid.bDiv.scrollLeft;
-        }
-        if( e ) { e.stopPropagation(); }
       },
+
+      scrollCollection: function(e) {
+        console.log("========= scroll collection");
+        var windowHeight = $(grid.bDiv).height();
+        var scrollTop = grid.bDiv.scrollTop;
+        var table = $("table:first", grid.bDiv);
+        //table.css('margin-top', scrollTop);
+        var ttop = Math.round(table.position().top) - scrollTop;
+        var tbot = ttop + table.height();
+
+        //console.log('ttop  = ' + ttop);
+        //console.log('tbot  = ' + tbot);
+
+        if (tbot < windowHeight) {
+          console.log(".. get next page");
+          if (p.scrollUp) {
+            p.page = p.page + 2;
+          } else {
+            p.page++;
+          }
+          console.log(".. new page = " + p.page);
+          p.scrollDown = true;
+          p.scrollUp = false;
+          grid.populate(1);
+        }
+
+        if (ttop > 0) {
+          console.log(".. get previous page");
+          if (p.scrollDown) {
+            p.page = p.page - 2;  
+          } else {
+            p.page = p.page - 1;
+          }
+          console.log(".. new page = " + p.page);
+          p.scrollUp = true;
+          p.scrollDown = false;
+          grid.populate(1);
+        }
+
+
+      },
+
       selectionPreserver : function(ts) {
         var p = ts.p,
         sr = p.selrow, sra = p.selarrrow ? $.makeArray(p.selarrrow) : null,
@@ -1730,19 +1780,36 @@ $.fn.jqGrid = function( pin ) {
       var cp, last, base, from,to,tot,fmt, pgboxes = "", sppg,
       tspg = ts.p.pager ? "_"+$.jgrid.jqID(ts.p.pager.substr(1)) : "",
       tspg_t = ts.p.toppager ? "_"+ts.p.toppager.substr(1) : "";
-      base = parseInt(ts.p.page,10)-1;
-      if(base < 0) { base = 0; }
-      base = base*parseInt(ts.p.rowNum,10);
-      to = base + ts.p.reccount;
+      if (ts.p.scroll) {
+        base = parseInt(ts.p.page,10)-3;
+        if(base < 0) { base = 0; }
+        base = base*parseInt(ts.p.rowNum/2,10);
+        to = base + ts.p.reccount/2;
+      } else {
+        base = parseInt(ts.p.page,10)-1;
+        if(base < 0) { base = 0; }
+        base = base*parseInt(ts.p.rowNum,10);
+        to = base + ts.p.reccount;
+      }
       if (ts.p.scroll) {
         var rows = $("tbody:first > tr:gt(0)", ts.grid.bDiv);
-        base = to - rows.length;
+        base = to - rows.length/2;
+        if(base < 0) { base = 0; }
+        
         ts.p.reccount = rows.length;
         var rh = rows.outerHeight() || ts.grid.prevRowHeight;
         if (rh) {
-          var top = base * rh;
+          var top;
+          if (ts.p.scrollDown) {
+            top = (ts.p.page-2)
+          } else {
+            top = (ts.p.page-1)
+          }
+          //console.log('------- page = '+ ts.p.page + '------- scrolldown = '+ ts.p.scrollDown + '------- top = '+ top);
+          if (top < 0) {top = 0}
+          var topHeight = top*(ts.p.pageSize*rh)
           var height = parseInt(ts.p.records,10) * rh;
-          $(">div:first",ts.grid.bDiv).css({height : height}).children("div:first").css({height:top,display:top?"":"none"});
+          $(">div:first",ts.grid.bDiv).css({height : height}).children("div:first").css({height:topHeight,display:topHeight?"":"none"});
         }
         ts.grid.bDiv.scrollLeft = ts.grid.hDiv.scrollLeft;
       }
@@ -1878,7 +1945,7 @@ $.fn.jqGrid = function( pin ) {
         var rcnt = !ts.p.scroll ? 1 : ts.rows.length-1;
         var bfr = $(ts).triggerHandler("jqGridBeforeRequest");
         if (bfr === false || bfr === 'stop') { return; }
-        if ($.isFunction(ts.p.datatype)) { ts.p.datatype.call(ts,ts.p.postData,"load_"+ts.p.id); return;}
+        if ($.isFunction(ts.p.datatype)) { ts.p.datatype.call(ts,ts.p.postData,"load_"+ts.p.id, rcnt); return;}
         else if($.isFunction(ts.p.beforeRequest)) {
           bfr = ts.p.beforeRequest.call(ts);
           if(bfr === undefined) { bfr = true; }
@@ -2624,7 +2691,9 @@ $.fn.jqGrid = function( pin ) {
       .append($('<div style="position:relative;'+(isMSIE && $.browser.version < 8 ? "height:0.01%;" : "")+'"></div>').append('<div></div>').append(this))
       .addClass("ui-jqgrid-bdiv")
       .css({ height: ts.p.height+(isNaN(ts.p.height)?"":"px"), width: (grid.width)+"px"})
-      .scroll(grid.scrollGrid);
+      .unbind('scroll').bind('scroll',function(){
+        grid.scrollGrid();
+      });
     $("table:first",grid.bDiv).css({width:ts.p.tblwidth+"px"});
     if( isMSIE ) {
       if( $("tbody",this).length == 2 ) { $("tbody:gt(0)",this).remove();}
@@ -2735,7 +2804,7 @@ $.fn.jqGrid = function( pin ) {
     $.extend(grid,{populate : populate, emptyRows: emptyRows});
     this.grid = grid;
     ts.addXmlData = function(d) {addXmlData(d,ts.grid.bDiv);};
-    ts.addJSONData = function(d) {addJSONData(d,ts.grid.bDiv);};
+    ts.addJSONData = function(d,rcnt) {addJSONData(d, ts.grid.bDiv, rcnt);};
     /* PR: adding remote grouping support */
     ts.addGroupingData = function(d) {addGroupingData(d,ts.grid.bDiv);};
     ts.getAggregateDataForGroupHeaderRow = function(data, row, manageHiddenCells) {return getAggregateDataForGroupHeaderRow(data, row, manageHiddenCells);};

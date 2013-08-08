@@ -28,9 +28,9 @@ module.exports = function (grunt) {
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
-            ember_templates: {
+            emberTemplates: {
               files: '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
-              tasks: ['ember_templates', 'livereload']
+              tasks: ['emberTemplates', 'livereload']
             },
             coffee: {
                 files: ['<%= yeoman.lib %>/coffeescript/**/*.coffee'],
@@ -394,7 +394,7 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [
-                'ember_templates',
+                'emberTemplates',
                 'coffee:tent',
                 'compass:server'
             ],
@@ -403,7 +403,7 @@ module.exports = function (grunt) {
                 'compass'
             ],
             dist: [
-                //'ember_templates',
+                //'emberTemplates',
                 'coffee',
                 'minispade',
                 //'compass:dist',
@@ -413,7 +413,7 @@ module.exports = function (grunt) {
             ]
         },
 
-        ember_templates: {
+        emberTemplates: {
             options: {
                 templateName: function (sourceFile) {
                     var templatePath = yeomanConfig.lib + '/coffeescript/template/';
@@ -483,7 +483,7 @@ module.exports = function (grunt) {
     grunt.registerTask('karma-watch-qunit-test', [
         'coffee:test',
         'coffee:tent',
-        'ember_templates',
+        'emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:unit_qunit_watch:run'
@@ -507,7 +507,7 @@ module.exports = function (grunt) {
         'clean:test',
         'coffee:test',
         'coffee:tent',
-        'ember_templates',
+        'emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:unit_mocha_watch:run'
@@ -523,7 +523,7 @@ module.exports = function (grunt) {
         'concat:vendor',
         'coffee:test',
         'coffee:tent',
-        'ember_templates',
+        'emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:qunit_continuous'
@@ -540,7 +540,7 @@ module.exports = function (grunt) {
         'concat:vendor',
         'coffee:test',
         'coffee:tent',
-        'ember_templates',
+        'emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:mocha_continuous'
