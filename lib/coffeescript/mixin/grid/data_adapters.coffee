@@ -1,6 +1,6 @@
 
 Tent.Grid.Adapters = Ember.Mixin.create
-	
+	cachedGridData: []
 	columns: (->
 		@get('collection.columnsDescriptor')
 	).property('collection.columnsDescriptor')
@@ -87,12 +87,34 @@ Tent.Grid.Adapters = Ember.Mixin.create
 						cell.push(model.get(column.name))
 					item.cell = cell
 					if model.get("presentationType") is "summary" then grid else grid.push(item)
+
+		if @get('scroll') and @getTableDom()[0].p.scrollDown
+			#@getTableDom()[0].p.scrollDown = false
+			cached = @get('cachedGridData')
+			pageSize = @get('pagingInfo.pageSize')
+			if cached.length > pageSize
+				cached = cached[(cached.length - pageSize)..]
+			grid = cached.concat(grid)
+		if @get('scroll') and @getTableDom()[0].p.scrollUp
+			#@getTableDom()[0].p.scrollUp = false
+			cached = @get('cachedGridData')
+			pageSize = @get('pagingInfo.pageSize')
+			if cached.length > pageSize
+				cached = cached[0..(pageSize-1)]
+			grid = grid.concat(cached)
+
+		@set('cachedGridData', grid)
+		@getTableDom()[0].p.rowNum = grid.length
+		@getTableDom()[0].p.pageSize = pageSize
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
+		#console.log("gridDataDidChange.....")
+		if not @getTableDom()? 
+			return
 		@getTableDom()[0].p.viewrecords = false
-    #remove previous grid data
+    	#remove previous grid data
 		@getTableDom().jqGrid('clearGridData')
 		###
 		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
@@ -102,7 +124,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@getTableDom()[0].p.viewrecords = true
 		data = 
 			rows: @get('gridData')
-			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
+			total: @get('pagingInfo.totalPages') if @get('pagingInfo')?
 			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
 			page: @get('pagingInfo').page if @get('pagingInfo')?
 			userdata: @get('fixedRows')
@@ -119,6 +141,6 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@updatePagingForGroups(grid, data)
 			grid?.addGroupingData(data)
 		else
-			@getTableDom()[0]?.addJSONData(data)
+			@getTableDom()[0]?.addJSONData(data, @get('rcnt'))
 		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')

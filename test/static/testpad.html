@@ -342,7 +342,9 @@
                   fixedHeader=false
                   showMaximizeButton=true
                   paged=true
-                  pageSize=6
+                  scroll=true
+                  height=100
+                  pageSize=12
                   multiSelect=true
                   useColumnFilters=false
                   showColumnChooser=true
@@ -351,7 +353,8 @@
                   onSaveCellBinding="Pad.jqOnSaveCell"
                   required=true
                   resizeGridSteps=false
-                  remoteGrouping=true
+                  remoteGrouping=false
+                  grouping=false
                   filtering=true
                   horizontalScrolling=false
                   fixedColumnWidth=false
@@ -386,7 +389,6 @@
                   required=true
 
               }}
-            
 
               {{view Tent.Button label="Submit" validate="true"}}
 
