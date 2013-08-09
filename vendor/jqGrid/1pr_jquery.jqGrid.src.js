@@ -931,46 +931,26 @@ $.fn.jqGrid = function( pin ) {
       },
 
       scrollCollection: function(e) {
-        console.log("========= scroll collection");
-        var windowHeight = $(grid.bDiv).height();
         var scrollTop = grid.bDiv.scrollTop;
-        var table = $("table:first", grid.bDiv);
-        //table.css('margin-top', scrollTop);
-        var ttop = Math.round(table.position().top) - scrollTop;
-        var tbot = ttop + table.height();
-        var numDisplayedRows = p.rowNum;
-
-
-        // get row height
-        var rows, rh;
-        if(table[0].rows.length) {
-          try {
-            rows = table[0].rows[1];
-            rh = rows ? $(rows).outerHeight() || grid.prevRowHeight : grid.prevRowHeight;
-          } catch (pv) {
-            rh = grid.prevRowHeight;
-          }
-        }
-        if (!rh) { return; }
-
-
-        console.log('scrollTop  = ' + scrollTop);
-        console.log('row height  = ' + rh);
-        console.log('numDisplayedRows = ' + numDisplayedRows);
-        console.log('pageSize = ' + p.pageSize);
-
-        var newPageNum = parseInt((scrollTop)/(rh*p.pageSize) + 1); // Round down
-        console.log('page number = ' + newPageNum);        
+        var rowHeight = grid.getRowHeight();
+        var newPageNum = grid.findPageNumberAtScrollPosition(scrollTop, rowHeight, p.pageSize);    
 
         if (p.page != newPageNum) {
           console.log('============ Getting new page:  ' + newPageNum);
-          p.page = newPageNum; 
+          p.page = newPageNum;
           grid.populate(1);
         }
         
 
         /*
+        console.log('scrollTop  = ' + scrollTop);
+        console.log('row height  = ' + rowHeight);
+        console.log('pageSize = ' + p.pageSize);
 
+
+        var windowHeight = $(grid.bDiv).height();
+        var ttop = Math.round(table.position().top) - scrollTop;
+        var tbot = ttop + table.height();
         if (tbot < windowHeight) {
           console.log(".. get next page");
           if (p.scrollUp) {
@@ -998,6 +978,24 @@ $.fn.jqGrid = function( pin ) {
         }
         */
 
+      },
+
+      findPageNumberAtScrollPosition: function(scrollTop, rowHeight, pageSize){
+        return parseInt((scrollTop)/(rowHeight * pageSize) + 1); // Round down
+      },
+
+      getRowHeight: function() {
+        var rows, rh;
+        var table = $("table:first", grid.bDiv);
+        if(table[0].rows.length) {
+          try {
+            rows = table[0].rows[1];
+            rh = rows ? $(rows).outerHeight() || grid.prevRowHeight : grid.prevRowHeight;
+          } catch (pv) {
+            rh = grid.prevRowHeight;
+          }
+        }
+        return rh;
       },
 
       selectionPreserver : function(ts) {
@@ -1828,20 +1826,11 @@ $.fn.jqGrid = function( pin ) {
         ts.p.reccount = rows.length;
         var rh = rows.outerHeight() || ts.grid.prevRowHeight;
         if (rh) {
-          var top;
-          /*
-          if (ts.p.scrollDown) {
-            top = (ts.p.page-2)
-          } else {
-            top = (ts.p.page-1)
-          }
-          */
-          top = ts.p.page-1;
-          console.log('------- page = '+ ts.p.page + '------- scrolldown = '+ ts.p.scrollDown + '------- top = '+ top);
-          if (top < 0) {top = 0}
-          var topHeight = top*(ts.p.pageSize*rh)
-          var height = parseInt(ts.p.records,10) * rh;
-          $(">div:first",ts.grid.bDiv).css({height : height}).children("div:first").css({height:topHeight,display:topHeight?"":"none"});
+          var numberOfPaddingPages = ts.p.page - 1;
+          if (numberOfPaddingPages < 0) {numberOfPaddingPages = 0}
+          var paddingHeight = numberOfPaddingPages * (ts.p.pageSize * rh);
+          var totalHeightForAllRows = parseInt(ts.p.records, 10) * rh;
+          $(">div:first", ts.grid.bDiv).css({height : totalHeightForAllRows}).children("div:first").css({height:paddingHeight,display:paddingHeight?"":"none"});
         }
         ts.grid.bDiv.scrollLeft = ts.grid.hDiv.scrollLeft;
       }
