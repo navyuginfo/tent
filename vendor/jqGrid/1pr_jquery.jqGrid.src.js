@@ -2391,7 +2391,7 @@ $.fn.jqGrid = function( pin ) {
       subgrid: {root:"rows", repeatitems: true, cell:"cell"}
     },ts.p.localReader);
     if(ts.p.scroll){
-      ts.p.pgbuttons = false; ts.p.pginput=false; ts.p.rowList=[];
+      ts.p.pgbuttons = false; ts.p.pginput=false; ts.p.rowList=[]; ts.p.viewrecords=false;
     }
     if(ts.p.data.length) { refreshIndex(); }
     var thead = "<thead><tr class='ui-jqgrid-labels' role='rowheader'>",
