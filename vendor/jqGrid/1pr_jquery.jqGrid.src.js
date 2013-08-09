@@ -938,9 +938,38 @@ $.fn.jqGrid = function( pin ) {
         //table.css('margin-top', scrollTop);
         var ttop = Math.round(table.position().top) - scrollTop;
         var tbot = ttop + table.height();
+        var numDisplayedRows = p.rowNum;
 
-        //console.log('ttop  = ' + ttop);
-        //console.log('tbot  = ' + tbot);
+
+        // get row height
+        var rows, rh;
+        if(table[0].rows.length) {
+          try {
+            rows = table[0].rows[1];
+            rh = rows ? $(rows).outerHeight() || grid.prevRowHeight : grid.prevRowHeight;
+          } catch (pv) {
+            rh = grid.prevRowHeight;
+          }
+        }
+        if (!rh) { return; }
+
+
+        console.log('scrollTop  = ' + scrollTop);
+        console.log('row height  = ' + rh);
+        console.log('numDisplayedRows = ' + numDisplayedRows);
+        console.log('pageSize = ' + p.pageSize);
+
+        var newPageNum = parseInt((scrollTop)/(rh*p.pageSize) + 1); // Round down
+        console.log('page number = ' + newPageNum);        
+
+        if (p.page != newPageNum) {
+          console.log('============ Getting new page:  ' + newPageNum);
+          p.page = newPageNum; 
+          grid.populate(1);
+        }
+        
+
+        /*
 
         if (tbot < windowHeight) {
           console.log(".. get next page");
@@ -967,7 +996,7 @@ $.fn.jqGrid = function( pin ) {
           p.scrollDown = false;
           grid.populate(1);
         }
-
+        */
 
       },
 
@@ -1800,12 +1829,15 @@ $.fn.jqGrid = function( pin ) {
         var rh = rows.outerHeight() || ts.grid.prevRowHeight;
         if (rh) {
           var top;
+          /*
           if (ts.p.scrollDown) {
             top = (ts.p.page-2)
           } else {
             top = (ts.p.page-1)
           }
-          //console.log('------- page = '+ ts.p.page + '------- scrolldown = '+ ts.p.scrollDown + '------- top = '+ top);
+          */
+          top = ts.p.page-1;
+          console.log('------- page = '+ ts.p.page + '------- scrolldown = '+ ts.p.scrollDown + '------- top = '+ top);
           if (top < 0) {top = 0}
           var topHeight = top*(ts.p.pageSize*rh)
           var height = parseInt(ts.p.records,10) * rh;

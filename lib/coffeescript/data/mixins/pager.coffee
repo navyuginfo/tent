@@ -56,6 +56,7 @@ Tent.Data.Pager = Ember.Mixin.create
 		page: @get('currentPage')
 		totalRows: @get('totalRows')
 		totalPages: @get('totalPages')
+		scrolling: @get('scroll')
 	).property('pageSize', 'currentPage', 'totalPages', 'totalRows')
 			
 	updatePagingInfo: (info) ->

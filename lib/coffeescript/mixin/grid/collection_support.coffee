@@ -52,6 +52,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   sortingInfoBinding: 'collection.sortingInfo'
   columnInfoBinding: 'collection.columnInfo'
   groupingInfoBinding: 'collection.groupingInfo'
+  ###*
+  * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
+  ###
+  scrollBinding: 'collection.scroll'
    
   init: ->
     @_super(arguments)
@@ -200,7 +204,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
     #if @get('scroll')
     #  @calculatePageSizeFromGridHeight()
-
+    #else
     if @get('pageSize')
       @set('collection.pageSize', @get('pageSize'))
       @set('pagingInfo.pageSize', @get('pageSize'))
