@@ -88,6 +88,7 @@ Tent.Grid.Adapters = Ember.Mixin.create
 					item.cell = cell
 					if model.get("presentationType") is "summary" then grid else grid.push(item)
 
+		###
 		if @get('scroll') and @getTableDom()[0].p.scrollDown
 			#@getTableDom()[0].p.scrollDown = false
 			cached = @get('cachedGridData')
@@ -102,10 +103,11 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			if cached.length > pageSize
 				cached = cached[0..(pageSize-1)]
 			grid = grid.concat(cached)
-
+		###
+		
 		@set('cachedGridData', grid)
 		@getTableDom()[0].p.rowNum = grid.length
-		@getTableDom()[0].p.pageSize = pageSize
+		@getTableDom()[0].p.pageSize = @get('pagingInfo.pageSize')
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 

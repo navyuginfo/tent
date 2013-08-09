@@ -12,7 +12,7 @@ Pad.Models.TaskModel = DS.Model.extend
 
 defaultModel = []
 
-for i in [0...99]
+for i in [0...199]
 	defaultModel.push 
 		id: i
 		title: "Task " + i

@@ -67,11 +67,6 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	fixedHeader: false
 
 	###*
-	* @property	{Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
-	###
-	scroll: false
-
-	###*
 	* @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
 	###
 	filtering: false
