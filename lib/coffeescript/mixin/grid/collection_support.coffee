@@ -52,15 +52,21 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   sortingInfoBinding: 'collection.sortingInfo'
   columnInfoBinding: 'collection.columnInfo'
   groupingInfoBinding: 'collection.groupingInfo'
+
   ###*
   * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
   ###
-  scrollBinding: 'collection.scroll'
+  scroll: true
    
   init: ->
     @_super(arguments)
     if @get('collection')?
       @setupCustomizedProperties()
+      @addScrollPropertyToCollection()      
+
+  addScrollPropertyToCollection: (->
+    @set('collection.scroll', @get('scroll'))
+  ).observes('scroll','collection')
 
   addNavigationBar: ->
     @_super()
