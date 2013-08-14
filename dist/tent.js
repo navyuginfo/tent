@@ -165,7 +165,7 @@
           month: 'Month',
           quarter: 'Quarter',
           year: 'Year'
-        },  
+        },
         no_grouping: 'None',
         revert: 'Revert to Original',
         totals: 'Totals:'
@@ -8295,7 +8295,25 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     },
     didInsertElement: function() {
       this._super(arguments);
-      return this.set('inputIdentifier', this.$('select').attr('id'));
+      this.set('inputIdentifier', this.$('select').attr('id'));
+      if (Tent.Browsers.isIE()) {
+        return $('.ember-select').bind('focus mouseover', function() {
+          return $(this).removeClass('clicked mouseout').addClass('expand');
+        }).bind('click', function() {
+          $(this).toggleClass('clicked');
+          if ($(this).hasClass('mouseout')) {
+            return $(this).removeClass('expand');
+          }
+        }).bind('mouseout', function() {
+          if ($(this).hasClass('clicked')) {
+            return $(this).addClass('mouseout');
+          } else {
+            return $(this).removeClass('expand');
+          }
+        }).bind('blur', function() {
+          return $(this).removeClass('expand clicked mouseout');
+        });
+      }
     },
     valueForMandatoryValidation: (function() {
       if (this.get('multiple')) {
