@@ -4667,20 +4667,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
     showExportButton: true,
     /**
-    * @property {Boolean} allowCsvExport Show a CSV option in the export dropdown
+    * @property {Array} enabledExports The list of export types which are allowed
+    * Any types listed here will appear as options in the grids Exports dropdown.
     */
 
-    allowCsvExport: true,
-    /**
-    * @property {Boolean} allowXlsExport Show an Xls option in the export dropdown
-    */
-
-    allowXlsExport: true,
-    /**
-    * @property {Boolean} allowJsonExport Show a Json option in the export dropdown
-    */
-
-    allowJsonExport: true,
+    enabledExports: ['xls', 'csv', 'json'],
     addNavigationBar: function() {
       return this._super();
     },
@@ -6318,7 +6309,8 @@ Tent.JqGridHeaderView = Ember.View.extend({
     templateName: 'jqgrid_header',
     grid: null,
     someExportsAreAllowed: (function() {
-      return this.get('grid.allowCsvExport') || this.get('grid.allowXlsExport') || this.get('grid.allowJsonExport');
+      var _ref;
+      return (this.get('grid.enabledExports') != null) && (((_ref = this.get('grid.enabledExports')) != null ? _ref.length : void 0) > 0);
     }).property(),
     exportView: Ember.View.extend({
       classNames: ['btn-group', 'export', 'jqgrid-title-button'],
@@ -6326,9 +6318,15 @@ Tent.JqGridHeaderView = Ember.View.extend({
       csv: 'csv',
       json: 'json',
       xls: 'xls',
-      allowCsvExportBinding: 'parentView.grid.allowCsvExport',
-      allowXlsExportBinding: 'parentView.grid.allowXlsExport',
-      allowJsonExportBinding: 'parentView.grid.allowJsonExport',
+      allowCsvExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('csv'));
+      }).property('parentView.grid.enabledExports'),
+      allowJsonExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('json'));
+      }).property('parentView.grid.enabledExports'),
+      allowXlsExport: (function() {
+        return this.get('parentView.grid.enabledExports').contains(this.get('xls'));
+      }).property('parentView.grid.enabledExports'),
       exportData: function(e) {
         var contentType, customHeaderString, customParams, grid, jsonUrlPart, personalizedData, ret, tableDom, url, visibleColumnString;
         contentType = e.context;
@@ -8300,7 +8298,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
           });
         }
       }
-    }).observes("list", "list@each"),
+    }).observes("list", "list.length", "list@each"),
     currentSelectedLabel: (function() {
       var content, item, labels, _i, _len;
       content = this.get('selection');
