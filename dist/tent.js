@@ -165,7 +165,7 @@
           month: 'Month',
           quarter: 'Quarter',
           year: 'Year'
-        },
+        },  
         no_grouping: 'None',
         revert: 'Revert to Original',
         totals: 'Totals:'
