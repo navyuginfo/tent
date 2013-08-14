@@ -20,7 +20,7 @@
 	}
 
 	&.collapsed .panel-header .caret {
-		@include rotate(90deg);
+		@include tent-rotate(90deg, 1);
 	}
 	.panel-header .caret {
 		border-bottom: 0px;
@@ -46,7 +46,7 @@
 
 .collapsed {
 	.caret {
-		@include rotate(90deg);
+		@include tent-rotate(90deg, 1);
 	}
 }
 
@@ -202,7 +202,7 @@
 			@include collapsed();
 			.drag-bar {
 				right: -14px;
-				@include rotate(180deg);
+				@include tent-rotate(180deg, 2);
 				background-color: rgba(255, 255, 255, 0.71);
       			border: 1px solid rgba(0, 0, 0, 0.32);
 			}
@@ -243,7 +243,7 @@
 			@include collapsed();
 			.drag-bar {
 				left: -14px;
-				@include rotate(180deg);
+				@include tent-rotate(180deg, 2);
 				background-color: rgba(255, 255, 255, 0.71);
       			border: 1px solid rgba(0, 0, 0, 0.32);
 			}

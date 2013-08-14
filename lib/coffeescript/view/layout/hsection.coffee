@@ -98,6 +98,7 @@ Tent.Left = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	repositionDragBar: ->
 		shift = if @get('collapsed') then 0 else 20
 		@$('.drag-bar').css({'left': @$().width() - shift, 'visibility':'visible'})
+		@$('.drag-bar i').css({'visibility':'visible'}) # required for IE8
 
 	sourceIsInMySection: (data)->
 		data? and (data.source?.parent('section').get(0) == @.$()?.parent('section').get(0))
@@ -194,6 +195,7 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 		$.subscribe("/window/resize", (a, data)=>
 			@keepAlignedWithRight(data)
 		)
+		$.publish('/window/resize')
 
 	willDestroyElement: ->
 		$.unsubscribe('/window/resize')
@@ -211,10 +213,12 @@ Tent.Right = Ember.View.extend Tent.SpanSupport, Tent.CollapsibleSupport,
 	onExpandEnd: ->
 		@_super()
 		@$('.drag-bar').css({'left': 0, 'visibility': 'visible'})
+		@$('.drag-bar i').css({'visibility': 'visible'}) # required for IE8
 
 	onCollapseEnd: ->
 		@_super()
 		@$('.drag-bar').css({'left': 0 - 20, 'visibility': 'visible'})
+		@$('.drag-bar i').css({'visibility': 'visible'}) # required for IE8
 
 			
 

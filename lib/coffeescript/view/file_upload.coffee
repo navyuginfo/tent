@@ -3,16 +3,45 @@ require '../template/file_upload'
 Tent.FileUpload = Ember.View.extend
   templateName: 'file_upload'
   classNameBindings: ['tent-file-upload']
-  helpText: true
 
-  didInsertElement: -> @$('input').fileupload
-    add: (e, data) =>
-      @set('applyWait', true)
-      data.submit()
-        .success(
-          @uploadResultFunctionWrapper(@get('parentView.controller'), 'Success'))
-        .error(
-          @uploadResultFunctionWrapper(@get('parentView.controller'), 'Error'))
+  ###*
+  * @property {helpText} helpText The text to appear on the file upload button
+  ###
+  helpText: 'tent.upload.buttonLabel'
+
+  ###*
+  * @property {disabled} disabled A boolean to enable or disable the widget
+  ###
+  disabled: false
+  
+  ###*
+  * @property {Boolean} dropZone The classname associated with an element which is to act as the 
+  * target for drag and drop
+  ###
+  dropZone: null
+
+  didInsertElement: -> 
+    @$('input').fileupload(
+      dropZone: @getDropZone()
+      add: (e, data) =>
+        @set('applyWait', true)
+        data.submit()
+          .success(
+            @uploadResultFunctionWrapper(@get('parentView.controller'), 'Success'))
+          .error(
+            @uploadResultFunctionWrapper(@get('parentView.controller'), 'Error'))
+    )
+
+    ###
+    @getDropZone()?.bind('mouseenter', ->
+      $(@).addClass('hover')
+    ).bind('mouseleave',->
+      $(@).removeClass('hover')
+    )
+    ###
+
+  getDropZone: ->
+    $('.' + @get('dropZone')) if @get('dropZone')?
 
   uploadResultFunctionWrapper: (context, name) ->
     resultFunction = @get 'upload' + name + 'Function'

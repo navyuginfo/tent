@@ -47,6 +47,17 @@
 	background: white;
 }
 
+@mixin tent-rotate ($degrees, $ieNumber){
+	/* 
+		Extended to support IE < 9, which does not support transforms.
+		The second number is the 90degree multiplier used by IE
+		1 = 90deg
+		2 = 180deg
+		3 = 270deg
+	*/
+	@include rotate($degrees);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$ieNumber});
+}
 
 /* 
 	Mixin to allow a modal panel to flex in height according to the viewport height .

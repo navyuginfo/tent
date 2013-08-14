@@ -38,8 +38,9 @@ application.css
 
 # Generated stuff
 public/
-dist/
 temp/
+bower_components/
+bower/
 app/javascript/
 testpad/javascript/
 tests/unit/javascript/

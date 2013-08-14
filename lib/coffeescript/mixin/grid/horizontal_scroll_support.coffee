@@ -126,8 +126,8 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 				finalWidth = @calculateColumnWidth(index, col, firstRowOfGrid)
 				if not jqGridCols[index].hidden
 					totalWidth = totalWidth + parseInt(finalWidth)
-				@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
-				@changeFooterWidth(index, finalWidth)
+					@changeColumnWidth(index, col, finalWidth, firstRowOfGrid, jqGridCols)
+					@changeFooterWidth(index, finalWidth)
 			)
 			if @get('footerRow')
           		@getTableDom()[0].grid.sDiv.style.width = "auto"
@@ -165,11 +165,15 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('groupingInfo.columnName')?
 			widthBasedOnContent = firstRowOfGrid.eq(index).width()
 		else 
-			if firstRowOfGrid.eq(index).css('min-width') != '0px'
+			if @doesColumnHaveMinWidth(index, firstRowOfGrid)
 				widthBasedOnContent = firstRowOfGrid.eq(index).css('min-width').split('px')[0]
 			else
 				widthBasedOnContent = firstRowOfGrid.eq(index).outerWidth()
 			widthBasedOnContent
+
+	doesColumnHaveMinWidth: (index, firstRowOfGrid) ->
+		minWidth = firstRowOfGrid.eq(index).css('min-width')
+		minWidth != '0px' && !isNaN(minWidth) 
 
 	changeFooterWidth: (index, finalWidth)->
 		if @get('footerRow')
