@@ -90,7 +90,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
     
     # Handle select box expansion issues in ie8
     if Tent.Browsers.isIE()
-      $('.ember-select').bind('focus mouseover', ->
+      @$('.ember-select').bind('focus mouseover', ->
         $(this).removeClass('clicked mouseout').addClass('expand')
       ).bind('click', ->
         $(this).toggleClass 'clicked'

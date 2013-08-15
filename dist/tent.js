@@ -8297,7 +8297,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
       this._super(arguments);
       this.set('inputIdentifier', this.$('select').attr('id'));
       if (Tent.Browsers.isIE()) {
-        return $('.ember-select').bind('focus mouseover', function() {
+        return this.$('.ember-select').bind('focus mouseover', function() {
           return $(this).removeClass('clicked mouseout').addClass('expand');
         }).bind('click', function() {
           $(this).toggleClass('clicked');
