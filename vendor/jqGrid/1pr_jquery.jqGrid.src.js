@@ -812,9 +812,12 @@ $.fn.jqGrid = function( pin ) {
            */
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
-          //if ($(this.cols[idx]).outerWidth() != nw) {
-          //  nw = $(this.cols[idx]).width();
-          //}
+
+          if(ts.p.autowidth===false) {
+            if ($(this.cols[idx]).outerWidth() != nw) {
+              nw = $(this.cols[idx]).width();
+            }
+          }
 
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
