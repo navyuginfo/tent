@@ -5595,6 +5595,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       this.getTableDom().get(0).p.forceFit = true;
       this.getTableDom().get(0).p.shrinkToFit = true;
       this.revertHeaderIntoViewDiv();
+      this.resetMinWidths();
       this.updateGrid();
       return this.adjustHeight();
     },
@@ -5646,6 +5647,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         sdiv.detach();
         return bdiv.after(sdiv);
       }
+    },
+    resetMinWidths: function() {
+      return this.$('.jqgfirstrow td').css("min-width", "0px");
     },
     setHeaderWidths: function() {
       var firstRowOfGrid, jqGridCols, totalWidth,

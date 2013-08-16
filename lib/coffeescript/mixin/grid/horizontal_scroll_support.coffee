@@ -62,8 +62,8 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@set('isHorizontalScrolling', false)
 		@getTableDom().get(0).p.forceFit = true
 		@getTableDom().get(0).p.shrinkToFit = true
-
 		@revertHeaderIntoViewDiv()
+		@resetMinWidths()
 		@updateGrid()
 		@adjustHeight()
 
@@ -111,6 +111,11 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if sdiv.length > 0
 			sdiv.detach()
 			bdiv.after(sdiv)
+
+	resetMinWidths: ->
+		# min-widths were used to force the width for non-autoscroll
+		# Resetting them here for normal operation.
+		@$('.jqgfirstrow td').css("min-width", "0px")
 
 
 	# When horizontalScrolling is applied, we want the cell content to determine the width of
