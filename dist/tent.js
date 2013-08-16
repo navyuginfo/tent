@@ -7227,6 +7227,7 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
 (function() {
 
   Tent.ToggleVisibility = Ember.Mixin.create({
+    isShowing: false,
     /**
     	* @method bindToggleVisibility Attach an event handle to an element to allow it to toggle the visibility of another element.
     	* @param {Object} source The source jQuery object which triggers the toggle
@@ -7253,6 +7254,7 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
     */
 
     hideComponent: function(component) {
+      this.set('isShowing', false);
       component.css('display', 'none');
       $('body').get(0).removeEventListener('click', this.get('hideHandler'), true);
       return $('body').get(0).removeEventListener('keyup', this.get('hideHandler'), true);
@@ -7263,6 +7265,7 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
     */
 
     showComponent: function(component, source) {
+      this.set('isShowing', true);
       component.css('display', 'block');
       this.set('hideHandler', this.get('generateHideHandler')(this, component, source));
       $('body').get(0).addEventListener('click', this.get('hideHandler'), true);
@@ -9958,7 +9961,7 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
 }).call(this);
 
 
-Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-group jqgrid-title-button filter\">\n\t<a class=\"open-dropdown\" href=\"#\">\n\t\t<i class=\"icon-filter\"></i>\n\t\t{{loc tent.filter.filter}}\n\t\t<span class=\"caret\"></span>\n\t</a>\n\t<ul class=\"dropdown-menu filter-panel\">\n\t\t<li>\n\t\t\t<div class=\"filter-details clearfix\">\n\t\t\t\t \n\t\t\t\t\t{{#if view.showFilterFields}}\n\t\t\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\"view.collection\"}}\t\n\t\t\t\t\t{{/if}}\n\t\t\t\t \n\t\t\t\t<div class=\"form-inline buttons\">\n\t\t\t\t   \t{{view Tent.Button label=\"tent.filter.clear\" type=\"secondary\" action=\"clearFilter\" targetBinding=\"view\" class=\"clear-filter pull-left\"}}\n\t\t\t    \t{{view Tent.Button label=\"tent.filter.filter\" type=\"primary\" action=\"filter\" targetBinding=\"view\" class=\"close-panel pull-right\"}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t\n\t\t</li>\n\t</ul>\n</div>\n\n\n\n\n\n");
+Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-group jqgrid-title-button filter\">\n\t<a class=\"open-dropdown\" href=\"#\">\n\t\t<i class=\"icon-filter\"></i>\n\t\t{{loc tent.filter.filter}}\n\t\t<span class=\"caret\"></span>\n\t</a>\n\n\t<ul class=\"dropdown-menu filter-panel\">\n\t\t{{#if view.showFilterFields}}\n\t\t\t<li>\n\t\t\t\t<div class=\"filter-details clearfix\">\n\t\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\"view.collection\"}}\t\n\t\t\t\t\t\t<div class=\"form-inline buttons\">\n\t\t\t\t\t\t   \t{{view Tent.Button label=\"tent.filter.clear\" type=\"secondary\" action=\"clearFilter\" targetBinding=\"view\" class=\"clear-filter pull-left\"}}\n\t\t\t\t\t    \t{{view Tent.Button label=\"tent.filter.filter\" type=\"primary\" action=\"filter\" targetBinding=\"view\" class=\"close-panel pull-right\"}}\n\t\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</li>\n\t\t{{/if}}\n\t</ul>\n</div>\n\n\n\n\n\n");
 
 (function() {
 /**
@@ -9984,6 +9987,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     templateName: 'collection_filter',
     classNames: ['tent-filter'],
     availableFiltersBinding: 'collection.filteringInfo.availableFilters',
+    fieldsHaveRendered: false,
     currentFilter: {
       name: "",
       label: "",
@@ -10003,7 +10007,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
       widget = this;
       this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
       return this.$(".filter-panel .close-panel .btn").click(function() {
-        return widget.hideComponent(widget.$(".dropdown-menu"));
+        return widget.closeFilterPanel();
       });
     },
     filteringInfoDidChange: (function() {
@@ -10077,9 +10081,12 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
       this.stopGroupingOnGrid();
       return this.get('collection').doFilter(this.get('currentFilter'));
     },
+    closeFilterPanel: function() {
+      return this.hideComponent(widget.$(".dropdown-menu"));
+    },
     showFilterFields: (function() {
-      return this.get('collection.isLoaded');
-    }).property('collection.isLoaded'),
+      return this.get('fieldsHaveRendered') || this.get('isShowing');
+    }).property('fieldsHaveRendered', 'isShowing'),
     stopGroupingOnGrid: function() {
       if (this.get('grid') != null) {
         return this.get('grid').clearAllGrouping();
@@ -10115,6 +10122,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     classNames: ['form-horizontal'],
     collection: null,
     collectionFilterBinding: 'parentView',
+    fieldsHaveRendered: false,
     init: function() {
       this._super();
       this.set('collectionFilter', this.get('parentView'));
@@ -10136,8 +10144,9 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
               if (col.filterable !== false) {
                 fieldView = _this.generateField(col);
                 if (fieldView != null) {
-                  return _this.get('childViews').pushObject(fieldView);
+                  _this.get('childViews').pushObject(fieldView);
                 }
+                return _this.set('fieldsHaveRendered');
               }
             }, 10);
           })());
@@ -10145,6 +10154,9 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
         return _results;
       }
     },
+    fieldsHaveRenderedDidChange: (function() {
+      return this.get('collectionFilter').set('fieldsHaveRendered', true);
+    }).observes('fieldsHaveRendered'),
     generateField: function(column) {
       var fieldView;
       fieldView = null;

@@ -5,6 +5,7 @@
 * The subcomponent will also be hidden by clicking outside of its area, or pressing the 'escape'
 ###
 Tent.ToggleVisibility = Ember.Mixin.create
+	isShowing: false
 
 	###*
 	* @method bindToggleVisibility Attach an event handle to an element to allow it to toggle the visibility of another element.
@@ -28,6 +29,7 @@ Tent.ToggleVisibility = Ember.Mixin.create
 	* @param {Object} component The jQuery object to hide
 	###
 	hideComponent: (component) ->
+		@set('isShowing', false)
 		component.css('display', 'none')
 		$('body').get(0).removeEventListener('click', @get('hideHandler'), true)
 		$('body').get(0).removeEventListener('keyup', @get('hideHandler'), true)
@@ -37,6 +39,7 @@ Tent.ToggleVisibility = Ember.Mixin.create
 	* @param {Object} component The jQuery object to show
 	###
 	showComponent: (component, source)->
+		@set('isShowing', true)
 		component.css('display', 'block')
 		@set('hideHandler', @get('generateHideHandler')(@, component, source))
 		$('body').get(0).addEventListener('click', @get('hideHandler'), true)

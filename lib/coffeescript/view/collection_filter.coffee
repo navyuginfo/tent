@@ -22,6 +22,8 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   templateName: 'collection_filter'
   classNames: ['tent-filter']
   availableFiltersBinding: 'collection.filteringInfo.availableFilters'
+  fieldsHaveRendered: false
+
   currentFilter: 
     name: ""
     label: ""
@@ -44,7 +46,7 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     @bindToggleVisibility(@$(".open-dropdown"), @.$(".dropdown-menu"))
 
     @$(".filter-panel .close-panel .btn").click(->
-      widget.hideComponent(widget.$(".dropdown-menu"))
+      widget.closeFilterPanel()
     )
 
   filteringInfoDidChange: (->
@@ -83,11 +85,15 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     @stopGroupingOnGrid()
     @get('collection').doFilter(@get('currentFilter'))
     #@closeFilterPanel()
-  
+
+  closeFilterPanel: ->
+    @hideComponent(widget.$(".dropdown-menu"))
+
   showFilterFields: (->
-    # For performance reasons, we generate the filter fields after the collection is loaded
-    @get('collection.isLoaded') 
-  ).property('collection.isLoaded')
+    #  # For IE, prevent script timeout by loading the filter panel when it is shown,
+    #  # rather than when the grid is loaded.
+    @get('fieldsHaveRendered') or @get('isShowing')
+  ).property('fieldsHaveRendered', 'isShowing')
 
   #changeFilter: ->
   #  @stopGroupingOnGrid()
@@ -132,6 +138,7 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
   classNames: ['form-horizontal']
   collection: null
   collectionFilterBinding: 'parentView'
+  fieldsHaveRendered: false
 
   init: ->
     @_super()
@@ -150,8 +157,13 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
             if col.filterable!=false
               fieldView = @generateField(col)
               @get('childViews').pushObject(fieldView) if fieldView?
+              @set('fieldsHaveRendered')
           ,10)
         )()
+
+  fieldsHaveRenderedDidChange: (->
+    @get('collectionFilter').set('fieldsHaveRendered', true)
+  ).observes('fieldsHaveRendered')
   
   generateField: (column)->
     fieldView = null
