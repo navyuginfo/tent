@@ -9825,11 +9825,11 @@ Tent.DateRangeField = Tent.TextField.extend({
         if (this.get('endDate') != null) {
           end = Tent.Formatting.date.format(this.get('endDate'), this.get('dateFormat'));
         }
-        return this.setValue(start + " " + this.get('rangeSplitter') + " " + end);
+        return this.setValue(start + this.get('rangeSplitter') + " " + end);
       }
     },
     placeholder: (function() {
-      return this.get('dateFormat') + " " + this.get('rangeSplitter') + " " + this.get('dateFormat');
+      return this.get('dateFormat') + this.get('rangeSplitter') + " " + this.get('dateFormat');
     }).property('dateFormat'),
     change: function() {
       var unformatted;
