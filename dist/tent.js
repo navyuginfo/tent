@@ -1674,7 +1674,7 @@
         version = v;
       }
     }
-    return version;
+    return version + 1;
   };
 
   Tent.Browsers.isIE = function() {
