@@ -8,7 +8,7 @@ Tent.Browsers.getIEVersion = ->
 		div.innerHTML = '<!--[if gt IE '+(++v)+']><i></i><![endif]-->'
 		if div.getElementsByTagName('i')[0]?
 			version = v
-	version
+	version + 1
 
 Tent.Browsers.isIE = ->
 	res = @getIEVersion()?
