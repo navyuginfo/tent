@@ -138,10 +138,10 @@ Tent.DateRangeField = Tent.TextField.extend
 				start = Tent.Formatting.date.format(@get('startDate'), @get('dateFormat'))
 			if @get('endDate')?
 				end = Tent.Formatting.date.format(@get('endDate'), @get('dateFormat'))
-			@setValue(start + " " + @get('rangeSplitter') + " " + end)
+			@setValue(start + @get('rangeSplitter') + " " + end)
 
 	placeholder: (->
-		@get('dateFormat') + " " + @get('rangeSplitter') + " " + @get('dateFormat')
+		@get('dateFormat') + @get('rangeSplitter') + " " + @get('dateFormat')
 	).property('dateFormat')
 
 	change: ->

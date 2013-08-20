@@ -109,7 +109,10 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 		}
 	}
 	input {
-		display: none!important;
+		width: 150px;
+		&.range-end {
+			display: none!important;
+		}
 	}
 }
 

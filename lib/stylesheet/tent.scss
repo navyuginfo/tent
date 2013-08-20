@@ -329,13 +329,15 @@ body > .modal-backdrop {
 }
 
 /* Forms */
-
 select {
-		// IE does not expand the options in a dropdown to the width of their content
-	min-width: 220px;
+	// IE does not expand the options in a dropdown to the width of their content
+	min-width: 150px;
 	position: relative;
+	z-index: 0;
 }
+
 select.expand {
 	width: auto!important;
-	min-width: 220px;
+	min-width: 150px;
+	z-index: 1;
 }
