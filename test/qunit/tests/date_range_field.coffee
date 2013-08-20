@@ -21,7 +21,7 @@ test 'placeholder', ->
 			dateFormat: 'mm/dd/yyyy'
 			rangeSplitter: 'x'
 
-	equal view.get('placeholder'), 'mm/dd/yyyy x mm/dd/yyyy', 'placeholder format'
+	equal view.get('placeholder'), 'mm/dd/yyyyx mm/dd/yyyy', 'placeholder format'
 
 test 'test set and get value', ->
 	view = Ember.View.create
@@ -71,4 +71,4 @@ test 'initializeWithStartAndEndDates', ->
 	appendView()
 
 	#rangeWidget = Ember.View.views[view.$('input').attr('id')]
-	equal view.$('input').val(), '11/11/2011 - 12/11/2011', 'Value should be set from dates'
+	equal view.$('input').val(), '11/11/2011- 12/11/2011', 'Value should be set from dates'
