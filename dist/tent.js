@@ -9479,6 +9479,9 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
     */
 
     title: null,
+    init: function() {
+      return this.set('resizeHandler', $.proxy(this.resize(), this));
+    },
     /**
     * The title will be updated from the bindings, but there is a race condition between the
     * Instantiation of the view and change of title, now there are two cases
@@ -9493,7 +9496,11 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
 
     didInsertElement: function() {
       this.updateTitle();
-      return this.resize();
+      this.resize();
+      return $.subscribe("/ui/refresh", this.get('resizeHandler'));
+    },
+    willDestroyElement: function() {
+      return $.unsubscribe("/ui/refresh", this.get('resizeHandler'));
     },
     updateTitle: (function() {
       var href, title;

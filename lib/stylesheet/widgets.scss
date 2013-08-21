@@ -152,6 +152,24 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 	}
 }
 
+/* tabs within a modal */
+.tent-modal .tent-tabs.fixed-header {
+  position: relative;
+  height: 100%;
+
+  .tab-content {
+    position: absolute;
+    bottom: 0px;
+    overflow: auto;
+    left: 0px;
+    right: 0px;
+    padding: 10px;
+  }
+  .tab-pane {
+    position: relative;
+  }
+}
+
 /* Spinner icon for Select controls*/
 
 .control-group .wait {
