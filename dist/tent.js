@@ -9480,7 +9480,8 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
 
     title: null,
     init: function() {
-      return this.set('resizeHandler', $.proxy(this.resize(), this));
+      this._super();
+      return this.set('resizeHandler', $.proxy(this.resize, this));
     },
     /**
     * The title will be updated from the bindings, but there is a race condition between the
