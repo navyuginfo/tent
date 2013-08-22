@@ -259,6 +259,10 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@getTableDom().bind('jqGridRemapColumns', (e, permutation, updateCells, keepHeader)=>
 			if keepHeader then @storeColumnOrderingToCollection(permutation)
 			@refreshGroupHeader()
+			if Tent.Browsers.getIEVersion() == 8
+				# When columns are re-ordered, IE8 causes the headers to mis-align with the data-cells
+				# Use this to reset the column widths.
+				@revertHeaderIntoViewDiv()
 		)
 			
 	setInitialViewRecordsAttribute:()->
