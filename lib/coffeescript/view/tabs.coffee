@@ -59,6 +59,10 @@ Tent.TabPane = Ember.View.extend
   ###
   title: null  
 
+  init: ->
+    @_super()
+    @set('resizeHandler', $.proxy(@resize, @))
+
   ###*
   * The title will be updated from the bindings, but there is a race condition between the
   * Instantiation of the view and change of title, now there are two cases
@@ -73,6 +77,11 @@ Tent.TabPane = Ember.View.extend
   didInsertElement:->
     @updateTitle()
     @resize()
+    $.subscribe("/ui/refresh",@get('resizeHandler'))
+
+  willDestroyElement: ->
+    $.unsubscribe("/ui/refresh",@get('resizeHandler'))    
+
 
   updateTitle: (->
     unless Ember.empty(@get("title"))
