@@ -8,8 +8,6 @@ Tent.Data.Pager = Ember.Mixin.create
 	pageSize: null
 	_page: 1
 	_totalRows: 27
-	_scrollDir: 'down'
-	
 
 	init: ->
 		@_super()

@@ -937,48 +937,9 @@ $.fn.jqGrid = function( pin ) {
         var newPageNum = grid.findPageNumberAtScrollPosition(scrollTop, rowHeight, p.pageSize);    
 
         if (p.page != newPageNum) {
-          console.log('============ Getting new page:  ' + newPageNum);
           p.page = newPageNum;
           grid.populate(1);
         }
-        
-
-        /*
-        console.log('scrollTop  = ' + scrollTop);
-        console.log('row height  = ' + rowHeight);
-        console.log('pageSize = ' + p.pageSize);
-
-
-        var windowHeight = $(grid.bDiv).height();
-        var ttop = Math.round(table.position().top) - scrollTop;
-        var tbot = ttop + table.height();
-        if (tbot < windowHeight) {
-          console.log(".. get next page");
-          if (p.scrollUp) {
-            p.page = p.page + 2;
-          } else {
-            p.page++;
-          }
-          console.log(".. new page = " + p.page);
-          p.scrollDown = true;
-          p.scrollUp = false;
-          grid.populate(1);
-        }
-
-        if (ttop > 0) {
-          console.log(".. get previous page");
-          if (p.scrollDown) {
-            p.page = p.page - 2;  
-          } else {
-            p.page = p.page - 1;
-          }
-          console.log(".. new page = " + p.page);
-          p.scrollUp = true;
-          p.scrollDown = false;
-          grid.populate(1);
-        }
-        */
-
       },
 
       findPageNumberAtScrollPosition: function(scrollTop, rowHeight, pageSize){
