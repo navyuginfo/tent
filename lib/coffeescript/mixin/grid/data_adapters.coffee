@@ -95,18 +95,19 @@ Tent.Grid.Adapters = Ember.Mixin.create
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
-		#console.log("gridDataDidChange.....")
 		if not @getTableDom()? 
 			return
 		@getTableDom()[0].p.viewrecords = false
-    	#remove previous grid data
-		@getTableDom().jqGrid('clearGridData')
-		###
-		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
-		* calculate whether there are any records or not using the reccount attribute
-		###
+
 		if @get('content.isLoaded')
+    		#remove previous grid data
+			@getTableDom().jqGrid('clearGridData')
+			###
+			* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
+			* calculate whether there are any records or not using the reccount attribute
+			###
 			@getTableDom()[0].p.viewrecords = true
+
 		data = 
 			rows: @get('gridData')
 			total: @get('collection.pagingInfo.totalPages') if @get('collection.pagingInfo')? 
