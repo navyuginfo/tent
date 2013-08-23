@@ -161,7 +161,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   getInputField: ->
      @$('.save-ui-state input')
 
-  save: ->
+  save: -> 
     @toggleUIStatePanel()
     @set('customizationName', @get('collection.customizationName'))
     @saveUiState(@get('collection.customizationName'))
@@ -213,7 +213,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     #else
     if @get('pageSize')
       @set('collection.pageSize', @get('pageSize'))
-      @set('pagingInfo.pageSize', @get('pageSize'))
+      @set('pagingInfo.pageSize', @get('pageSize')) if @get('pagingInfo')?
     else
       if @get('pagingInfo')?
         if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
