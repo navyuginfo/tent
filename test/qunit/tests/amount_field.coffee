@@ -60,7 +60,6 @@ test 'Ensure aria attributes are applied ', ->
   appendView()
   equal view.$('input[required=required]').length, 1, 'required html5 attribute'
   equal view.$('input[aria-required=true]').length, 1, 'Aria-required'
-  debugger;
   viewId = view.$('input').parents('.tent-text-field:first').attr('id')
   equal view.$('input[aria-describedby]').length, 1, 'described-by'
   equal view.$('input').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
