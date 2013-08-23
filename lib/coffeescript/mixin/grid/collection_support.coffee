@@ -207,10 +207,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setPageSize: ->
     # If the collection has a pageSize specified, use that.
-
-    #if @get('scroll')
-    #  @calculatePageSizeFromGridHeight()
-    #else
     if @get('pageSize')
       @set('collection.pageSize', @get('pageSize'))
       @set('pagingInfo.pageSize', @get('pageSize')) if @get('pagingInfo')?
@@ -218,7 +214,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       if @get('pagingInfo')?
         if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
           @set('pagingInfo.pageSize', @get('pageSize'))
-          #@set('collection.pageSize', @get('pageSize'))
 
   setupSortingProperties: ->
 
