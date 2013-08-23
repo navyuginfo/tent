@@ -911,7 +911,7 @@ $.fn.jqGrid = function( pin ) {
       scrollGrid: function( e ) {
         if (p.useCollectionScrolling) {
           if (grid.scrollTimer) { clearTimeout(grid.scrollTimer); }
-          grid.scrollTimer = setTimeout(grid.scrollCollection, p.scrollTimeout);
+          grid.scrollTimer = setTimeout(function(){grid.scrollCollection(e);}, p.scrollTimeout);
         } else {
           if(p.scroll) {
             var scrollTop = grid.bDiv.scrollTop;
@@ -931,7 +931,8 @@ $.fn.jqGrid = function( pin ) {
       },
 
       scrollCollection: function(e) {
-        var scrollTop = grid.bDiv.scrollTop;
+        var scroller = e || grid.bDiv;
+        var scrollTop = scroller.scrollTop;
         var rowHeight = grid.getRowHeight();
         var newPageNum = grid.findPageNumberAtScrollPosition(scrollTop, rowHeight, p.pageSize);    
 
@@ -1056,6 +1057,14 @@ $.fn.jqGrid = function( pin ) {
     var eg = $("<div class='ui-jqgrid ui-widget ui-widget-content ui-corner-all'></div>");
     $(eg).insertBefore(gv).attr({"id" : "gbox_"+this.id,"dir":dir});
     $(gv).appendTo(eg).attr("id","gview_"+this.id);
+
+    /* PR. Watch for scroll events on jqgrid-view, to allow infinite scrolling in autoFit mode */
+    $(gv).unbind('scroll').bind('scroll',function(){
+      grid.scrollGrid(this);
+    });
+    /* PR */
+
+
     if (isMSIE && $.browser.version <= 6) {
       ii = '<iframe style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=\'0\');" src="javascript:false;"></iframe>';
     } else { ii="";}
@@ -2715,6 +2724,7 @@ $.fn.jqGrid = function( pin ) {
       .unbind('scroll').bind('scroll',function(){
         grid.scrollGrid();
       });
+
     $("table:first",grid.bDiv).css({width:ts.p.tblwidth+"px"});
     if( isMSIE ) {
       if( $("tbody",this).length == 2 ) { $("tbody:gt(0)",this).remove();}
