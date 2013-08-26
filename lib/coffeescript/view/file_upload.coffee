@@ -20,11 +20,18 @@ Tent.FileUpload = Ember.View.extend
   ###
   dropZone: null
 
+  ###*
+  * @property {Hash} formData Additional params that needs to be send to server along with the 
+  * uploaded files
+  ###
+  formData: null
+
   didInsertElement: -> 
     @$('input').fileupload(
       dropZone: @getDropZone()
       add: (e, data) =>
         @set('applyWait', true)
+        data.formData = @get('formData')
         data.submit()
           .success(
             @uploadResultFunctionWrapper(@get('parentView.controller'), 'Success'))
