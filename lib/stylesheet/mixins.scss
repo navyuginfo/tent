@@ -55,9 +55,16 @@
 		2 = 180deg
 		3 = 270deg
 	*/
-	@include rotate($degrees);
+	// Expanding here (i.e. not using the Compass version) since we need to remove -ms-transform, since IE9 doubles up with filter: progid)
+	-webkit-transform: rotate($degrees);
+	-moz-transform: rotate($degrees);   
+	-o-transform: rotate($degrees);
+	transform: rotate($degrees);
 	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$ieNumber});
 }
+
+
+
 
 /* 
 	Mixin to allow a modal panel to flex in height according to the viewport height .
