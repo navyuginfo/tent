@@ -6004,11 +6004,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       if (this.get('footerRow')) {
         $('tr.footrow').addClass('tent-jqgrid-footrow');
       }
-      return this.getTableDom().bind('jqGridRemapColumns', function(e, permutation, updateCells, keepHeader) {
+      this.getTableDom().bind('jqGridRemapColumns', function(e, permutation, updateCells, keepHeader) {
         if (keepHeader) {
           _this.storeColumnOrderingToCollection(permutation);
         }
-        _this.refreshGroupHeader();
+        return _this.refreshGroupHeader();
+      });
+      return this.getTableDom().bind('jqGridDeactivateColumnDrag', function() {
         if (Tent.Browsers.getIEVersion() === 8) {
           return _this.revertHeaderIntoViewDiv();
         }
