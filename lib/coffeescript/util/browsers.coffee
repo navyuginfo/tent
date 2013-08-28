@@ -1,8 +1,7 @@
 Tent.Browsers = {}
 
 Tent.Browsers.getIEVersion = ->
-	# Returns the version of Internet Explorer or a -1
-	rv = -1 # Return value assumes failure.
+	# Returns the version of Internet Explorer or undefined
 	if navigator.appName is "Microsoft Internet Explorer"
 		ua = navigator.userAgent
 		re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})")
@@ -10,7 +9,7 @@ Tent.Browsers.getIEVersion = ->
 	rv
 
 Tent.Browsers.isIE = ->
-	res = @getIEVersion() > -1
+	res = res? and (@getIEVersion() > -1)
 	# Memoize to prevent further execution.
 	@isIE = ->
 		res
