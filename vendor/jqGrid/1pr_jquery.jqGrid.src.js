@@ -11904,6 +11904,9 @@ $.jgrid.extend({
             ts.p.sortable.update(permutation);
           }
           setTimeout(function(){ts.p.disableClick=false;}, 50);
+        },
+        "deactivate": function(event, ui){
+          $(ts).triggerHandler("jqGridDeactivateColumnDrag");
         }
       };
       if (ts.p.sortable.options) {
