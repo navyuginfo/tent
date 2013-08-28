@@ -1665,7 +1665,6 @@
 
   Tent.Browsers.getIEVersion = function() {
     var re, rv, ua;
-    rv = -1;
     if (navigator.appName === "Microsoft Internet Explorer") {
       ua = navigator.userAgent;
       re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
@@ -1678,7 +1677,7 @@
 
   Tent.Browsers.isIE = function() {
     var res;
-    res = this.getIEVersion() > -1;
+    res = (res != null) && (this.getIEVersion() > -1);
     this.isIE = function() {
       return res;
     };
