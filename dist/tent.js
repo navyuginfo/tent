@@ -1664,26 +1664,20 @@
   Tent.Browsers = {};
 
   Tent.Browsers.getIEVersion = function() {
-    var a, div, v, version;
-    v = 3;
-    div = document.createElement('div');
-    a = div.all || [];
-    while (v < 10) {
-      div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->';
-      if (div.getElementsByTagName('i')[0] != null) {
-        version = v;
+    var re, rv, ua;
+    if (navigator.appName === "Microsoft Internet Explorer") {
+      ua = navigator.userAgent;
+      re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
+      if (re.exec(ua) != null) {
+        rv = parseFloat(RegExp.$1);
       }
     }
-    if (version != null) {
-      return version + 1;
-    } else {
-      return version;
-    }
+    return rv;
   };
 
   Tent.Browsers.isIE = function() {
     var res;
-    res = this.getIEVersion() != null;
+    res = (res != null) && (this.getIEVersion() > -1);
     this.isIE = function() {
       return res;
     };
@@ -10300,12 +10294,19 @@ Tent.FileUpload = Ember.View.extend({
     */
 
     dropZone: null,
+    /**
+    * @property {Hash} formData Additional params that needs to be send to server along with the 
+    * uploaded files
+    */
+
+    formData: null,
     didInsertElement: function() {
       var _this = this;
       return this.$('input').fileupload({
         dropZone: this.getDropZone(),
         add: function(e, data) {
           _this.set('applyWait', true);
+          data.formData = _this.get('formData');
           return data.submit().success(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Success')).error(_this.uploadResultFunctionWrapper(_this.get('parentView.controller'), 'Error'));
         }
       });
