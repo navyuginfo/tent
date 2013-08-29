@@ -471,7 +471,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-watch-qunit', [
         'clean:test_all',
-        'concat',
+        'concat:jq',
+        'concat:vendor',
         'karma:unit_qunit_watch',
         'watch:karma_qunit'
     ]);
@@ -495,7 +496,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-watch-mocha', [
         'clean:test_all',
-        'concat',
+        'concat:jq',
+        'concat:vendor',
         'karma:unit_mocha_watch',
         'watch:karma_mocha'
     ]);
@@ -509,8 +511,6 @@ module.exports = function (grunt) {
         'neuterall:qunit_test',
         'karma:unit_mocha_watch:run'
     ]);
-
-
 
     //
     // Immediately build all Tent and test files and execute qUnit test suite
@@ -535,7 +535,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-mocha-ci', [
         'clean:test',
-        'concat',
+        'concat:jq',
+        'concat:vendor',
         'coffee:test',
         'coffee:tent',
         'ember_templates',
