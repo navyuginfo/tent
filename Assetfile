@@ -280,6 +280,13 @@ input "tmp/build" do
   end
 end
 
+input "public/stylesheet" do
+  output "dist"
+  match "tent.css" do
+    concat "tent.css"
+  end
+end
+
 input "dist" do
   output "public/dist"
   match "tent.js" do

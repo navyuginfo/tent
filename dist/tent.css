@@ -1,0 +1,2314 @@
+/* Mixins */
+/* Used for section panels which are given a css height. */
+/* 
+	Used for section panels which are given a css width. 
+	Width is normally provided separately as a grid style (e.g. 'span3')
+*/
+/* Styles applied to collapse a panel */
+/* Draw the element full-screen */
+/* 
+	Mixin to allow a modal panel to flex in height according to the viewport height .
+	The $margin argument defines the percentage offset from the top and bottom of the viewport.
+*/
+/* Bootstrap Modifications */
+.form-inline .control-group {
+  display: inline-block;
+}
+
+.input-append, .input-prepend {
+  font-size: inherit;
+}
+
+.input-prepend {
+  display: inline-block;
+}
+
+.help-block {
+  font-style: italic;
+}
+
+.help-inline {
+  display: block!important;
+}
+
+.help-inline {
+  padding-left: 0px;
+  font-style: italic;
+}
+
+.control-group.error .help-inline.warning {
+  color: #C09853;
+}
+
+.dropdown-submenu-left {
+  position: relative;
+}
+
+.dropdown-submenu-left > .dropdown-menu {
+  top: 0;
+  left: -100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  -webkit-border-radius: 6px 0px 6px 6px;
+  -moz-border-radius: 6px 0px 6px 6px;
+  border-radius: 6px 0px 6px 6px;
+}
+
+.dropdown-submenu-left:hover > .dropdown-menu {
+  display: block;
+}
+
+.dropdown-submenu-left > a:before {
+  display: block;
+  content: "  ";
+  float: left;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 5px 5px 0px;
+  border-right-color: #aaa;
+  margin-top: 5px;
+  margin-left: -10px;
+}
+
+.dropdown-submenu-left:hover > a:before {
+  border-right-color: white;
+}
+
+.dropdown-submenu.pull-left {
+  float: none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+  left: -120px;
+  margin-left: 10px;
+  -webkit-border-radius: 6px 0 6px 6px;
+  -moz-border-radius: 6px 0 6px 6px;
+  border-radius: 6px 0 6px 6px;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu.wide {
+  left: -180%;
+}
+
+.custom-export .form-horizontal .control-label {
+  width: 0px;
+}
+
+.tent-widget {
+  /* embed : embed a widget within another. We expect it to be inlined */
+  /* no-label: Remove the label and the left margin from the control */
+}
+.tent-widget.embed {
+  display: inline;
+}
+.tent-widget.embed .controls {
+  display: inline;
+}
+.tent-widget.no-label label {
+  display: none;
+}
+.tent-widget.no-label .controls {
+  margin-left: 0px;
+}
+.tent-widget .tent-required {
+  color: red;
+  vertical-align: top;
+  padding-left: 5px;
+  width: 4px;
+  display: inline-block;
+}
+.tent-widget.required .tent-required:before {
+  content: '*';
+}
+.tent-widget ul.help-inline {
+  list-style: none;
+  margin-left: 0px;
+}
+
+/*  Buttons */
+.inactive-button, .tent-breadcrumb ul li:last-child button {
+  /* extension class */
+  text-decoration: none;
+  cursor: auto;
+}
+.inactive-button:hover, .tent-breadcrumb ul li:last-child button:hover {
+  text-decoration: none;
+}
+
+/* ModalPane */
+body > .modal-backdrop, body > .modal-backdrop.fade.in {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=1);
+  opacity: 0.01;
+}
+
+.tent-modal {
+  /* A little wider than default */
+  /* Flexible Modals */
+}
+.tent-modal .modal-backdrop {
+  display: none;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.tent-modal.width2 .modal {
+  width: 620px;
+  margin-left: -310px;
+}
+.tent-modal.width3 .modal {
+  width: 740px;
+  margin-left: -370px;
+}
+.tent-modal.flex10 .modal {
+  top: 10%;
+  bottom: 10%;
+  margin-top: 0px;
+}
+.tent-modal.flex10 .modal .modal-header {
+  box-sizing: border-box;
+  height: 50px;
+}
+.tent-modal.flex10 .modal .modal-body {
+  box-sizing: border-box;
+  top: 50px;
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  max-height: none;
+}
+.tent-modal.flex10 .modal .modal-footer {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 50px;
+}
+.tent-modal.flex10 .modal .tent-form, .tent-modal.flex10 .modal .tent-panel {
+  height: auto;
+  overflow: visible;
+}
+.tent-modal.flex20 .modal {
+  top: 20%;
+  bottom: 20%;
+  margin-top: 0px;
+}
+.tent-modal.flex20 .modal .modal-header {
+  box-sizing: border-box;
+  height: 50px;
+}
+.tent-modal.flex20 .modal .modal-body {
+  box-sizing: border-box;
+  top: 50px;
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  max-height: none;
+}
+.tent-modal.flex20 .modal .modal-footer {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 50px;
+}
+.tent-modal.flex20 .modal .tent-form, .tent-modal.flex20 .modal .tent-panel {
+  height: auto;
+  overflow: visible;
+}
+.tent-modal.flex30 .modal {
+  top: 30%;
+  bottom: 30%;
+  margin-top: 0px;
+}
+.tent-modal.flex30 .modal .modal-header {
+  box-sizing: border-box;
+  height: 50px;
+}
+.tent-modal.flex30 .modal .modal-body {
+  box-sizing: border-box;
+  top: 50px;
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  max-height: none;
+}
+.tent-modal.flex30 .modal .modal-footer {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 50px;
+}
+.tent-modal.flex30 .modal .tent-form, .tent-modal.flex30 .modal .tent-panel {
+  height: auto;
+  overflow: visible;
+}
+
+/* Date Range Picker */
+.ui-daterangepickercontain {
+  font-size: 11px;
+}
+
+.tent-date-range-field .ui-daterangepicker-arrows {
+  width: 218px;
+}
+.tent-date-range-field .ui-daterangepicker-arrows input.ui-rangepicker-input {
+  width: 170px;
+  font-size: .8em;
+  height: 1.2em;
+  display: inline-block!important;
+}
+.tent-date-range-field .ui-daterangepicker-arrows .ui-daterangepicker-prev, .tent-date-range-field .ui-daterangepicker-arrows .ui-daterangepicker-next {
+  top: 4px;
+}
+.tent-date-range-field input {
+  width: 150px;
+}
+.tent-date-range-field input.range-end {
+  display: none!important;
+}
+
+/* Accordion */
+.accordion-heading .accordion-toggle {
+  display: inline-block;
+}
+.accordion-heading .accordion-head-content {
+  cursor: default;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Spinner */
+.ui-spinner input {
+  border: 0px!important;
+  box-shadow: none!important;
+  padding: 0px 0px 3px 0px;
+  width: 2em;
+}
+
+/* tabs */
+.tent-tabs.fixed-header .tab-content {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+}
+.tent-tabs.fixed-header .tab-content .tent-section {
+  height: 100%;
+}
+
+/* tabs within a modal */
+.tent-modal .tent-tabs.fixed-header {
+  position: relative;
+  height: 100%;
+}
+.tent-modal .tent-tabs.fixed-header .tab-content {
+  position: absolute;
+  bottom: 0px;
+  overflow: auto;
+  left: 0px;
+  right: 0px;
+  padding: 10px;
+}
+.tent-modal .tent-tabs.fixed-header .tab-pane {
+  position: relative;
+}
+
+/* Spinner icon for Select controls*/
+.control-group .wait {
+  position: relative;
+  top: .3em;
+}
+
+/* jqGrid */
+.tent-jqgrid {
+  height: 100%;
+  /* Ensure that headers wrap */
+  /****/
+  /* Make the drag bars wider */
+  /* Sorting */
+  /* Save UI State Button */
+  /* Export */
+  /* Export */
+  /* Column Chooser */
+  /* Fixed header styles */
+  /* Grouping */
+}
+.tent-jqgrid table {
+  font-size: 12px;
+}
+.tent-jqgrid.maximized {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2000;
+  background: white;
+}
+.tent-jqgrid.dialog {
+  background-color: white;
+}
+.tent-jqgrid .grid-header {
+  position: relative;
+}
+.tent-jqgrid .ui-jqgrid tr.jqgrow td {
+  white-space: normal;
+}
+.tent-jqgrid .ui-jqgrid tr.jqgrow td.error {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-hbox {
+  padding-right: 0px;
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-hdiv {
+  overflow: visible;
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th div {
+  height: 100%;
+  overflow: visible;
+  margin-right: 6px;
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-htable .ui-th-column .title {
+  padding-right: 16px;
+  float: left;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.tent-jqgrid .ui-th-column, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+  white-space: normal;
+  overflow: visible;
+  position: relative;
+}
+.tent-jqgrid .ui-th-column .has-dropdown, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .has-dropdown {
+  cursor: pointer;
+}
+.tent-jqgrid .ui-th-column .has-dropdown div, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .has-dropdown div {
+  overflow: visible;
+}
+.tent-jqgrid .ui-th-column .has-dropdown:hover .dropdown-mask, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .has-dropdown:hover .dropdown-mask {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+  opacity: 0.6;
+}
+.tent-jqgrid .ui-th-column .has-dropdown .dropdown-mask, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .has-dropdown .dropdown-mask {
+  position: absolute;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  left: 0px;
+  right: 0px;
+  background-color: white;
+  height: 100%;
+  top: 0px;
+}
+.tent-jqgrid .ui-th-column .has-dropdown .dropdown-mask i, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .has-dropdown .dropdown-mask i {
+  bottom: 0px;
+  color: #030303;
+  font-size: 1.1em;
+  font-weight: bold;
+  position: absolute;
+}
+.tent-jqgrid .ui-th-column .column-dropdown, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .column-dropdown {
+  min-width: 60px;
+  margin: 0px;
+  cursor: pointer;
+  border-width: 2px;
+  border: 1px solid #A09F9F;
+  box-sizing: border-box;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  padding: 0px;
+}
+.tent-jqgrid .ui-th-column .column-dropdown .dropdown-menu, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .column-dropdown .dropdown-menu {
+  min-width: 110px;
+}
+.tent-jqgrid .ui-th-column .column-dropdown .rename.dropdown-submenu input[type="text"], .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .column-dropdown .rename.dropdown-submenu input[type="text"] {
+  margin: 4px;
+}
+.tent-jqgrid .ui-th-column .column-dropdown.last, .tent-jqgrid .ui-jqgrid .ui-jqgrid-htable th.ui-th-column .column-dropdown.last {
+  right: 0px;
+  left: auto;
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-resize-ltr {
+  width: 6px;
+  background-color: rgba(65, 150, 255, 0.07);
+  margin: 0px -2px -2px 0px;
+  border-left: 1px solid rgba(81, 125, 173, 0.06);
+}
+.tent-jqgrid .ui-jqgrid .ui-jqgrid-resize {
+  height: 100% !important;
+}
+.tent-jqgrid .ui-jqgrid .ui-icon-asc {
+  margin-top: 0px;
+  height: 50%;
+  right: 0px;
+  background-color: white;
+  border-left: 1px solid rgba(81, 125, 173, 0.18);
+}
+.tent-jqgrid .ui-jqgrid .ui-icon-desc {
+  margin-top: 50%;
+  right: 0px;
+  height: 50%;
+  background-color: white;
+  border-left: 1px solid rgba(81, 125, 173, 0.18);
+}
+.tent-jqgrid .ui-state-disabled, .tent-jqgrid .ui-widget-content .ui-state-disabled, .tent-jqgrid .ui-widget-header .ui-state-disabled {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=55);
+  opacity: 0.55;
+}
+.tent-jqgrid .ui-jqgrid .ui-state-disabled:hover {
+  padding: 0px;
+}
+.tent-jqgrid .s-ico {
+  height: 100%;
+  display: none!important;
+}
+.tent-jqgrid .ui-icon-triangle-1-n {
+  background-position: 0 -18px;
+}
+.tent-jqgrid .ui-icon-triangle-1-s {
+  background-position: -65px -18px;
+}
+.tent-jqgrid .ui-widget-header .save-ui-state {
+  float: left;
+  cursor: pointer;
+  margin-left: 30px;
+}
+.tent-jqgrid .ui-widget-header .save-ui-state li .save-as-panel {
+  padding: 4px;
+}
+.tent-jqgrid .ui-widget-header .save-ui-state li a {
+  clear: none;
+}
+.tent-jqgrid .ui-widget-header .save-ui-state li a:hover {
+  background-image: none;
+  text-shadow: none;
+}
+.tent-jqgrid .ui-widget-header .save-ui-state li a.disabled {
+  color: #aaa;
+  cursor: default;
+}
+.tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button {
+  float: right;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.tent-jqgrid .column-chooser span.ui-icon, .tent-jqgrid .jqgrid-title-button span.ui-icon {
+  float: left;
+  margin: 1px 1px;
+}
+.tent-jqgrid .export .export-json {
+  background-image: url(images/export/);
+}
+.tent-jqgrid .export .export-xml {
+  background-image: url(images/export/file_xml2.png);
+}
+.tent-jqgrid .export .export-csv {
+  background-image: url(images/export/csv_text.png);
+}
+.tent-jqgrid .export .export-excel {
+  background-image: url(images/export/page_excel.png);
+}
+.tent-jqgrid .custom-export {
+  padding: 15px 5px;
+  /*		width: 360px;*/
+}
+.tent-jqgrid .custom-export label {
+  font-size: 11px;
+  /*float: none;*/
+  padding-top: 5px;
+}
+.tent-jqgrid .custom-export .control-group {
+  margin-bottom: 5px;
+}
+.tent-jqgrid .custom-export .controls {
+  margin-left: 150px;
+}
+.tent-jqgrid .column-chooser .dropdown-menu {
+  margin-left: -130%;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.tent-jqgrid .column-chooser .dropdown-menu .window {
+  height: 3.2em;
+}
+.tent-jqgrid .column-chooser label {
+  margin-bottom: 0px;
+  font-size: 1.1em;
+  padding: 3px 20px 0px 10px;
+}
+.tent-jqgrid .column-chooser label:hover {
+  color: white;
+}
+.tent-jqgrid .column-chooser ul {
+  max-height: 20em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0px;
+}
+.tent-jqgrid .column-chooser li {
+  background: white;
+}
+.tent-jqgrid .column-chooser li input {
+  vertical-align: top;
+}
+.tent-jqgrid .column-chooser li .title {
+  padding-left: 10px;
+}
+.tent-jqgrid .maximize {
+  float: left;
+  cursor: pointer;
+}
+.tent-jqgrid .ui-widget .ui-widget {
+  font-size: .8em;
+}
+.tent-jqgrid .ui-jqdialog {
+  background: rgba(19, 36, 43, 0.86275);
+  outline: none;
+}
+.tent-jqgrid .ui-jqdialog label {
+  display: inline-block;
+  font-size: 13px;
+  margin-left: 10px;
+}
+.tent-jqgrid .ui-jqdialog table {
+  width: 100%;
+  color: white;
+  background: transparent;
+}
+.tent-jqgrid .ui-jqdialog .ui-jqdialog-titlebar {
+  padding: .2em .2em;
+}
+.tent-jqgrid .ui-jqdialog .DataTD {
+  display: none;
+}
+.tent-jqgrid .fm-button {
+  padding: 0 .5em 0 1.5em;
+}
+.tent-jqgrid .grid-table a, .tent-jqgrid .grid-table a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.tent-jqgrid .grid-table select {
+  width: 100%;
+  height: 100%;
+}
+.tent-jqgrid .grid-table input {
+  width: 98%;
+  height: 100%;
+  padding: 0%;
+  font-size: inherit;
+}
+.tent-jqgrid.fixed-header {
+  height: 100%;
+}
+.tent-jqgrid.fixed-header .ui-jqgrid {
+  position: absolute;
+  top: 20px;
+  bottom: 0px;
+}
+.tent-jqgrid.fixed-header .ui-jqgrid-titlebar {
+  height: 20px;
+}
+.tent-jqgrid.fixed-header .ui-jqgrid-titlebar, .tent-jqgrid.fixed-header .ui-jqgrid-hdiv {
+  top: 0px;
+  position: absolute;
+  margin-left: 0px;
+  width: 100%;
+}
+.tent-jqgrid.fixed-header .ui-jqgrid-bdiv, .tent-jqgrid.fixed-header .ui-jqgrid-sdiv {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  margin-left: 0px;
+  bottom: 0px;
+}
+.tent-jqgrid .ui-widget-header a {
+  font-size: 11px;
+  outline: 0px;
+}
+.tent-jqgrid .ui-widget-header a:hover {
+  text-decoration: none;
+}
+.tent-jqgrid .ui-widget-header a .caret {
+  vertical-align: middle;
+}
+.tent-jqgrid .ui-widget-header .dropdown-menu {
+  color: #333;
+  font-size: 11px;
+  z-index: 1010;
+}
+.tent-jqgrid .ui-widget-header .dropdown-menu li > a {
+  color: #333;
+  font-size: 11px;
+}
+.tent-jqgrid .ui-widget-header .dropdown-menu li > a:hover {
+  color: white;
+}
+.tent-jqgrid .ui-widget-header .dropdown-menu a {
+  color: #222;
+}
+.tent-jqgrid .ui-widget-header .horizontal-scroll-button {
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  margin-top: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.tent-jqgrid .ui-widget-header .horizontal-scroll-button:hover {
+  border-color: #CCC;
+}
+.tent-jqgrid .ui-widget-header .horizontal-scroll-button.active {
+  border-color: #CCC;
+  background: #eee;
+}
+.tent-jqgrid .ui-widget-header .horizontal-scroll-button i {
+  margin-left: 3px;
+  padding: 1px;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-view {
+  height: auto;
+  top: 20px;
+  position: absolute;
+  overflow-x: auto;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid {
+  overflow-x: hidden;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header.paged .ui-jqgrid-bdiv {
+  bottom: 0px;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-bdiv {
+  position: absolute;
+  top: 0px;
+  overflow-x: visible;
+  overflow-y: visible;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-hdiv {
+  position: absolute;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-btable {
+  table-layout: fixed;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid tr.jqgrow td {
+  white-space: nowrap;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header.footer-row .ui-jqgrid-sdiv {
+  left: 0px;
+  right: 0px;
+  overflow-x: auto;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header.footer-row .ui-jqgrid-bdiv {
+  bottom: 0px;
+}
+.tent-jqgrid.horizontal-scrolling.fixed-header.footer-row .ui-jqgrid-view {
+  overflow-x: hidden;
+}
+.tent-jqgrid.error .grid-table td {
+  background: rgba(255, 0, 0, 0.15);
+}
+.tent-jqgrid.error .help-inline {
+  color: #B94A48;
+}
+.tent-jqgrid .group-row {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.jqgrid-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background-color: black;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
+
+.dropdown-submenu-left > .dropdown-menu.custom-export {
+  left: -305px;
+}
+
+.dropdown-submenu-left .save-as-panel {
+  left: -14em;
+}
+
+.dropdown-submenu-left .load-panel {
+  left: -6em;
+}
+
+/* Selected row in a Tent.Table */
+.tent-selected {
+  background-color: #CCC;
+}
+
+/* Standard Panel, with expandable */
+.tent-panel .panel-header {
+  position: relative;
+}
+.tent-panel .panel-header > .content {
+  display: block;
+  float: left;
+  padding-top: 5px;
+}
+.tent-panel .panel-header > .content .panel-link .caret {
+  margin: 9px;
+}
+.tent-panel .panel-header > .content .tent-widget {
+  float: left;
+}
+.tent-panel.collapsed .panel-header .caret {
+  /* 
+  	Extended to support IE < 9, which does not support transforms.
+  	The second number is the 90degree multiplier used by IE
+  	1 = 90deg
+  	2 = 180deg
+  	3 = 270deg
+  */
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+.tent-panel .panel-header .caret {
+  border-bottom: 0px;
+  border-top: 4px solid;
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  -o-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+}
+.tent-panel .panel-slider {
+  position: relative;
+  overflow: hidden;
+  padding-left: 15px;
+}
+.tent-panel .panel-slider .content {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
+.caret {
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  -o-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+}
+
+.collapsed .caret {
+  /* 
+  	Extended to support IE < 9, which does not support transforms.
+  	The second number is the 90degree multiplier used by IE
+  	1 = 90deg
+  	2 = 180deg
+  	3 = 270deg
+  */
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+
+.section .panel-header h3 {
+  display: inline-block;
+  font-size: 1em;
+  padding: 0px 15px;
+  float: left;
+  width: 80%;
+  margin: 0px;
+}
+.section .panel-header a:hover span {
+  border-top-color: #005580;
+}
+.section .panel-header .caret {
+  margin: 18px 15px;
+}
+.section .panel-content {
+  padding: 9px 15px;
+}
+
+.scrollable {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.scrollable.right {
+  right: 0px;
+}
+
+/*  Flexible Layout Panels */
+.flex-container {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+.vspan1 {
+  height: 10%;
+  overflow-y: auto;
+  min-height: 30px;
+}
+
+.vspan2 {
+  height: 20%;
+  overflow-y: auto;
+}
+
+.vspan3 {
+  height: 30%;
+  overflow-y: auto;
+}
+
+.vspan4 {
+  height: 40%;
+  overflow-y: auto;
+}
+
+.vspan5 {
+  height: 50%;
+  overflow-y: auto;
+}
+
+.vspan6 {
+  height: 60%;
+  overflow-y: auto;
+}
+
+.vspan7 {
+  height: 70%;
+  overflow-y: auto;
+}
+
+.vspan8 {
+  height: 80%;
+  overflow-y: auto;
+}
+
+.vspan9 {
+  height: 90%;
+  overflow-y: auto;
+}
+
+.vspan10 {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.tent-section {
+  float: left;
+  position: relative;
+  margin-left: 0px;
+}
+.tent-section * {
+  /* Check this for performance */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.tent-section h1, .tent-section h2, .tent-section h3, .tent-section h4, .tent-section h5, .tent-section h6 {
+  display: inline-block;
+  margin: 4px;
+}
+.tent-section header {
+  position: absolute;
+  height: 50px;
+  margin-left: 0px;
+  padding-left: 0px;
+  width: 100%;
+  overflow-y: hidden;
+  z-index: 1000;
+  top: 0px;
+}
+.tent-section header.hideable.hidden {
+  height: 0px;
+}
+.tent-section header.collapsible.collapsed {
+  height: 20px;
+}
+.tent-section header.collapsible.collapsed .caret {
+  border-top: 4px solid black;
+  border-bottom: none;
+}
+.tent-section header.collapsible {
+  z-index: 1000;
+}
+.tent-section header.collapsible .caret {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-bottom: 0px;
+  border-top: 4px solid;
+  -webkit-transition: all 0.6s ease;
+  -moz-transition: all 0.6s ease;
+  -o-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+}
+.tent-section header.use-transition {
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+}
+.tent-section > footer {
+  position: absolute;
+  height: 30px;
+  margin-left: 0px;
+  padding-left: 0px;
+  width: 100%;
+  overflow-y: hidden;
+  bottom: 0px;
+  min-height: 30px;
+}
+.tent-section > .content {
+  overflow-y: auto;
+  -webkit-transition: all 0s ease;
+  -moz-transition: all 0s ease;
+  -o-transition: all 0s ease;
+  transition: all 0s ease;
+  position: absolute;
+  margin-left: 0px;
+  width: 100%;
+}
+
+.tent-hsection {
+  position: relative;
+  margin-left: 0px;
+  overflow-x: hidden;
+}
+.tent-hsection .left-panel {
+  position: absolute;
+  height: 100%;
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-x: visible;
+  overflow: visible;
+}
+.tent-hsection .left-panel.use-transition {
+  -webkit-transition: all .4s ease;
+}
+.tent-hsection .left-panel .panel-content {
+  height: 100%;
+}
+.tent-hsection .left-panel .panel-content section {
+  overflow: hidden;
+}
+.tent-hsection .left-panel .panel-content section header {
+  padding-right: 15px;
+}
+.tent-hsection .left-panel .drag-bar {
+  right: 0px;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+.tent-hsection .left-panel.collapsed .drag-bar {
+  right: -14px;
+  /* 
+  	Extended to support IE < 9, which does not support transforms.
+  	The second number is the 90degree multiplier used by IE
+  	1 = 90deg
+  	2 = 180deg
+  	3 = 270deg
+  */
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  background-color: rgba(255, 255, 255, 0.71);
+  border: 1px solid rgba(0, 0, 0, 0.32);
+}
+.tent-hsection .center-panel {
+  position: absolute;
+  height: 100%;
+}
+.tent-hsection .center-panel section header {
+  padding-left: 15px;
+}
+.tent-hsection .right-panel {
+  position: absolute;
+  height: 100%;
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-x: visible;
+  overflow: visible;
+  right: 0px;
+  margin-left: 0px;
+}
+.tent-hsection .right-panel.use-transition {
+  -webkit-transition: all .4s ease;
+}
+.tent-hsection .right-panel .panel-content {
+  height: 100%;
+}
+.tent-hsection .right-panel section header {
+  padding-left: 15px;
+}
+.tent-hsection .right-panel .drag-bar {
+  left: 0px;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.tent-hsection .right-panel.collapsed .drag-bar {
+  left: -14px;
+  /* 
+  	Extended to support IE < 9, which does not support transforms.
+  	The second number is the 90degree multiplier used by IE
+  	1 = 90deg
+  	2 = 180deg
+  	3 = 270deg
+  */
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  background-color: rgba(255, 255, 255, 0.71);
+  border: 1px solid rgba(0, 0, 0, 0.32);
+}
+.tent-hsection .drag-bar {
+  position: absolute;
+  top: 5px;
+  cursor: pointer;
+  width: 15px;
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.18);
+  z-index: 2000;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: rgba(51, 51, 51, 0.68);
+}
+.tent-hsection .drag-bar:hover {
+  background-color: rgba(255, 255, 255, 0.71);
+}
+
+/*** Left Main Menu ***/
+.main-menu {
+  position: fixed;
+  overflow: auto;
+  top: 30px;
+  bottom: 30px;
+  left: 0px;
+  width: 15em;
+  background-color: #333;
+}
+.main-menu .mask {
+  background-color: transparent;
+  width: 100%;
+  top: 0px;
+  bottom: 0px;
+  position: relative;
+  overflow: auto;
+}
+
+.dashboard-toggle {
+  height: 2em;
+}
+.dashboard-toggle a {
+  cursor: pointer;
+}
+.dashboard-toggle a:hover {
+  text-decoration: none;
+}
+.dashboard-toggle i {
+  line-height: 30px;
+  margin-left: 12px;
+}
+.dashboard-toggle .hamburger {
+  color: blue;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+  opacity: 0.4;
+  cursor: inherit;
+}
+.dashboard-toggle .hamburger.active {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+}
+.dashboard-toggle .hamburger.active:hover {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+.dashboard-toggle .pin {
+  float: right;
+  padding-right: 7px;
+  color: blue;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+  opacity: 0.4;
+}
+.dashboard-toggle .pin.active {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+.sci-main-menu {
+  position: static;
+  margin: 0px;
+}
+.sci-main-menu .nav-tabs {
+  border-bottom: 1px solid #383838;
+}
+.sci-main-menu .nav-tabs .tent-panel {
+  margin-bottom: 1em;
+}
+.sci-main-menu .nav-tabs .tent-panel .accordion-group {
+  border: 0px;
+}
+.sci-main-menu .nav-tabs .tent-panel .panel-header a:hover .caret {
+  border-top-color: transparent;
+}
+.sci-main-menu .nav-tabs .tent-panel .panel-header .caret {
+  margin: 7px 5px;
+}
+.sci-main-menu .nav-tabs .tent-panel .panel-header .content {
+  padding: 0px;
+}
+.sci-main-menu .nav-tabs .tent-panel .panel-content {
+  padding: 0px;
+}
+.sci-main-menu .nav-tabs li {
+  width: 100%;
+  display: inline-block;
+}
+.sci-main-menu .nav-tabs li h4 {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -webkit-transition: opacity 0.7s ease;
+  -moz-transition: opacity 0.7s ease;
+  -o-transition: opacity 0.7s ease;
+  transition: opacity 0.7s ease;
+  color: #eee;
+  margin: 0px;
+  padding: 0px 7px;
+}
+.sci-main-menu .nav-tabs li h4 i {
+  display: none;
+}
+.sci-main-menu .nav-tabs li .badge {
+  display: none;
+  float: right;
+  margin-right: 10px;
+}
+.sci-main-menu .nav-tabs li a {
+  display: block;
+  color: #eee;
+  padding: 0px 5px;
+  cursor: pointer;
+}
+.sci-main-menu .nav-tabs li a .content {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -webkit-transition: opacity 0.7s ease;
+  -moz-transition: opacity 0.7s ease;
+  -o-transition: opacity 0.7s ease;
+  transition: opacity 0.7s ease;
+}
+.sci-main-menu .nav-tabs li a i {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  margin-right: 10px;
+  margin-left: 5px;
+  margin-top: -3px;
+}
+.sci-main-menu .nav-tabs li a.active-menu {
+  background-color: #666;
+}
+.sci-main-menu .nav-tabs li a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.sci-main-menu .nav-tabs li a:hover i {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+.tooltip.right {
+  margin-left: 13px;
+}
+
+.tooltip-inner {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  font-size: 12px;
+  padding: 5px 12px;
+}
+
+.sci-foot {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  -webkit-transition: opacity 0.7s ease;
+  -moz-transition: opacity 0.7s ease;
+  -o-transition: opacity 0.7s ease;
+  transition: opacity 0.7s ease;
+  text-align: center;
+  height: auto;
+}
+
+/* Tent-Specific */
+/* Typography */
+/* Headers */
+.grid-header, .pager * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+ul:empty {
+  border: 0px;
+  padding: 0px;
+}
+
+/* UI Library Overrides */
+.ui-widget {
+  font-family: inherit;
+}
+
+.tent-button-group {
+  position: relative;
+}
+
+.radio-group {
+  display: inline-block;
+}
+.radio-group input.tent-radio-option[type="radio"] {
+  margin-right: 10px;
+  margin-top: -2px;
+}
+
+.tent-width-small {
+  width: 20px;
+}
+
+a[rel=tooltip] {
+  width: 16px;
+  height: 16px;
+  margin-top: 6px;
+  background-image: url(images/ui-icons_454545_256x240.png);
+  background-position: -16px -144px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.text-display {
+  margin-top: 5px;
+  display: inline-block;
+}
+
+/*  Modal Dialog */
+/* Hide the base backdrop, as each modal handles its own. */
+body > .modal-backdrop {
+  visibility: hidden;
+}
+
+.tent-modal {
+  text-align: left;
+}
+
+.modal {
+  outline: none;
+}
+.modal .tent-button .btn-secondary {
+  float: left;
+}
+
+/* List Filters */
+.filter-panel {
+  margin-left: -360px;
+  box-sizing: border-box;
+  z-index: 800;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  /* Styling for a compact form : maybe generalize this */
+}
+.filter-panel li {
+  padding: 4px 20px;
+}
+.filter-panel a.toggle {
+  padding: 2px;
+  display: inline-block;
+  vertical-align: top;
+  float: right;
+}
+.filter-panel a.toggle .caret {
+  vertical-align: middle;
+}
+.filter-panel label {
+  font-size: 12px;
+}
+.filter-panel .control-group {
+  margin-bottom: 5px;
+}
+.filter-panel .control-group input:nth-child(2) {
+  display: block;
+}
+.filter-panel select, .filter-panel textarea, .filter-panel input {
+  height: 22px;
+  padding: 0px 6px;
+  font-size: 1em;
+}
+.filter-panel .btn {
+  font-size: 12px;
+  padding: 0px 14px;
+}
+.filter-panel input.range-end {
+  display: block;
+}
+.filter-panel .operators {
+  float: left;
+  margin-right: 5px;
+}
+
+.ui-jqgrid-titlebar .filter-selection {
+  margin-bottom: 0px;
+  margin-right: 5px;
+}
+.ui-jqgrid-titlebar .filter-selection label {
+  font-weight: bold;
+  font-size: 1em;
+  padding-top: 0px;
+  width: 100px;
+  display: inline;
+}
+.ui-jqgrid-titlebar .filter-selection select {
+  height: 23px;
+  vertical-align: baseline;
+}
+.ui-jqgrid-titlebar .filter-selection .controls {
+  margin-left: 100px;
+}
+.ui-jqgrid-titlebar .jqgrid-title-button .filter a {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+}
+
+/* Breadcrumb */
+.tent-breadcrumb ul {
+  list-style: none;
+}
+.tent-breadcrumb ul li {
+  display: inline;
+}
+.tent-breadcrumb ul li .btn-link {
+  color: #333333;
+  padding: 4px 1px;
+}
+.tent-breadcrumb ul li:last-child i {
+  display: none;
+}
+.tent-breadcrumb ul li:last-child button {
+  font-weight: bold;
+}
+
+/* Messages Panel */
+.tent-message-panel {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+.tent-message-panel h5 {
+  float: left;
+  margin: 0px;
+}
+.tent-message-panel .close {
+  position: static;
+}
+.tent-message-panel .close .btn-link {
+  color: #000;
+}
+.tent-message-panel a.close, .tent-message-panel .close .btn {
+  top: 6px;
+  position: absolute;
+  right: 10px;
+  padding: 0px;
+  border: 0px;
+  background: transparent;
+}
+.tent-message-panel .caret {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.tent-message-panel .in .caret {
+  border-top: 0px;
+  border-bottom: 4px solid black;
+}
+.tent-message-panel .alert, .tent-message-panel .alert-error, .tent-message-panel .alert-info, .tent-message-panel .alert-success {
+  position: relative;
+  margin: 2px 0px 6px 0px;
+  padding: 4px 6px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #EEDCB9;
+}
+.tent-message-panel .alert .error-message, .tent-message-panel .alert-error .error-message, .tent-message-panel .alert-info .error-message, .tent-message-panel .alert-success .error-message {
+  padding: 1px 0px 0px 100px;
+}
+.tent-message-panel .alert i, .tent-message-panel .alert-error i, .tent-message-panel .alert-info i, .tent-message-panel .alert-success i {
+  font-style: normal;
+}
+.tent-message-panel .alert-error {
+  border: 1px solid #EED3D7;
+}
+.tent-message-panel .alert-error .error-message {
+  padding: 0px 0px 0px 58px;
+}
+.tent-message-panel .alert-info {
+  border: 1px solid #BCE8F1;
+}
+.tent-message-panel .alert-success {
+  padding: 7px;
+  border: 1px solid #D6E9C6;
+}
+.tent-message-panel .error-message {
+  cursor: pointer;
+  padding: 0px 50px;
+  font-size: 13px;
+}
+.tent-message-panel .error-message:hover {
+  text-decoration: underline;
+}
+.tent-message-panel .error-message label {
+  display: inline-block;
+  padding-right: 7px;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 0 1px 1px #FFEFEF;
+  font-style: normal;
+}
+.tent-message-panel .error-message label:hover {
+  text-decoration: underline;
+}
+.tent-message-panel .error-message ul {
+  display: inline-block;
+  list-style: none;
+  margin-left: 0px;
+  margin-bottom: 5px;
+  padding-top: 1px;
+}
+.tent-message-panel .info-message, .tent-message-panel .success-message {
+  padding: 0px 70px;
+}
+.tent-message-panel .error-expando, .tent-message-panel .info-expando {
+  min-height: 20px;
+  line-height: 20px;
+  position: relative;
+}
+.tent-message-panel .error-expando .in, .tent-message-panel .info-expando .in {
+  height: auto;
+}
+
+.btn-toolbar {
+  font-size: inherit;
+}
+
+/* Data Type Formatting */
+.negative {
+  color: red;
+}
+
+.unentitled-cell {
+  background: #D0D0D0;
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+
+.hidden {
+  display: none!important;
+}
+
+.tent-spinner.error .ui-spinner {
+  border: #E9322D 1px solid;
+}
+
+/* Forms */
+select {
+  min-width: 150px;
+  position: relative;
+  z-index: 0;
+}
+
+select.expand {
+  width: auto!important;
+  min-width: 150px;
+  z-index: 1;
+}
+@charset "UTF-8";
+/*
+ * jQuery File Upload UI Plugin CSS 8.1
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2010, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transform: translate(-300px, 0) scale(4);
+  font-size: 23px;
+  direction: ltr;
+  cursor: pointer;
+}
+.fileupload-buttonbar .btn,
+.fileupload-buttonbar .toggle {
+  margin-bottom: 5px;
+}
+.progress-animated .bar {
+  background: url(../img/progressbar.gif) !important;
+  filter: none;
+}
+.fileupload-loading {
+  float: right;
+  width: 32px;
+  height: 32px;
+  background: url(../img/loading.gif) center no-repeat;
+  background-size: contain;
+  display: none;
+}
+.fileupload-processing .fileupload-loading {
+  display: block;
+}
+.files audio,
+.files video {
+  max-width: 300px;
+}
+
+@media (max-width: 767px) {
+  .fileupload-buttonbar .toggle,
+  .files .toggle,
+  .files .btn span {
+    display: none;
+  }
+  .files .name {
+    width: 80px;
+    word-wrap: break-word;
+  }
+  .files audio,
+  .files video {
+    max-width: 80px;
+  }
+}/*styles for jquery ui daterangepicker plugin */
+
+.ui-daterangepickercontain {
+	position: absolute;
+	z-index: 999;
+}
+.ui-daterangepickercontain .ui-daterangepicker {
+	float: left;
+	padding: 5px !important;
+	width: auto;
+	display: inline;
+	background-image: none !important;
+	clear: left;
+}
+.ui-daterangepicker ul, .ui-daterangepicker .ranges, .ui-daterangepicker .range-start, .ui-daterangepicker .range-end {
+	float: left;
+	padding: 0;
+	margin: 0;
+}
+.ui-daterangepicker .ranges {
+	width: auto;
+	position: relative;
+	padding: 5px 5px 40px 0;
+	margin-left: 10px;
+}
+.ui-daterangepicker .range-start, .ui-daterangepicker .range-end {
+	margin-left: 5px;
+}
+.ui-daterangepicker button.btnDone {
+	margin: 0 5px 5px 0;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	clear: both;
+	cursor: pointer;
+	font-size: 1.1em;
+}
+.ui-daterangepicker ul {
+	width: 17.6em;
+	background: none;
+	border: 0;
+}
+.ui-daterangepicker li {
+	list-style: none;
+	padding: 1px;
+	cursor: pointer;
+	margin: 1px 0;
+}
+.ui-daterangepicker li.ui-state-hover, .ui-daterangepicker li.ui-state-active {
+	padding: 0;
+}
+.ui-daterangepicker li.preset_0 {
+	margin-top: 1.5em !important;
+}
+.ui-daterangepicker .ui-widget-content a {
+	text-decoration: none !important;
+}
+.ui-daterangepicker li a {
+	font-weight: normal;
+	margin: .3em .5em;
+	display: block;
+}
+.ui-daterangepicker li span {
+	float: right;
+	margin: .3em .2em;
+}
+.ui-daterangepicker .title-start, .ui-daterangepicker .title-end {
+	display: block;
+	margin: 0 0 .2em;
+	font-size: 1em;
+	padding: 0 4px 2px;
+}
+.ui-daterangepicker .ui-datepicker-inline {
+	font-size: 1em;
+}
+.ui-daterangepicker-arrows {
+	padding: 2px;
+	width: 204px;
+	position: relative;
+}
+.ui-daterangepicker-arrows input.ui-rangepicker-input {
+	width: 158px;
+	margin: 0 2px 0 20px;
+	padding: 2px;
+	height: 1.1em;
+}
+.ui-daterangepicker-arrows .ui-daterangepicker-prev, .ui-daterangepicker-arrows .ui-daterangepicker-next {
+	position: absolute;
+	top: 2px; 
+	padding: 1px;
+}
+.ui-daterangepicker-arrows .ui-daterangepicker-prev {
+	left: 2px;
+}
+.ui-daterangepicker-arrows .ui-daterangepicker-next {
+	right: 2px;
+}
+.ui-daterangepicker-arrows .ui-daterangepicker-prev:hover, 
+.ui-daterangepicker-arrows .ui-daterangepicker-next:hover,
+.ui-daterangepicker-arrows .ui-daterangepicker-prev:focus, 
+.ui-daterangepicker-arrows .ui-daterangepicker-next:focus {
+	padding: 0;
+}
+/*
+ * Fancytree Win8 styles
+
+Borders have NO radius and NO gradients are used!
+
+both:
+   unselected background: white
+   hover bar (unselected, inactive): #E5F3FB (border: #70C0E7) 'very light blue'
+   active node: #CBE8F6 (border: #26A0DA)  'light blue'
+   active node with hover: wie active node
+
+Tree view:
+   active node, tree inactive: #F7F7F7 (border: #DEDEDE) 'light gray, selected, but tree not active'
+
+List view:
+   selected bar: --> active bar
+   focus  bar: transparent(white) + border 1px solid #3399FF  ()
+
+   table left/right border: #EDEDED 'light gray'
+ */
+.ui-helper-hidden {
+  display: none;
+}
+
+.fancytree-container
+{
+  font-family: tahoma, arial, helvetica;
+  font-size: 10pt; /* font size should not be too big */
+  white-space: nowrap;
+  padding: 3px;
+  margin: 0; /* issue 201 */
+  background-color: white;
+  border: 1px dotted gray;
+  overflow: auto;
+  height: 100%; /* issue 263 */
+}
+
+ul.fancytree-container ul
+{
+  padding: 0 0 0 16px;
+  margin: 0;
+}
+
+ul.fancytree-container li
+{
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  -moz-background-clip:border;
+  -moz-background-inline-policy: continuous;
+  -moz-background-origin: padding;
+  background-attachment: scroll;
+  background-color: transparent;
+  background-position: 0 0;
+  background-repeat: repeat-y;
+  background-image: none;  /* no v-lines */
+
+  margin:0;
+  padding:1px 0 0 0;
+}
+/* Suppress lines for last child node */
+ul.fancytree-container li.fancytree-lastsib
+{
+  background-image: none;
+}
+/* Suppress lines if level is fixed expanded (option minExpandLevel) */
+ul.fancytree-no-connector > li
+{
+  background-image: none;
+}
+
+/* Style, when control is disabled */
+.ui-fancytree-disabled ul.fancytree-container
+{
+  opacity: 0.5;
+/*  filter: alpha(opacity=50); /* Yields a css warning */
+  background-color: silver;
+}
+
+
+span.fancytree-node
+{
+  display: inline-block;
+  width: 100%;
+  border: 1px solid transparent;
+}
+
+/*******************************************************************************
+ * Common icon definitions
+ */
+span.fancytree-empty,
+span.fancytree-vline,
+/*span.fancytree-connector,*/
+span.fancytree-expander,
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-radio,
+span.fancytree-drag-helper-img,
+#fancytree-drop-marker
+{
+  width: 16px;
+  height: 16px;
+/*  display: -moz-inline-box; /* @ FF 1+2 removed for issue 221*/
+/*  -moz-box-align: start; /* issue 221 */
+  display: inline-block; /* Required to make a span sizeable */
+  vertical-align: top;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-image: url("images/icons.gif");
+  background-position: 0 0;
+}
+/** Used by iconclass option */
+span.fancytree-custom-icon {
+  display: inline-block;
+}
+/** Used by 'icon' node option: */
+.fancytree-container img
+{
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+  vertical-align: top;
+  border-style: none;
+}
+
+
+/*******************************************************************************
+ * Lines and connectors
+ */
+/* span.fancytree-connector
+{
+  background-image: none;
+}
+ */
+/*******************************************************************************
+ * Expander icon
+ * Note: IE6 doesn't correctly evaluate multiples class names,
+ *     so we create combined class names that can be used in the CSS.
+ *
+ * Prefix: fancytree-exp-
+ * 1st character: 'e': expanded, 'c': collapsed, 'n': no children
+ * 2nd character (optional): 'd': lazy (Delayed)
+ * 3rd character (optional): 'l': Last sibling
+ */
+
+span.fancytree-expander
+{
+  background-position: 0px -80px;
+  cursor: pointer;
+}
+span.fancytree-expander:hover
+{
+  background-position: -16px -80px;
+}
+.fancytree-exp-n span.fancytree-expander:hover /* Collapsed, not delayed, not last sibling */
+{
+  background-position: -16px -80px;
+}
+.fancytree-exp-cl span.fancytree-expander /* Collapsed, not delayed, last sibling */
+{
+}
+.fancytree-exp-cd span.fancytree-expander /* Collapsed, delayed, not last sibling */
+{
+}
+.fancytree-exp-cdl span.fancytree-expander /* Collapsed, delayed, last sibling */
+{
+}
+.fancytree-exp-e span.fancytree-expander,  /* Expanded, not delayed, not last sibling */
+.fancytree-exp-ed span.fancytree-expander,  /* Expanded, delayed, not last sibling */
+.fancytree-exp-el span.fancytree-expander,  /* Expanded, not delayed, last sibling */
+.fancytree-exp-edl span.fancytree-expander  /* Expanded, delayed, last sibling */
+{
+  background-position: -32px -80px;
+}
+.fancytree-exp-e span.fancytree-expander:hover,  /* Expanded, not delayed, not last sibling */
+.fancytree-exp-ed span.fancytree-expander:hover,  /* Expanded, delayed, not last sibling */
+.fancytree-exp-el span.fancytree-expander:hover,  /* Expanded, not delayed, last sibling */
+.fancytree-exp-edl span.fancytree-expander:hover  /* Expanded, delayed, last sibling */
+{
+  background-position: -48px -80px;
+}
+.fancytree-loading span.fancytree-expander  /* 'Loading' status overrides all others */
+{
+  background-position: 0 0;
+  background-image: url("loading.gif");
+}
+
+.fancytree-exp-n span.fancytree-expander, /* Connector instead of expander, if node has no children */
+.fancytree-exp-nl span.fancytree-expander
+{
+  background-image: none;
+  cursor: default;
+}
+
+
+/*******************************************************************************
+ * Checkbox icon
+ */
+span.fancytree-checkbox
+{
+  margin-left: 3px;
+  background-position: 0px -32px;
+}
+span.fancytree-checkbox:hover
+{
+  background-position: -16px -32px;
+}
+
+.fancytree-partsel span.fancytree-checkbox
+{
+  background-position: -64px -32px;
+}
+.fancytree-partsel span.fancytree-checkbox:hover
+{
+  background-position: -80px -32px;
+}
+
+.fancytree-selected span.fancytree-checkbox
+{
+  background-position: -32px -32px;
+}
+.fancytree-selected span.fancytree-checkbox:hover
+{
+  background-position: -48px -32px;
+}
+
+/*******************************************************************************
+ * Radiobutton icon
+ * This is a customization, that may be activated by overriding the 'checkbox'
+ * class name as 'fancytree-radio' in the tree options.
+ */
+.fancytree-radio span.fancytree-checkbox
+{
+  margin-left: 3px;
+  background-position: 0px -48px;
+}
+.fancytree-radio span.fancytree-checkbox:hover
+{
+  background-position: -16px -48px;
+}
+
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox
+{
+  background-position: -64px -48px;
+}
+.fancytree-radio .fancytree-partsel span.fancytree-checkbox:hover
+{
+  background-position: -80px -48px;
+}
+
+.fancytree-radio .fancytree-selected span.fancytree-checkbox
+{
+  background-position: -32px -48px;
+}
+.fancytree-radio .fancytree-selected span.fancytree-checkbox:hover
+{
+  background-position: -48px -48px;
+}
+
+
+/*******************************************************************************
+ * Node type icon
+ * Note: IE6 doesn't correctly evaluate multiples class names,
+ *     so we create combined class names that can be used in the CSS.
+ *
+ * Prefix: fancytree-ico-
+ * 1st character: 'e': expanded, 'c': collapsed
+ * 2nd character (optional): 'f': folder
+ */
+
+span.fancytree-icon /* Default icon */
+{
+  margin-left: 3px;
+  background-position: 0px 0px;
+}
+
+.fancytree-has-children span.fancytree-icon /* Default icon */
+{
+/*    background-position: 0px -16px; */
+}
+
+.fancytree-ico-cf span.fancytree-icon  /* Collapsed Folder */
+{
+  background-position: 0px -16px;
+}
+
+.fancytree-ico-ef span.fancytree-icon  /* Expanded Folder */
+{
+  background-position: -64px -16px;
+}
+
+/* Status node icons */
+
+.fancytree-statusnode-wait span.fancytree-icon
+{
+  background-image: url("loading.gif");
+}
+
+.fancytree-statusnode-error span.fancytree-icon
+{
+  background-position: 0px -112px;
+/*  background-image: url("ltError.gif");*/
+}
+
+/*******************************************************************************
+ * Node titles
+ */
+
+span.fancytree-title
+{
+  display: inline-block;
+}
+/* Remove blue color and underline from title links */
+a.fancytree-title
+{
+  text-decoration: none;
+}
+
+.fancytree-title
+{
+  display: inline-block; /* Better alignment, when title contains <br> */
+/*  vertical-align: top;*/
+  padding-left: 3px;
+  padding-right: 3px; /* Otherwise italic font will be outside bounds */
+  /*  line-height: 16px; /* should be the same as img height, in case 16 px */
+  color: black; /* inherit doesn't work on IE */
+  vertical-align: top;
+  margin: 0px;
+  margin-left: 3px;
+/*  outline: 0; /* @ Firefox, prevent dotted border after click */
+  /* Set transparent border to prevent jumping when active node gets a border
+     (we can do this, because this theme doesn't use vertical lines)
+     */
+/*  border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
+
+}
+span.fancytree-node:hover
+{
+  background-color: #E5F3FB;
+  border-color: #70C0E7;
+}
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
+{
+  border-color: #3399FF;
+/*  outline: 1px solid #3399FF; */
+}
+span.fancytree-node.fancytree-active,
+span.fancytree-node.fancytree-selected
+{ /* active/selcted nodes inside inactive tree */
+  background-color: #F7F7F7;
+  border-color: #DEDEDE;
+}
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-active,
+.fancytree-container.fancytree-focused span.fancytree-node.fancytree-selected,
+span.fancytree-node.fancytree-active:hover,
+span.fancytree-node.fancytree-selected:hover
+{
+  background-color: #CBE8F6;
+  border-color: #26A0DA;
+}
+span.fancytree-node.fancytree-selected
+{
+  font-style: italic;
+}
+
+
+/*******************************************************************************
+ * 'table' extension
+ */
+
+/*
+table.fancytree-ext-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table.fancytree-ext-table tbody tr:nth-child(even){
+  background-color: #f4f4f8;
+}
+table.fancytree-ext-table tbody tr td {
+  border: 1px solid lightgray;
+}
+*/
+table.fancytree-ext-table {
+  border-collapse: collapse;
+}
+table.fancytree-ext-table tbody tr:hover {
+  background-color: #E5F3FB;
+  outline: 1px solid #70C0E7;
+}
+table.fancytree-ext-table.fancytree-container.fancytree-focused span.fancytree-node.fancytree-focused
+{
+  outline: 1px solid #3399FF;
+}
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-focused {
+  outline: 1px solid #26A0DA;
+}
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-active,
+table.fancytree-ext-table.fancytree-focused tbody tr.fancytree-selected
+{
+  background-color: #CBE8F6;
+  outline: 1px solid #26A0DA;
+}
+table.fancytree-ext-table tbody tr.fancytree-active,
+table.fancytree-ext-table tbody tr.fancytree-selected
+{
+  background-color: #F7F7F7;
+  outline: 1px solid #DEDEDE;
+}
+
+/*******************************************************************************
+ * 'columnview' extension
+ */
+
+/*
+table.fancytree-ext-columnview {
+  border-collapse: collapse;
+  width: 100%;
+}
+*/
+table.fancytree-ext-columnview td
+{
+  position: relative;
+}
+table.fancytree-ext-columnview td >ul
+{
+  padding: 0;
+}
+table.fancytree-ext-columnview td >ul li
+{
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  -moz-background-clip:border;
+  -moz-background-inline-policy: continuous;
+  -moz-background-origin: padding;
+  background-attachment: scroll;
+  background-color: transparent;
+  background-position: 0 0;
+  background-repeat: repeat-y;
+  background-image: none;  /* no v-lines */
+
+  margin: 0;
+  padding: 1px 0 0 0;
+}
+/*
+table.fancytree-ext-columnview tbody tr[0] {
+  height: 200px;
+}
+*/
+table.fancytree-ext-columnview tbody tr td {
+  border: 1px solid gray;
+  vertical-align: top;
+  overflow: auto;
+}
+table.fancytree-ext-columnview span.fancytree-node {
+  position: relative; /* allow positioning of embedded spans*/
+}
+table.fancytree-ext-columnview span.fancytree-node.fancytree-expanded {
+  background-color: #CBE8F6;
+}
+/*
+table.fancytree-ext-columnview span.fancytree-node.fancytree-active {
+  background-color: royalblue;
+}
+*/
+table.fancytree-ext-columnview span.fancytree-cv-right {
+  background-position: 0px -80px;
+  position: absolute;
+  right: 3px;
+}
+
+/*******************************************************************************
+ * 'filter' extension
+ */
+.fancytree-ext-filter span.fancytree-node .fancytree-title {
+  color: silver;
+  font-weight: lighter;
+}
+.fancytree-ext-filter span.fancytree-node.fancytree-submatch .fancytree-title {
+  color: black;
+  font-weight: normal;
+}
+.fancytree-ext-filter span.fancytree-node.fancytree-match .fancytree-title {
+  color: black;
+  font-weight: bold;
+}
+
+
+/*******************************************************************************
+ * Drag'n'drop support
+ */
+
+/*** Helper object ************************************************************/
+div.fancytree-drag-helper
+{
+}
+div.fancytree-drag-helper a
+{
+  border: 1px solid gray;
+  background-color: white;
+  padding-left: 5px;
+  padding-right: 5px;
+  opacity: 0.8;
+}
+span.fancytree-drag-helper-img
+{
+  /*
+  position: relative;
+  left: -16px;
+  */
+}
+div.fancytree-drag-helper /*.fancytree-drop-accept*/
+{
+/*    border-color: green;
+  background-color: red;*/
+}
+div.fancytree-drop-accept span.fancytree-drag-helper-img
+{
+  background-position: -32px -112px;
+}
+div.fancytree-drag-helper.fancytree-drop-reject
+{
+  border-color: red;
+}
+div.fancytree-drop-reject span.fancytree-drag-helper-img
+{
+  background-position: -16px -112px;
+}
+
+/*** Drop marker icon *********************************************************/
+
+#fancytree-drop-marker
+{
+  width: 24px;
+  position: absolute;
+  background-position: 0 -128px;
+  margin: 0;
+}
+#fancytree-drop-marker.fancytree-drop-after,
+#fancytree-drop-marker.fancytree-drop-before
+{
+  width:64px;
+  background-position: 0 -144px;
+}
+#fancytree-drop-marker.fancytree-drop-copy
+{
+  background-position: -64px -128px;
+}
+#fancytree-drop-marker.fancytree-drop-move
+{
+  background-position: -64px -128px;
+}
+
+/*** Source node while dragging ***********************************************/
+
+span.fancytree-drag-source
+{
+  /* border: 1px dotted gray; */
+  background-color: #e0e0e0;
+}
+span.fancytree-drag-source a
+{
+  color: gray;
+}
+
+/*** Target node while dragging cursor is over it *****************************/
+
+span.fancytree-drop-target
+{
+  /*border: 1px solid gray;*/
+}
+span.fancytree-drop-target a
+{
+}
+span.fancytree-drop-target.fancytree-drop-accept a
+{
+  /*border: 1px solid green;*/
+  background-color: #3169C6 !important;
+  color: white !important; /* @ IE6 */
+  text-decoration: none;
+}
+span.fancytree-drop-target.fancytree-drop-reject
+{
+  /*border: 1px solid red;*/
+}
+span.fancytree-drop-target.fancytree-drop-after a
+{
+}
