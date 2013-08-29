@@ -1,3 +1,2396 @@
+Ember.TEMPLATES["accordion_group"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n	<div class=\"accordion-heading\">\n		<a class=\"accordion-toggle\" data-toggle=\"collapse\" \n			");
+  hashContexts = {'data-parent': depth0};
+  hashTypes = {'data-parent': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-parent': ("view.dataParent")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n			");
+  hashContexts = {'href': depth0};
+  hashTypes = {'href': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'href': ("view.href")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n			");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.title", options) : helperMissing.call(depth0, "loc", "view.title", options))));
+  data.buffer.push("\n		</a>\n	</div>\n	<div class=\"accordion-body collapse\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.id")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n		<div class=\"accordion-inner\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</div>\n	</div>\n");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.title", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n ");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["accordion_heading"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n	<span>\n		<a class=\"accordion-toggle\" data-toggle=\"collapse\" \n			");
+  hashContexts = {'data-parent': depth0};
+  hashTypes = {'data-parent': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-parent': ("view.dataParent")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n			");
+  hashContexts = {'href': depth0};
+  hashTypes = {'href': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'href': ("view.href")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n			");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.title", options) : helperMissing.call(depth0, "loc", "view.title", options))));
+  data.buffer.push("\n		</a>\n	</span>\n	<span>\n		");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	</span>\n");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n	<span class=\"accordion-toggle accordion-head-content\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.title", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	 ");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["application/main_menu"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "menugroup.entitled", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n			<li>\n				");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.isFlattened", {hash:{},inverse:self.program(6, program6, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n			</li>\n		");
+  return buffer;
+  }
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n					");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "item", "in", "menugroup.items", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n						");
+  hashContexts = {'contentBinding': depth0};
+  hashTypes = {'contentBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Application.MenuItemView", {hash:{
+    'contentBinding': ("item")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n					");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n					");
+  hashContexts = {'collapsible': depth0,'collapsedBinding': depth0,'hasChildViews': depth0};
+  hashTypes = {'collapsible': "BOOLEAN",'collapsedBinding': "STRING",'hasChildViews': "BOOLEAN"};
+  stack1 = helpers.view.call(depth0, "Tent.Panel", {hash:{
+    'collapsible': (true),
+    'collapsedBinding': ("menugroup.collapsed"),
+    'hasChildViews': (true)
+  },inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				");
+  return buffer;
+  }
+function program7(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n				        ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.view.call(depth0, "Tent.PanelHead", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				        ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.view.call(depth0, "Tent.PanelBody", {hash:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				    ");
+  return buffer;
+  }
+function program8(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n				          <h4><i ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("menugroup.icon")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></i> ");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "menugroup.title", options) : helperMissing.call(depth0, "loc", "menugroup.title", options))));
+  data.buffer.push("</h4>  \n				        ");
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n				        	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "item", "in", "menugroup.items", {hash:{},inverse:self.noop,fn:self.program(11, program11, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				        ");
+  return buffer;
+  }
+function program11(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n				        		");
+  hashContexts = {'contentBinding': depth0};
+  hashTypes = {'contentBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Application.MenuItemView", {hash:{
+    'contentBinding': ("item")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n					        ");
+  return buffer;
+  }
+
+  data.buffer.push("<ul class=\"sci-main-menu nav-tabs\">\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "menugroup", "in", "content", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</ul>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["application/menu_item"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "item.entitled", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n    	<a href=\"#\" class=\"menu-link\" ");
+  hashContexts = {'data-route': depth0};
+  hashTypes = {'data-route': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-route': ("item.route")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'data-action': depth0};
+  hashTypes = {'data-action': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-action': ("item.action")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "menuClicked", {hash:{
+    'target': ("view")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n			<i ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("item.icon")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'data-title': depth0};
+  hashTypes = {'data-title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-title': ("view.title")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-placement=\"right\" data-animation=\"false\"></i>\n			<span class=\"content\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "item.title", options) : helperMissing.call(depth0, "loc", "item.title", options))));
+  data.buffer.push("</span>\n      	</a>\n	");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.isEntitled", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
+  
+});
+
+Ember.TEMPLATES["button"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashContexts, hashTypes, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  
+  data.buffer.push("\n  	 <span class=\"caret\"></span>\n  ");
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n	");
+  hashContexts = {'contentBinding': depth0,'tagName': depth0,'classNames': depth0,'itemViewClass': depth0};
+  hashTypes = {'contentBinding': "STRING",'tagName': "STRING",'classNames': "STRING",'itemViewClass': "STRING"};
+  options = {hash:{
+    'contentBinding': ("view._options"),
+    'tagName': ("ul"),
+    'classNames': ("dropdown-menu"),
+    'itemViewClass': ("Tent.ButtonOptions")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.collection),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "collection", options))));
+  data.buffer.push("\n");
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n\n	");
+  hashContexts = {'autoLaunch': depth0,'header': depth0,'primaryLabel': depth0,'secondaryLabel': depth0,'primaryType': depth0,'primaryIcon': depth0,'secondaryIcon': depth0,'primaryAction': depth0,'primaryTargetBinding': depth0};
+  hashTypes = {'autoLaunch': "BOOLEAN",'header': "STRING",'primaryLabel': "STRING",'secondaryLabel': "STRING",'primaryType': "STRING",'primaryIcon': "STRING",'secondaryIcon': "STRING",'primaryAction': "STRING",'primaryTargetBinding': "STRING"};
+  stack1 = helpers.view.call(depth0, "Tent.ModalPane", {hash:{
+    'autoLaunch': (false),
+    'header': ("tent.warning.header"),
+    'primaryLabel': ("tent.button.proceed"),
+    'secondaryLabel': ("tent.button.dontProceed"),
+    'primaryType': ("warning"),
+    'primaryIcon': ("icon-ok icon-white"),
+    'secondaryIcon': ("icon-remove"),
+    'primaryAction': ("ignoreWarnings"),
+    'primaryTargetBinding': ("view")
+  },inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program6(depth0,data) {
+  
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
+  data.buffer.push("\n    	");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.warning.warningsOnPage", options) : helperMissing.call(depth0, "loc", "tent.warning.warningsOnPage", options))));
+  data.buffer.push("\n    	 \n  		");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers.each.call(depth0, "view.parentView.messagePanel.warning", {hash:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n			 \n    ");
+  return buffer;
+  }
+function program7(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n  				<div class=\"alert\">\n  					<strong>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "label", options) : helperMissing.call(depth0, "loc", "label", options))));
+  data.buffer.push(":</strong>  ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "messages", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n  				</div>\n  		");
+  return buffer;
+  }
+
+  data.buffer.push("<div 	");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("view.classes view.buttonClass")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "triggerAction", {hash:{
+    'target': ("view")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		");
+  hashContexts = {'data-toggle': depth0};
+  hashTypes = {'data-toggle': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-toggle': ("view.dataToggle")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    ");
+  hashContexts = {'disabled': depth0};
+  hashTypes = {'disabled': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'disabled': ("view.isDisabled")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    ");
+  hashContexts = {'title': depth0};
+  hashTypes = {'title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'title': ("view.localizedTitle")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		role=\"button\"\n		>\n  <i ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("view.iconClass")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></i> ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.localizedLabel", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasOptions", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</div>\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasOptions", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.warn", {hash:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["checkbox"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      <ul class=\"help-inline warning\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.warningId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "warning", "in", "view.validationWarnings", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</ul>\n    ");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<li>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "warning", options) : helperMissing.call(depth0, "loc", "warning", options))));
+  data.buffer.push("</li>");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"controls\">\n    <label class=\"checkbox\">\n    	");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.label", options) : helperMissing.call(depth0, "loc", "view.label", options))));
+  data.buffer.push("\n    	");
+  hashContexts = {'checkedBinding': depth0,'disabledBinding': depth0,'valueBinding': depth0};
+  hashTypes = {'checkedBinding': "STRING",'disabledBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Checkbox", {hash:{
+    'checkedBinding': ("view.checked"),
+    'disabledBinding': ("view.disabled"),
+    'valueBinding': ("view.value")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </label>\n\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasWarnings", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push(" \n</div> ");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["checkbox_group"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n    ");
+  hashContexts = {'checkedBinding': depth0,'disabledBinding': depth0};
+  hashTypes = {'checkedBinding': "STRING",'disabledBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Checkbox", {hash:{
+    'checkedBinding': ("view.list.selected"),
+    'disabledBinding': ("view.disabled")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "check", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n  ");
+  return buffer;
+  }
+
+  data.buffer.push("<label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.label", options) : helperMissing.call(depth0, "loc", "view.label", options))));
+  data.buffer.push("</label>\n\n<div class=\"controls\">\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers.each.call(depth0, "check", "in", "view._list", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n</div>\n\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["collection_filter"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n			<li>\n				<div class=\"filter-details clearfix\">\n					");
+  hashContexts = {'collectionBinding': depth0};
+  hashTypes = {'collectionBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.FilterFieldsView", {hash:{
+    'collectionBinding': ("view.collection")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("	\n						<div class=\"form-inline buttons\">\n						   	");
+  hashContexts = {'label': depth0,'type': depth0,'action': depth0,'targetBinding': depth0,'class': depth0};
+  hashTypes = {'label': "STRING",'type': "STRING",'action': "STRING",'targetBinding': "STRING",'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'label': ("tent.filter.clear"),
+    'type': ("secondary"),
+    'action': ("clearFilter"),
+    'targetBinding': ("view"),
+    'class': ("clear-filter pull-left")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n					    	");
+  hashContexts = {'label': depth0,'type': depth0,'action': depth0,'targetBinding': depth0,'class': depth0};
+  hashTypes = {'label': "STRING",'type': "STRING",'action': "STRING",'targetBinding': "STRING",'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'label': ("tent.filter.filter"),
+    'type': ("primary"),
+    'action': ("filter"),
+    'targetBinding': ("view"),
+    'class': ("close-panel pull-right")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n						</div>\n				</div>\n			</li>\n		");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"btn-group jqgrid-title-button filter\">\n	<a class=\"open-dropdown\" href=\"#\">\n		<i class=\"icon-filter\"></i>\n		");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.filter.filter", options) : helperMissing.call(depth0, "loc", "tent.filter.filter", options))));
+  data.buffer.push("\n		<span class=\"caret\"></span>\n	</a>\n\n	<ul class=\"dropdown-menu filter-panel\">\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.showFilterFields", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n	</ul>\n</div>\n\n\n\n\n\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["file_upload"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n  	<span><i class=\"icon-upload-alt\"></i>&nbsp; &nbsp;");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.helpText", options) : helperMissing.call(depth0, "loc", "view.helpText", options))));
+  data.buffer.push("</span>\n  ");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n     ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.WaitIcon", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n  ");
+  return buffer;
+  }
+
+  data.buffer.push("<span class='btn btn-primary fileinput-button'>\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.helpText", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  <input type=\"file\" name=\"files[]\" ");
+  hashContexts = {'data-url': depth0,'disabled': depth0};
+  hashTypes = {'data-url': "STRING",'disabled': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-url': ("view.dataUrl"),
+    'disabled': ("view.disabled")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" multiple >\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.applyWait", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</span>\n\n\n\n ");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["grid/autofit_button"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashContexts, hashTypes, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<a ");
+  hashContexts = {'title': depth0};
+  hashTypes = {'title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'title': ("view.title")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': (":horizontal-scroll-button :jqgrid-title-button view.active:active")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n	<i class=\"icon-resize-horizontal\"></i>\n</a>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["grid/column_chooser_button"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n				<li><label><input type=\"checkbox\" ");
+  hashContexts = {'data-column': depth0};
+  hashTypes = {'data-column': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-column': ("name")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" ");
+  hashContexts = {'checked': depth0};
+  hashTypes = {'checked': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'checked': ("checked")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("/><span class=\"title\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "title", options) : helperMissing.call(depth0, "loc", "title", options))));
+  data.buffer.push("</span></label></li>\n			");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"btn-group column-chooser\">\n	<a class=\"open-dropdown\">\n		<i class=\"icon-columns\"></i>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.hideShowCaption", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.hideShowCaption", options))));
+  data.buffer.push("\n	</a>\n	<div class=\"dropdown-menu columns pull-right\">\n		<div class=\"window\"></div>\n		<ul>\n			");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers.each.call(depth0, "view.model", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n		</ul>\n	</div>\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["jqgrid"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.unless.call(depth0, "view.content.isLoaded", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n		");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.WaitIcon", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n  	");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n	<span class=\"help-inline\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.errorId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "error", "in", "view.validationErrors", {hash:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</span>\n");
+  return buffer;
+  }
+function program5(depth0,data) {
+  
+  var stack1, hashTypes, hashContexts, options;
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "error", options) : helperMissing.call(depth0, "loc", "error", options))));
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.content.isLoadable", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n");
+  hashContexts = {'gridBinding': depth0};
+  hashTypes = {'gridBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.JqGridHeaderView", {hash:{
+    'gridBinding': ("view")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n\n<table class=\"grid-table\"></table>\n<div class=\"gridpager\"></div>\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasErrors", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["jqgrid_export"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n    <li><a ");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "exportData", "view.xls", {hash:{
+    'target': ("view")
+  },contexts:[depth0,depth0],types:["ID","STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" href=\"#\" class=\"export-xls\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.xls", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.xls", options))));
+  data.buffer.push("</a></li>\n  ");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n    <li><a ");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "exportData", "view.csv", {hash:{
+    'target': ("view")
+  },contexts:[depth0,depth0],types:["ID","STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" href=\"#\" class=\"export-csv\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.csv", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.csv", options))));
+  data.buffer.push("</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.pleaseSelect", options) : helperMissing.call(depth0, "loc", "tent.pleaseSelect", options))));
+  data.buffer.push("</option>\n                  <option value=\",\" selected>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.comma", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.comma", options))));
+  data.buffer.push("</option>\n                  <option value=\"|\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.pipe", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.pipe", options))));
+  data.buffer.push("</option>\n                  <option value=\";\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.semicolon", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.semicolon", options))));
+  data.buffer.push("</option>\n                  <option value=\":\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.colon", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.colon", options))));
+  data.buffer.push("</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export._or", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export._or", options))));
+  data.buffer.push("</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.enterDelimiter", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.enterDelimiter", options))));
+  data.buffer.push("</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.headers", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.headers", options))));
+  data.buffer.push("</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.on", options) : helperMissing.call(depth0, "loc", "tent.on", options))));
+  data.buffer.push("\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.off", options) : helperMissing.call(depth0, "loc", "tent.off", options))));
+  data.buffer.push("\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.inclQuotes", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.inclQuotes", options))));
+  data.buffer.push("</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.on", options) : helperMissing.call(depth0, "loc", "tent.on", options))));
+  data.buffer.push("\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.off", options) : helperMissing.call(depth0, "loc", "tent.off", options))));
+  data.buffer.push("\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.export", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.export", options))));
+  data.buffer.push("</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  ");
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n    <li><a ");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "exportData", "view.json", {hash:{
+    'target': ("view")
+  },contexts:[depth0,depth0],types:["ID","STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" href=\"#\" class=\"export-json\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "tent.jqGrid.export.json", options) : helperMissing.call(depth0, "loc", "tent.jqGrid.export.json", options))));
+  data.buffer.push("</a></li>\n  ");
+  return buffer;
+  }
+
+  data.buffer.push("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.allowXlsExport", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.allowCsvExport", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.allowJsonExport", {hash:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</ul>\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["jqgrid_header"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n		");
+  hashContexts = {'gridBinding': depth0};
+  hashTypes = {'gridBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Grid.AutofitButton", {hash:{
+    'gridBinding': ("view.grid")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n  		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.someExportsAreAllowed", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  	");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n    		");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "view.exportView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    	");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n		");
+  hashContexts = {'gridBinding': depth0};
+  hashTypes = {'gridBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Grid.ColumnChooserButton", {hash:{
+    'gridBinding': ("view.grid")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("  \n	");
+  return buffer;
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.grid.filtering", {hash:{},inverse:self.noop,fn:self.program(9, program9, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program9(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n		");
+  hashContexts = {'collectionBinding': depth0};
+  hashTypes = {'collectionBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.CollectionFilter", {hash:{
+    'collectionBinding': ("view.grid.collection")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"btn-group header-buttons\">\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.grid.showAutofitButton", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n  	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.grid.showExportButton", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n  	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.grid.showColumnChooser", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</div>\n\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.grid.collection", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("	");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["message_panel"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n<section class=\"alert-error clearfix\">\n	<h5>Errors</h5>\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.collapsible", {hash:{},inverse:self.program(10, program10, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n</section>\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n		<div ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("view.expandoClass")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n			");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.error", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n		  	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasMoreThanOneError", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n		</div>\n		\n	");
+  return buffer;
+  }
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n				<div class=\"error-message\" ");
+  hashContexts = {'data-target': depth0};
+  hashTypes = {'data-target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-target': ("this.sourceId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n	  				");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "label", {hash:{},inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("<ul>");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "messages", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</ul>\n	  			</div> \n		  	");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<label>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "label", options) : helperMissing.call(depth0, "loc", "label", options))));
+  data.buffer.push(": </label>");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("<li>");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</li>");
+  return buffer;
+  }
+
+function program8(depth0,data) {
+  
+  
+  data.buffer.push("\n				<a href=\"#\" class=\"dropdown-toggle pull-right close\" data-toggle=\"collapse\" data-target=\".error-expando\">\n					<b class=\"caret\"></b></a>\n			");
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n		<div>\n			");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.error", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n		</div>\n	");
+  return buffer;
+  }
+
+function program12(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n<section class=\"alert-info clearfix\">\n	");
+  hashContexts = {'label': depth0,'type': depth0,'action': depth0,'targetBinding': depth0,'class': depth0};
+  hashTypes = {'label': "STRING",'type': "STRING",'action': "STRING",'targetBinding': "STRING",'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'label': ("x"),
+    'type': ("link"),
+    'action': ("clearInfos"),
+    'targetBinding': ("view"),
+    'class': ("close")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	<h5>Info</h5>\n	<div class=\"info-expando\">\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.info", {hash:{},inverse:self.noop,fn:self.program(13, program13, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	</div>\n</section>\n");
+  return buffer;
+  }
+function program13(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n			<div class=\"info-message\" ");
+  hashContexts = {'data-target': depth0};
+  hashTypes = {'data-target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-target': ("this.sourceId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "messages", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</div> \n	  	");
+  return buffer;
+  }
+
+function program15(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n<section class=\"alert-success clearfix\">\n	");
+  hashContexts = {'label': depth0,'type': depth0,'action': depth0,'targetBinding': depth0,'class': depth0};
+  hashTypes = {'label': "STRING",'type': "STRING",'action': "STRING",'targetBinding': "STRING",'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'label': ("x"),
+    'type': ("link"),
+    'action': ("clearSuccesses"),
+    'targetBinding': ("view"),
+    'class': ("close")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	<h5>Success</h5>\n	<div class=\"info-expando\">\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.success", {hash:{},inverse:self.noop,fn:self.program(16, program16, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	</div>\n</section>\n");
+  return buffer;
+  }
+function program16(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n			<div class=\"success-message\" ");
+  hashContexts = {'data-target': depth0};
+  hashTypes = {'data-target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-target': ("this.sourceId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "messages", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</div> \n	  	");
+  return buffer;
+  }
+
+function program18(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.warning", {hash:{},inverse:self.noop,fn:self.program(19, program19, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program19(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n		<section class=\"alert clearfix\" ");
+  hashContexts = {'data-target': depth0};
+  hashTypes = {'data-target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-target': ("this.sourceId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" data-type=\"warning\">\n			");
+  hashContexts = {'label': depth0,'type': depth0,'action': depth0,'targetBinding': depth0,'class': depth0};
+  hashTypes = {'label': "STRING",'type': "STRING",'action': "STRING",'targetBinding': "STRING",'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'label': ("x"),
+    'type': ("link"),
+    'action': ("removeMessageCommand"),
+    'targetBinding': ("view"),
+    'class': ("close")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n			<h5>Warning</h5>\n				<div>\n					<div class=\"error-message\" ");
+  hashContexts = {'data-target': depth0};
+  hashTypes = {'data-target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-target': ("this.sourceId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n		  				<label>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "label", options) : helperMissing.call(depth0, "loc", "label", options))));
+  data.buffer.push(":</label> ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "messages", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		  			</div> \n			 	</div>\n		</section>\n	");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasErrors", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasInfos", {hash:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasSuccesses", {hash:{},inverse:self.noop,fn:self.program(15, program15, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasWarnings", {hash:{},inverse:self.noop,fn:self.program(18, program18, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["modal_body"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashContexts, hashTypes, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n  		<p>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.text", options) : helperMissing.call(depth0, "loc", "view.text", options))));
+  data.buffer.push("</p>\n  	");
+  return buffer;
+  }
+
+  data.buffer.push("<div class=\"modal-body\">\n	");
+  hashContexts = {'type': depth0,'isActive': depth0,'collapsible': depth0,'collapsed': depth0};
+  hashTypes = {'type': "STRING",'isActive': "BOOLEAN",'collapsible': "BOOLEAN",'collapsed': "BOOLEAN"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.MessagePanel", {hash:{
+    'type': ("secondary"),
+    'isActive': (false),
+    'collapsible': (true),
+    'collapsed': (true)
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.text", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  	");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["modal_footer"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<div class=\"modal-footer\">\n	<div class=\"btn-toolbar\">\n		");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	</div>\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["modal_pane"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.unless.call(depth0, "view.customButton", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n		");
+  hashContexts = {'class': depth0,'labelBinding': depth0,'aria-haspopup': depth0,'action': depth0,'targetBinding': depth0,'typeBinding': depth0};
+  hashTypes = {'class': "STRING",'labelBinding': "STRING",'aria-haspopup': "STRING",'action': "STRING",'targetBinding': "STRING",'typeBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'class': ("launch"),
+    'labelBinding': ("view.label"),
+    'aria-haspopup': ("true"),
+    'action': ("launch"),
+    'targetBinding': ("view"),
+    'typeBinding': ("view.type")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n			");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n			<div class=\"modal-body\">\n				");
+  hashContexts = {'type': depth0,'isActive': depth0,'collapsible': depth0,'collapsed': depth0};
+  hashTypes = {'type': "STRING",'isActive': "BOOLEAN",'collapsible': "BOOLEAN",'collapsed': "BOOLEAN"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.MessagePanel", {hash:{
+    'type': ("secondary"),
+    'isActive': (false),
+    'collapsible': (true),
+    'collapsed': (true)
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n				");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.text", {hash:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n			  	");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n			</div>\n		\n			<div class=\"modal-footer\">\n				<div class=\"btn-toolbar\">\n				  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.secondaryLabel", {hash:{},inverse:self.noop,fn:self.program(9, program9, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.primaryLabel", {hash:{},inverse:self.noop,fn:self.program(11, program11, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n				</div>\n			</div>\n		");
+  return buffer;
+  }
+function program7(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n			  		<p>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.text", options) : helperMissing.call(depth0, "loc", "view.text", options))));
+  data.buffer.push("</p>\n			  	");
+  return buffer;
+  }
+
+function program9(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n				  	");
+  hashContexts = {'buttonClass': depth0,'labelBinding': depth0,'actionBinding': depth0,'targetBinding': depth0,'typeBinding': depth0,'iconClassBinding': depth0};
+  hashTypes = {'buttonClass': "STRING",'labelBinding': "STRING",'actionBinding': "STRING",'targetBinding': "STRING",'typeBinding': "STRING",'iconClassBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'buttonClass': ("close-dialog pull-left cancel"),
+    'labelBinding': ("view.secondaryLabel"),
+    'actionBinding': ("view.secondaryAction"),
+    'targetBinding': ("view.secondaryTarget"),
+    'typeBinding': ("view.secondaryType"),
+    'iconClassBinding': ("view.secondaryIcon")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n				  ");
+  return buffer;
+  }
+
+function program11(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n				  	");
+  hashContexts = {'buttonClassBinding': depth0,'labelBinding': depth0,'actionBinding': depth0,'targetBinding': depth0,'typeBinding': depth0,'iconClassBinding': depth0,'validate': depth0,'warnBinding': depth0};
+  hashTypes = {'buttonClassBinding': "STRING",'labelBinding': "STRING",'actionBinding': "STRING",'targetBinding': "STRING",'typeBinding': "STRING",'iconClassBinding': "STRING",'validate': "STRING",'warnBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'buttonClassBinding': ("view.primaryButtonClass"),
+    'labelBinding': ("view.primaryLabel"),
+    'actionBinding': ("view.primaryAction"),
+    'targetBinding': ("view.primaryTarget"),
+    'typeBinding': ("view.primaryType"),
+    'iconClassBinding': ("view.primaryIcon"),
+    'validate': ("true"),
+    'warnBinding': ("view.warn")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n				  ");
+  return buffer;
+  }
+
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.label", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	<div class=\"modal-backdrop fade in\"></div>\n	<div class=\"modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" ");
+  hashContexts = {'data-backdrop': depth0};
+  hashTypes = {'data-backdrop': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-backdrop': ("view.backdrop")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n		<div class=\"modal-header\">\n			");
+  hashContexts = {'buttonClass': depth0,'label': depth0,'actionBinding': depth0,'targetBinding': depth0,'type': depth0};
+  hashTypes = {'buttonClass': "STRING",'label': "STRING",'actionBinding': "STRING",'targetBinding': "STRING",'type': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Button", {hash:{
+    'buttonClass': ("close-dialog close"),
+    'label': ("&times;"),
+    'actionBinding': ("view.closeAction"),
+    'targetBinding': ("view.closeTarget"),
+    'type': ("link")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n\n		  	");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.ModalHeader", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		</div>\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.customContent", {hash:{},inverse:self.program(6, program6, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	</div>\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["panel"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n	<div class=\"section accordion-group\">\n		");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	</div>\n");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.collapsible", {hash:{},inverse:self.program(6, program6, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n		<div class=\"section accordion-group\">\n		   	<div class=\"panel-header clearfix\">\n		    	<h3>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.name", options) : helperMissing.call(depth0, "loc", "view.name", options))));
+  data.buffer.push("</h3>\n		    	<a class=\"pull-right\" data-toggle=\"collapse\" ");
+  hashContexts = {'href': depth0};
+  hashTypes = {'href': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'href': ("view.href")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n			      <span class=\"caret\" ></span>\n			    </a>\n		    </div>\n		    <div ");
+  hashContexts = {'class': depth0};
+  hashTypes = {'class': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'class': ("view.collapsedClass")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n		      <div class=\"panel-content\">\n		        ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n		      </div>\n		    </div>\n		</div>\n	 \n	");
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n		");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.name", {hash:{},inverse:self.noop,fn:self.program(7, program7, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n	");
+  return buffer;
+  }
+function program7(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<h3>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.name", options) : helperMissing.call(depth0, "loc", "view.name", options))));
+  data.buffer.push("</h3>");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasChildViews", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
+  
+});
+
+Ember.TEMPLATES["radio_group"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var stack1, hashTypes, hashContexts, options;
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.prompt", options) : helperMissing.call(depth0, "loc", "view.prompt", options))));
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n	<label>");
+  hashContexts = {'contentBinding': depth0};
+  hashTypes = {'contentBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.RadioOption", {hash:{
+    'contentBinding': ("this")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</label>\n");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.prompt", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "view.content", {hash:{},inverse:self.noop,fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["select"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashContexts, hashTypes, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  
+  data.buffer.push("\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    ");
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n      <span class=\"text-display\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.currentSelectedLabel", options) : helperMissing.call(depth0, "loc", "view.currentSelectedLabel", options))));
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.isRadioGroup", {hash:{},inverse:self.program(8, program8, data),fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasHelpBlock", {hash:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n    ");
+  return buffer;
+  }
+function program6(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n        <div class=\"radio-group\">\n          ");
+  hashContexts = {'contentBinding': depth0,'class': depth0,'optionLabelPathBinding': depth0,'optionValuePathBinding': depth0,'selectionBinding': depth0,'valueBinding': depth0,'tagName': depth0,'templateName': depth0};
+  hashTypes = {'contentBinding': "STRING",'class': "STRING",'optionLabelPathBinding': "STRING",'optionValuePathBinding': "STRING",'selectionBinding': "STRING",'valueBinding': "STRING",'tagName': "STRING",'templateName': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.SelectElement", {hash:{
+    'contentBinding': ("view.list"),
+    'class': ("tent-radio-group"),
+    'optionLabelPathBinding': ("view.optionLabelPath"),
+    'optionValuePathBinding': ("view.optionValuePath"),
+    'selectionBinding': ("view.selection"),
+    'valueBinding': ("view.value"),
+    'tagName': ("div"),
+    'templateName': ("radio_group")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" \n        </div>\n      ");
+  return buffer;
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n        ");
+  hashContexts = {'contentBinding': depth0,'classBinding': depth0,'optionLabelPathBinding': depth0,'optionValuePathBinding': depth0,'selectionBinding': depth0,'multipleBinding': depth0,'promptBinding': depth0,'valueBinding': depth0};
+  hashTypes = {'contentBinding': "STRING",'classBinding': "STRING",'optionLabelPathBinding': "STRING",'optionValuePathBinding': "STRING",'selectionBinding': "STRING",'multipleBinding': "STRING",'promptBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.SelectElement", {hash:{
+    'contentBinding': ("view.list"),
+    'classBinding': ("view.inputSizeClass"),
+    'optionLabelPathBinding': ("view.optionLabelPath"),
+    'optionValuePathBinding': ("view.optionValuePath"),
+    'selectionBinding': ("view.selection"),
+    'multipleBinding': ("view.multiple"),
+    'promptBinding': ("view._prompt"),
+    'valueBinding': ("view.value")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" \n      ");
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n        <span class=\"help-block\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.helpId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.helpBlock", options) : helperMissing.call(depth0, "loc", "view.helpBlock", options))));
+  data.buffer.push("</span>\n      ");
+  return buffer;
+  }
+
+function program12(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" ");
+  hashContexts = {'data-original-title': depth0};
+  hashTypes = {'data-original-title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-original-title': ("view.tooltipT")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></a>\n    ");
+  return buffer;
+  }
+
+function program14(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      	<span class=\"help-inline\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.errorId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "error", "in", "view.validationErrors", {hash:{},inverse:self.noop,fn:self.program(15, program15, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+function program15(depth0,data) {
+  
+  var hashTypes, hashContexts;
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "error", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  }
+
+function program17(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      <ul class=\"help-inline\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.warningId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "warning", "in", "view.validationWarnings", {hash:{},inverse:self.noop,fn:self.program(18, program18, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</ul>\n    ");
+  return buffer;
+  }
+function program18(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<li>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "warning", options) : helperMissing.call(depth0, "loc", "warning", options))));
+  data.buffer.push("</li>");
+  return buffer;
+  }
+
+  data.buffer.push("<label class=\"control-label\" ");
+  hashContexts = {'for': depth0};
+  hashTypes = {'for': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'for': ("view.forId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.label", options) : helperMissing.call(depth0, "loc", "view.label", options))));
+  data.buffer.push("\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.isLoading", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.isTextDisplay", {hash:{},inverse:self.program(5, program5, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n  	");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.tooltip", {hash:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n  	");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasErrors", {hash:{},inverse:self.noop,fn:self.program(14, program14, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasWarnings", {hash:{},inverse:self.noop,fn:self.program(17, program17, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("  \n  </div>\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["table"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.multiselection", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push(" \n  ");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push(" \n      <th>\n        ");
+  hashContexts = {'nameBinding': depth0,'checkedBinding': depth0};
+  hashTypes = {'nameBinding': "STRING",'checkedBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Checkbox", {hash:{
+    'nameBinding': ("view.elementId"),
+    'checkedBinding': ("view.allSelected")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      </th>\n    ");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  
+  data.buffer.push("\n      <th></th>\n    ");
+  }
+
+  data.buffer.push("<thead>\n	");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.isEditable", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n	");
+  hashContexts = {'contentBinding': depth0,'itemViewClass': depth0};
+  hashTypes = {'contentBinding': "STRING",'itemViewClass': "STRING"};
+  options = {hash:{
+    'contentBinding': ("view.visibleHeaders"),
+    'itemViewClass': ("Tent.TableHeader")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.collection),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "collection", options))));
+  data.buffer.push("\n</thead>\n");
+  hashContexts = {'contentBinding': depth0,'tagName': depth0,'itemViewClass': depth0};
+  hashTypes = {'contentBinding': "STRING",'tagName': "STRING",'itemViewClass': "STRING"};
+  options = {hash:{
+    'contentBinding': ("view.list"),
+    'tagName': ("tbody"),
+    'itemViewClass': ("Tent.TableRow")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.collection),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "collection", options))));
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["table_row"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.parentTable.multiselection", {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n    <td class=\"tent-width-small\">\n      ");
+  hashContexts = {'nameBinding': depth0,'valueBinding': depth0};
+  hashTypes = {'nameBinding': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Checkbox", {hash:{
+    'nameBinding': ("view.parentTable.elementId"),
+    'valueBinding': ("{{view.elementId}}")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    </td>\n  ");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n    <td class=\"tent-width-small\">\n	  <input type='radio' ");
+  hashContexts = {'name': depth0,'value': depth0};
+  hashTypes = {'name': "STRING",'value': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'name': ("view.parentTable.elementId"),
+    'value': ("{{view.elementId}}")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">\n    </td>\n  ");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.parentTable.isEditable", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n");
+  hashContexts = {'contentBinding': depth0,'itemViewClass': depth0};
+  hashTypes = {'contentBinding': "STRING",'itemViewClass': "STRING"};
+  options = {hash:{
+    'contentBinding': ("view.parentTable.visibleColumns"),
+    'itemViewClass': ("Tent.TableCell")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.collection),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "collection", options))));
+  data.buffer.push("\n\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["tabs"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', hashContexts, hashTypes, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<ul ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("id")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" class=\"nav nav-tabs\"></ul>\n<div class=\"tab-content\">\n	");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["text_field"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashContexts, hashTypes, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.operators", {hash:{},inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n  ");
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n      ");
+  hashContexts = {'listBinding': depth0,'class': depth0,'optionLabelPath': depth0,'optionValuePath': depth0,'valueBinding': depth0};
+  hashTypes = {'listBinding': "STRING",'class': "STRING",'optionLabelPath': "STRING",'optionValuePath': "STRING",'valueBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.Select", {hash:{
+    'listBinding': ("view.operators"),
+    'class': ("embed no-label operators"),
+    'optionLabelPath': ("content.label"),
+    'optionValuePath': ("content.operator"),
+    'valueBinding': ("view.filterOp")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n    ");
+  return buffer;
+  }
+
+function program4(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n      <span class=\"text-display\">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasPrefix", {hash:{},inverse:self.noop,fn:self.program(5, program5, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.formattedValue", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+function program5(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<span class=\"prefix\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.prefix", options) : helperMissing.call(depth0, "loc", "view.prefix", options))));
+  data.buffer.push("</span>");
+  return buffer;
+  }
+
+function program7(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts;
+  data.buffer.push("\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasPrefix", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push(" \n      ");
+  hashContexts = {'valueBinding': depth0,'placeholderBinding': depth0,'classBinding': depth0,'typeBinding': depth0};
+  hashTypes = {'valueBinding': "STRING",'placeholderBinding': "STRING",'classBinding': "STRING",'typeBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.TextFieldInput", {hash:{
+    'valueBinding': ("view.formattedValue"),
+    'placeholderBinding': ("view.translatedPlaceholder"),
+    'classBinding': ("view.controlClass"),
+    'typeBinding': ("view.type")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.isRangeOperator", {hash:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasHelpBlock", {hash:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n    ");
+  return buffer;
+  }
+function program8(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("  \n        <span class=\"add-on\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.prefix", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n      ");
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n        ");
+  hashContexts = {'valueBinding': depth0,'placeholderBinding': depth0,'classBinding': depth0,'classNames': depth0,'typeBinding': depth0};
+  hashTypes = {'valueBinding': "STRING",'placeholderBinding': "STRING",'classBinding': "STRING",'classNames': "STRING",'typeBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.TextFieldInput", {hash:{
+    'valueBinding': ("view.value2"),
+    'placeholderBinding': ("view.translatedPlaceholder"),
+    'classBinding': ("view.controlClass"),
+    'classNames': ("range-end"),
+    'typeBinding': ("view.type")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      ");
+  return buffer;
+  }
+
+function program12(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n        <span class=\"help-block\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.helpId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.helpBlock", options) : helperMissing.call(depth0, "loc", "view.helpBlock", options))));
+  data.buffer.push("</span>\n      ");
+  return buffer;
+  }
+
+function program14(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      <ul class=\"help-inline\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.errorId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "error", "in", "view.validationErrors", {hash:{},inverse:self.noop,fn:self.program(15, program15, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</ul>\n    ");
+  return buffer;
+  }
+function program15(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<li>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "error", options) : helperMissing.call(depth0, "loc", "error", options))));
+  data.buffer.push("</li>");
+  return buffer;
+  }
+
+function program17(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      <ul class=\"help-inline warning\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.warningId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "warning", "in", "view.validationWarnings", {hash:{},inverse:self.noop,fn:self.program(18, program18, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</ul>\n    ");
+  return buffer;
+  }
+function program18(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("<li>");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "warning", options) : helperMissing.call(depth0, "loc", "warning", options))));
+  data.buffer.push("</li>");
+  return buffer;
+  }
+
+function program20(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" ");
+  hashContexts = {'data-original-title': depth0};
+  hashTypes = {'data-original-title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-original-title': ("view.tooltipT")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></a>\n  ");
+  return buffer;
+  }
+
+  data.buffer.push("<label class=\"control-label\" ");
+  hashContexts = {'for': depth0};
+  hashTypes = {'for': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'for': ("view.forId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.label", options) : helperMissing.call(depth0, "loc", "view.label", options))));
+  data.buffer.push("\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.isFilter", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n  <div class=\"input-prepend\">\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.isTextDisplay", {hash:{},inverse:self.program(7, program7, data),fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasErrors", {hash:{},inverse:self.noop,fn:self.program(14, program14, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("  \n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasWarnings", {hash:{},inverse:self.noop,fn:self.program(17, program17, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("  \n\n  </div>\n  ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.tooltip", {hash:{},inverse:self.noop,fn:self.program(20, program20, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n\n</div>\n");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["textarea"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [3,'>= 1.0.0-rc.4'];
+helpers = helpers || Ember.Handlebars.helpers; data = data || {};
+  var buffer = '', stack1, stack2, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("  \n      <span class=\"add-on\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.prefix", options) : helperMissing.call(depth0, "loc", "view.prefix", options))));
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\n      <span class=\"text-display\">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.formattedValue", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+
+function program5(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      ");
+  hashContexts = {'classBinding': depth0,'valueBinding': depth0,'placeholderBinding': depth0,'rowsBinding': depth0,'colsBinding': depth0};
+  hashTypes = {'classBinding': "STRING",'valueBinding': "STRING",'placeholderBinding': "STRING",'rowsBinding': "STRING",'colsBinding': "STRING"};
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "Tent.TextareaInput", {hash:{
+    'classBinding': ("view.inputSizeClass"),
+    'valueBinding': ("view.formattedValue"),
+    'placeholderBinding': ("view.translatedPlaceholder"),
+    'rowsBinding': ("view.rows"),
+    'colsBinding': ("view.cols")
+  },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\n      ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.hasHelpBlock", {hash:{},inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\n    ");
+  return buffer;
+  }
+function program6(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\n        <span class=\"help-block\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.helpId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.helpBlock", options) : helperMissing.call(depth0, "loc", "view.helpBlock", options))));
+  data.buffer.push("</span>\n      ");
+  return buffer;
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" ");
+  hashContexts = {'data-original-title': depth0};
+  hashTypes = {'data-original-title': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'data-original-title': ("view.tooltipT")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("></a>\n    ");
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = '', stack1, hashTypes, hashContexts, options;
+  data.buffer.push("\n      <span class=\"help-block\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.helpBlock", options) : helperMissing.call(depth0, "loc", "view.helpBlock", options))));
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+
+function program12(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes;
+  data.buffer.push("\n      <span class=\"help-inline\" ");
+  hashContexts = {'id': depth0};
+  hashTypes = {'id': "STRING"};
+  data.buffer.push(escapeExpression(helpers.bindAttr.call(depth0, {hash:{
+    'id': ("view.errorId")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers.each.call(depth0, "error", "in", "view.validationErrors", {hash:{},inverse:self.noop,fn:self.program(13, program13, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("</span>\n    ");
+  return buffer;
+  }
+function program13(depth0,data) {
+  
+  var hashTypes, hashContexts;
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "error", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  }
+
+  data.buffer.push("<label class=\"control-label\">");
+  hashTypes = {};
+  hashContexts = {};
+  options = {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers.loc),stack1 ? stack1.call(depth0, "view.label", options) : helperMissing.call(depth0, "loc", "view.label", options))));
+  data.buffer.push("<span class='tent-required'></span></label>\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasPrefix", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("     \n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.textDisplay", {hash:{},inverse:self.program(5, program5, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.tooltip", {hash:{},inverse:self.noop,fn:self.program(8, program8, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasHelpBlock", {hash:{},inverse:self.noop,fn:self.program(10, program10, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack2 = helpers['if'].call(depth0, "view.hasErrors", {hash:{},inverse:self.noop,fn:self.program(12, program12, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
+  data.buffer.push("  \n  </div>\n\n</div>\n");
+  return buffer;
+  
+});;(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
  * @class Tent
@@ -8,7 +2401,6 @@
 
 
 (function() {
-
   if (this.Tent == null) {
     this.Tent = {};
   }
@@ -20,6 +2412,16 @@
 }).call(this);
 
 
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
 * @class Tent.I18n
@@ -28,7 +2430,6 @@
 
 
 (function() {
-
   Tent.I18n = Ember.Namespace.create({
     language: {},
     /**
@@ -206,12 +2607,25 @@
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.CURRENCIES_ISO_4217 = Ember.Object.create({
     AED: {
       cent: 2,
@@ -870,8 +3284,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.TIMEZONES = [
     {
       name: "Australian Central Daylight Time",
@@ -1655,12 +4072,25 @@
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.Browsers = {};
 
   Tent.Browsers.getIEVersion = function() {
@@ -1687,8 +4117,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.ResizeSupport = Ember.Mixin.create({
     resize: function() {
       var _ref;
@@ -1714,8 +4147,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.DEFAULT_STRING_TRUNCATION_LENGTH = 30;
 
   Ember.mixin(String.prototype, {
@@ -1741,7 +4177,7 @@
     }
   });
 
-  if (!(String.prototype.trim != null)) {
+  if (String.prototype.trim == null) {
     String.prototype.trim = function() {
       return this.replace(/^\s+|\s+$/g, '');
     };
@@ -1750,8 +4186,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   if (Tent.computed == null) {
     Tent.computed = {};
   }
@@ -1783,8 +4222,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   if (Tent.messages == null) {
     Tent.messages = {};
   }
@@ -1826,8 +4268,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.SelectableArrayProxy = Ember.ArrayProxy.extend({
     init: function() {
       this._super();
@@ -1949,8 +4394,11 @@
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   accounting.settings = {
     currency: {
       symbol: "$",
@@ -2134,7 +4582,7 @@
     },
     unformat: function(value) {
       var val;
-      if (value === "" || !(value != null)) {
+      if (value === "" || (value == null)) {
         return null;
       }
       if (value.indexOf('%') !== -1) {
@@ -2154,6 +4602,9 @@
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Validations
@@ -2162,7 +4613,6 @@
 
 
 (function() {
-
   Tent.Validations = Ember.Object.create();
 
   Tent.Validation = Ember.Object.extend({
@@ -2212,7 +4662,7 @@
 
     validate: function(value, options, message, view) {
       var isValid;
-      if (!(options != null) || !(options.startDate != null) || !(options.endDate != null)) {
+      if ((options == null) || (options.startDate == null) || (options.endDate == null)) {
         return false;
       }
       return isValid = this.isValueEmpty(value) || (this.convertToDate(value) > this.convertToDate(options.startDate) && this.convertToDate(value) < this.convertToDate(options.endDate));
@@ -2271,7 +4721,7 @@
     */
 
     validate: function(value, options, message, view) {
-      if (!(options != null) || !(options.min != null)) {
+      if ((options == null) || (options.min == null)) {
         return false;
       }
       if (value != null) {
@@ -2298,7 +4748,7 @@
     */
 
     validate: function(value, options, message, view) {
-      if (!(options != null) || !(options.max != null)) {
+      if ((options == null) || (options.max == null)) {
         return false;
       }
       if (value != null) {
@@ -2324,10 +4774,10 @@
     */
 
     validate: function(value, options, message, view) {
-      if (!(options != null) || !(options.regexp != null)) {
+      if ((options == null) || (options.regexp == null)) {
         return false;
       }
-      message = !(message != null) && (options.message != null) ? options.message : Tent.messages.REG_EXP;
+      message = (message == null) && (options.message != null) ? options.message : Tent.messages.REG_EXP;
       if (message != null) {
         this.set('ERROR_MESSAGE', message);
       }
@@ -2352,10 +4802,10 @@
     */
 
     validate: function(value, options, message, view) {
-      if (!(options != null) || !((options.min != null) || (options.max != null))) {
+      if ((options == null) || !((options.min != null) || (options.max != null))) {
         return false;
       }
-      message = !(message != null) && (options.message != null) ? options.message : void 0;
+      message = (message == null) && (options.message != null) ? options.message : void 0;
       if (value) {
         if ((options.min != null) && options.min > value) {
           if (!message) {
@@ -2399,7 +4849,7 @@
     */
 
     validate: function(value, options, message, view) {
-      message = !(message != null) && (options != null) && (options.message != null) ? options.message : void 0;
+      message = (message == null) && (options != null) && (options.message != null) ? options.message : void 0;
       value = Tent.Formatting.amount.unformat(value);
       if (this.isValueEmpty(value) || value >= 0) {
         return true;
@@ -2427,7 +4877,7 @@
     */
 
     validate: function(value, options, message, view) {
-      if (!(options != null) || !(options.testArr != null) || !(options.item != null) || !(options.property != null) || !(options.testArr instanceof Array)) {
+      if ((options == null) || (options.testArr == null) || (options.item == null) || (options.property == null) || !(options.testArr instanceof Array)) {
         return false;
       }
       return !(options.testArr.contains(value));
@@ -2438,6 +4888,9 @@
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Date
@@ -2686,10 +5139,23 @@
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
  * @class Tent.SpanSupport  
@@ -2698,7 +5164,6 @@
 
 
 (function() {
-
   Tent.SpanSupport = Ember.Mixin.create({
     /**
     * @property {Number} span The horizontal span which should be allocated to this widget
@@ -2735,6 +5200,27 @@
 }).call(this);
 
 
+})();
+
+(function() {
+
+/**
+* @class Tent.FieldSupport
+* @mixins Tent.SpanSupport
+* @mixins Tent.ValidationSupport
+* @mixins Tent.VisibilitySupport
+* @mixins Tent.MandatorySupport
+* 
+* This mixin provides all of the basic properties and behaviors for a form field view
+*/
+
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
  * @class Tent.VisibilitySupport
@@ -2743,7 +5229,6 @@
 
 
 (function() {
-
   Tent.VisibilitySupport = Ember.Mixin.create({
     isVisible: true,
     _widgetShowing: true,
@@ -2767,6 +5252,9 @@
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.ValidationSupport
@@ -2775,7 +5263,6 @@
 
 
 (function() {
-
   Tent.ValidationSupport = Ember.Mixin.create({
     /**
     * @property {String }validations A list of comma-separated custom validations which should be applied to the widget
@@ -2822,7 +5309,7 @@
           vName = _ref[_i];
           isValid = true;
           validator = Tent.Validations.get(vName.trim());
-          if (!(validator != null)) {
+          if (validator == null) {
             throw new Error('Validator [' + vName + '] cannot be found');
           }
           options = this.parseCustomValidationOptions(vName);
@@ -2844,7 +5331,7 @@
           wName = _ref[_i];
           isValid = true;
           validator = Tent.Validations.get(wName.trim());
-          if (!(validator != null)) {
+          if (validator == null) {
             throw new Error('Validator [' + wName + '] cannot be found');
           }
           options = this.parseCustomValidationOptions(wName);
@@ -2957,6 +5444,9 @@
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.MandatorySupport
@@ -2965,7 +5455,13 @@
 
 
 (function() {
-Tent.MandatorySupport = Ember.Mixin.create({
+
+
+})();
+
+(function() {
+
+  Tent.MandatorySupport = Ember.Mixin.create({
     /**
     	* @property {Boolean} required Boolean property to determine whether a value must be provided
     */
@@ -2990,6 +5486,9 @@ Tent.MandatorySupport = Ember.Mixin.create({
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.SerializerSupport.
@@ -3003,7 +5502,6 @@ Tent.MandatorySupport = Ember.Mixin.create({
 
 
 (function() {
-
   Tent.SerializerSupport = Ember.Mixin.create({
     serializer: null,
     deserialize: function(serialized) {
@@ -3032,20 +5530,11 @@ Tent.MandatorySupport = Ember.Mixin.create({
 }).call(this);
 
 
-
-/**
-* @class Tent.FieldSupport
-* @mixins Tent.SpanSupport
-* @mixins Tent.ValidationSupport
-* @mixins Tent.VisibilitySupport
-* @mixins Tent.MandatorySupport
-* 
-* This mixin provides all of the basic properties and behaviors for a form field view
-*/
-
+})();
 
 (function() {
-Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, {
+
+  Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport, Tent.VisibilitySupport, Tent.MandatorySupport, {
     /**
     * @property {Boolean} [textDisplay=false]
     * When set to true, the formatted value of the widget will be displayed, 
@@ -3192,6 +5681,32 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
+
+/**
+ * @class Tent.TextField
+ * @mixins Tent.FormattingSupport
+ * @mixins Tent.FieldSupport
+ * @mixins Tent.TooltipSupport
+ * Usage 
+ *       {{view Tent.TextField 
+          valueBinding="Pad.appName" 
+          label="Focused input" 
+          placeholder="Type here.." 
+          tooltip="Provide some information here" 
+         }}
+ *
+*/
+
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
  * @class Tent.FormattingSupport 
@@ -3204,7 +5719,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.FormattingSupport = Ember.Mixin.create({
     init: function() {
       this._super();
@@ -3227,6 +5741,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.TooltipSupport
@@ -3235,7 +5752,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.TooltipSupport = Ember.Mixin.create({
     /**
     	* @property {String} tooltip A detailed information message presented as a hover-icon beside the field
@@ -3254,8 +5770,18 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.Constants = Ember.Object.create({
     OPERATOR_BEGINS_WITH: "begin",
     OPERATOR_CONTAINS: "contain",
@@ -3272,8 +5798,11 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
 (function() {
-/**
+
+  /**
   * @class Tent.FilteringSupport 
   * Allows widgets to participate in filter panels, and provides them with a range of 
   * comparison operators
@@ -3316,6 +5845,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.AriaSupport
@@ -3324,7 +5856,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.AriaSupport = Ember.Mixin.create({
     attributeBindings: ['ariaRequired:aria-required', 'ariaReadOnly:aria-readonly', 'ariaDisabled:aria-disabled', 'ariaDescribedBy:aria-describedby', 'ariaInvalid:aria-invalid'],
     ariaRequired: (function() {
@@ -3363,6 +5894,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.ReadonlySupport
@@ -3371,7 +5905,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.ReadonlySupport = Ember.Mixin.create({
     attributeBindings: ['readOnly:readonly'],
     readOnly: (function() {
@@ -3386,6 +5919,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.DisabledSupport
@@ -3394,7 +5930,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.DisabledSupport = Ember.Mixin.create({
     attributeBindings: ['disabled'],
     disabledBinding: 'parentView.disabled'
@@ -3403,6 +5938,9 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
  * @class Tent.Html5Support
@@ -3411,7 +5949,6 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
 
 (function() {
-
   Tent.Html5Support = Ember.Mixin.create({
     attributeBindings: ['required'],
     required: (function() {
@@ -3422,27 +5959,11 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
-
-
-/**
- * @class Tent.TextField
- * @mixins Tent.FormattingSupport
- * @mixins Tent.FieldSupport
- * @mixins Tent.TooltipSupport
- * Usage 
- *       {{view Tent.TextField 
-          valueBinding="Pad.appName" 
-          label="Focused input" 
-          placeholder="Type here.." 
-          tooltip="Provide some information here" 
-         }}
- *
-*/
-
+})();
 
 (function() {
-Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport, {
+
+  Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport, {
     templateName: 'text_field',
     classNames: ['tent-text-field', 'control-group'],
     /**
@@ -3480,6 +6001,9 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Tag
@@ -3490,7 +6014,6 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
 
 
 (function() {
-
   Tent.Tag = Ember.View.extend({
     tagName: 'span',
     /**
@@ -3517,8 +6040,36 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
 }).call(this);
 
 
+})();
+
 (function() {
-Tent.FilteringRangeSupport = Ember.Mixin.create(Tent.SerializerSupport, {
+
+/**
+* @class Tent.NumericTextField
+* @extends Tent.TextField
+* Usage
+*       {{view Tent.NumericTextField label="" 
+			valueBinding="" 
+			dateFormat=""
+         }}
+*/
+
+
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.FilteringRangeSupport = Ember.Mixin.create(Tent.SerializerSupport, {
     operators: [
       Ember.Object.create({
         label: "tent.filter.equal",
@@ -3582,20 +6133,11 @@ Tent.FilteringRangeSupport = Ember.Mixin.create(Tent.SerializerSupport, {
 }).call(this);
 
 
-
-/**
-* @class Tent.NumericTextField
-* @extends Tent.TextField
-* Usage
-*       {{view Tent.NumericTextField label="" 
-			valueBinding="" 
-			dateFormat=""
-         }}
-*/
-
+})();
 
 (function() {
-Tent.NumericTextField = Tent.TextField.extend(Tent.FilteringRangeSupport, Tent.SerializerSupport, {
+
+  Tent.NumericTextField = Tent.TextField.extend(Tent.FilteringRangeSupport, Tent.SerializerSupport, {
     /**
     	* @property serializer An object which implements serialize() and deserialize(). It will be applied
     	* to the value and available on the {@link serializedValue} property
@@ -3632,6 +6174,34 @@ Tent.NumericTextField = Tent.TextField.extend(Tent.FilteringRangeSupport, Tent.S
 }).call(this);
 
 
+})();
+
+(function() {
+
+/**
+* @class Tent.AmountField
+* @extends Tent.TextField
+* 
+* ##Usage
+*
+*       {{view Tent.AmountField valueBinding="" 
+          label="" 
+          currency="" 
+          required=false
+          readOnly=false
+          disabled=false 
+          textDisplayBinding=false
+          tooltip=""
+        }}
+*/
+
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
  * @class Tent.CurrencySupport
@@ -3641,7 +6211,13 @@ Tent.NumericTextField = Tent.TextField.extend(Tent.FilteringRangeSupport, Tent.S
 
 
 (function() {
-Tent.CurrencySupport = Ember.Mixin.create({
+
+
+})();
+
+(function() {
+
+  Tent.CurrencySupport = Ember.Mixin.create({
     centesimalValue: (function() {
       if (this.get('currency')) {
         if (this.get('isValidCurrency')) {
@@ -3664,27 +6240,11 @@ Tent.CurrencySupport = Ember.Mixin.create({
 }).call(this);
 
 
-
-/**
-* @class Tent.AmountField
-* @extends Tent.TextField
-* 
-* ##Usage
-*
-*       {{view Tent.AmountField valueBinding="" 
-          label="" 
-          currency="" 
-          required=false
-          readOnly=false
-          disabled=false 
-          textDisplayBinding=false
-          tooltip=""
-        }}
-*/
-
+})();
 
 (function() {
-Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, Tent.FilteringRangeSupport, Tent.SerializerSupport, {
+
+  Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, Tent.FilteringRangeSupport, Tent.SerializerSupport, {
     hasPrefix: true,
     hasHelpBlock: false,
     placeholder: accounting.settings.number.pattern,
@@ -3753,12 +6313,18 @@ Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, Tent.FilteringRan
 }).call(this);
 
 
-Ember.TEMPLATES['table']=Ember.Handlebars.compile("<thead>\n\t{{#if view.isEditable}}\n    {{#if view.multiselection}} \n      <th>\n        {{view Ember.Checkbox nameBinding=\"view.elementId\" checkedBinding=\"view.allSelected\"}}\n      </th>\n    {{else}}\n      <th></th>\n    {{/if}} \n  {{/if}}\n\t{{collection contentBinding=\"view.visibleHeaders\" itemViewClass=\"Tent.TableHeader\"}}\n</thead>\n{{collection contentBinding=\"view.list\" tagName=\"tbody\" itemViewClass=\"Tent.TableRow\"}}");
-
-Ember.TEMPLATES['table_row']=Ember.Handlebars.compile("{{#if view.parentTable.isEditable}}\n  {{#if view.parentTable.multiselection}}\n    <td class=\"tent-width-small\">\n      {{view Ember.Checkbox nameBinding=\"view.parentTable.elementId\" valueBinding=\"{{view.elementId}}\"}}\n    </td>\n  {{else}}\n    <td class=\"tent-width-small\">\n\t  <input type='radio' {{bindAttr name=\"view.parentTable.elementId\" value=\"{{view.elementId}}\"}}>\n    </td>\n  {{/if}}\n{{/if}}\n{{collection contentBinding=\"view.parentTable.visibleColumns\" itemViewClass=\"Tent.TableCell\"}}\n\n");
+})();
 
 (function() {
-Tent.Table = Ember.View.extend({
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.Table = Ember.View.extend({
     classNames: ['table', 'table-condensed'],
     classNameBindings: ['isBordered:table-bordered'],
     tagName: 'table',
@@ -3788,7 +6354,7 @@ Tent.Table = Ember.View.extend({
       if (this.get('isEditable') === void 0) {
         this.set('isEditable', true);
       }
-      if (!(this.get('_list') != null)) {
+      if (this.get('_list') == null) {
         return this.createListProxy();
       }
     },
@@ -3840,7 +6406,7 @@ Tent.Table = Ember.View.extend({
           return _results;
         }
       } else {
-        if (!(this.get('_list') != null)) {
+        if (this.get('_list') == null) {
           this.createListProxy();
         }
         return this.get('_list').set('selected', selection);
@@ -3958,10 +6524,18 @@ Tent.Table = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<table class=\"grid-table\"></table>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n");
+})();
 
 (function() {
 
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.Grid = Ember.Namespace.create();
 
   /**
@@ -4132,7 +6706,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     observeValueInput: function($input) {
       var input;
       input = $input.val();
-      if (!(input != null) || input.trim() === "") {
+      if ((input == null) || input.trim() === "") {
         return this.disableSaveAsButton();
       } else {
         return this.enableSaveAsButton();
@@ -4153,7 +6727,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     },
     setPageSize: function() {
       if (this.get('pagingInfo') != null) {
-        if (this.get('paged') && (this.get('pageSize') != null) && !(this.get('pagingInfo.pageSize') != null)) {
+        if (this.get('paged') && (this.get('pageSize') != null) && (this.get('pagingInfo.pageSize') == null)) {
           return this.set('pagingInfo.pageSize', this.get('pageSize'));
         }
       }
@@ -4387,8 +6961,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Grid = Tent.Grid || Ember.Namespace.create();
 
   /**
@@ -4489,8 +7066,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Grid.Adapters = Ember.Mixin.create({
     columns: (function() {
       return this.get('collection.columnsDescriptor');
@@ -4604,7 +7184,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
             item.cell = cell;
             if (model.get("presentationType") === "summary") {
               grid;
-
             } else {
               grid.push(item);
             }
@@ -4658,6 +7237,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Grid.ExportSupport
@@ -4666,7 +7248,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
-
   Tent.Grid.ExportSupport = Ember.Mixin.create({
     /**
     * @property {Boolean} showExportButton Display a button in the header which allows the table data to
@@ -4791,6 +7372,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Grid.EditableSupport
@@ -4799,7 +7383,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
-
   Tent.Grid.EditableSupport = Ember.Mixin.create({
     /**
     	* @property {Function} onEditRow A callback function which will be called when a row is made editable. 
@@ -4973,6 +7556,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Grid.GroupingSupport
@@ -4981,7 +7567,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
-
   Tent.Grid.GroupingSupport = Ember.Mixin.create({
     remoteGrouping: false,
     /**
@@ -5008,7 +7593,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           columnDef = _ref[_i];
           if (columnDef.name === columnName && (columnDef.sortable != null) && columnDef.sortable) {
-            if ((!(lastSort != null)) || !(lastSort === columnName)) {
+            if ((lastSort == null) || !(lastSort === columnName)) {
               this.getTableDom().sortGrid(columnName);
             }
           }
@@ -5143,6 +7728,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Grid.ColumnChooserSupport
@@ -5151,7 +7739,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
-
   Tent.Grid.ColumnChooserSupport = Ember.Mixin.create({
     /**
     	* @property {Boolean} showColumnChooser Display a button at the top of the grid which presents
@@ -5181,8 +7768,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Grid.ColumnMenu = Ember.Mixin.create({
     columnsDidChange: function() {
       return this.leftAlignLastDropdown();
@@ -5232,7 +7822,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
             if (column.type != null) {
               groupType = Tent.JqGrid.Grouping.ranges.get(column.type)();
             }
-            if (!(groupType != null)) {
+            if (groupType == null) {
               groupType = Tent.JqGrid.Grouping.ranges['string'];
             }
             context = {
@@ -5379,6 +7969,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Grid.Maximize
@@ -5387,7 +7980,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
-
   Tent.Grid.Maximize = Ember.Mixin.create({
     /**
     	* @property {Boolean} showMaximizeButton Display a button at the top of the grid which presents
@@ -5525,8 +8117,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create({
     /**
     	* @property {Boolean} horizontalScrolling Allow the grid content to scroll horizontally.
@@ -5756,8 +8351,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+})();
+
 (function() {
-/**
+
+  /**
   * @class Tent.JqGrid
   * @mixins Tent.ValidationSupport
   * @mixins Tent.MandatorySupport
@@ -6016,6 +8614,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       	    * appear when page is refreshed or is first visited, this was not possible in initial definition
       	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
       */
+
       return this.getTableDom()[0].p.viewrecords = false;
     },
     getItemFromModel: function(id, colName) {
@@ -6165,7 +8764,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.$(".grid-table").show();
     },
     showSpinner: (function() {
-      if (this.get('content.isLoaded') || !(this.get('content.isLoaded') != null)) {
+      if (this.get('content.isLoaded') || (this.get('content.isLoaded') == null)) {
         return this.getTableDom()[0].endReq();
       } else {
         return this.getTableDom()[0].beginReq();
@@ -6321,12 +8920,18 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n</div>\n\n{{#if view.grid.collection}}\n\t{{#if view.grid.filtering}}\n\t\t{{view Tent.CollectionFilter collectionBinding=\"view.grid.collection\"}}\n\t{{/if}}\n{{/if}}\t");
-
-Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
+})();
 
 (function() {
-Tent.JqGridHeaderView = Ember.View.extend({
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.JqGridHeaderView = Ember.View.extend({
     classNames: ['grid-header', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix'],
     templateName: 'jqgrid_header',
     grid: null,
@@ -6453,6 +9058,9 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class jqgrid.formatter.amount Allows jsGrid cell content to be formatted as an amount
@@ -6763,6 +9371,9 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.JqGrid.Grouping
@@ -6773,7 +9384,6 @@ Tent.JqGridHeaderView = Ember.View.extend({
 
 
 (function() {
-
   Tent.JqGrid.Grouping = Ember.Object.extend();
 
   /**
@@ -6786,7 +9396,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
   Tent.JqGrid.Grouping.getComparator = function(dataType, groupType) {
     var comparator, type, _i, _len, _ref;
     comparator = this.ranges.get('default')().comparator;
-    if (!(this.ranges.get(dataType) != null)) {
+    if (this.ranges.get(dataType) == null) {
       dataType = "string";
     }
     _ref = this.ranges.get(dataType)();
@@ -6843,7 +9453,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
         return "" + (((_ref = Tent.Formatting.number.serializer) != null ? _ref.serialize(value) : void 0) || value);
       },
       rowTitle: function(value, formatter) {
-        if (!(formatter != null)) {
+        if (formatter == null) {
           formatter = Tent.Formatting.number.format;
         }
         if (typeof value === "string") {
@@ -6889,7 +9499,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
         }
       },
       rangeRowTitle: function(value, formatter) {
-        if (!(formatter != null)) {
+        if (formatter == null) {
           formatter = Tent.Formatting.amount.format;
         }
         if (typeof value === "string") {
@@ -6957,7 +9567,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
             },
             rowTitle: function(value, formatter) {
               var week, yesterday;
-              if (!(formatter != null)) {
+              if (formatter == null) {
                 formatter = Tent.Formatting.date.format;
               }
               if (typeof value === "string") {
@@ -7198,10 +9808,18 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button :jqgrid-title-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
+})();
 
 (function() {
-Tent.Grid.AutofitButton = Ember.View.extend({
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.Grid.AutofitButton = Ember.View.extend({
     classNames: ['tent-autofit-button'],
     templateName: 'grid/autofit_button',
     title: Tent.I18n.loc("tent.jqGrid.horizontalScroll"),
@@ -7217,8 +9835,16 @@ Tent.Grid.AutofitButton = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div class=\"btn-group column-chooser\">\n\t<a class=\"open-dropdown\">\n\t\t<i class=\"icon-columns\"></i>{{loc tent.jqGrid.hideShowCaption}}\n\t</a>\n\t<div class=\"dropdown-menu columns pull-right\">\n\t\t<div class=\"window\"></div>\n\t\t<ul>\n\t\t\t{{#each view.model}}\n\t\t\t\t<li><label><input type=\"checkbox\" {{bindAttr data-column=\"name\"}} {{bindAttr checked=\"checked\"}}/><span class=\"title\">{{loc title}}</span></label></li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t</div>\n</div>");
+})();
 
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 /**
 * @mixin Tent.ToggleVisibility 
@@ -7228,7 +9854,6 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
 
 
 (function() {
-
   Tent.ToggleVisibility = Ember.Mixin.create({
     isShowing: false,
     /**
@@ -7287,8 +9912,11 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
 }).call(this);
 
 
+})();
+
 (function() {
-Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
+
+  Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
     classNames: ['tent-column-chooser-button'],
     templateName: 'grid/column_chooser_button',
     grid: null,
@@ -7324,8 +9952,9 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['panel']=Ember.Handlebars.compile("{{#if view.hasChildViews}}\n\t<div class=\"section accordion-group\">\n\t\t{{yield}}\n\t</div>\n{{else}}\n\t{{#if view.collapsible}}\n\t\t<div class=\"section accordion-group\">\n\t\t   \t<div class=\"panel-header clearfix\">\n\t\t    \t<h3>{{loc view.name}}</h3>\n\t\t    \t<a class=\"pull-right\" data-toggle=\"collapse\" {{bindAttr href=\"view.href\"}}>\n\t\t\t      <span class=\"caret\" ></span>\n\t\t\t    </a>\n\t\t    </div>\n\t\t    <div {{bindAttr class=\"view.collapsedClass\"}}>\n\t\t      <div class=\"panel-content\">\n\t\t        {{yield}}\n\t\t      </div>\n\t\t    </div>\n\t\t</div>\n\t \n\t{{else}}\n\t\t{{#if view.name}}<h3>{{loc view.name}}</h3>{{/if}}{{yield}}\n\t{{/if}}\n{{/if}}");
+})();
 
+(function() {
 
 /**
 * @class Tent.Panel
@@ -7341,7 +9970,13 @@ Ember.TEMPLATES['panel']=Ember.Handlebars.compile("{{#if view.hasChildViews}}\n\
 
 
 (function() {
-Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
+
+
+})();
+
+(function() {
+
+  Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
     layoutName: 'panel',
     classNames: ['tent-panel'],
     classNameBindings: ['spanClass', 'collapsible', 'collapsed'],
@@ -7536,8 +10171,18 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.CollapsibleSupport = Ember.Mixin.create({
     classNameBindings: ['collapsible'],
     /**
@@ -7684,8 +10329,11 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.HideableSupport = Ember.Mixin.create({
     classNameBindings: ['hideable'],
     /**
@@ -7742,8 +10390,11 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
+})();
+
 (function() {
-/**
+
+  /**
   * @class Tent.Section
   *
   * ## Usage
@@ -7936,8 +10587,18 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
+})();
+
 (function() {
-/**
+
+(function() {
+
+
+})();
+
+(function() {
+
+  /**
   * @class Tent.HSection
   *
   * ## Usage
@@ -8203,10 +10864,18 @@ Tent.Panel = Ember.View.extend(Tent.SpanSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['checkbox']=Ember.Handlebars.compile("<div class=\"controls\">\n    <label class=\"checkbox\">\n    \t{{loc view.label}}\n    \t{{view Ember.Checkbox checkedBinding=\"view.checked\" disabledBinding = \"view.disabled\" valueBinding= \"view.value\"}}\n    </label>\n\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}} \n</div> ");
+})();
 
 (function() {
-Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
     templateName: 'checkbox',
     classNames: ['tent-checkbox', 'control-group'],
     change: function() {
@@ -8221,10 +10890,9 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.isLoading}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classBinding=\"view.inputSizeClass\" \n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+})();
 
-Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
-
+(function() {
 
 /**
 * @class Tent.Select
@@ -8244,7 +10912,13 @@ Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{lo
 
 
 (function() {
-Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
+
+
+})();
+
+(function() {
+
+  Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     templateName: 'select',
     classNames: ['tent-select', 'control-group'],
     contentBinding: 'selection',
@@ -8411,8 +11085,11 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.RadioOption = Ember.SelectOption.extend({
     tagName: "div",
     classNames: ['tent-radio-option'],
@@ -8464,10 +11141,18 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['checkbox_group']=Ember.Handlebars.compile("<label class=\"control-label\">{{loc view.label}}</label>\n\n<div class=\"controls\">\n  {{#each check in view._list}}\n    {{view Ember.Checkbox checkedBinding=\"view.list.selected\" disabledBinding = \"view.disabled\" }} {{check}}\n  {{/each}}\n</div>\n\n");
+})();
 
 (function() {
-Tent.CheckboxGroup = Ember.View.extend({
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.CheckboxGroup = Ember.View.extend({
     templateName: 'checkbox_group',
     classNames: ['tent-checkbox-group', 'control-group'],
     init: function() {
@@ -8484,6 +11169,9 @@ Tent.CheckboxGroup = Ember.View.extend({
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.EmailField
@@ -8500,7 +11188,13 @@ Tent.CheckboxGroup = Ember.View.extend({
 
 
 (function() {
-Tent.EmailTextField = Tent.TextField.extend({
+
+
+})();
+
+(function() {
+
+  Tent.EmailTextField = Tent.TextField.extend({
     validate: function() {
       var didOtherValidationPass, isValidEmail, pattern, value;
       didOtherValidationPass = this._super();
@@ -8526,8 +11220,11 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.AlertMessage = Ember.View.extend({
     tagName: 'div',
     classNames: ['alert'],
@@ -8556,12 +11253,9 @@ Tent.EmailTextField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['modal_pane']=Ember.Handlebars.compile("\n\t{{#if view.label}}\n\t\t{{#unless view.customButton}}\n\t\t{{view Tent.Button class=\"launch\" labelBinding=\"view.label\" aria-haspopup=\"true\" action=\"launch\" targetBinding=\"view\" typeBinding=\"view.type\"}}\n\t\t{{/unless}}\n\t{{/if}}\n\t<div class=\"modal-backdrop fade in\"></div>\n\t<div class=\"modal hide fade\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\" {{bindAttr data-backdrop=\"view.backdrop\"}}>\n\t\t<div class=\"modal-header\">\n\t\t\t{{view Tent.Button buttonClass=\"close-dialog close\" label=\"&times;\" actionBinding=\"view.closeAction\" targetBinding=\"view.closeTarget\" type=\"link\"}}\n\n\t\t  \t{{view Tent.ModalHeader}}\n\t\t</div>\n\t\t{{#if view.customContent}}\n\t\t\t{{yield}}\n\t\t{{else}}\n\t\t\t<div class=\"modal-body\">\n\t\t\t\t{{view Tent.MessagePanel type=\"secondary\" isActive=false collapsible=true collapsed=true}}\n\t\t\t\t{{#if view.text}}\n\t\t\t  \t\t<p>{{loc view.text}}</p>\n\t\t\t  \t{{/if}}\n\t\t\t  \t{{yield}}\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"modal-footer\">\n\t\t\t\t<div class=\"btn-toolbar\">\n\t\t\t\t  {{#if view.secondaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClass=\"close-dialog pull-left cancel\" labelBinding=\"view.secondaryLabel\" actionBinding=\"view.secondaryAction\" targetBinding=\"view.secondaryTarget\" typeBinding=\"view.secondaryType\" iconClassBinding=\"view.secondaryIcon\"}}\n\t\t\t\t  {{/if}}\n\t\t\t\t  {{#if view.primaryLabel}}\n\t\t\t\t  \t{{view Tent.Button buttonClassBinding=\"view.primaryButtonClass\" labelBinding=\"view.primaryLabel\" actionBinding=\"view.primaryAction\" targetBinding=\"view.primaryTarget\" typeBinding=\"view.primaryType\" iconClassBinding=\"view.primaryIcon\" validate=\"true\" warnBinding=\"view.warn\"}}\n\t\t\t\t  {{/if}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t{{/if}}\n\t</div>\n");
+})();
 
-Ember.TEMPLATES['modal_body']=Ember.Handlebars.compile("<div class=\"modal-body\">\n\t{{view Tent.MessagePanel type=\"secondary\" isActive=false collapsible=true collapsed=true}}\n\t{{#if view.text}}\n  \t\t<p>{{loc view.text}}</p>\n  \t{{/if}}\n  \t{{yield}}\n</div>");
-
-Ember.TEMPLATES['modal_footer']=Ember.Handlebars.compile("<div class=\"modal-footer\">\n\t<div class=\"btn-toolbar\">\n\t\t{{yield}}\n\t</div>\n</div>");
-
+(function() {
 
 /**
 * @class Tent.ModalPane
@@ -8647,7 +11341,13 @@ Ember.TEMPLATES['modal_footer']=Ember.Handlebars.compile("<div class=\"modal-foo
 
 
 (function() {
-Tent.ModalPane = Ember.View.extend({
+
+
+})();
+
+(function() {
+
+  Tent.ModalPane = Ember.View.extend({
     layoutName: 'modal_pane',
     classNames: ['tent-widget', 'control-group', 'tent-modal', 'tent-form'],
     /**
@@ -8779,10 +11479,10 @@ Tent.ModalPane = Ember.View.extend({
     clickOutsideToClose: true,
     init: function() {
       this._super(arguments);
-      if (!(this.get('closeAction') != null)) {
+      if (this.get('closeAction') == null) {
         this.set('closeAction', this.get('secondaryAction'));
       }
-      if (!(this.get('closeTarget') != null)) {
+      if (this.get('closeTarget') == null) {
         return this.set('closeTarget', this.get('secondaryTarget'));
       }
     },
@@ -8953,6 +11653,9 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.ProgressBar
@@ -8963,7 +11666,6 @@ Tent.ModalPane = Ember.View.extend({
 
 
 (function() {
-
   Tent.ProgressBar = Ember.View.extend({
     classNames: ['tent-progress-bar', 'progress'],
     classNameBindings: ['isStriped:progress-striped', 'isAnimated:active'],
@@ -8991,8 +11693,9 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}");
+})();
 
+(function() {
 
 /**
 * @class Tent.Button
@@ -9004,7 +11707,13 @@ Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"vi
 
 
 (function() {
-Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
+
+
+})();
+
+(function() {
+
+  Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     classNames: ['tent-button'],
     classNameBindings: ['hasOptions:tent-button-group button-group'],
     templateName: 'button',
@@ -9266,10 +11975,9 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['accordion_group']=Ember.Handlebars.compile("{{#if view.title}}\n\t<div class=\"accordion-heading\">\n\t\t<a class=\"accordion-toggle\" data-toggle=\"collapse\" \n\t\t\t{{bindAttr data-parent=\"view.dataParent\"}}\n\t\t\t{{bindAttr href=\"view.href\"}}>\n\t\t\t{{loc view.title}}\n\t\t</a>\n\t</div>\n\t<div class=\"accordion-body collapse\" {{bindAttr id=\"view.id\"}}>\n\t\t<div class=\"accordion-inner\">{{yield}}</div>\n\t</div>\n{{else}}\n\t{{yield}}\n{{/if}}\n ");
+})();
 
-Ember.TEMPLATES['accordion_heading']=Ember.Handlebars.compile("{{#if view.title}}\n\t<span>\n\t\t<a class=\"accordion-toggle\" data-toggle=\"collapse\" \n\t\t\t{{bindAttr data-parent=\"view.dataParent\"}}\n\t\t\t{{bindAttr href=\"view.href\"}}>\n\t\t\t{{loc view.title}}\n\t\t</a>\n\t</span>\n\t<span>\n\t\t{{yield}}\n\t</span>\n{{else}}\n\t<span class=\"accordion-toggle accordion-head-content\">{{yield}}</span>\n{{/if}}\n\t ");
-
+(function() {
 
 /**
 * @class Tent.Accordion
@@ -9322,7 +12030,13 @@ Ember.TEMPLATES['accordion_heading']=Ember.Handlebars.compile("{{#if view.title}
 
 
 (function() {
-Tent.Accordion = Ember.View.extend({
+
+
+})();
+
+(function() {
+
+  Tent.Accordion = Ember.View.extend({
     classNames: ['accordion']
   });
 
@@ -9412,10 +12126,18 @@ Tent.Accordion = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} class=\"nav nav-tabs\"></ul>\n<div class=\"tab-content\">\n\t{{yield}}\n</div>");
+})();
 
 (function() {
-/**
+
+(function() {
+
+
+})();
+
+(function() {
+
+  /**
   * @class Tent.Tabs
   * Display a group of {@link Tent.TabPane}s
   *
@@ -9549,8 +12271,30 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
 }).call(this);
 
 
+})();
+
 (function() {
 
+/**
+* @class Tent.DateField
+* @extends Tent.TextField
+* Usage
+*       {{view Tent.DateField label="" 
+			valueBinding="" 
+			showOtherMonths=true  
+			dateFormat=""
+         }}
+*/
+
+
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
   Tent.JQWidget = Em.Mixin.create({
     init: function() {
       this.set('options', this._gatherOptions());
@@ -9610,21 +12354,11 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
 }).call(this);
 
 
-
-/**
-* @class Tent.DateField
-* @extends Tent.TextField
-* Usage
-*       {{view Tent.DateField label="" 
-			valueBinding="" 
-			showOtherMonths=true  
-			dateFormat=""
-         }}
-*/
-
+})();
 
 (function() {
-Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
+
+  Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     uiType: 'datepicker',
     uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'],
     classNames: ['tent-date-field'],
@@ -9657,12 +12391,13 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       }
     }).observes('disabled', 'readOnly', 'isReadOnly'),
     validate: function() {
-      var isValid, isValidDate;
+      var e, isValid, isValidDate;
       isValid = this._super();
       isValidDate = true;
       try {
         isValidDate = (this.get("formattedValue") === "") || $.datepicker.parseDate(this.get('options').dateFormat, this.get("formattedValue"));
-      } catch (e) {
+      } catch (_error) {
+        e = _error;
         isValidDate = false;
       }
       if (!isValidDate) {
@@ -9680,9 +12415,11 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       return Tent.Formatting.date.format(value, this.get('dateFormat'));
     },
     unFormat: function(value) {
+      var error;
       try {
         return Tent.Formatting.date.unformat(value, this.get('dateFormat'));
-      } catch (error) {
+      } catch (_error) {
+        error = _error;
         return null;
       }
     }
@@ -9691,6 +12428,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.DateRangeField
@@ -9716,7 +12456,13 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 
 
 (function() {
-Tent.DateRangeField = Tent.TextField.extend({
+
+
+})();
+
+(function() {
+
+  Tent.DateRangeField = Tent.TextField.extend({
     classNames: ['tent-date-range-field'],
     /**
     	* @property {Array} presetRanges Array of objects to be made into menu range presets. 
@@ -9829,7 +12575,7 @@ Tent.DateRangeField = Tent.TextField.extend({
     },
     initializeWithStartAndEndDates: function() {
       var end, start;
-      if (!(this.get('value') != null)) {
+      if (this.get('value') == null) {
         if (this.get('startDate') != null) {
           start = Tent.Formatting.date.format(this.get('startDate'), this.get('dateFormat'));
         }
@@ -9853,7 +12599,7 @@ Tent.DateRangeField = Tent.TextField.extend({
       }
     },
     validate: function() {
-      var endDate, endString, isValid, isValidEndDate, isValidStartDate, startDate, startString;
+      var e, endDate, endString, isValid, isValidEndDate, isValidStartDate, startDate, startString;
       isValid = this._super();
       isValidStartDate = isValidEndDate = true;
       if ((this.get('formattedValue') != null) && this.get('formattedValue') !== "") {
@@ -9862,7 +12608,8 @@ Tent.DateRangeField = Tent.TextField.extend({
           try {
             startDate = Tent.Formatting.date.unformat(startString.trim(), this.get('dateFormat'));
             this.set('startDate', startDate);
-          } catch (e) {
+          } catch (_error) {
+            e = _error;
             isValidStartDate = false;
             this.set('startDate', null);
           }
@@ -9872,7 +12619,8 @@ Tent.DateRangeField = Tent.TextField.extend({
           try {
             endDate = Tent.Formatting.date.unformat(endString.trim(), this.get('dateFormat'));
             this.set('endDate', endDate);
-          } catch (e) {
+          } catch (_error) {
+            e = _error;
             isValidEndDate = false;
             this.set('endDate', null);
           }
@@ -9924,8 +12672,9 @@ Tent.DateRangeField = Tent.TextField.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['textarea']=Ember.Handlebars.compile("<label class=\"control-label\">{{loc view.label}}<span class='tent-required'></span></label>\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.hasPrefix}}  \n      <span class=\"add-on\">{{loc view.prefix}}</span>\n    {{/if}}     \n    {{#if view.textDisplay}}\n      <span class=\"text-display\">{{view.formattedValue}}</span>\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\"view.inputSizeClass\" \n          valueBinding=\"view.formattedValue\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          rowsBinding=\"view.rows\"\n          colsBinding=\"view.cols\"\n      }}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      <span class=\"help-block\">{{loc view.helpBlock}}</span>\n    {{/if}}\n    {{#if view.hasErrors}}\n      <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}  \n  </div>\n\n</div>\n");
+})();
 
+(function() {
 
 /**
 * @class Tent.Textarea
@@ -9944,7 +12693,13 @@ Ember.TEMPLATES['textarea']=Ember.Handlebars.compile("<label class=\"control-lab
 
 
 (function() {
-Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, {
+
+
+})();
+
+(function() {
+
+  Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, {
     templateName: 'textarea',
     classNames: ['tent-textarea', 'control-group'],
     valueForMandatoryValidation: (function() {
@@ -9972,10 +12727,18 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
 }).call(this);
 
 
-Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-group jqgrid-title-button filter\">\n\t<a class=\"open-dropdown\" href=\"#\">\n\t\t<i class=\"icon-filter\"></i>\n\t\t{{loc tent.filter.filter}}\n\t\t<span class=\"caret\"></span>\n\t</a>\n\n\t<ul class=\"dropdown-menu filter-panel\">\n\t\t{{#if view.showFilterFields}}\n\t\t\t<li>\n\t\t\t\t<div class=\"filter-details clearfix\">\n\t\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\"view.collection\"}}\t\n\t\t\t\t\t\t<div class=\"form-inline buttons\">\n\t\t\t\t\t\t   \t{{view Tent.Button label=\"tent.filter.clear\" type=\"secondary\" action=\"clearFilter\" targetBinding=\"view\" class=\"clear-filter pull-left\"}}\n\t\t\t\t\t    \t{{view Tent.Button label=\"tent.filter.filter\" type=\"primary\" action=\"filter\" targetBinding=\"view\" class=\"close-panel pull-right\"}}\n\t\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</li>\n\t\t{{/if}}\n\t</ul>\n</div>\n\n\n\n\n\n");
+})();
 
 (function() {
-/**
+
+(function() {
+
+
+})();
+
+(function() {
+
+  /**
   * @class Tent.CollectionFilter
   *
   * Displays a filter panel which will apply the filter choices to a collection.
@@ -10053,7 +12816,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         column = _ref[_i];
         if (column.filterable !== false) {
-          if (!(filter.values[column.name] != null)) {
+          if (filter.values[column.name] == null) {
             _results.push(this.set('currentFilter.values.' + column.name, {
               field: column.name,
               op: "",
@@ -10223,8 +12986,11 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Breadcrumb = Ember.View.extend({
     router: null,
     homeState: 'home',
@@ -10272,10 +13038,18 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
 }).call(this);
 
 
-Ember.TEMPLATES['file_upload']=Ember.Handlebars.compile("<span class='btn btn-primary fileinput-button'>\n  {{#if view.helpText}}\n  \t<span><i class=\"icon-upload-alt\"></i>&nbsp; &nbsp;{{loc view.helpText}}</span>\n  {{/if}}\n  <input type=\"file\" name=\"files[]\" {{bindAttr data-url=\"view.dataUrl\" disabled=\"view.disabled\"}} multiple >\n  {{#if view.applyWait}}\n     {{view Tent.WaitIcon}}\n  {{/if}}\n</span>\n\n\n\n ");
+})();
 
 (function() {
-Tent.FileUpload = Ember.View.extend({
+
+(function() {
+
+
+})();
+
+(function() {
+
+  Tent.FileUpload = Ember.View.extend({
     templateName: 'file_upload',
     classNameBindings: ['tent-file-upload'],
     /**
@@ -10311,11 +13085,11 @@ Tent.FileUpload = Ember.View.extend({
         }
       });
       /*
-          @getDropZone()?.bind('mouseenter', ->
-            $(@).addClass('hover')
-          ).bind('mouseleave',->
-            $(@).removeClass('hover')
-          )
+      @getDropZone()?.bind('mouseenter', ->
+        $(@).addClass('hover')
+      ).bind('mouseleave',->
+        $(@).removeClass('hover')
+      )
       */
 
     },
@@ -10345,10 +13119,18 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}}\n<section class=\"alert-error clearfix\">\n\t<h5>Errors</h5>\n\t{{#if view.collapsible}}\n\t\t<div {{bindAttr class=\"view.expandoClass\"}}>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t<a href=\"#\" class=\"dropdown-toggle pull-right close\" data-toggle=\"collapse\" data-target=\".error-expando\">\n\t\t\t\t\t<b class=\"caret\"></b></a>\n\t\t\t{{/if}}\n\t\t</div>\n\t\t\n\t{{else}}\n\t\t<div>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t</div>\n\t{{/if}}\n</section>\n{{/if}}\n\n{{#if view.hasInfos}}\n<section class=\"alert-info clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearInfos\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Info</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.info}}\n\t\t\t<div class=\"info-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasSuccesses}}\n<section class=\"alert-success clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearSuccesses\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Success</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.success}}\n\t\t\t<div class=\"success-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t<section class=\"alert clearfix\" {{bindAttr data-target=\"this.sourceId\"}} data-type=\"warning\">\n\t\t\t{{view Tent.Button label=\"x\" type=\"link\" action=\"removeMessageCommand\" targetBinding=\"view\" class=\"close\"}}\n\t\t\t<h5>Warning</h5>\n\t\t\t\t<div>\n\t\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t\t  \t\t\t\t<label>{{loc this.label}}:</label> {{this.messages}}\n\t\t  \t\t\t</div> \n\t\t\t \t</div>\n\t\t</section>\n\t{{/each}}\n{{/if}}\n\n");
+})();
 
 (function() {
-/**
+
+(function() {
+
+
+})();
+
+(function() {
+
+  /**
    * @class Tent.MessagePanel
    * @extends Ember.View
    *
@@ -10456,7 +13238,7 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}
       return function(e, msg) {
         var arrayWithMessageRemoved;
         if (this.get('isActive')) {
-          if (!(msg.type != null)) {
+          if (msg.type == null) {
             throw new Error('Message must have a type');
           }
           if (msg.type === 'clearAll') {
@@ -10657,6 +13439,9 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Spinner
@@ -10681,7 +13466,13 @@ Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}
 
 
 (function() {
-Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
+
+
+})();
+
+(function() {
+
+  Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
     uiType: 'spinner',
     uiEvents: ['change'],
     uiOptions: ['max', 'min', 'icons', 'culture', 'disabled', 'incremental', 'numberFormat', 'step', 'page'],
@@ -10725,8 +13516,11 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.WaitIcon = Ember.View.extend({
     template: Ember.Handlebars.compile('<div class="wait"><i class="icon-spinner icon-spin icon-2x"></i></div>')
   });
@@ -10734,6 +13528,9 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Tree
@@ -10759,7 +13556,6 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 
 
 (function() {
-
   Tent.Tree = Ember.View.extend({
     template: (function() {
       var guid;
@@ -11234,12 +14030,19 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\t{{#each menugroup in content}}\n\t\t{{#if menugroup.entitled}}\n\t\t\t<li>\n\t\t\t\t{{#if view.isFlattened}}\n\t\t\t\t\t{{#each item in menugroup.items}}\n\t\t\t\t\t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{else}}\n\t\t\t\t\t{{#view Tent.Panel collapsible=true collapsedBinding=\"menugroup.collapsed\" hasChildViews=true}}\n\t\t\t\t        {{#view Tent.PanelHead}}\n\t\t\t\t          <h4><i {{bindAttr class=\"menugroup.icon\"}}></i> {{loc menugroup.title}}</h4>  \n\t\t\t\t        {{/view}}\n\t\t\t\t        {{#view Tent.PanelBody}}\n\t\t\t\t        \t{{#each item in menugroup.items}}\n\t\t\t\t        \t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t        {{/each}}\n\t\t\t\t        {{/view}}\n\t\t\t\t    {{/view}}\n\t\t\t\t{{/if}}\n\t\t\t</li>\n\t\t{{/if}}\n\t{{/each}}\n</ul>");
+})();
 
 (function() {
 
+(function() {
   Tent.Application = Tent.Application || Em.Namespace.create();
-Tent.Application.MainMenuView = Ember.View.extend({
+
+
+})();
+
+(function() {
+
+  Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
     classNames: ['sci-main-menu'],
     collapsedDashboard: false,
@@ -11277,7 +14080,7 @@ Tent.Application.MainMenuView = Ember.View.extend({
         });
         current = null;
         return this.$("active-menu").each(function() {
-          if (!(current != null)) {
+          if (current == null) {
             return current = $(this);
           } else {
             if ($(this).attr('data-route').length > current.attr('data-route').length) {
@@ -11354,12 +14157,19 @@ Tent.Application.MainMenuView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t{{#if item.entitled}}\n    \t<a href=\"#\" class=\"menu-link\" {{bindAttr data-route=\"item.route\"}} {{bindAttr data-action=\"item.action\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t<i {{bindAttr class=\"item.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc item.title}}</span>\n      \t</a>\n\t{{/if}}\n{{/if}}");
+})();
 
 (function() {
 
+(function() {
   Tent.Application = Tent.Application || Em.Namespace.create();
-Tent.Application.MenuItemView = Ember.View.extend({
+
+
+})();
+
+(function() {
+
+  Tent.Application.MenuItemView = Ember.View.extend({
     isEntitled: function() {
       return true;
     },
@@ -11382,8 +14192,11 @@ Tent.Application.MenuItemView = Ember.View.extend({
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Application = Tent.Application || Em.Namespace.create();
 
   Tent.Application.PanelToggleView = Ember.View.extend({
@@ -11418,10 +14231,23 @@ Tent.Application.MenuItemView = Ember.View.extend({
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 /*
 GridController
@@ -11433,7 +14259,6 @@ GridController
 
 
 (function() {
-
   Tent.Controllers.GridController = Ember.ArrayController.extend({
     content: null,
     modelType: null,
@@ -11527,8 +14352,11 @@ GridController
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Application = Tent.Application || Em.Namespace.create;
 
   Tent.Application.MainMenuController = Ember.Controller.extend({
@@ -11558,7 +14386,7 @@ GridController
     processItemEntitlements: function(item) {
       var entitlement, hasEntitlement, operation, _i, _len, _ref;
       item.entitled = true;
-      if (!(item.operations != null)) {
+      if (item.operations == null) {
         return true;
       }
       hasEntitlement = false;
@@ -11590,9 +14418,23 @@ GridController
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
+
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
 
 (function() {
   var getPath, normalizePath;
@@ -11615,6 +14457,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * `formatAmount` allows you to present a numeric value formatted as a money amount 
@@ -11629,7 +14474,6 @@ GridController
 
 
 (function() {
-
   Ember.Handlebars.registerHelper('formatAmount', function(property, options) {
     var amount;
     amount = Tent.Handlebars.getPath(property, options);
@@ -11639,6 +14483,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * `formatDate` allows you to present a Date value formatted to the current locale
@@ -11652,7 +14499,6 @@ GridController
 
 
 (function() {
-
   Ember.Handlebars.registerHelper('formatDate', function(context, options) {
     var date;
     date = Tent.Handlebars.getPath(context, options);
@@ -11662,6 +14508,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * `formatNumber` allows you to present a numeric value formatted  
@@ -11676,7 +14525,6 @@ GridController
 
 
 (function() {
-
   Ember.Handlebars.registerHelper('formatNumber', function(context, options) {
     var number;
     number = Tent.Handlebars.getPath(context, options);
@@ -11686,6 +14534,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * `loc` will translate a string key using the bundle for the current locale
@@ -11705,7 +14556,6 @@ GridController
 
 
 (function() {
-
   Ember.Handlebars.registerHelper('loc', function(property, options) {
     var arg, args, key;
     key = Tent.Handlebars.getPath(property, options);
@@ -11731,10 +14581,31 @@ GridController
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
+(function() {
+
+(function() {
+
+
+})();
+
+(function() {
+
+(function() {
+  var __hasProp = {}.hasOwnProperty;
+
+
+})();
+
+(function() {
 
 /**
 * @class Tent.Data.Pager
@@ -11743,7 +14614,6 @@ GridController
 
 
 (function() {
-
   Tent.Data.Pager = Ember.Mixin.create({
     paged: false,
     pageSize: null,
@@ -11816,6 +14686,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Data.Sorter
@@ -11824,7 +14697,6 @@ GridController
 
 
 (function() {
-
   Tent.Data.Sorter = Ember.Mixin.create({
     columnFilters: {},
     sortingInfo: {},
@@ -11849,8 +14721,11 @@ GridController
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Data.ColumnInfo = Ember.Mixin.create({
     init: function() {
       this._super();
@@ -11866,6 +14741,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Data.Filter
@@ -11874,7 +14752,6 @@ GridController
 
 
 (function() {
-
   Tent.Data.Filter = Ember.Mixin.create({
     filteringInfo: {
       selectedFilter: 'default',
@@ -12014,8 +14891,11 @@ GridController
 }).call(this);
 
 
+})();
+
 (function() {
 
+(function() {
   Tent.Data.GroupingSupport = Ember.Mixin.create({
     groupingInfo: {},
     currentGroupPage: 1,
@@ -12054,6 +14934,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Data.SearchSupport
@@ -12062,7 +14945,6 @@ GridController
 
 
 (function() {
-
   Tent.Data.SearchSupport = Ember.Mixin.create({
     init: function() {
       this._super();
@@ -12086,6 +14968,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /**
 * @class Tent.Data.ExportSupport
@@ -12094,7 +14979,6 @@ GridController
 
 
 (function() {
-
   Tent.Data.ExportSupport = Ember.Mixin.create({
     /**
     	* @method getURL Returns the URL hosting the export service
@@ -12109,6 +14993,9 @@ GridController
 }).call(this);
 
 
+})();
+
+(function() {
 
 /*
 This mixin allows UI state to be stored by the user, and restored automatically the next time the user uses
@@ -12161,7 +15048,6 @@ grouping: {
 
 
 (function() {
-
   Tent.Data.Customizable = Ember.Mixin.create({
     isCustomizable: true,
     defaultName: Tent.I18n.loc('tent.jqGrid.saveUi.defaultName'),
@@ -12253,9 +15139,11 @@ grouping: {
 }).call(this);
 
 
+})();
+
 (function() {
-  var __hasProp = {}.hasOwnProperty;
-/**
+
+  /**
   * @class Tent.Data.Collection
   * An object used to wrap an array of objects, with a facade for paging, sorting and filtering,
   */
@@ -12351,9 +15239,18 @@ grouping: {
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
 
 
+})();
+
 (function() {
+
 }).call(this);
+
+
+})();

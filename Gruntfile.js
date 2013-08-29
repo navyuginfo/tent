@@ -138,8 +138,7 @@ module.exports = function (grunt) {
                     dot: true,
                     src: [
                         '.tmp',
-                        '<%= yeoman.dist %>/javascript/tent.js',
-                        '<%= yeoman.dist %>/javascript/test.js'
+                        '<%= yeoman.dist %>/javascript/*'
                     ]
                 }]
             },
@@ -280,9 +279,14 @@ module.exports = function (grunt) {
                     'dist/javascript/jquery.js': ['vendor/jquery/*.js']
                 }
             },
-            dist: {
+            vendor: {
                 files: {
                     'dist/javascript/vendor.js': ['vendor/modernizr/*.js', 'vendor/handlebars/*.js', 'vendor/ember/*.js', 'vendor/ember-data/*.js', 'vendor/bootstrap/*.js', 'vendor/jqGrid/*.js', 'vendor/accounting/*.js', 'vendor/date/*.js', 'vendor/date-range/*.js', 'vendor/pubsub/*.js', 'vendor/jquery-ui/*.js', 'vendor/html5shiv/*.js', 'vendor/history/*.js', 'vendor/eventlistener/*.js','vendor/headless-ember/*.js','vendor/fancy-tree/*.js']
+                }
+            },
+            dist: {
+                files: {
+                    'dist/tent.js': ['dist/javascript/compiled-templates.js','dist/javascript/tent.js']
                 }
             }
         },
@@ -450,20 +454,12 @@ module.exports = function (grunt) {
         'qunit'
     ]);
 
-    grunt.registerTask('build', [
+    grunt.registerTask('build-tent', [
         'clean:dist',
-        //'useminPrepare',
         'ember_templates',
-        'coffeescriptee',
-        //'minispade',
-        'neuterall',
-        'htmlmin',
-        //'cssmin',
-        'concat',
-        //'uglify',
-        'copy'
-        //'rev',
-        //'usemin'
+        'coffee:tent',
+        'neuterall:tent',
+        'concat:dist'
     ]);
 
 
@@ -522,7 +518,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('karma-qunit-ci', [
         'clean:test',
-        'concat',
+        'concat:jq',
+        'concat:vendor',
         'coffee:test',
         'coffee:tent',
         'ember_templates',
