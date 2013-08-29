@@ -1677,7 +1677,7 @@
 
   Tent.Browsers.isIE = function() {
     var res;
-    res = (res != null) && (this.getIEVersion() > -1);
+    res = this.getIEVersion() != null;
     this.isIE = function() {
       return res;
     };
