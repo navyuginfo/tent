@@ -40,6 +40,7 @@ require './message_panel'
 require './spinner'
 require './waiticon'
 require './tree'
+require './collection_panel_view'
 
 require './application/main_menu'
 require './application/menu_item'
