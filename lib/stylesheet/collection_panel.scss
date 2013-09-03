@@ -61,6 +61,10 @@ $collection-panel-content-border-color: #b1b1b1;
 			border-top: 1px solid #586a98;
 			border-bottom: 1px solid #44537a;
 			padding: 0px 12px;
+
+			input[type='checkbox'] {
+				margin-top: 0px;
+			}
 		}
 
 		@include background-image($collection-panel-header-background-gradient);

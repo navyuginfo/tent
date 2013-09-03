@@ -1,7 +1,10 @@
 <header>
 	<div class="header-border vertical-align-with-header">
-		{{view Ember.Checkbox checkedBinding="view.selected"}}
-		<h1>{{view.content.title}}</h1>
+		<h1>
+			{{#if view.selectable}}
+				{{view Ember.Checkbox checkedBinding="view.selected"}}
+			{{/if}}
+			{{view.content.title}}</h1>
 		<a {{action delete this}} title="Delete"><i class="icon-trash"></i></a>
 	</div>
 </header>

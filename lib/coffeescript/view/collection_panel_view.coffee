@@ -19,6 +19,7 @@ require '../template/collection_panel_content'
 Tent.CollectionPanelView = Ember.View.extend
 	templateName: 'collection_panel'
 	classNames: ['collection-panel-container']
+	selectable: false
 	selection: null
 
 	###*
@@ -41,6 +42,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 	item: null
 	contentViewType: null
 	collection: null
+	selectable: false
 	selection: Ember.A()
 	childViews: ['contentView']
 	contentView: (->
@@ -48,6 +50,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 			eval(@get('contentViewType')).create
 				content: @get('item')
 				collection: @get('collection')
+				selectable: @get('selectable')
 				selected: @get('isSelected')
 
 	).property('item')
@@ -79,6 +82,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 Tent.CollectionPanelContentView = Ember.View.extend
 	templateName: null
 	content: null
+	selectable: false
 	selected: false
 
 	###*
