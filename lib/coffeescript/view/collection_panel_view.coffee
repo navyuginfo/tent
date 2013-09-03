@@ -19,6 +19,7 @@ require '../template/collection_panel_content'
 Tent.CollectionPanelView = Ember.View.extend
 	templateName: 'collection_panel'
 	classNames: ['collection-panel-container']
+	selection: null
 
 	###*
 	* @property {Object} collection The colleciton which contains the items for display.
@@ -33,19 +34,43 @@ Tent.CollectionPanelView = Ember.View.extend
 
 	didInsertElement: ->
 		@get('collection').update()
+		@set('selection', Ember.A()) if not @get('selection')?
 
 
 Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 	item: null
 	contentViewType: null
 	collection: null
+	selection: Ember.A()
 	childViews: ['contentView']
 	contentView: (->
-		eval(@get('contentViewType')).create
-			content: @get('item')
-			collection: @get('collection')
+		if @get('contentViewType')?
+			eval(@get('contentViewType')).create
+				content: @get('item')
+				collection: @get('collection')
+				selected: @get('isSelected')
 
 	).property('item')
+
+	isSelected: (->
+		@get('selection').contains(@get('item'))
+	).property('selection.@each')
+
+	selectedDidChange: (isSelected)->
+		if isSelected
+			@addToSelection()
+		else
+			@removeFromSelection()
+
+	addToSelection: ->
+		@get('selection').pushObject(@get('item')) if not @get('selection').contains(@get('item'))
+		
+	removeFromSelection: ->
+		myItem = @get('item')
+		@set('selection', @get('selection').filter((item)->
+			item != myItem
+		))
+
 
 ###*
 *	@class Tent.CollectionPanelContentView
@@ -54,6 +79,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 Tent.CollectionPanelContentView = Ember.View.extend
 	templateName: null
 	content: null
+	selected: false
 
 	###*
 	* @method getLabelForField Returns a translated label for the given field name of a collections columns
@@ -76,6 +102,11 @@ Tent.CollectionPanelContentView = Ember.View.extend
 			$.fn.fmatter[column.get('formatter')](value, {colModel: {formatOptions: column.get('formatoptions')}})
 		else
 			value
+
+	selectedDidChange: (->
+		@set('selected', @get('selected'))
+		@get('parentView').selectedDidChange(@get('selected'))
+	).observes('selected')
 
 
 

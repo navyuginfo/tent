@@ -408,7 +408,14 @@
             {{view Tent.CollectionPanelView 
               collectionBinding="Pad.jqRemoteCollection"
               contentViewType="Tent.TaskCollectionPanelContentView"
+              selectionBinding="Pad.collectionPanelSelection"
             }} 
+
+            <p>Selected Items are 
+                {{#each item in Pad.collectionPanelSelection}}
+                  {{item.title}}
+                {{/each}}
+              </p>     
           {{/view}}
         {{/view}}
 

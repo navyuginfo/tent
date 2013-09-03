@@ -1,5 +1,10 @@
 {{#each item in view.collection.modelData}}
 	<article class="collection-panel">
-		{{view Tent.CollectionPanelContentContainerView itemBinding="item" contentViewTypeBinding="view.contentViewType" collectionBinding="view.collection"}}
+		{{view Tent.CollectionPanelContentContainerView 
+			itemBinding="item" 
+			contentViewTypeBinding="view.contentViewType" 
+			collectionBinding="view.collection"
+			selectionBinding="view.selection"
+		}}
 	</article>
 {{/each}}
