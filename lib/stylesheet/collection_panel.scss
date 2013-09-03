@@ -19,6 +19,12 @@ $collection-panel-content-border-color: #b1b1b1;
 	min-width: 18em;
 	box-shadow: 1px 2px 4px rgb(199, 199, 199);
 	border-radius: 3px;
+	opacity: 0;
+	transition: opacity .5s ease;
+
+	.collection-panel-content.selected {
+		box-shadow: 0px 0px 9px rgba(8, 218, 17, 0.57);
+	}
 
 	h1 {
 		font-size: 14px;

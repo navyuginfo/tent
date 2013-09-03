@@ -403,7 +403,7 @@
 
 
         {{#view Tent.Panel span="10" }}
-          {{#view Tent.Form name="Collection Panels" id="panels-section"}}
+          <div id="panels-section">
             <h5>Collection Panels</h5>
             {{view Tent.CollectionPanelView 
               collectionBinding="Pad.jqRemoteCollection"
@@ -417,7 +417,7 @@
                   {{item.title}}
                 {{/each}}
               </p>     
-          {{/view}}
+          </div>
         {{/view}}
 
 

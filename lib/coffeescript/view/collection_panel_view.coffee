@@ -81,9 +81,14 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 ###
 Tent.CollectionPanelContentView = Ember.View.extend
 	templateName: null
+	classNames: ['collection-panel-content']
+	classNameBindings: ['selected']
 	content: null
 	selectable: false
 	selected: false
+
+	didInsertElement: ->
+		@$().parents('.collection-panel:first').css('opacity', '1')
 
 	###*
 	* @method getLabelForField Returns a translated label for the given field name of a collections columns
