@@ -63,6 +63,15 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 		@get('store').getColumnsForType(@get('dataType'))
 	).property('dataType')
 
+	###*
+	*	@method getColumnByField Return a column given a fieldName
+	* 	@param {String} fieldName the field name of the column to be returned
+	###
+	getColumnByField: (fieldName)->
+		@get('columnsDescriptor').filter((item)->
+			item.get('field') == fieldName
+		)[0]
+
 	update: (requestType)->
 		if @get('dataType')? && @get('store')?
 			query = $.extend(
@@ -78,3 +87,4 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 			response = @get('store').findQuery(eval(@get('dataType')), query)
 			@set('modelData', response.modelData)
 			@updatePagingInfo(response.pagingInfo)
+
