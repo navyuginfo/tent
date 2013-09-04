@@ -7369,7 +7369,7 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 
 Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("<div class=\"filterpanel\">\n\t<header>\n\t\t<h3>Filter</h3>\n\t\t<a {{action addFilterField target=\"controller\"}} class=\"btn add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t<a {{action applyFilter target=\"controller\"}} class=\"btn filter-button\">{{loc tent.filter.filter}}</a>\n\t</header>\n\t<div class=\"content\">\n\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t{{#each view.controller.content}}\n\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\"}}\n\t\t{{/each}}\n\t</div>\n</div>\n\n ");
 
-Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"controller.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false tooltip=\"Select Field\" required=\"true\" preselectSingleElement=true class=\"no-label\"}}\n\n\t\t{{#if view.typeIsSelected}}\n\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" class=\"no-label\"}}\n\t\t{{/if}}\n\t</div>\n</section>\n\n\n\n\t\n\n \n");
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false tooltip=\"Select Field\" required=\"true\" preselectSingleElement=true class=\"no-label\"}}\n\n\t\t{{#if view.typeIsSelected}}\n\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" class=\"no-label\"}}\n\t\t{{/if}}\n\t</div>\n</section>\n\n\n\n\t\n\n \n");
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7413,8 +7413,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     content: null,
     deleteField: function() {
       return this.get('parentController').deleteFilterField(this.get('content'));
-    },
-    filterableColumnsBinding: 'parentController.filterableColumns'
+    }
   });
 
   Tent.FilterFieldView = Ember.View.extend({
