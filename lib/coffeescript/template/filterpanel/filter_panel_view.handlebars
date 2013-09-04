@@ -1,8 +1,8 @@
 <div class="filterpanel">
 	<header>
 		<h3>Filter</h3>
-		<a {{action addFilterField target="controller"}} class="btn add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
-		<a {{action applyFilter target="controller"}} class="btn filter-button">{{loc tent.filter.filter}}</a>
+		<a {{action addFilterField target="controller"}} class="add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
+		<a {{action applyFilter target="controller"}} class="filter-button">{{loc tent.filter.filter}}<i class="icon-caret-right"></i></a>
 	</header>
 	<div class="content">
 		<div class="background-hint">{{loc tent.filter.bgHint}}</div>
