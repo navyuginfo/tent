@@ -120,8 +120,11 @@
         filter: 'Filter',
         add: 'Add Field',
         bgHint: 'Add Filters',
+<<<<<<< HEAD
         prompt: 'Select a field ...',
         operatorPrompt: 'Select an operator',
+=======
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
         del: 'Delete Field',
         fieldname: 'Field Name',
         availableFilters: 'Available Filters',
@@ -3987,7 +3990,11 @@ Tent.Table = Ember.View.extend({
 }).call(this);
 
 
+<<<<<<< HEAD
 Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\"}}\n\t\n\t<div class=\"table-container\">\n    \t<table class=\"grid-table\"></table>\n    </div>\n</div>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+=======
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{#if view.showFilter}}\n\t\t<div class=\"filter-container\">\n\t\t\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\"}}\n\t\t</div>\n\t{{/if}}     \n\t<div class=\"table-container\">\n    \t<table class=\"grid-table\"></table>\n    </div>\n</div>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
 
 (function() {
 
@@ -5007,7 +5014,10 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
   Tent.Grid.FilterSupport = Ember.Mixin.create({
     showFilter: false,
+<<<<<<< HEAD
     isPinned: false,
+=======
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
     /**
     	* @property {Boolean} maximizeGridOnFilter maximize the grid when the filter panel is displayed
     */
@@ -5015,7 +5025,10 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     maximizeGridOnFilter: false,
     toggleFilter: function() {
       this.set('showFilter', !this.get('showFilter'));
+<<<<<<< HEAD
       this.resizeToContainer();
+=======
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
       if (this.get('maximizeGridOnFilter')) {
         if (this.get('showFilter')) {
           return this.maximize();
@@ -5852,7 +5865,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
   Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, {
     templateName: 'jqgrid',
     classNames: ['tent-jqgrid'],
+<<<<<<< HEAD
     classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned'],
+=======
+    classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter'],
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
     /**
     	* @property {String} title The title caption to appear above the table
     */
@@ -6214,7 +6231,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if (Tent.Browsers.isIE()) {
           bdiv.css('width', 'auto');
         }
+<<<<<<< HEAD
         return this.adjustHeight();
+=======
+        this.adjustHeight();
+        console.log('---bdiv css width = ' + bdiv.css('width'));
+        return console.log('---bdiv  width = ' + bdiv.width());
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
       }
     },
     padLastCellsForScrollbar: function() {
@@ -7393,9 +7416,15 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
+<<<<<<< HEAD
 Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("<div class=\"filter-container slide-from-left\"}}>\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"controller\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n\n\n\n\n ");
 
 Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\"}}\n\n\t\t{{#if view.typeIsSelected}}\n\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\"}}\n\t\t{{/if}}\n\t</div>\n</section>\n\n\n\n\t\n\n \n");
+=======
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("<div class=\"filterpanel\">\n\t<header>\n\t\t<h3>Filter</h3>\n\t\t<a {{action addFilterField target=\"controller\"}} class=\"btn add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t<a {{action applyFilter target=\"controller\"}} class=\"btn filter-button\">{{loc tent.filter.filter}}</a>\n\t</header>\n\t<div class=\"content\">\n\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t{{#each view.controller.content}}\n\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\"}}\n\t\t{{/each}}\n\t</div>\n</div>\n\n ");
+
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"controller.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false tooltip=\"Select Field\" required=\"true\" preselectSingleElement=true class=\"no-label\"}}\n\n\t\t{{#if view.typeIsSelected}}\n\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" class=\"no-label\"}}\n\t\t{{/if}}\n\t</div>\n</section>\n\n\n\n\t\n\n \n");
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7423,6 +7452,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
   Tent.FilterPanelView = Ember.View.extend({
     templateName: 'filterpanel/filter_panel_view',
     collection: null,
+<<<<<<< HEAD
     isPinned: false,
     showFilter: false,
     init: function() {
@@ -7448,6 +7478,17 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       this.set('isPinned', false);
       return $.publish("/window/resize");
     }).observes('showFilter')
+=======
+    init: function() {
+      this._super();
+      return this.set('controller', Tent.FilterPanelController.create({
+        collection: this.get('collection')
+      }));
+    },
+    willDestroyElement: function() {
+      return delete this.get('controller');
+    }
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
   });
 
   Tent.FilterFieldController = Ember.ObjectController.extend({
@@ -7455,7 +7496,12 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     content: null,
     deleteField: function() {
       return this.get('parentController').deleteFilterField(this.get('content'));
+<<<<<<< HEAD
     }
+=======
+    },
+    filterableColumnsBinding: 'parentController.filterableColumns'
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
   });
 
   Tent.FilterFieldView = Ember.View.extend({
@@ -7464,11 +7510,16 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     collectionBinding: 'parentView.collection',
     init: function() {
       this._super();
+<<<<<<< HEAD
       this.set('controller', Tent.FilterFieldController.create({
+=======
+      return this.set('controller', Tent.FilterFieldController.create({
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
         content: this.get('content'),
         parentController: this.get('parentController'),
         collection: this.get('collection')
       }));
+<<<<<<< HEAD
       return this.initializeSelection();
     },
     initializeSelection: function() {
@@ -7483,17 +7534,28 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
           return this.set('controller.selectedColumn', selectedColumn[0]);
         }
       }
+=======
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
     },
     willDestroyElement: function() {
       return delete this.get('controller');
     },
+<<<<<<< HEAD
+=======
+    contentDidChange: (function() {
+      return console.log(this.get('content.field'));
+    }).property('content.data'),
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
     typeIsSelected: (function() {
       return this.get('content.field') != null;
     }).property('content.field')
   });
 
   Tent.FilterFieldControlView = Ember.ContainerView.extend({
+<<<<<<< HEAD
     classNames: ['filter-field-control'],
+=======
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
     content: null,
     column: null,
     init: function() {
@@ -7503,6 +7565,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     columnDidChange: (function() {
       return this.populateContainer();
     }).observes('column'),
+<<<<<<< HEAD
     resetFieldView: function() {
       if (this.get('fieldView') != null) {
         this.get('childViews').removeObject(this.get('fieldView'));
@@ -7544,6 +7607,27 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 classNames: ["no-label"]
               });
             }
+=======
+    populateContainer: function() {
+      var fieldView;
+      if (this.get('fieldView') != null) {
+        this.get('childViews').removeObject(this.get('fieldView'));
+      }
+      switch (this.get('column.type')) {
+        case "string":
+          if (this.get('column.edittype') === 'select') {
+            fieldView = Tent.Select.create({
+              label: Tent.I18n.loc(this.get('column.title')),
+              isFilter: true,
+              list: this.get('column.editoptions.value'),
+              optionLabelPath: 'content.key',
+              optionValuePath: 'content.value',
+              valueBinding: "parentView.content.data",
+              filterOpBinding: "parentView.content.op",
+              field: this.get('column.name'),
+              classNames: ["no-label"]
+            });
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
           } else {
             fieldView = Tent.TextField.create({
               label: Tent.I18n.loc(this.get('column.title')),
@@ -8497,7 +8581,11 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
+<<<<<<< HEAD
 Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classNameBindings=\"view.inputSizeClass\" \n               class=\"primary-class\"\n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\"\n               advancedBinding=\"view.advanced\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+=======
+Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isLoading}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classBinding=\"view.inputSizeClass\" \n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+>>>>>>> Allow enumerations defined in the column meta to be used in filters.
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
 
