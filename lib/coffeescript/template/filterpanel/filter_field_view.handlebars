@@ -3,7 +3,7 @@
 		<a {{action deleteFilterField this target="view.parentController"}} title="{{loc tent.filter.del}}"><i class="icon-trash"></i></a>
 	</div>
 	<div class="filter-field">
-		{{view Tent.Select listBinding="controller.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false tooltip="Select Field" required="true" preselectSingleElement=true class="no-label"}}
+		{{view Tent.Select listBinding="view.parentController.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false tooltip="Select Field" required="true" preselectSingleElement=true class="no-label"}}
 
 		{{#if view.typeIsSelected}}
 			{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content" class="no-label"}}
