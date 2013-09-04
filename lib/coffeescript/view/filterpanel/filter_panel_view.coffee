@@ -52,7 +52,6 @@ Tent.FilterPanelView = Ember.View.extend
 		$.publish("/window/resize")
 	).observes('showFilter')
 
-
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null
