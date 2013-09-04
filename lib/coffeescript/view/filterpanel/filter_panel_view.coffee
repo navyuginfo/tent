@@ -237,3 +237,4 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 			@set('fieldView', fieldView)
 			@get('childViews').pushObject(fieldView)
 
+
