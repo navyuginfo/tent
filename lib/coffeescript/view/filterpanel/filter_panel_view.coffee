@@ -90,13 +90,28 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		@get('childViews').removeObject(@get('fieldView')) if @get('fieldView')?
 		switch @get('column.type')
 			when "string"
-				fieldView = Tent.TextField.create
-					label: Tent.I18n.loc(@get('column.title'))
-					isFilter: true 
-					valueBinding: "parentView.content.data"
-					filterOpBinding: "parentView.content.op"
-					field: @get('column.name')
-					classNames: ["no-label"]
+				if @get('column.edittype') == 'select'
+					# This is an enumeration
+					# Enumerations can be specified in the column meta in a format such as this:
+					# edittype('select').editoptions({value: [{key: 'Eligible', value: 'eligible'}, {key: 'InEligible', value: 'ineligible'}]}
+					fieldView = Tent.Select.create
+						label: Tent.I18n.loc(@get('column.title'))
+						isFilter: true 
+						list: @get('column.editoptions.value')
+						optionLabelPath: 'content.key'
+						optionValuePath: 'content.value'
+						valueBinding: "parentView.content.data"
+						filterOpBinding: "parentView.content.op"
+						field: @get('column.name')
+						classNames: ["no-label"]
+				else
+					fieldView = Tent.TextField.create
+						label: Tent.I18n.loc(@get('column.title'))
+						isFilter: true 
+						valueBinding: "parentView.content.data"
+						filterOpBinding: "parentView.content.op"
+						field: @get('column.name')
+						classNames: ["no-label"]
 
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create

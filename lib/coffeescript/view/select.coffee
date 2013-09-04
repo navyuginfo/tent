@@ -21,11 +21,12 @@
 
 require '../template/select'
 require '../template/radio_group'
+require '../mixin/filtering_support'
 require '../mixin/tooltip_support'
 require '../mixin/aria_support'
 require '../mixin/readonly_support'
 
-Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
+Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
   contentBinding: 'selection'
