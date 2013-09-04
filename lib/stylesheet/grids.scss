@@ -2,6 +2,37 @@
 
 $headerHeight: 20px;
 
+
+.tent-section.filterpanel {
+	height: 300px;
+	float: none;
+
+	.filter-field {
+		border-top: 1px dashed #ddd;
+		padding: 8px;
+	}
+}
+
+.show-filter .table-container {
+	 
+}
+
+.filter-container {
+	width: 30em;
+	 
+
+	.control-label {
+		width: 80px;
+	}
+	.controls {
+		margin-left: 80px;
+	}
+	.filterpanel {
+		background-color: white;
+	}
+	
+}
+
 .tent-jqgrid {
 	height: 100%;
 
@@ -19,6 +50,12 @@ $headerHeight: 20px;
 
 	.grid-header {
 		position: relative; // To allow a mask for expansion
+	}
+
+	.ui-jqgrid {
+		position: absolute;
+		left: 0px; 
+		right: 0px;
 	}
 
 	.ui-jqgrid tr.jqgrow td {
@@ -184,8 +221,8 @@ $headerHeight: 20px;
 		}
 	}
 
-	/* Export */
-	.column-chooser, .jqgrid-title-button {
+	/* Column Chooser */
+	.column-chooser, .jqgrid-title-button, .btn-filter  {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;

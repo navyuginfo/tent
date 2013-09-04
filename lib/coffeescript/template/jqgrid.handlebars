@@ -8,9 +8,22 @@
 
 {{view Tent.JqGridHeaderView gridBinding="view"}}
 
-<table class="grid-table"></table>
+<div class="grid-container">
+	{{#if view.showFilter}}
+		<div class="filter-container">
+			{{view Tent.FilterPanelView collectionBinding="view.collection"}}
+		</div>
+	{{/if}}     
+	<div class="table-container">
+    	<table class="grid-table"></table>
+    </div>
+</div>
 <div class="gridpager"></div>
 {{#if view.hasErrors}}
 	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
 {{/if}}
+
+
+
+ 
 
