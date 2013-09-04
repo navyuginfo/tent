@@ -25,6 +25,9 @@ Tent.FilterPanelView = Ember.View.extend
 			collection: @get('collection')
 		))
 
+	willDestroyElement: ->
+		delete @get('controller')
+
 
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
@@ -52,6 +55,9 @@ Tent.FilterFieldView = Ember.View.extend
 			collection: @get('collection')
 		)
 
+	willDestroyElement: ->
+		delete @get('controller')
+
 	contentDidChange: (->
 		console.log @get('content.field')
 	).property('content')
@@ -64,7 +70,6 @@ Tent.FilterFieldView = Ember.View.extend
 Tent.FilterFieldControlView = Ember.ContainerView.extend
 	content: null
 	classNames: ['form-horizontal']
-
 	column: null
 
 	init: ->
@@ -92,6 +97,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					valueBinding: "content.data"
 					filterOpBinding: "content.op"
 					field: @get('column.name')
+					classNames: ["no-label"]
+
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
 					label: Tent.I18n.loc(@get('column.title')) 
@@ -101,6 +108,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"
+					classNames: ["no-label"]
 					#field: column.name
 
 			when "number", "amount"
@@ -111,6 +119,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					rangeValueBinding: "content.data"
 					filterOpBinding: "content.op"
 					field: @get('column.name')
+					classNames: ["no-label"]
+
 			when "boolean"
 				fieldView = Tent.Checkbox.create
 					label: Tent.I18n.loc(@get('column.title')) 
@@ -118,5 +128,10 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					checkedBinding: "content.data" 
 					filterOpBinding: "content.op"
 					field: @get('column.name')
-		@get('childViews').pushObject(fieldView) if fieldView?
+					classNames: ["no-label"]
+
+		if fieldView?
+			@set('fieldView', fieldView)
+			@get('childViews').pushObject(fieldView)
+
 
