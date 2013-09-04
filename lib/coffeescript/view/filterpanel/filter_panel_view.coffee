@@ -46,8 +46,6 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 	deleteField: ->
 		@get('parentController').deleteFilterField(@get('content'))
 
-	filterableColumnsBinding: 'parentController.filterableColumns'
-
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
