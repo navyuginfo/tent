@@ -331,6 +331,7 @@ body > .modal-backdrop {
 	}
 }
 
+
 /* Forms */
 select {
 	// IE does not expand the options in a dropdown to the width of their content
@@ -344,3 +345,17 @@ select.expand {
 	min-width: 150px;
 	z-index: 1;
 }
+
+/* Display a large embossed background text within an element */
+.background-hint {
+	margin-top: 80px;
+	font-size: 24px;
+	font-weight: bold;
+	color: #CECECE;
+	text-shadow: 1px 1px #F3F3F3;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	text-align: center;
+}
+
