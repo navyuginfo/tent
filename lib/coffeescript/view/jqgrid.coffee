@@ -49,7 +49,7 @@ require '../mixin/grid/horizontal_scroll_support'
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned', 'filterCoversGrid']
 
 	###*
 	* @property {String} title The title caption to appear above the table

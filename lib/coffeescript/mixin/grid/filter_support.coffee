@@ -1,6 +1,7 @@
 Tent.Grid.FilterSupport = Ember.Mixin.create
 	showFilter: false
 	isPinned: false
+	filterCoversGrid: false
 
 	###*
 	* @property {Boolean} maximizeGridOnFilter maximize the grid when the filter panel is displayed
