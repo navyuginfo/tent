@@ -182,6 +182,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							field: @get('column.name')
 							classNames: ["no-label"]
 							disabledBinding: "parentView.isDisabled"
+
 				else
 					fieldView = Tent.TextField.create
 						label: Tent.I18n.loc(@get('column.title'))
