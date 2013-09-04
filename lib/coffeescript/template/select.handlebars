@@ -3,6 +3,15 @@
 </label>
 
 <div class="controls">
+  {{#if view.isFilter}}
+    {{#if view.operators}}
+      {{view Tent.Select listBinding="view.operators" class="embed no-label operators" 
+        optionLabelPath="content.label"
+        optionValuePath="content.operator"
+        valueBinding="view.filterOp"
+      }}
+    {{/if}}
+  {{/if}}
   <div class="input-prepend">
     {{#if view.isLoading}}
       <div class="wait"><i class="icon-spinner icon-spin"></i></div>
