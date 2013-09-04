@@ -1,21 +1,15 @@
-{{#view Tent.Section class="filterpanel"}}
-	{{#view Tent.Header class=""}}
+<div class="filterpanel">
+	<header>
 		<h3>Filter</h3>
-		{{view Tent.Button label="tent.filter.add" type="secondary" action="addFilterField" targetBinding="controller" class="pull-right"}}
-		{{view Tent.Button label="tent.filter.filter" type="secondary" action="applyFilter" targetBinding="controller" class="pull-right"}}
-	{{/view}}
-	{{#view Tent.Content}}
-		<section>
-			{{#each controller.content}}
-				<div class="filter-controls pull-right">
-					<a {{action deleteFilterField this target="controller"}}>{{loc tent.filter.del}}</a>
-				</div>
-				<div class="filter-field">
-					{{view Tent.FilterFieldView contentBinding="this"}}
-				</div>
-			{{/each}}
-		</section>
-	{{/view}}
-{{/view}}
+		<a {{action addFilterField target="controller"}} class="btn add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
+		<a {{action applyFilter target="controller"}} class="btn filter-button">{{loc tent.filter.filter}}</a>
+	</header>
+	<div class="content">
+		<div class="background-hint">{{loc tent.filter.bgHint}}</div>
+		{{#each view.controller.content}}
+			{{view Tent.FilterFieldView contentBinding="this"}}
+		{{/each}}
+	</div>
+</div>
 
  

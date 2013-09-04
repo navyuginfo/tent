@@ -89,6 +89,7 @@ Tent.I18n.loadTranslations(
 		filter: {
 			filter: 'Filter'
 			add: 'Add Field'
+			bgHint: 'Add Filters'
 			del: 'Delete Field'
 			fieldname: 'Field Name'
 			availableFilters: 'Available Filters'
