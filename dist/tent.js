@@ -7565,24 +7565,40 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return this.populateContainer();
     }).observes('column'),
     populateContainer: function() {
-      var fieldView;
+      var coll, fieldView;
       if (this.get('fieldView') != null) {
         this.get('childViews').removeObject(this.get('fieldView'));
       }
       switch (this.get('column.type')) {
         case "string":
           if (this.get('column.edittype') === 'select') {
-            fieldView = Tent.Select.create({
-              label: Tent.I18n.loc(this.get('column.title')),
-              isFilter: true,
-              list: this.get('column.editoptions.value'),
-              optionLabelPath: 'content.key',
-              optionValuePath: 'content.value',
-              valueBinding: "parentView.content.data",
-              filterOpBinding: "parentView.content.op",
-              field: this.get('column.name'),
-              classNames: ["no-label"]
-            });
+            if (this.get('column.editoptions.value') != null) {
+              fieldView = Tent.Select.create({
+                label: Tent.I18n.loc(this.get('column.title')),
+                isFilter: true,
+                list: this.get('column.editoptions.value'),
+                optionLabelPath: 'content.key',
+                optionValuePath: 'content.value',
+                valueBinding: "parentView.content.data",
+                filterOpBinding: "parentView.content.op",
+                field: this.get('column.name'),
+                classNames: ["no-label"]
+              });
+            }
+            if (this.get('column.editoptions.collection')) {
+              coll = eval(this.get('column.editoptions.collection.name')).fetchCollection();
+              fieldView = Tent.Select.create({
+                label: Tent.I18n.loc(this.get('column.title')),
+                isFilter: true,
+                list: coll,
+                optionLabelPath: this.get('column.editoptions.collection.label'),
+                optionValuePath: this.get('column.editoptions.collection.value'),
+                valueBinding: "parentView.content.data",
+                filterOpBinding: "parentView.content.op",
+                field: this.get('column.name'),
+                classNames: ["no-label"]
+              });
+            }
           } else {
             fieldView = Tent.TextField.create({
               label: Tent.I18n.loc(this.get('column.title')),
