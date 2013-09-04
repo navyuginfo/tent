@@ -141,9 +141,11 @@ Tent.Data.Filter = Ember.Mixin.create
 	# Add a new field to the value array of the currently selected filter, 
 	# ready to be populated with a filter field value for the specified column.
 	createBlankFilterFieldValue: (columnName)->
+		@ensureFilterAvailable()
 		@get('selectedFilter.values').pushObject({field:columnName, op:"", data:""})
 
 	removeFilterFieldValue: (value)->
+		@ensureFilterAvailable()
 		@get('selectedFilter.values').removeAt(@get('selectedFilter.values').indexOf(value))
 
 	# Return the filter value for the specified column from the currently selected filter.
