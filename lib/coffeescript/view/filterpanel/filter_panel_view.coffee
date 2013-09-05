@@ -72,6 +72,7 @@ Tent.FilterFieldView = Ember.View.extend
 
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
+	classNames: ['filter-field-control']
 	content: null
 	 
 	column: null
