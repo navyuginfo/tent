@@ -931,7 +931,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   display: inline-block;
   margin: 4px;
 }
-.tent-section header {
+.tent-section > header {
   position: absolute;
   height: 50px;
   margin-left: 0px;
@@ -941,20 +941,20 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   z-index: 1000;
   top: 0px;
 }
-.tent-section header.hideable.hidden {
+.tent-section > header.hideable.hidden {
   height: 0px;
 }
-.tent-section header.collapsible.collapsed {
+.tent-section > header.collapsible.collapsed {
   height: 20px;
 }
-.tent-section header.collapsible.collapsed .caret {
+.tent-section > header.collapsible.collapsed .caret {
   border-top: 4px solid black;
   border-bottom: none;
 }
-.tent-section header.collapsible {
+.tent-section > header.collapsible {
   z-index: 1000;
 }
-.tent-section header.collapsible .caret {
+.tent-section > header.collapsible .caret {
   float: right;
   margin-top: 10px;
   margin-right: 10px;
@@ -966,7 +966,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   -o-transition: all 0.6s ease;
   transition: all 0.6s ease;
 }
-.tent-section header.use-transition {
+.tent-section > header.use-transition {
   -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
@@ -1044,7 +1044,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   position: absolute;
   height: 100%;
 }
-.tent-hsection .center-panel section header {
+.tent-hsection .center-panel section > header {
   padding-left: 15px;
 }
 .tent-hsection .right-panel {
@@ -1263,6 +1263,143 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   transition: opacity 0.7s ease;
   text-align: center;
   height: auto;
+}
+
+.collection-panel-container {
+  padding-top: 10px;
+}
+
+.collection-panel {
+  display: inline-block;
+  margin: 10px;
+  min-width: 18em;
+  box-shadow: 1px 2px 4px #c7c7c7;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.collection-panel .collection-panel-content.selected {
+  box-shadow: 0px 0px 9px rgba(8, 218, 17, 0.57);
+}
+.collection-panel h1 {
+  font-size: 14px;
+  line-height: 14px;
+  margin: 0px;
+  font-weight: normal;
+  text-rendering: inherit;
+  display: inline-block;
+}
+.collection-panel label {
+  color: #7d7d7d;
+  margin-bottom: 0px;
+}
+.collection-panel p {
+  color: #151d28;
+  margin-bottom: 8px;
+}
+.collection-panel p.text-med {
+  font-size: 1.2em;
+}
+.collection-panel p.text-large {
+  font-size: 1.7em;
+  color: #44649d;
+  margin-top: 12px;
+  margin-bottom: 5px;
+}
+.collection-panel header {
+  border: 1px solid #344561;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #465e8e), color-stop(100%, #384e77));
+  background-image: -webkit-linear-gradient(#465e8e, #384e77);
+  background-image: -moz-linear-gradient(#465e8e, #384e77);
+  background-image: -o-linear-gradient(#465e8e, #384e77);
+  background-image: linear-gradient(#465e8e, #384e77);
+  color: white;
+}
+.collection-panel header .header-border {
+  	/*
+  		This expects markup of the form:
+  		<div class="vertical-align ">
+  			<h1>title</h1>
+  			<a>anchor1</a>
+  			<a>anchor2</a>
+  		</div>
+  
+  		See http://tympanus.net/codrops/2013/07/14/justified-and-vertically-centered-header-elements/
+  	*/
+  text-align: justify;
+  height: 3em;
+  border-top: 1px solid #586a98;
+  border-bottom: 1px solid #44537a;
+  padding: 0px 12px;
+}
+.collection-panel header .header-border::after {
+  content: '';
+  display: inline-block;
+  width: 100%;
+}
+.collection-panel header .header-border a {
+  vertical-align: middle;
+}
+.collection-panel header .header-border h1 {
+  height: 100%;
+}
+.collection-panel header .header-border h1::before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+.collection-panel header .header-border input[type='checkbox'] {
+  margin-top: 0px;
+}
+.collection-panel header a {
+  color: white;
+}
+.collection-panel .content {
+  background-color: white;
+  border-left: 1px solid #b1b1b1;
+  border-right: 1px solid #b1b1b1;
+}
+.collection-panel .content .section {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.collection-panel .content .section:last-child {
+  border-bottom: 0px;
+}
+.collection-panel footer {
+  border: 1px solid #b1b1b1;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f4f4f4), color-stop(100%, #e4e4e4));
+  background-image: -webkit-linear-gradient(#f4f4f4, #e4e4e4);
+  background-image: -moz-linear-gradient(#f4f4f4, #e4e4e4);
+  background-image: -o-linear-gradient(#f4f4f4, #e4e4e4);
+  background-image: linear-gradient(#f4f4f4, #e4e4e4);
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.collection-panel footer .footer-border {
+  /*
+  	This expects markup of the form:
+  	<div class="vertical-align-with-table">
+  		<a>link1</a>
+  	</div>
+  */
+  display: table;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid #fefefe;
+  padding: 5px 10px;
+  height: 2em;
+}
+.collection-panel footer .footer-border a {
+  vertical-align: middle;
+  display: table-cell;
+  float: right;
+}
+.collection-panel .icon-trash {
+  color: white;
 }
 
 /* Tent-Specific */

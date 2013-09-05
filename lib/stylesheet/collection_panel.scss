@@ -38,7 +38,7 @@ $collection-panel-content-border-color: #b1b1b1;
 	label {
 		color: $collection-panel-label-color;
 		margin-bottom: 0px;
-		line-height: 14px;
+		//line-height: 14px;
 	}
 
 	p {
@@ -104,5 +104,9 @@ $collection-panel-content-border-color: #b1b1b1;
 			padding: 5px 10px;
 			height: 2em;
 		}
+	}
+
+	.icon-trash {
+		color: white;
 	}
 }

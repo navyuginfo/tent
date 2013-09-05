@@ -97,7 +97,7 @@ Tent.CollectionPanelContentView = Ember.View.extend
 	###
 	getLabelForField: (fieldName)->
 		column = @get('collection')?.getColumnByField(fieldName)
-		Tent.I18n.loc(column?.get('title'))
+		Tent.I18n.loc(column?['title'])
 
 	###*
 	* @method formattedValue Formats a given value using the formatter associated with a collection column definition.
@@ -107,8 +107,8 @@ Tent.CollectionPanelContentView = Ember.View.extend
 	###
 	formattedValue: (fieldName, value) ->
 		column = @get('collection')?.getColumnByField(fieldName)
-		if column.get('formatter')?
-			$.fn.fmatter[column.get('formatter')](value, {colModel: {formatOptions: column.get('formatoptions')}})
+		if column['formatter']?
+			$.fn.fmatter[column['formatter']](value, {colModel: {formatOptions: column['formatoptions']}})
 		else
 			value
 

@@ -69,7 +69,7 @@ Tent.Data.Collection = Ember.ArrayController.extend Tent.Data.Pager, Tent.Data.S
 	###
 	getColumnByField: (fieldName)->
 		@get('columnsDescriptor').filter((item)->
-			item.get('field') == fieldName
+			item['name'] == fieldName
 		)[0]
 
 	update: (requestType)->

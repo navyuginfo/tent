@@ -11345,7 +11345,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     getLabelForField: function(fieldName) {
       var column, _ref;
       column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
-      return Tent.I18n.loc(column != null ? column.get('title') : void 0);
+      return Tent.I18n.loc(column != null ? column['title'] : void 0);
     },
     /**
     	* @method formattedValue Formats a given value using the formatter associated with a collection column definition.
@@ -11357,10 +11357,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     formattedValue: function(fieldName, value) {
       var column, _ref;
       column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
-      if (column.get('formatter') != null) {
-        return $.fn.fmatter[column.get('formatter')](value, {
+      if (column['formatter'] != null) {
+        return $.fn.fmatter[column['formatter']](value, {
           colModel: {
-            formatOptions: column.get('formatoptions')
+            formatOptions: column['formatoptions']
           }
         });
       } else {
@@ -12474,7 +12474,7 @@ grouping: {
 
     getColumnByField: function(fieldName) {
       return this.get('columnsDescriptor').filter(function(item) {
-        return item.get('field') === fieldName;
+        return item['name'] === fieldName;
       })[0];
     },
     update: function(requestType) {
