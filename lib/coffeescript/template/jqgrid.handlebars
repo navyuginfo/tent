@@ -9,11 +9,10 @@
 {{view Tent.JqGridHeaderView gridBinding="view"}}
 
 <div class="grid-container">
-	{{#if view.showFilter}}
-		<div class="filter-container slide-from-left">
-			{{view Tent.FilterPanelView collectionBinding="view.collection"}}
-		</div>
-	{{/if}}     
+	<div class="filter-container slide-from-left"}}>
+		{{view Tent.FilterPanelView collectionBinding="view.collection"}}
+	</div>
+	
 	<div class="table-container">
     	<table class="grid-table"></table>
     </div>
