@@ -27,13 +27,17 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 
 Tent.FilterPanelView = Ember.View.extend
 	templateName: 'filterpanel/filter_panel_view'
-
 	collection: null
+
 	init: ->
 		@_super()
 		@set('controller', Tent.FilterPanelController.create(
-			collection: @get('collection')
+			collectionBinding: 'collection'
 		))
+
+	collectionDidChange: (->
+		@get('controller').set('collection', @get('collection'))
+	).observes('collection')
 
 	willDestroyElement: ->
 		delete @get('controller')
