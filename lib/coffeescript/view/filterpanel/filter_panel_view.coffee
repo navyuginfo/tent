@@ -40,8 +40,9 @@ Tent.FilterPanelView = Ember.View.extend
 		))
 
 	collectionDidChange: (->
+		# collection may not be available when init() is called
 		@get('controller').set('collection', @get('collection'))
-	).observes('collection')
+	).observes('collection', 'collection.isLoaded')
 
 	willDestroyElement: ->
 		delete @get('controller')
