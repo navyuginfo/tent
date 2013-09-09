@@ -102,3 +102,56 @@
     	overflow: visible;
   	}
 }
+
+@mixin vertical-align-pseudo {
+	/*
+		This expects markup of the form:
+		<div class="vertical-align ">
+			<h1>title</h1>
+			<a>anchor1</a>
+			<a>anchor2</a>
+		</div>
+
+		See http://tympanus.net/codrops/2013/07/14/justified-and-vertically-centered-header-elements/
+	*/
+	 
+	text-align: justify;
+	&::after {
+		content: '';
+		display: inline-block;
+		width: 100%;
+	}
+
+	a {
+		vertical-align: middle;
+	}
+
+	h1 {
+		height: 100%;
+	}
+
+	h1::before {
+	    content: '';
+	    display: inline-block;
+	    vertical-align: middle;  
+	    height: 100%;
+	}
+}
+
+@mixin vertical-align-table {
+	/*
+		This expects markup of the form:
+		<div class="vertical-align-with-table">
+			<a>link1</a>
+		</div>
+	*/
+	display: table;
+	width: 100%;
+	box-sizing: border-box;
+
+	a {
+		vertical-align: middle;
+		display: table-cell;
+		float: right;
+	}
+}

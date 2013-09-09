@@ -11234,6 +11234,148 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+Ember.TEMPLATES['collection_panel']=Ember.Handlebars.compile("{{#each item in view.collection.modelData}}\n\t<article class=\"collection-panel\">\n\t\t{{view Tent.CollectionPanelContentContainerView \n\t\t\titemBinding=\"item\" \n\t\t\tcontentViewTypeBinding=\"view.contentViewType\" \n\t\t\tcollectionBinding=\"view.collection\"\n\t\t\tselectableBinding=\"view.selectable\"\n\t\t\tselectionBinding=\"view.selection\"\n\t\t}}\n\t</article>\n{{/each}}");
+
+Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t{{view Tent.TextField \n              valueBinding=\"view.content.title\" \n              label=\"Title\"               \n        }}\n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
+
+(function() {
+/**
+  * @class Tent.CollectionPanelView
+  * 
+  * Displays a collection of objects in separate panels laid out in a 2d grid.
+  * The {@link #contentViewType} property must be populated with a view which will render each panel. This view 
+  * should be a subclass of Tent.TaskCollectionPanelContentView
+  * 
+  * Usage within a template:
+  *     {{view Tent.CollectionPanelView 
+              collectionBinding="Pad.jqRemoteCollection"
+              contentViewType="Tent.TaskCollectionPanelContentView"
+         }} 
+  *
+  */
+
+
+  Tent.CollectionPanelView = Ember.View.extend({
+    templateName: 'collection_panel',
+    classNames: ['collection-panel-container'],
+    selectable: false,
+    selection: null,
+    /**
+    	* @property {Object} collection The colleciton which contains the items for display.
+    */
+
+    collection: null,
+    /**
+    	* @property {String} contentViewType The name of a view class which will render the contents of each panel.
+    	* This view will have its 'content' populated with the model for that panel
+    */
+
+    contentViewType: null,
+    didInsertElement: function() {
+      this.get('collection').update();
+      if (!(this.get('selection') != null)) {
+        return this.set('selection', Ember.A());
+      }
+    }
+  });
+
+  Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend({
+    item: null,
+    contentViewType: null,
+    collection: null,
+    selectable: false,
+    selection: Ember.A(),
+    childViews: ['contentView'],
+    contentView: (function() {
+      if (this.get('contentViewType') != null) {
+        return eval(this.get('contentViewType')).create({
+          content: this.get('item'),
+          collection: this.get('collection'),
+          selectable: this.get('selectable'),
+          selected: this.get('isSelected')
+        });
+      }
+    }).property('item'),
+    isSelected: (function() {
+      return this.get('selection').contains(this.get('item'));
+    }).property('selection.@each'),
+    selectedDidChange: function(isSelected) {
+      if (isSelected) {
+        return this.addToSelection();
+      } else {
+        return this.removeFromSelection();
+      }
+    },
+    addToSelection: function() {
+      if (!this.get('selection').contains(this.get('item'))) {
+        return this.get('selection').pushObject(this.get('item'));
+      }
+    },
+    removeFromSelection: function() {
+      var myItem;
+      myItem = this.get('item');
+      return this.set('selection', this.get('selection').filter(function(item) {
+        return item !== myItem;
+      }));
+    }
+  });
+
+  /**
+  *	@class Tent.CollectionPanelContentView
+  *	This class should be extended to provide the content for a {@link #Tent.CollectionPanelView}
+  */
+
+
+  Tent.CollectionPanelContentView = Ember.View.extend({
+    templateName: null,
+    classNames: ['collection-panel-content'],
+    classNameBindings: ['selected'],
+    content: null,
+    selectable: false,
+    selected: false,
+    didInsertElement: function() {
+      return this.$().parents('.collection-panel:first').css('opacity', '1');
+    },
+    /**
+    	* @method getLabelForField Returns a translated label for the given field name of a collections columns
+    	* @param {String} fieldName the field name of the column to be returned
+    	* @return {String} the translated label for the field
+    */
+
+    getLabelForField: function(fieldName) {
+      var column, _ref;
+      column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
+      return Tent.I18n.loc(column != null ? column['title'] : void 0);
+    },
+    /**
+    	* @method formattedValue Formats a given value using the formatter associated with a collection column definition.
+    	* @param {String} fieldName the field name of the column which is used to locate the formatter
+    	* @param {Object} value the value to be formatted
+    	* @return {String} the formatted value
+    */
+
+    formattedValue: function(fieldName, value) {
+      var column, _ref;
+      column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
+      if (column['formatter'] != null) {
+        return $.fn.fmatter[column['formatter']](value, {
+          colModel: {
+            formatOptions: column['formatoptions']
+          }
+        });
+      } else {
+        return value;
+      }
+    },
+    selectedDidChange: (function() {
+      this.set('selected', this.get('selected'));
+      return this.get('parentView').selectedDidChange(this.get('selected'));
+    }).observes('selected')
+  });
+
+}).call(this);
+
+
 Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\t{{#each menugroup in content}}\n\t\t{{#if menugroup.entitled}}\n\t\t\t<li>\n\t\t\t\t{{#if view.isFlattened}}\n\t\t\t\t\t{{#each item in menugroup.items}}\n\t\t\t\t\t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{else}}\n\t\t\t\t\t{{#view Tent.Panel collapsible=true collapsedBinding=\"menugroup.collapsed\" hasChildViews=true}}\n\t\t\t\t        {{#view Tent.PanelHead}}\n\t\t\t\t          <h4><i {{bindAttr class=\"menugroup.icon\"}}></i> {{loc menugroup.title}}</h4>  \n\t\t\t\t        {{/view}}\n\t\t\t\t        {{#view Tent.PanelBody}}\n\t\t\t\t        \t{{#each item in menugroup.items}}\n\t\t\t\t        \t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t        {{/each}}\n\t\t\t\t        {{/view}}\n\t\t\t\t    {{/view}}\n\t\t\t\t{{/if}}\n\t\t\t</li>\n\t\t{{/if}}\n\t{{/each}}\n</ul>");
 
 (function() {
@@ -12325,6 +12467,16 @@ grouping: {
     columnsDescriptor: (function() {
       return this.get('store').getColumnsForType(this.get('dataType'));
     }).property('dataType'),
+    /**
+    	*	@method getColumnByField Return a column given a fieldName
+    	* 	@param {String} fieldName the field name of the column to be returned
+    */
+
+    getColumnByField: function(fieldName) {
+      return this.get('columnsDescriptor').filter(function(item) {
+        return item['name'] === fieldName;
+      })[0];
+    },
     update: function(requestType) {
       var query, response;
       if ((this.get('dataType') != null) && (this.get('store') != null)) {

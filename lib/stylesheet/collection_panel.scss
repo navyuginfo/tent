@@ -1,0 +1,112 @@
+$collection-panel-label-color: #7d7d7d;
+$collection-panel-text-color: #151d28;
+$collection-panel-text-med-font-size: 1.2em;
+$collection-panel-text-large-font-size: 1.7em;
+$collection-panel-large-text-color: rgb(68, 100, 157);
+$collection-panel-header-border-color: #344561;
+$collection-panel-header-text-color: white;
+$collection-panel-header-background-gradient: linear-gradient(#465e8e, #384e77); 
+$collection-panel-footer-background-gradient: linear-gradient(#f4f4f4, #e4e4e4); 
+$collection-panel-content-border-color: #b1b1b1;
+
+.collection-panel-container {
+	padding-top: 10px;
+}
+
+.collection-panel {
+	display: inline-block;
+	margin: 10px;
+	min-width: 18em;
+	box-shadow: 1px 2px 4px rgb(199, 199, 199);
+	border-radius: 3px;
+	opacity: 0;
+	transition: opacity .5s ease;
+
+	.collection-panel-content.selected {
+		box-shadow: 0px 0px 9px rgba(8, 218, 17, 0.57);
+	}
+
+	h1 {
+		font-size: 14px;
+		line-height: 14px;
+		margin: 0px;
+		font-weight: normal;
+		text-rendering: inherit;
+		display: inline-block;
+	}
+
+	label {
+		color: $collection-panel-label-color;
+		margin-bottom: 0px;
+		//line-height: 14px;
+	}
+
+	p {
+		color: $collection-panel-text-color;
+		margin-bottom: 8px;
+
+		&.text-med {
+			font-size: $collection-panel-text-med-font-size;
+		}
+		&.text-large {
+			font-size: $collection-panel-text-large-font-size;
+			color: $collection-panel-large-text-color;
+			margin-top: 12px;
+			margin-bottom: 5px;
+		}
+	}
+
+	header {
+		border: 1px solid $collection-panel-header-border-color;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+
+		.header-border {
+			@include vertical-align-pseudo();
+			height: 3em;
+			border-top: 1px solid #586a98;
+			border-bottom: 1px solid #44537a;
+			padding: 0px 12px;
+
+			input[type='checkbox'] {
+				margin-top: 0px;
+			}
+		}
+
+		@include background-image($collection-panel-header-background-gradient);
+		color: $collection-panel-header-text-color;
+		a {
+			color: $collection-panel-header-text-color;
+		}
+	}
+
+	.content {
+		background-color: white;
+		border-left: 1px solid $collection-panel-content-border-color;
+		border-right: 1px solid $collection-panel-content-border-color;
+		.section {
+			padding: 10px 12px;
+			border-bottom: 1px solid rgb(240, 240, 240);
+			&:last-child {
+				border-bottom: 0px;
+			}
+		}
+	}
+
+	footer {
+		border: 1px solid $collection-panel-content-border-color;
+		@include background-image($collection-panel-footer-background-gradient);
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+		.footer-border {
+			@include vertical-align-table();
+			border-top: 1px solid #fefefe;
+			padding: 5px 10px;
+			height: 2em;
+		}
+	}
+
+	.icon-trash {
+		color: white;
+	}
+}

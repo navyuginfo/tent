@@ -1,0 +1,37 @@
+<header>
+	<div class="header-border vertical-align-with-header">
+		<h1>
+			{{#if view.selectable}}
+				{{view Ember.Checkbox checkedBinding="view.selected"}}
+			{{/if}}
+			{{view.content.title}}</h1>
+		<a {{action delete this}} title="Delete"><i class="icon-trash"></i></a>
+	</div>
+</header>
+<div class="content">
+	<div class="section">
+		<label>Program</label>
+		<p class="text-med">Rugged Bicycles LLC Pgm</p>
+		<p class="text-large">$2,395,204</p>
+		<label>Projected Settlement</label>
+	</div>
+	<div class="section">
+		<label>Date :</label>
+		<p>Jun 24, 2013</p>
+		<label>{{view.durationLabel}}</label>
+		<p>{{view.durationValue}}</p>
+		<label>Seller :</label>
+		<p>Rugged Bicycles LLC</p>
+		<label>{{view.finishLabel}}</label>
+		<p>{{view.finishValue}}</p>
+		{{view Tent.TextField 
+              valueBinding="view.content.title" 
+              label="Title"               
+        }}
+	</div>
+</div>
+<footer>
+	<div class="footer-border vertical-align-with-table">
+		<a {{action reconcile this}}>Reconcile <i class="icon-caret-right"></i></a>
+	</div>
+</footer>	

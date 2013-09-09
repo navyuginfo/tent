@@ -111,6 +111,9 @@
             <a href="#table-section"><i class="icon-chevron-right"></i> Tables and Grids</a>
           </li>
           <li>
+            <a href="#panels-section"><i class="icon-chevron-right"></i> Collection Panels</a>
+          </li>
+          <li>
             <a href="#other-section"><i class="icon-chevron-right"></i> Other Widgets</a>
           </li>
           <li>
@@ -363,7 +366,6 @@
 
               }}
             
-       
 
               {{view Tent.Button label="Submit" validate="true"}}
 
@@ -394,14 +396,30 @@
                 {{#each person in Pad.multiSelectedPerson}}
                   {{person.name}}
                 {{/each}}
-              </p>
+              </p>       
 
-              
-              
-
-               
           {{/view}}  
         {{/view}}
+
+
+        {{#view Tent.Panel span="10" }}
+          <div id="panels-section">
+            <h5>Collection Panels</h5>
+            {{view Tent.CollectionPanelView 
+              collectionBinding="Pad.jqRemoteCollection"
+              contentViewType="Tent.TaskCollectionPanelContentView"
+              selectionBinding="Pad.collectionPanelSelection"
+              selectable=true
+            }} 
+
+            <p>Selected Items are 
+                {{#each item in Pad.collectionPanelSelection}}
+                  {{item.title}}
+                {{/each}}
+              </p>     
+          </div>
+        {{/view}}
+
 
         {{#view Tent.Panel span="10" }}
           {{#view Tent.Form name="Other Widgets" id="other-section"}}
