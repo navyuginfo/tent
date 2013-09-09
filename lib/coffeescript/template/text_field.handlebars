@@ -29,13 +29,15 @@
       }}
 
       {{#if view.isRangeOperator}}
-        {{view Tent.TextFieldInput 
-          valueBinding="view.value2" 
-          placeholderBinding="view.translatedPlaceholder"
-          classBinding="view.controlClass"
-          classNames="range-end"
-          typeBinding="view.type"
-        }}
+        {{#unless view.hasOwnRangeDisplay}}
+          {{view Tent.TextFieldInput 
+            valueBinding="view.value2" 
+            placeholderBinding="view.translatedPlaceholder"
+            classBinding="view.controlClass"
+            classNames="range-end"
+            typeBinding="view.type"
+          }}
+        {{/unless}}
       {{/if}}
 
       {{#if view.hasHelpBlock}}
