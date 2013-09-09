@@ -36,8 +36,9 @@ Tent.FilterPanelView = Ember.View.extend
 		))
 
 	collectionDidChange: (->
+		# collection may not be available when init() is called
 		@get('controller').set('collection', @get('collection'))
-	).observes('collection')
+	).observes('collection', 'collection.isLoaded')
 
 	willDestroyElement: ->
 		delete @get('controller')
@@ -89,8 +90,17 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		@populateContainer()
 	).observes('column')
 
+	resetFieldView: ->
+		if @get('fieldView')?
+			@get('childViews').removeObject(@get('fieldView'))
+			@set('fieldView', null)
+			@set('parentView.content.op', null)
+			@set('parentView.content.data', null)
+
 	populateContainer: ()->
-		@get('childViews').removeObject(@get('fieldView')) if @get('fieldView')?
+		@resetFieldView()
+		
+
 		switch @get('column.type')
 			when "string"
 				if @get('column.edittype') == 'select'
