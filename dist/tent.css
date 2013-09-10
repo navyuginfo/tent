@@ -351,6 +351,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .filter-container .filterpanel {
   background-color: white;
 }
+<<<<<<< HEAD
 .filter-container .filter-field .icon-lock {
   color: #aaa;
 }
@@ -366,6 +367,8 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .filter-container .field-lock.selected .icon-lock {
   color: #333;
 }
+=======
+>>>>>>> Initial selection for filter fields applied.
 
 .tent-jqgrid {
   height: 100%;
