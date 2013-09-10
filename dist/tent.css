@@ -252,18 +252,19 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   font-size: 11px;
 }
 
-.tent-date-range-field .ui-daterangepicker-arrows {
+.ui-daterangepicker-arrows {
   width: 218px;
 }
-.tent-date-range-field .ui-daterangepicker-arrows input.ui-rangepicker-input {
+.ui-daterangepicker-arrows input.ui-rangepicker-input {
   width: 170px;
   font-size: .8em;
   height: 1.2em;
   display: inline-block!important;
 }
-.tent-date-range-field .ui-daterangepicker-arrows .ui-daterangepicker-prev, .tent-date-range-field .ui-daterangepicker-arrows .ui-daterangepicker-next {
+.ui-daterangepicker-arrows .ui-daterangepicker-prev, .ui-daterangepicker-arrows .ui-daterangepicker-next {
   top: 4px;
 }
+
 .tent-date-range-field input {
   width: 150px;
 }
@@ -326,6 +327,31 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 /* jqGrid */
+.tent-section.filterpanel {
+  height: 300px;
+  float: none;
+}
+.tent-section.filterpanel .filter-field {
+  border-top: 1px dashed #ddd;
+  padding: 8px;
+}
+
+.filter-container {
+  width: 30em;
+}
+.filter-container .control-label {
+  width: auto;
+  display: inline-block;
+  font-size: .9em;
+}
+.filter-container .controls {
+  margin-left: 0px;
+  display: inline-block;
+}
+.filter-container .filterpanel {
+  background-color: white;
+}
+
 .tent-jqgrid {
   height: 100%;
   /* Ensure that headers wrap */
@@ -333,7 +359,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   /* Make the drag bars wider */
   /* Sorting */
   /* Save UI State Button */
-  /* Export */
+  /* Column Chooser */
   /* Export */
   /* Column Chooser */
   /* Fixed header styles */
@@ -356,6 +382,11 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .tent-jqgrid .grid-header {
   position: relative;
+}
+.tent-jqgrid .ui-jqgrid {
+  position: absolute;
+  left: 0px;
+  right: 0px;
 }
 .tent-jqgrid .ui-jqgrid tr.jqgrow td {
   white-space: normal;
@@ -495,12 +526,12 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   color: #aaa;
   cursor: default;
 }
-.tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button {
+.tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button, .tent-jqgrid .btn-filter {
   float: right;
   margin-right: 30px;
   cursor: pointer;
 }
-.tent-jqgrid .column-chooser span.ui-icon, .tent-jqgrid .jqgrid-title-button span.ui-icon {
+.tent-jqgrid .column-chooser span.ui-icon, .tent-jqgrid .jqgrid-title-button span.ui-icon, .tent-jqgrid .btn-filter span.ui-icon {
   float: left;
   margin: 1px 1px;
 }
@@ -1747,6 +1778,19 @@ select.expand {
   width: auto!important;
   min-width: 150px;
   z-index: 1;
+}
+
+/* Display a large embossed background text within an element */
+.background-hint {
+  margin-top: 80px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #CECECE;
+  text-shadow: 1px 1px #F3F3F3;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  text-align: center;
 }
 @charset "UTF-8";
 /*
