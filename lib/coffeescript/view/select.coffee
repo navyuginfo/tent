@@ -94,12 +94,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
   ###
   advanced: false
 
-  ###*
-  * @property {Boolean} advanced This attached Select2 behavior to the widget, allowing such features as autocomplete,
-  * option formatting and tag management.
-  ###
-  advanced: false
-
   init: ->
     @_super()
     if @get('list.length') is 1 and @get('preselectSingleElement')
