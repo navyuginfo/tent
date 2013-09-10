@@ -7,6 +7,8 @@ require './constants'
 ###
 Tent.FilteringSupport = Ember.Mixin.create
 	isFilter: false
+	filterOp: null
+
 	operators: [
 		Ember.Object.create({label: "tent.filter.beginsWith", operator: Tent.Constants.get('OPERATOR_BEGINS_WITH')}),
 		Ember.Object.create({label: "tent.filter.contains", operator: Tent.Constants.get('OPERATOR_CONTAINS')}),
@@ -20,6 +22,15 @@ Tent.FilteringSupport = Ember.Mixin.create
 
 	didInsertElement: ->
 		@_super()
+
+	# Ensure that the correct operator is selected in the operators dropdown
+	filterSelection: (->
+		filterOp = @get('filterOp')
+		selectedOperators = @get('operators').filter((item)->
+			item.get('operator') == filterOp
+		)
+		selectedOperators[0] if selectedOperators.length == 1
+	).property('filterOp')
 	
 	# Check to see if the operator requires a range presentation
 	isRangeOperator: (->

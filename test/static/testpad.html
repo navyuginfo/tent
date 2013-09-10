@@ -194,7 +194,7 @@
             {{view Tent.AmountField valueBinding="Pad.amount1" label="_amountInput" currency="JPY" requiredBinding="Pad.isRequired"  readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" }}
         
   
-            {{view Tent.Select listBinding="Pad.content" selectionBinding="Pad.stateSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_typeHere" }}
+            {{view Tent.Select listBinding="Pad.content" valueBinding="Pad.stateValue"  label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="_typeHere" }}
             
             
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
