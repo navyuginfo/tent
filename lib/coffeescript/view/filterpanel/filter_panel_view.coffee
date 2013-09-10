@@ -54,13 +54,19 @@ Tent.FilterFieldView = Ember.View.extend
 			parentController: @get('parentController')
 			collection: @get('collection')
 		)
+		@initializeSelection()
+
+	initializeSelection: ->
+		selectedField = @get('content.field')
+		if selectedField?
+			columns = @get('parentController.filterableColumns')
+			selectedColumn = columns.filter((item)->
+				item.name == selectedField
+			)
+			@set('controller.selectedColumn', selectedColumn[0]) if selectedColumn.length == 1
 
 	willDestroyElement: ->
 		delete @get('controller')
-
-	contentDidChange: (->
-		console.log @get('content.field')
-	).property('content')
 		
 	typeIsSelected: (->
 		@get('content.field')?
@@ -89,7 +95,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 			@set('parentView.content.data', null)
 
 	populateContainer: ()->
-		fieldView = null
+		@resetFieldView()
+
 		switch @get('column.type')
 			when "string"
 				if @get('column.edittype') == 'select'
