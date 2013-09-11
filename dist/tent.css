@@ -352,6 +352,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   background-color: white;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Disabled fields when lock is on in view mode
 .filter-container .filter-field .icon-lock {
   color: #aaa;
 }
@@ -367,8 +370,11 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .filter-container .field-lock.selected .icon-lock {
   color: #333;
 }
+<<<<<<< HEAD
 =======
 >>>>>>> Initial selection for filter fields applied.
+=======
+>>>>>>> Disabled fields when lock is on in view mode
 
 .tent-jqgrid {
   height: 100%;
