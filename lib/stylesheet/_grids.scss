@@ -32,6 +32,31 @@ $headerHeight: 20px;
 	.filterpanel {
 		background-color: white;
 	}
+
+	.filter-field {
+		.icon-lock {
+			color: #aaa;
+		}
+
+		&.selected .icon-lock {
+			color: #333;
+		}
+
+		.disabled > .icon-lock {
+			cursor: default;
+		}
+	}
+
+	.field-lock {
+		.icon-lock {
+			color: #aaa;
+		}
+
+		&.selected .icon-lock {
+			color: #333;
+		}
+
+	}
 	
 }
 
