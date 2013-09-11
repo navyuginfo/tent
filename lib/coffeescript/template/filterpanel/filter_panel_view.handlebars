@@ -12,7 +12,7 @@
 			<div class="content">
 				<div class="background-hint">{{loc tent.filter.bgHint}}</div>
 				{{#each view.controller.content}}
-					{{view Tent.FilterFieldView contentBinding="this"}}
+					{{view Tent.FilterFieldView contentBinding="this" usageContextBinding="view.usageContext"}}
 				{{/each}}
 			</div>
 		</div>

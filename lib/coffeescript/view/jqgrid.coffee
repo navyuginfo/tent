@@ -117,6 +117,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	###
 	selection: []
 
+	###*
+	* @property {String} usageContext The environment into which this grid is to be placed.
+	* The behavior and presentation of the grid and its components may differ in different usage
+	* contexts. e.g. Filter panel may default to opened when in the 'report' context.
+	*
+	* Current allowed values are 'view' and 'report'
+	###
+	usageContext: null
+
 	init: ->
 		@_super()
 		#@set('selection',[]) if not @get('selection')?
