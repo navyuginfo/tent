@@ -19,6 +19,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 Tent.FilterPanelView = Ember.View.extend
 	templateName: 'filterpanel/filter_panel_view'
 	collection: null
+	isPinned: false
+	showFilter: false
+	usageContext: null
+
 	init: ->
 		@_super()
 		@set('controller', Tent.FilterPanelController.create(
@@ -32,29 +36,46 @@ Tent.FilterPanelView = Ember.View.extend
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null
+	lockedBinding: 'content.locked'
+	usageContext: null
 
 	deleteField: ->
 		@get('parentController').deleteFilterField(@get('content'))
 
-	filterableColumnsBinding: 'parentController.filterableColumns'
+	toggleLock: ->
+		if @get('lockIsEnabled')
+			@toggleProperty('locked')
 
-	contentDidChange: (->
-		console.log @get('content.field')
-	).property('content')
+	lockIsEnabled: (->
+		@get('usageContext')? and @get('usageContext') != 'view'
+	).property('usageContext')
+
+	# field should be disabled if it is locked and in view mode
+	isDisabled: (->
+		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
+	).property('locked','usageContext')
 
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
+	classNames: ['filter-field']
+	classNameBindings: ['controller.locked']
 	parentControllerBinding: 'parentView.controller'
 	collectionBinding: 'parentView.collection'
+	content: null
+	usageContext: null
+
 	init: ->
 		@_super()
-		@set('controller', Tent.FilterFieldController.create
+		@set('controller', @createController())
+		@initializeSelection()
+
+	createController: ->
+		Tent.FilterFieldController.create
 			content: @get('content')
 			parentController: @get('parentController')
 			collection: @get('collection')
-		)
-		@initializeSelection()
+			usageContext: @get('usageContext')
 
 	initializeSelection: ->
 		selectedField = @get('content.field')
@@ -67,17 +88,30 @@ Tent.FilterFieldView = Ember.View.extend
 
 	willDestroyElement: ->
 		delete @get('controller')
-		
+
 	typeIsSelected: (->
 		@get('content.field')?
 	).property('content.field')
+
+	showLockIcon: (->
+		# Show icon if not in view mode, or if in view mode but also locked
+		@get('controller.locked') or (@get('usageContext') != 'view' and @get('usageContext')?)
+	).property('usageContext', 'controller.locked')
+
+	lockIsSelected: (->
+		@get('controller.locked') and @get('controller.lockIsEnabled')
+	).property('controller.locked', 'controller.lockIsEnabled')
+
+	showTrashIcon: (->
+		@get('usageContext') != 'view' and @get('usageContext')?
+	).property('usageContext')
 
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
 	classNames: ['filter-field-control']
 	content: null
-	classNames: ['form-horizontal']
 	column: null
+	isDisabled: false
 
 	init: ->
 		@_super()
@@ -103,16 +137,32 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					# This is an enumeration
 					# Enumerations can be specified in the column meta in a format such as this:
 					# edittype('select').editoptions({value: [{key: 'Eligible', value: 'eligible'}, {key: 'InEligible', value: 'ineligible'}]}
-					fieldView = Tent.Select.create
-						label: Tent.I18n.loc(@get('column.title'))
-						isFilter: true 
-						list: @get('column.editoptions.value')
-						optionLabelPath: 'content.key'
-						optionValuePath: 'content.value'
-						valueBinding: "parentView.content.data"
-						filterOpBinding: "parentView.content.op"
-						field: @get('column.name')
-						classNames: ["no-label"]
+					if @get('column.editoptions.value')?
+						fieldView = Tent.Select.create
+							label: Tent.I18n.loc(@get('column.title'))
+							isFilter: true 
+							list: @get('column.editoptions.value')
+							optionLabelPath: 'content.key'
+							optionValuePath: 'content.value'
+							valueBinding: "parentView.content.data"
+							filterOpBinding: "parentView.content.op"
+							field: @get('column.name')
+							classNames: ["no-label"]
+							disabledBinding: "parentView.isDisabled"
+
+					if @get('column.editoptions.collection')
+						coll = eval(@get('column.editoptions.collection.name')).fetchCollection()
+						fieldView = Tent.Select.create
+							label: Tent.I18n.loc(@get('column.title'))
+							isFilter: true 
+							list: coll
+							optionLabelPath: @get('column.editoptions.collection.label')
+							optionValuePath: @get('column.editoptions.collection.value')
+							valueBinding: "parentView.content.data"
+							filterOpBinding: "parentView.content.op"
+							field: @get('column.name')
+							classNames: ["no-label"]
+							disabledBinding: "parentView.isDisabled"
 				else
 					fieldView = Tent.TextField.create
 						label: Tent.I18n.loc(@get('column.title'))
@@ -121,6 +171,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 						filterOpBinding: "parentView.content.op"
 						field: @get('column.name')
 						classNames: ["no-label"]
+						disabledBinding: "parentView.isDisabled"
 
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
@@ -132,6 +183,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					arrows:true
 					dateFormat: "yy-mm-dd"
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 					#field: column.name
 
 			when "number", "amount"
@@ -143,6 +195,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					filterOpBinding: "content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 
 			when "boolean"
 				fieldView = Tent.Checkbox.create
@@ -152,6 +205,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					filterOpBinding: "content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 
 		if fieldView?
 			@set('fieldView', fieldView)
