@@ -16,9 +16,13 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 		@removeFilterField(event.context)
 
 	filterableColumns: (->
-		@get('collection.columnsDescriptor').filter((column)->
+		filterableCols = @get('collection.columnsDescriptor').filter((column)->
 			column.filterable != false
 		)
+		# Clone the columns so that they don't get changed by the filtering.
+		filterableCols.map((item) ->
+        	Ember.copy(item,true)
+      	)
 	).property('collection.columnsDescriptor')
 
 
