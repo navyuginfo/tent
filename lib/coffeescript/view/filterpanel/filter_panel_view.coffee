@@ -15,6 +15,16 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)
 
+	filterableColumns: (->
+		filterableCols = @get('collection.columnsDescriptor').filter((column)->
+			column.filterable != false
+		)
+		# Clone the columns so that they don't get changed by the filtering.
+		filterableCols.map((item) ->
+        	Ember.copy(item,true)
+      	)
+	).property('collection.columnsDescriptor')
+
 
 Tent.FilterPanelView = Ember.View.extend
 	templateName: 'filterpanel/filter_panel_view'
