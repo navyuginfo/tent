@@ -5,27 +5,29 @@
     <link rel="stylesheet" href="stylesheet/ui.jqgrid.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/jquery-ui-1.9.2.custom.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/select2.css" type="text/css" media="screen" />
     
     <!-- link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" / -->
 
     <!-- Begin playing, "The March of the Dependencies!" -->
-    <script src="javascript/minispade.js" type="text/javascript"></script> 
-    <script src="javascript/jquery.js" type="text/javascript"></script>
-    <script src="javascript/modernizr.js" type="text/javascript"></script>
-    <script src="javascript/handlebars.js" type="text/javascript"></script>
-    <script src="javascript/ember.js" type="text/javascript"></script>
-    <script src="javascript/ember-data.js" type="text/javascript"></script>
-    <script src="javascript/bootstrap.js" type="text/javascript"></script>
-    <script src="javascript/jquery-ui.js" type="text/javascript"></script>
-    <script src="javascript/jqGrid.js" type="text/javascript"></script>
-    <script src="javascript/accounting.js" type="text/javascript"></script>
-    <script src="javascript/date.js" type="text/javascript"></script>
-    <script src="javascript/date-range.js" type="text/javascript"></script>
-    <script src="javascript/pubsub.js" type="text/javascript"></script>
-    <script src="javascript/tent.js" type="text/javascript"></script>
-    <script src="javascript/tent-tests.js" type="text/javascript"></script>
-    <script src="javascript/blueimp-jquery-fileupload.js" type="text/javascript"></script>
-    <script src="javascript/fancy-tree.js" type="text/javascript"></script>
+    <script src="javascript/minispade.js"></script> 
+    <script src="javascript/jquery.js"></script>
+    <script src="javascript/modernizr.js"></script>
+    <script src="javascript/handlebars.js"></script>
+    <script src="javascript/ember.js"></script>
+    <script src="javascript/ember-data.js"></script>
+    <script src="javascript/bootstrap.js"></script>
+    <script src="javascript/jquery-ui.js"></script>
+    <script src="javascript/jqGrid.js"></script>
+    <script src="javascript/accounting.js"></script>
+    <script src="javascript/date.js"></script>
+    <script src="javascript/date-range.js"></script>
+    <script src="javascript/pubsub.js"></script>
+    <script src="javascript/tent.js"></script>
+    <script src="javascript/tent-tests.js"></script>
+    <script src="javascript/blueimp-jquery-fileupload.js"></script>
+    <script src="javascript/fancy-tree.js"></script>
+    <script src="javascript/select2.js"></script>
     <!--[if lte IE 7]>
       <script src="javascript/eventlistener-polyfill.js" type="text/javascript"></script>
     <![endif]-->
@@ -196,6 +198,15 @@
             
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.statesSelection" label="_state" optionLabelPath="content.stateName" optionValuePath="content.stateCode" multiple=true requiredBinding="Pad.isRequired" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" }}
             
+            <br/>
+            {{view Tent.Select listBinding="Pad.colorContent" selectionBinding="Pad.colorSelection" label="State Autocomplete" optionLabelPath="content.colorName" optionValuePath="content.colorCode" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="Select a color" advanced=true}}
+
+            {{view Tent.Select listBinding="Pad.colorContent" selectionBinding="Pad.colorMultipleSelection" label="State Autocomplete" optionLabelPath="content.colorName" optionValuePath="content.colorCode" multiple=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="Select a color" advanced=true}}
+
+
+
+
+
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="_radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  textDisplayBinding="Pad.textDisplay" }}
 
             {{view Tent.EmailTextField valueBinding="Pad.email" label="_emailInput" placeholder="_enterEmail" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip"}}
@@ -294,6 +305,14 @@
               {{#each state in Pad.statesSelection}}
                 <li>{{state.stateName}}: {{state.stateCode}}</li>
               {{/each}}
+            </ul>
+            <p>Autocomplete Selected State : {{Pad.colorSelection.colorName}} : {{Pad.colorSelection.colorCode}}</p>
+            <p>Autocomplete States</p>
+            <ul>
+              {{#each color in Pad.colorMultipleSelection}}
+                <li>{{color.colorName}}: {{color.colorCode}}</li>
+              {{/each}}
+              
             </ul>
             <p>Radio Selection : {{Pad.radioSelection.stateName}}</p>
             <p>Radio Value : {{Pad.radioValue}}</p>
