@@ -172,7 +172,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
         dropdownAutoWidth: true
       })
 
-Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport,
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
   defaultTemplate: Ember.Handlebars.compile('
     {{#if view.prompt}}
       {{#if view.advanced}}<option></option>{{/if}}
