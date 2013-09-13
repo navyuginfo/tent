@@ -283,7 +283,7 @@ module.exports = function (grunt) {
             },
             vendor: {
                 files: {
-                    'dist/javascript/vendor.js': ['vendor/modernizr/*.js', 'vendor/handlebars/*.js', 'vendor/ember/*.js', 'vendor/ember-data/*.js', 'vendor/bootstrap/*.js', 'vendor/jqGrid/*.js', 'vendor/accounting/*.js', 'vendor/date/*.js', 'vendor/date-range/*.js', 'vendor/pubsub/*.js', 'vendor/jquery-ui/*.js', 'vendor/html5shiv/*.js', 'vendor/history/*.js', 'vendor/eventlistener/*.js','vendor/headless-ember/*.js','vendor/fancy-tree/*.js']
+                    'dist/javascript/vendor.js': ['vendor/modernizr/*.js', 'vendor/handlebars/*.js', 'vendor/ember/*.js', 'vendor/ember-data/*.js', 'vendor/bootstrap/*.js', 'vendor/jqGrid/*.js', 'vendor/accounting/*.js', 'vendor/date/*.js', 'vendor/date-range/*.js', 'vendor/pubsub/*.js', 'vendor/jquery-ui/*.js', 'vendor/html5shiv/*.js', 'vendor/history/*.js', 'vendor/eventlistener/*.js','vendor/headless-ember/*.js','vendor/fancy-tree/*.js', 'vendor/select2/*.js']
                 }
             },
             dist: {
