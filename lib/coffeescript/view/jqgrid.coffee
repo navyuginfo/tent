@@ -324,6 +324,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@_super()
 		@adjustHeight()
 		@removeLastDragBar()
+		@padLastCellsForScrollbar()
 		@setHeaderWidths()
 
 	# After any changes to the dimensions of the grid, re-calculate for display
@@ -371,6 +372,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		@$('.ui-th-column').filter(->
 			$(this).css('display') != 'none'
 		).last()
+
+	# When in horizontal scroll mode, a vertical scrollbar will cover part of the right-mosts cells,
+	# so add some padding.
+	padLastCellsForScrollbar: ->
+		@$('.ui-jqgrid-bdiv td').removeClass('last-cell')
+		if @get('horizontalScrolling') 
+			@$('.ui-jqgrid-bdiv tr').each((index, row)->
+				$('td:not(:hidden)', row).last().addClass('last-cell')
+			)
 
 	resizeToContainer: ->
 		if @$()? 

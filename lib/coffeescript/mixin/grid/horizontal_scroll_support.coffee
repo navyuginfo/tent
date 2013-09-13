@@ -57,6 +57,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@moveHeaderAboveViewDiv()
 		@updateGrid()
 		@adjustHeight()
+		@padLastCellsForScrollbar()
 
 	removeHorizontalScroll: ->
 		@set('isHorizontalScrolling', false)
@@ -66,6 +67,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@resetMinWidths()
 		@updateGrid()
 		@adjustHeight()
+		@padLastCellsForScrollbar()
 
 	moveHeaderAboveViewDiv: ->
 		hdiv = $('.ui-jqgrid-hdiv', @$())

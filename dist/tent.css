@@ -695,6 +695,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   overflow-x: visible;
   overflow-y: visible;
 }
+.tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-bdiv .last-cell {
+  padding-right: 13px;
+}
 .tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-hdiv {
   position: absolute;
 }
