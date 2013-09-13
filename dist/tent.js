@@ -8515,6 +8515,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     },
     setupAdvancedMode: function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (this.get('advanced') && !this.get('isRadioGroup') && Tent.Browsers.getIEVersion() !== 8) {
         return this.$('.primary-class').select2({
           placeholder: this.get('_prompt'),
@@ -8526,16 +8527,27 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
           placeholder: this.get('_prompt'),
           allowClear: !this.get('multiple') ? true : void 0
 >>>>>>> Adding select js and css library files.
+=======
+      if (this.get('advanced') && !this.get('isRadioGroup') && Tent.Browsers.getIEVersion() !== 8) {
+        return this.$('.primary-class').select2({
+          placeholder: this.get('_prompt'),
+          allowClear: !this.get('multiple') ? true : void 0,
+          dropdownAutoWidth: true
+>>>>>>> Prevent IE8 from using select2. It causes a hang.
         });
       }
     }
   });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
 =======
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport, {
 >>>>>>> Adding select js and css library files.
+=======
+  Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
+>>>>>>> Prevent IE8 from using select2. It causes a hang.
     defaultTemplate: Ember.Handlebars.compile('\
     {{#if view.prompt}}\
       {{#if view.advanced}}<option></option>{{/if}}\
