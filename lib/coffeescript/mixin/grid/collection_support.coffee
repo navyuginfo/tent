@@ -329,6 +329,13 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
       else 
         uiState = @get('collection.defaultPersonalization')
+        if uiState.filtering?
+          filteringInfo = @get('collection.filteringInfo')
+          filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter)
+          for column in @get('collection.columnsDescriptor')
+            if filter.values[column.name]?
+              filter.values[column.name].data = "" 
+              filter.values[column.name].op = "" 
       @set('collection.customizationName',  uiState.customizationName);
       @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
       @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
