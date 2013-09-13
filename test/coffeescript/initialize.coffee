@@ -272,6 +272,16 @@
 		Ember.Object.create({stateName: "_florida", stateCode: "FL"})
 	]
 
+	Pad.colorContent = [
+		Ember.Object.create({colorName: "Red", colorCode: "rd"}),
+		Ember.Object.create({colorName: "Green", colorCode: "gr"}),
+		Ember.Object.create({colorName: "Blue", colorCode: "bl"})
+		Ember.Object.create({colorName: "Brown", colorCode: "br"})
+		Ember.Object.create({colorName: "Black", colorCode: "bk"})
+		Ember.Object.create({colorName: "Orange", colorCode: "or"})
+		Ember.Object.create({colorName: "Grey", colorCode: "gy"})
+	]
+
 	Pad.stateSelection = Pad.content[1]	
 
 	Pad.contents = [

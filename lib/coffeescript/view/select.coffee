@@ -59,6 +59,11 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   multiple: false
 
   ###*
+  * @property {Boolean} isRadioGroup A boolean property to indicate that the presentation should be a group of radio buttons
+  ###
+  isRadioGroup: false
+
+  ###*
   * @property {Boolean} [showPrompt=true] A boolean property to indicate whether a prompt should be displayed in
   * the select dropdown. 
   * If no 'prompt' property is set, the prompt will default to a message similar to 'Please Select ...' 
@@ -79,6 +84,12 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   ###
   isLoading: false
 
+  ###*
+  * @property {Boolean} advanced This attached Select2 behavior to the widget, allowing such features as autocomplete,
+  * option formatting and tag management.
+  ###
+  advanced: false
+
   init: ->
     @_super()
     if @get('list.length') is 1 and @get('preselectSingleElement')
@@ -87,6 +98,8 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   didInsertElement: ->
     @_super(arguments)
     @set('inputIdentifier', @$('select').attr('id'))
+
+    @setupAdvancedMode()
     
     # Handle select box expansion issues in ie8
     if Tent.Browsers.isIE()
@@ -151,9 +164,23 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @_super(arguments)
       @set('isValid', @validate())
 
+  setupAdvancedMode: ->
+    if @get('advanced') and not @get('isRadioGroup')
+      @$('.primary-class').select2({
+        placeholder: @get('_prompt')
+        allowClear: true if not @get('multiple')
+      })
 
-Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
-  defaultTemplate: Ember.Handlebars.compile('{{#if view.prompt}}<option value>{{view.prompt}}</option>{{/if}}{{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
+
+
+Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport,
+  defaultTemplate: Ember.Handlebars.compile('
+    {{#if view.prompt}}
+      {{#if view.advanced}}<option></option>{{/if}}
+      {{#unless view.advanced}}<option value>{{view.prompt}}</option>{{/unless}}
+    {{/if}}
+    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}'
+  )
 
 Tent.SelectOption = Ember.SelectOption.extend
   labelPathDidChange: Ember.observer(-> 
