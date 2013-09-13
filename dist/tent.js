@@ -8409,16 +8409,17 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
       return this.set('isValid', this.validate());
     },
     setupAdvancedMode: function() {
-      if (this.get('advanced') && !this.get('isRadioGroup')) {
+      if (this.get('advanced') && !this.get('isRadioGroup') && Tent.Browsers.getIEVersion() !== 8) {
         return this.$('.primary-class').select2({
           placeholder: this.get('_prompt'),
-          allowClear: !this.get('multiple') ? true : void 0
+          allowClear: !this.get('multiple') ? true : void 0,
+          dropdownAutoWidth: true
         });
       }
     }
   });
 
-  Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport, {
+  Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
     defaultTemplate: Ember.Handlebars.compile('\
     {{#if view.prompt}}\
       {{#if view.advanced}}<option></option>{{/if}}\
