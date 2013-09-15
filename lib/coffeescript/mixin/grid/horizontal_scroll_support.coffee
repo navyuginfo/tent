@@ -184,7 +184,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		if @get('footerRow')
 			# review for performance
 			footers = @getTableDom()[0].grid.footers;
-			footers[index].style.width = finalWidth + 'px';
+			footers[index]?.style.width = finalWidth + 'px'
 
 	resizeTableToColumnsWidth: (totalWidth) ->
 		@$('.ui-jqgrid-htable').width(totalWidth)

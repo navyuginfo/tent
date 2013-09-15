@@ -5722,10 +5722,10 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return minWidth !== '0px' && !isNaN(minWidth);
     },
     changeFooterWidth: function(index, finalWidth) {
-      var footers;
+      var footers, _ref;
       if (this.get('footerRow')) {
         footers = this.getTableDom()[0].grid.footers;
-        return footers[index].style.width = finalWidth + 'px';
+        return (_ref = footers[index]) != null ? _ref.style.width = finalWidth + 'px' : void 0;
       }
     },
     resizeTableToColumnsWidth: function(totalWidth) {
