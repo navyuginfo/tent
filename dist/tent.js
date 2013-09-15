@@ -6005,7 +6005,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         return _this.refreshGroupHeader();
       });
       return this.getTableDom().bind('jqGridDeactivateColumnDrag', function() {
-        if (Tent.Browsers.getIEVersion() === 8) {
+        if (Tent.Browsers.getIEVersion() === 8 && !_this.get('horizontalScrolling')) {
           return _this.revertHeaderIntoViewDiv();
         }
       });
@@ -6120,7 +6120,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           this.$('.ui-jqgrid-bdiv').css('height', 'auto');
         }
       }
-      return $.publish('/grid/height-changed');
+      $.publish('/grid/height-changed');
+      return this.padLastCellsForScrollbar();
     },
     heightForPager: function() {
       var _ref;
@@ -6154,6 +6155,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
         }
         return this.adjustHeight();
+      }
+    },
+    padLastCellsForScrollbar: function() {
+      this.$('.ui-jqgrid-bdiv td').removeClass('last-cell');
+      if (this.get('horizontalScrolling') || (Tent.Browsers.getIEVersion() === 8) || (Tent.Browsers.getIEVersion() === 9)) {
+        return this.$('.ui-jqgrid-bdiv tr').each(function(index, row) {
+          return $('td:not(:hidden)', row).last().addClass('last-cell');
+        });
       }
     },
     hideGrid: function() {

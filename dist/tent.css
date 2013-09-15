@@ -629,6 +629,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   margin-left: 0px;
   bottom: 0px;
 }
+.tent-jqgrid .ui-jqgrid-bdiv .jqgrow .last-cell {
+  padding-right: 16px;
+}
 .tent-jqgrid .ui-widget-header a {
   font-size: 11px;
   outline: 0px;
@@ -714,6 +717,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .tent-jqgrid.horizontal-scrolling.fixed-header.footer-row .ui-jqgrid-view {
   overflow-x: hidden;
+  overflow-y: auto;
 }
 .tent-jqgrid.error .grid-table td {
   background: rgba(255, 0, 0, 0.15);

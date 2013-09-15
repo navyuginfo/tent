@@ -352,6 +352,13 @@ $headerHeight: 20px;
 
 	}
 
+	// The last cell in a horizontally-scrolled grid should have padding to avoid 
+	// being clipped by scrollbars.
+	.ui-jqgrid-bdiv .jqgrow {
+		.last-cell {
+			padding-right: 16px;
+		}
+	}
 
 	.ui-widget-header{
 		a {
@@ -453,6 +460,7 @@ $headerHeight: 20px;
 		}
 		.ui-jqgrid-view {
 			overflow-x: hidden;
+			overflow-y: auto;
 		}
 	}
 
