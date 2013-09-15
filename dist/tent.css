@@ -538,6 +538,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .tent-jqgrid .column-chooser .dropdown-menu .window {
   height: 3.2em;
 }
+.tent-jqgrid .column-chooser .dropdown-menu.pull-right {
+  right: -10em;
+}
 .tent-jqgrid .column-chooser label {
   margin-bottom: 0px;
   font-size: 1.1em;
