@@ -23,9 +23,12 @@ Tent.FormattingSupport = Ember.Mixin.create
 	).observes('value')
 
 	format: (value)->
-		value.trim() if value
+    @trimValue(value)
 
 	unFormat: (value) ->
-		value
+    value
+
+  trimValue: (value)->
+    value.trim() if value
 
 	

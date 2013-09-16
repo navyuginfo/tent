@@ -161,3 +161,18 @@ test 'Ensure aria attributes are applied ', ->
   equal view.$('input').attr('aria-describedby'), viewId+"_error " + viewId + "_help", 'described by value'
   equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
   equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
+
+test 'Ensure that the text entered gets trimmed value check', ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile '{{view Tent.TextField valueBinding="name"
+              labelBinding="label"
+              required=true}}'
+    name: 'foobar'
+    label: 'FooBar'
+
+  appendView()
+
+  Ember.run ->
+    view.$('input').val('   newValue   ')
+    view.$('input').trigger('change')
+  ok view.$('input').val() is 'newValue'
