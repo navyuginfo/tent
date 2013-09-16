@@ -947,12 +947,18 @@ $.fn.jqGrid = function( pin ) {
       },
 
       getRowHeight: function() {
-        var rows, rh;
+        var rows, rh, height;
         var table = $("table:first", grid.bDiv);
         if(table[0].rows.length) {
           try {
-            rows = table[0].rows[1];
-            rh = rows ? $(rows).outerHeight() || grid.prevRowHeight : grid.prevRowHeight;
+            rows = table[0].rows;
+            height = 0;
+            // Average over a number of rows to get a better estimate of row height
+            for (var rowNum=1; rowNum < table[0].rows.length; rowNum++) {
+              height += $(rows[rowNum]).outerHeight();
+            }
+
+            rh = rows ? (height/(table[0].rows.length-1)) || grid.prevRowHeight : grid.prevRowHeight;
           } catch (pv) {
             rh = grid.prevRowHeight;
           }
