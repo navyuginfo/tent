@@ -264,7 +264,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			# When columns are re-ordered, IE8 causes the headers to mis-align with the data-cells
 			# Use this to reset the column widths.
 			# 'deactivate' gets called at the end of a drag, even if the drg was cancelled.
-			if Tent.Browsers.getIEVersion() == 8
+			if Tent.Browsers.getIEVersion() == 8 and not @get('horizontalScrolling')
 				@revertHeaderIntoViewDiv()
 		)
 			
@@ -356,6 +356,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		else
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 		$.publish('/grid/height-changed')
+		@padLastCellsForScrollbar()
 
 	heightForPager: ->
 		@$('.ui-jqgrid-pager')?.height() or 0
@@ -389,6 +390,13 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				# Removed for performance reasons
 				# @columnsDidChange()
 			@adjustHeight()
+
+	padLastCellsForScrollbar: ->
+		@$('.ui-jqgrid-bdiv td').removeClass('last-cell')
+		if @get('horizontalScrolling') or (Tent.Browsers.getIEVersion() == 8) or (Tent.Browsers.getIEVersion() == 9)
+			@$('.ui-jqgrid-bdiv tr').each((index, row)->
+				$('td:not(:hidden)', row).last().addClass('last-cell')
+			)
 
 	hideGrid: ->
 		@$(".gridpager").hide()

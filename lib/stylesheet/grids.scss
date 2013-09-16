@@ -234,7 +234,12 @@ $headerHeight: 20px;
 			.window {
 				height: 3.2em;
 			}
-			background-color: rgba(255, 255, 255, 0.8)
+			background-color: rgba(255, 255, 255, 0.8);
+
+			&.pull-right {
+				// Ensure that the dropdown does not get hidden by adjacent panel.
+				right: -10em; 
+			}
 		}
 		label {
 			margin-bottom: 0px;
@@ -352,6 +357,13 @@ $headerHeight: 20px;
 
 	}
 
+	// The last cell in a horizontally-scrolled grid should have padding to avoid 
+	// being clipped by scrollbars.
+	.ui-jqgrid-bdiv .jqgrow {
+		.last-cell {
+			padding-right: 16px;
+		}
+	}
 
 	.ui-widget-header{
 		a {
@@ -453,6 +465,7 @@ $headerHeight: 20px;
 		}
 		.ui-jqgrid-view {
 			overflow-x: hidden;
+			overflow-y: auto;
 		}
 	}
 
