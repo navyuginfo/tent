@@ -133,4 +133,13 @@ Tent.Data.Filter = Ember.Mixin.create
 		@set('filteringInfo.selectedFilter', filter.name)
 		@get('filteringInfo.availableFilters').push(Ember.copy(filter,true))
 
-	 
+	restoreFilters: ->
+    uiState = @get('defaultPersonalization')
+    if uiState.filtering?
+      filteringInfo = @get('filteringInfo')
+      filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter)
+      for column in @get('columnsDescriptor')
+        columnFilter = filter.values[column.name]
+        Em.set(columnFilter, 'data',"")
+        Em.set(columnFilter, 'op',"")
+        columnFilter
