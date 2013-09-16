@@ -4046,12 +4046,21 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     sortingInfoBinding: 'collection.sortingInfo',
     columnInfoBinding: 'collection.columnInfo',
     groupingInfoBinding: 'collection.groupingInfo',
+    /**
+    * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
+    */
+
+    scroll: false,
     init: function() {
       this._super(arguments);
       if (this.get('collection') != null) {
-        return this.setupCustomizedProperties();
+        this.setupCustomizedProperties();
+        return this.addScrollPropertyToCollection();
       }
     },
+    addScrollPropertyToCollection: (function() {
+      return this.set('collection.scroll', this.get('scroll'));
+    }).observes('scroll', 'collection'),
     addNavigationBar: function() {
       this._super();
       if (this.get('collection.personalizable')) {
@@ -4182,9 +4191,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.setPageSize();
     },
     setPageSize: function() {
-      if (this.get('pagingInfo') != null) {
-        if (this.get('paged') && (this.get('pageSize') != null) && !(this.get('pagingInfo.pageSize') != null)) {
+      if (this.get('pageSize')) {
+        this.set('collection.pageSize', this.get('pageSize'));
+        if (this.get('pagingInfo') != null) {
           return this.set('pagingInfo.pageSize', this.get('pageSize'));
+        }
+      } else {
+        if (this.get('pagingInfo') != null) {
+          if (this.get('paged') && (this.get('pageSize') != null) && !(this.get('pagingInfo.pageSize') != null)) {
+            return this.set('pagingInfo.pageSize', this.get('pageSize'));
+          }
         }
       }
     },
@@ -4345,8 +4361,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         return this.setupCustomizedProperties();
       }
     },
-    onPageOrSort: function(postdata) {
+    onPageOrSort: function(postdata, id, rcnt) {
       if (this.get('collection') != null) {
+        if (this.get('scroll')) {
+          this.set('rcnt', rcnt || 0);
+        }
         if (this.shouldSort(postdata)) {
           this.getTableDom().jqGrid('groupingRemove', true);
           return this.get('collection').sort({
@@ -4523,6 +4542,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 (function() {
 
   Tent.Grid.Adapters = Ember.Mixin.create({
+    cachedGridData: [],
     columns: (function() {
       return this.get('collection.columnsDescriptor');
     }).property('collection.columnsDescriptor'),
@@ -4608,7 +4628,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.get('fixedRows.length');
     }).property('fixedRows'),
     gridData: (function() {
-      var cell, column, grid, item, model, models, _i, _j, _k, _len, _len1, _len2, _ref;
+      var cell, column, grid, item, model, models, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       grid = [];
       if (this.get('content') != null) {
         models = this.get('content').toArray();
@@ -4642,18 +4662,28 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           }
         }
       }
+      this.set('cachedGridData', grid);
+      if ((_ref1 = this.getTableDom()) != null) {
+        _ref1[0].p.rowNum = grid.length;
+      }
+      if ((_ref2 = this.getTableDom()) != null) {
+        _ref2[0].p.pageSize = this.get('pagingInfo.pageSize');
+      }
       return grid;
     }).property('content', 'content.isLoaded', 'content.@each'),
     gridDataDidChange: (function() {
       var data, grid, _ref;
+      if (!(this.getTableDom() != null)) {
+        return;
+      }
       this.getTableDom()[0].p.viewrecords = false;
-      this.getTableDom().jqGrid('clearGridData');
-      /*
-      		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
-      		* calculate whether there are any records or not using the reccount attribute
-      */
-
       if (this.get('content.isLoaded')) {
+        this.getTableDom().jqGrid('clearGridData');
+        /*
+        			* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
+        			* calculate whether there are any records or not using the reccount attribute
+        */
+
         this.getTableDom()[0].p.viewrecords = true;
       }
       data = {
@@ -4679,7 +4709,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         }
       } else {
         if ((_ref = this.getTableDom()[0]) != null) {
-          _ref.addJSONData(data);
+          _ref.addJSONData(data, this.get('rcnt'));
         }
       }
       return this.updateGrid();
@@ -6012,8 +6042,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       widget = this;
       this.getTableDom().jqGrid({
         parentView: widget,
-        datatype: function(postdata) {
-          return widget.onPageOrSort(postdata);
+        datatype: function(postdata, id, rcnt) {
+          return widget.onPageOrSort(postdata, id, rcnt);
         },
         height: this.get('height') || 'auto',
         colNames: this.get('colNames'),
@@ -6035,6 +6065,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         forceFit: true,
         shrinkToFit: this.get('horizontalScrolling') ? false : true,
         viewsortcols: [true, 'vertical', false],
+        scroll: this.get('scroll'),
         hidegrid: false,
         viewrecords: true,
         rowNum: this.get('paged') ? this.get('pagingInfo.pageSize') : -1,
@@ -6071,11 +6102,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         }
         return _this.refreshGroupHeader();
       });
-      return this.getTableDom().bind('jqGridDeactivateColumnDrag', function() {
+      this.getTableDom().bind('jqGridDeactivateColumnDrag', function() {
         if (Tent.Browsers.getIEVersion() === 8 && !_this.get('horizontalScrolling')) {
           return _this.revertHeaderIntoViewDiv();
         }
       });
+      return this.getTableDom()[0].p.useCollectionScrolling = this.get('scroll');
     },
     setInitialViewRecordsAttribute: function() {
       /*
@@ -6400,7 +6432,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
+<<<<<<< HEAD
 Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t{{#if view.grid.collection}}\n\t\t{{#if view.grid.filtering}}\n\t\t\t<a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter pull-right\">\n\t\t\t\t<i class=\"icon-filter\"></i>{{loc tent.filter.filter}}\n\t\t\t</a>\n\t\t{{/if}}\n\t{{/if}}\t\n</div>\n\n");
+=======
+Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\t{{#if view.grid.scroll}}\n\t\t<div class=\"header-pager\">\n\t\t\tPage {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}\n\t\t</div>\n\t{{/if}}\n\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t\n\n</div>\n\n{{#if view.grid.collection}}\n\t{{#if view.grid.filtering}}\n\t\t{{view Tent.CollectionFilter collectionBinding=\"view.grid.collection\"}}\n\t{{/if}}\n{{/if}}\t");
+>>>>>>> Adding code to average row height for better measurement.
 
 Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
 
@@ -12326,7 +12362,8 @@ GridController
         pageSize: this.get('pageSize'),
         page: this.get('currentPage'),
         totalRows: this.get('totalRows'),
-        totalPages: this.get('totalPages')
+        totalPages: this.get('totalPages'),
+        scrolling: this.get('scroll')
       };
     }).property('pageSize', 'currentPage', 'totalPages', 'totalRows'),
     updatePagingInfo: function(info) {

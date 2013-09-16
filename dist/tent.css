@@ -809,6 +809,19 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   background-color: #CCC;
 }
 
+/*  Header Pager */
+.header-pager {
+  float: right;
+  font-size: .6rem;
+  background: whitesmoke;
+  color: #666666;
+  padding: 0px 4px;
+  border-radius: 4px;
+  margin-top: 4px;
+  margin-right: 4px;
+  line-height: 15px;
+}
+
 /* Standard Panel, with expandable */
 .tent-panel .panel-header {
   position: relative;
