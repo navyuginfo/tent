@@ -56,7 +56,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ###*
   * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
   ###
-  scroll: true
+  scroll: false
    
   init: ->
     @_super(arguments)
