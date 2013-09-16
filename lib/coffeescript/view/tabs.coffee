@@ -17,7 +17,7 @@ require '../template/tabs'
               {{/view}}
           {{/view}} 
 ###
-Tent.Tabs = Ember.View.extend
+Tent.Tabs = Ember.View.extend Tent.VisibilitySupport,
   layoutName: 'tabs'
   fixedHeader: false
   classNames: ['tent-tabs']
@@ -27,6 +27,12 @@ Tent.Tabs = Ember.View.extend
   * @property {String} active The id of the tabpane which should be initially displayed
   ###
   active: null
+
+  hide: ->
+    element.hide() for element in [@$('.nav-tabs'), @$('.tab-content')]
+
+  show: ->
+    element.show() for element in [@$('.nav-tabs'), @$('.tab-content')]
 
   didInsertElement: ->
     _this = @

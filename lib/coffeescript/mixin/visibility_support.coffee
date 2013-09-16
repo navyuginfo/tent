@@ -16,9 +16,11 @@ Tent.VisibilitySupport = Ember.Mixin.create
 
   observesVisibility: (->
     if (@get('isVisibleAsBoolean'))
-      @$().show() unless @get('_widgetShowing')
+      unless @get('_widgetShowing')
+        if (typeof @show is 'function') then @show() else @$().show()
       @set('_widgetShowing', true)
     else
-      @$().hide() if @get('_widgetShowing')
+      if @get('_widgetShowing')
+        if (typeof @hide is 'function') then @hide() else @$().hide()
       @set('_widgetShowing', false)
   ).observes('isVisible')

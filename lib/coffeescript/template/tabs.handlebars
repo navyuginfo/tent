@@ -1,4 +1,7 @@
+{{#unless view.isVisible}}
+  {{view Tent.Spinner}}
+{{/unless}}
 <ul {{bindAttr id="id"}} class="nav nav-tabs"></ul>
 <div class="tab-content">
-	{{yield}}
+  {{yield}}
 </div>
