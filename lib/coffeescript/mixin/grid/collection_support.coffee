@@ -327,7 +327,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       #if @get('collection.personalizations').toArray().length > 0
       if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
-      else 
+      else
+        @get('collection').restoreFilters()
         uiState = @get('collection.defaultPersonalization')
       @set('collection.customizationName',  uiState.customizationName);
       @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
