@@ -12,20 +12,22 @@
  * Note that all validation will be executed against the 'value' property  
 ###
 
-Tent.FormattingSupport = Ember.Mixin.create
-	init: ->
-		@_super()
-		@set('formattedValue', @format(@get('value')))
+Tent.FormattingSupport = Ember.Mixin.create(
+  init: ->
+    @_super()
+    @set "formattedValue", @format(@get("value"))
 
-	valueDidChange: (->
-		@set("formattedValue", @format(@get('value')))
-		@set('isValid', @validate())
-	).observes('value')
+  valueDidChange: (->
+    @set "formattedValue", @format(@get("value"))
+    @set "isValid", @validate()
+  ).observes("value")
 
-	format: (value)->
-		value.trim() if value
+  format: (value) ->
+    @trimValue value
 
-	unFormat: (value) ->
-		value
+  unFormat: (value) ->
+    value
 
-	
+  trimValue: (value) ->
+    value.trim()  if value
+)
