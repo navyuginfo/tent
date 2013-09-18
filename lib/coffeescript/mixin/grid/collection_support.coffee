@@ -323,21 +323,23 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ).observes('collection.personalizations')
 
   initializeWithNewPersonalization: (index)->
-    if @get('customizationName') != @get('collection.customizationName')
-      #if @get('collection.personalizations').toArray().length > 0
+    @get('collection').restoreFilters()
+    customization = @get('customizationName')
+    if customization? and customization != @get('collection.customizationName')
       if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
       else
-        @get('collection').restoreFilters()
-        uiState = @get('collection.defaultPersonalization')
-      @set('collection.customizationName',  uiState.customizationName);
-      @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
-      @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
-      @set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering)) if uiState.filtering?
-      @set('columnInfo', jQuery.extend(true, {}, uiState.columns)) if uiState.columns?
-      @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
-      @applyStoredPropertiesToGrid()
-      @populateCollectionDropdown()
+    uiState = @get('collection.defaultPersonalization')
+    if customization? and customization != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
+      uiState = @get('collection.personalizations').objectAt(index).get('settings')
+    @set('collection.customizationName', uiState.customizationName)        
+    @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
+    @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
+    @set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering)) if uiState.filtering?
+    @set('columnInfo', jQuery.extend(true, {}, uiState.columns)) if uiState.columns?
+    @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
+    @applyStoredPropertiesToGrid()
+    @populateCollectionDropdown()
         
 
 
