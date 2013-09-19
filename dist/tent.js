@@ -3595,11 +3595,26 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
+<<<<<<< HEAD
     focusOut: function() {
+<<<<<<< HEAD
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
       if (fieldValue === '') {
         return this.validateField();
+=======
+=======
+    change: function() {
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
+      var unformatted;
+      this._super(arguments);
+      this.set('isValid', this.validate());
+      if (this.get('isValid')) {
+        unformatted = this.unFormat(this.get('formattedValue'));
+        this.set('value', unformatted);
+        this.set('formattedValue', this.format(unformatted));
+        return this.validateWarnings();
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
       }
     },
     change: function() {
@@ -4539,7 +4554,28 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       } else {
         if (this.get('customizationName') !== this.get('collection.customizationName') && (this.get('collection.personalizations').objectAt(index) != null)) {
           settings = this.get('collection.personalizations').objectAt(index).get('settings');
+<<<<<<< HEAD
           customizationName = this.get('collection.personalizations').objectAt(index).get('name');
+=======
+=======
+    initializeWithNewPersonalization: function(index) {
+      var uiState;
+      uiState = this.get('collection.defaultPersonalization');
+      if (uiState != null) {
+        uiState.filtering = this.get('collection.defaultFiltering');
+        if (this.shouldUseIndex(index)) {
+          uiState = this.get('collection.personalizations').objectAt(index).get('settings');
+<<<<<<< HEAD
+=======
+        } else {
+          this.get('collection').restoreFilters();
+          uiState = this.get('collection.defaultPersonalization');
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
+        }
+        this.set('collection.customizationName', uiState.customizationName);
+        if (uiState.paging != null) {
+          this.set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging));
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
         }
       }
       this.get('collection').updateCollectionWithNewPersonalizationValues(customizationName, settings);
@@ -12386,149 +12422,147 @@ Tent.Pager = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\t{{#each menugroup in content}}\n\t\t{{#if menugroup.entitled}}\n\t\t\t<li>\n\t\t\t\t{{#if view.isFlattened}}\n\t\t\t\t\t{{#each item in menugroup.items}}\n\t\t\t\t\t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{else}}\n\t\t\t\t\t{{#view Tent.Panel collapsible=true collapsedBinding=\"menugroup.collapsed\" hasChildViews=true}}\n\t\t\t\t        {{#view Tent.PanelHead}}\n\t\t\t\t          <h4><i {{bindAttr class=\"menugroup.icon\"}}></i> {{loc menugroup.title}}</h4>  \n\t\t\t\t        {{/view}}\n\t\t\t\t        {{#view Tent.PanelBody}}\n\t\t\t\t        \t{{#each item in menugroup.items}}\n\t\t\t\t        \t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t        {{/each}}\n\t\t\t\t        {{/view}}\n\t\t\t\t    {{/view}}\n\t\t\t\t{{/if}}\n\t\t\t</li>\n\t\t{{/if}}\n\t{{/each}}\n</ul>");
+Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\n</ul>");
 
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
-    classNames: ['sci-main-menu'],
-    collapsedDashboard: false,
-    /**
-    * @property {Boolean} collapseAutomatically Defines whether the menu should collapse when the content area recieves focus.
-    */
-
-    collapseAutomatically: true,
-    /**
-    * @property {Boolean} isFlattened Render all menu items in a single hierarchy, ignoring grouping.
-    */
-
-    isFlattened: false,
+    classNames: ['main-menu', 'mp-level'],
     didInsertElement: function() {
-      var _this = this;
       this._super();
-      this.highlightSelectedItem();
-      return this.$('.nav-tabs .menu-link').click(function(e) {
-        _this.switchMenu(e);
-        return true;
-      });
+      this.set('menuPlugin', new mlPushMenu(document.getElementById('mp-menu'), document.getElementById('dashboard-toggle'), {
+        type: 'cover'
+      }));
+      return this.selectItemFromUrl();
     },
-    highlightSelectedItem: function(path) {
-      var current;
+    selectedItemDidChange: (function() {
+      if (this.get('controller.selectedItem') != null) {
+        return this.addHighlightToMenuItem(this.get('controller.selectedItem'));
+      }
+    }).observes('controller.selectedItem'),
+    selectedActionDidChange: (function() {
+      return this.selectItemFromAction(this.get('controller.selectedAction'));
+    }).observes('controller.selectedAction'),
+    selectItemFromUrl: function(path) {
+      var that;
       path = path || window.location.pathname;
+      that = this;
       if ((this.$() != null)) {
-        this.$(".active-menu").removeClass('active-menu');
-        this.$("[data-route],[data-route-exact]").each(function() {
-          if (path.indexOf($(this).attr('data-route')) !== -1) {
-            $(this).addClass('active-menu');
-          }
-          if (path === $(this).attr('data-route-exact')) {
-            return $(this).addClass('active-menu');
-          }
-        });
-        current = null;
-        return this.$("active-menu").each(function() {
-          if (!(current != null)) {
-            return current = $(this);
-          } else {
-            if ($(this).attr('data-route').length > current.attr('data-route').length) {
-              current.removeClass('active-menu');
-              return current = $(this);
+        this.unhighlightAllItems();
+        return this.forAllChildViews(function(view) {
+          if (view.get('hasAction')) {
+            if (path.indexOf(view.get('route')) !== -1) {
+              that.set('controller.selectedItem', view);
+              return this.navigateToCorrectMenuLevel(view);
             }
           }
         });
       }
     },
-    menuClicked: function(e) {
-      var action;
-      action = $(e.target).attr('data-action') || $(e.target).parents('[data-action]:first').attr('data-action');
-      return this.get('controller').menuClicked(action);
-    },
-    switchMenu: function(event) {
-      var selected, target;
-      target = event.target;
-      selected = this.$('.active-menu');
-      if (selected !== undefined) {
-        $(selected).removeClass('active-menu');
-      }
-      if ($(target).is('.menu-link')) {
-        $(target).addClass('active-menu');
-      } else {
-        $(target).parents('.menu-link:first').addClass('active-menu');
-      }
-      if (this.get('collapseAutomatically')) {
-        return this.collapseDashboard();
-      }
-    },
-    collapseDashboard: function() {
-      var mainPanel;
-      if (!this.get('collapsedDashboard')) {
-        mainPanel = this.getMainPanel();
-        mainPanel.removeClass('expanded');
-        this.set('collapsedDashboard', true);
-        this.$("span[rel=tooltip]").tooltip('enable');
-        this.$('.tent-panel.collapsible').each(function() {
-          var elem, view;
-          view = Ember.View.views[$(this).attr('id')];
-          if (view.get('collapsed')) {
-            elem = $(".pull-right", $(this));
-            if (elem.length > 0) {
-              elem.removeClass("collapsed");
+    selectItemFromAction: function(action) {
+      var that;
+      that = this;
+      if ((this.$() != null)) {
+        this.unhighlightAllItems();
+        return this.forAllChildViews(function(view) {
+          if (view.get('hasAction')) {
+            if (action === view.get('action')) {
+              return that.set('controller.selectedItem', view);
             }
-            return view.show();
           }
         });
       }
-      return this.$('a i, button i').tooltip('enable');
     },
-    expandDashboard: function() {
-      var mainPanel;
-      if (this.get('collapsedDashboard')) {
-        mainPanel = this.getMainPanel();
-        mainPanel.addClass('expanded');
-        this.set('collapsedDashboard', false);
+    forAllChildViews: function(callback, view) {
+      var childView, _i, _len, _ref, _results;
+      view = view || this;
+      callback.call(this, view);
+      _ref = view.get('childViews');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        childView = _ref[_i];
+        _results.push(this.forAllChildViews(callback, childView));
       }
-      return this.$('a i, button i').tooltip('disable');
+      return _results;
     },
-    toggleCollapse: function() {
-      if (this.get('collapsedDashboard')) {
-        return this.expandDashboard();
-      } else {
-        return this.collapseDashboard();
-      }
+    addHighlightToMenuItem: function(selectedItem) {
+      this.unhighlightAllItems();
+      return selectedItem.set('isSelected', true);
     },
-    getMainPanel: function() {
-      return $('.main-content');
+    navigateToCorrectMenuLevel: function(selectedItem) {
+      var level;
+      return level = selectedItem.$().parents('.mp-level:first').get(0);
+    },
+    unhighlightAllItems: function() {
+      return this.forAllChildViews(function(view) {
+        if (view.get('hasAction')) {
+          return view.set('isSelected', false);
+        }
+      });
     }
   });
 
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t{{#if item.entitled}}\n    \t<a href=\"#\" class=\"menu-link\" {{bindAttr data-route=\"item.route\"}} {{bindAttr data-action=\"item.action\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t<i {{bindAttr class=\"item.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc item.title}}</span>\n      \t</a>\n\t{{/if}}\n{{/if}}");
+Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t<li>\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} href=\"#\" {{action menuClicked target=\"view\"}}>\n\t\t\t<i {{bindAttr class=\"view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2 class=\"icon icon-display\">{{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\" href=\"#\">back</a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n\t</li>\n{{/if}}");
 
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MenuItemView = Ember.View.extend({
-    isEntitled: function() {
+    layoutName: 'application/menu_item',
+    collapsed: false,
+    isSelected: false,
+    isEntitled: true,
+    isEnabled: true,
+    init: function() {
+      this._super();
+      return this.processEntitlements();
+    },
+    hasAction: (function() {
+      return this.get('action') != null;
+    }).property('action'),
+    menuClicked: function(e) {
+      if (this.get('hasAction') && this.get('isEnabled')) {
+        return this.get('controller').menuClicked(this);
+      }
+    },
+    applyHighlight: (function() {
+      var link;
+      if (this.get('isSelected')) {
+        link = this.$('a:first');
+        if (link.is('.menu-link')) {
+          return link.addClass('active-menu');
+        }
+      } else {
+        return this.$('a:first').removeClass('active-menu');
+      }
+    }).observes('isSelected'),
+    processEntitlements: function() {
+      var entitlement, operation, operationsArr, _i, _len;
+      if (!(this.get('operations') != null)) {
+        return true;
+      }
+      operationsArr = this.get('operations').removeWhitespace().split(',');
+      entitlement = false;
+      for (_i = 0, _len = operationsArr.length; _i < _len; _i++) {
+        operation = operationsArr[_i];
+        entitlement = entitlement || this.evaluatePolicy(operation);
+      }
+      return this.set('isEntitled', entitlement);
+    },
+    evaluatePolicy: function(operation) {
+      if (operation != null) {
+        return Endeavour.policy(operation);
+      }
       return true;
     },
-    templateName: 'application/menu_item',
-    collapsed: false,
-    title: (function() {
-      return Tent.I18n.loc(this.get('content.title'));
-    }).property(),
-    isEnabled: true,
     isDisabled: (function() {
-      return !this.get('content.isEnabled');
-    }).property('isEnabled'),
-    menuClicked: function(e) {
-      var action;
-      action = $(e.target).attr('data-action') || $(e.target).parents('[data-action]').attr('data-action');
-      return this.get('controller').menuClicked(action);
-    }
+      return !this.get('isEnabled');
+    }).property('isEnabled')
   });
 
 }).call(this);
@@ -12684,58 +12718,19 @@ GridController
   Tent.Application = Tent.Application || Em.Namespace.create;
 
   Tent.Application.MainMenuController = Ember.Controller.extend({
-    content: [],
-    init: function() {
-      return this.applyEntitlements();
+    selectedItem: null,
+    selectedAction: null,
+    menuClicked: function(menuItem) {
+      return this.set('selectedItem', menuItem);
     },
-    applyEntitlements: function() {
-      var hasAnyEntitlements, item, menuGroup, parentEntitled, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.get('content');
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        menuGroup = _ref[_i];
-        parentEntitled = false;
-        _ref1 = menuGroup.items;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          item = _ref1[_j];
-          hasAnyEntitlements = this.processItemEntitlements(item);
-          if (hasAnyEntitlements) {
-            parentEntitled = true;
-          }
-        }
-        _results.push(menuGroup.entitled = this.processItemEntitlements(menuGroup) && parentEntitled);
-      }
-      return _results;
-    },
-    processItemEntitlements: function(item) {
-      var entitlement, hasEntitlement, operation, _i, _len, _ref;
-      item.entitled = true;
-      if (!(item.operations != null)) {
-        return true;
-      }
-      hasEntitlement = false;
-      if (Object.prototype.toString.call(item.operations) === '[object Array]') {
-        entitlement = false;
-        _ref = item.operations;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          operation = _ref[_i];
-          entitlement = entitlement || this.isEntitled(operation);
-        }
-        if (entitlement) {
-          hasEntitlement = entitlement;
-        }
-        item.entitled = entitlement;
-      }
-      return hasEntitlement;
-    },
-    isEntitled: function(operation) {
-      if (operation != null) {
-        return Endeavour.policy(operation);
-      }
-      return true;
-    },
-    menuClicked: function(action) {
+    selectedItemDidChange: (function() {
+      return this.executeAction(this.get('selectedItem').get('action'));
+    }).observes('selectedItem'),
+    executeAction: function(action) {
       return this.get('target').send(action);
+    },
+    menuTransition: function(action) {
+      return this.set('selectedAction', action);
     }
   });
 
@@ -13040,6 +13035,7 @@ GridController
 (function() {
 
   Tent.Data.Filter = Ember.Mixin.create({
+<<<<<<< HEAD
     defaultFiltering: {
       selectedFilter: 'default',
       availableFilters: [
@@ -13051,11 +13047,18 @@ GridController
         }
       ]
     },
+=======
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
     init: function() {
       this.applyDefaultFilter();
       this._super();
+<<<<<<< HEAD
       this.REQUEST_TYPE = this.REQUEST_TYPE || {};
       return this.REQUEST_TYPE.FILTER = 'filtering';
+=======
+      this.REQUEST_TYPE.FILTER = 'filtering';
+      return this.set('filteringInfo', this.getEmptyFilter());
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
       /*@set('filteringInfo', 
       			selectedFilter: 'task2'
       			availableFilters: [
@@ -13095,6 +13098,7 @@ GridController
       */
 
     },
+<<<<<<< HEAD
     ensureFilterAvailable: function() {
       if (!(this.get('selectedFilter') != null)) {
         return this.set('filteringInfo', {
@@ -13109,6 +13113,20 @@ GridController
           ]
         });
       }
+=======
+    getEmptyFilter: function() {
+      return {
+        selectedFilter: 'default',
+        availableFilters: [
+          {
+            name: "default",
+            label: Tent.I18n.loc('tent.filter.noFilter'),
+            description: "",
+            values: {}
+          }
+        ]
+      };
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
     },
     selectedFilter: (function() {
       return this.getSelectedFilter();
@@ -13214,8 +13232,35 @@ GridController
       this.set('filteringInfo.selectedFilter', filter.name);
       return this.get('filteringInfo.availableFilters').push(Ember.copy(filter, true));
     },
+<<<<<<< HEAD
     applyDefaultFilter: function() {
       return this.set('filteringInfo', $.extend({}, this.get('defaultFiltering')));
+=======
+    restoreFilters: function() {
+      var column, columnFilter, filter, filteringInfo, uiState, _i, _len, _ref, _results;
+      uiState = this.get('defaultPersonalization');
+      if (uiState.filtering != null) {
+        if (!(this.get('filteringInfo').selectedFilter != null)) {
+          this.set('filteringInfo', this.getEmptyFilter());
+        }
+        filteringInfo = this.get('filteringInfo');
+        filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter);
+        _ref = this.get('columnsDescriptor');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          column = _ref[_i];
+          columnFilter = filter.values[column.name];
+          if (columnFilter != null) {
+            Em.set(columnFilter, 'data', "");
+            Em.set(columnFilter, 'op', "");
+            _results.push(columnFilter);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
+>>>>>>> Implemented restructuring of menus and multi-level push menu.
     }
   });
 

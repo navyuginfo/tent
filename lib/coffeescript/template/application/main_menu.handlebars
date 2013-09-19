@@ -1,24 +1,3 @@
 <ul class="sci-main-menu nav-tabs">
-	{{#each menugroup in content}}
-		{{#if menugroup.entitled}}
-			<li>
-				{{#if view.isFlattened}}
-					{{#each item in menugroup.items}}
-						{{view Tent.Application.MenuItemView contentBinding="item"}}
-					{{/each}}
-				{{else}}
-					{{#view Tent.Panel collapsible=true collapsedBinding="menugroup.collapsed" hasChildViews=true}}
-				        {{#view Tent.PanelHead}}
-				          <h4><i {{bindAttr class="menugroup.icon"}}></i> {{loc menugroup.title}}</h4>  
-				        {{/view}}
-				        {{#view Tent.PanelBody}}
-				        	{{#each item in menugroup.items}}
-				        		{{view Tent.Application.MenuItemView contentBinding="item"}}
-					        {{/each}}
-				        {{/view}}
-				    {{/view}}
-				{{/if}}
-			</li>
-		{{/if}}
-	{{/each}}
+
 </ul>
