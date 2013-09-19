@@ -27,6 +27,10 @@ Tent.FilteringSupport = Ember.Mixin.create
 		currentFilterOperator == 'range'
 	).property('filterOp')
 
+	observeFilterOp: (->
+		@set('selectedOperator', @get('operators').findProperty('operator', op)) if (op = @get('filterOp'))? and !op.isBlank() and @get('operators')?
+	).observes('filterOp')
+
 
 
 

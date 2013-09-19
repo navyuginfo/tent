@@ -4,7 +4,7 @@
 ###
 
 Tent.Data.Filter = Ember.Mixin.create
-	filteringInfo:
+	defaultFiltering:
 		selectedFilter: 'default'
 		availableFilters: [
 			{
@@ -16,8 +16,9 @@ Tent.Data.Filter = Ember.Mixin.create
 				}
 			}
 		]
-
+	
 	init: ->
+		@applyDefaultFilter()
 		@_super()
 		@REQUEST_TYPE.FILTER = 'filtering'
 
@@ -133,14 +134,5 @@ Tent.Data.Filter = Ember.Mixin.create
 		@set('filteringInfo.selectedFilter', filter.name)
 		@get('filteringInfo.availableFilters').push(Ember.copy(filter,true))
 
-	restoreFilters: ->
-    uiState = @get('defaultPersonalization')
-    if uiState.filtering?
-      filteringInfo = @get('filteringInfo')
-      filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter)
-      for column in @get('columnsDescriptor')
-        columnFilter = filter.values[column.name]
-        if columnFilter?
-          Em.set(columnFilter, 'data',"")
-          Em.set(columnFilter, 'op',"")
-          columnFilter
+	applyDefaultFilter: ->
+		@set('filteringInfo', $.extend({}, @get('defaultFiltering')))

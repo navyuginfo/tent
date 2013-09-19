@@ -323,14 +323,13 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ).observes('collection.personalizations')
 
   initializeWithNewPersonalization: (index)->
-    if @get('customizationName') != @get('collection.customizationName')
-      #if @get('collection.personalizations').toArray().length > 0
-      if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
+    customization = @get('customizationName')
+    uiState = @get('collection.defaultPersonalization')
+    if uiState?
+      uiState.filtering = @get('collection.defaultFiltering')
+      if customization? and customization != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
-      else
-        @get('collection').restoreFilters()
-        uiState = @get('collection.defaultPersonalization')
-      @set('collection.customizationName',  uiState.customizationName);
+      @set('collection.customizationName', uiState.customizationName)
       @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
       @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
       @set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering)) if uiState.filtering?
@@ -338,8 +337,3 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
       @applyStoredPropertiesToGrid()
       @populateCollectionDropdown()
-        
-
-
-
-
