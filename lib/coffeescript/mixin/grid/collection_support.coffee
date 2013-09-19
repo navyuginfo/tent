@@ -325,10 +325,6 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   initializeWithNewPersonalization: (index)->
     @get('collection').restoreFilters()
     customization = @get('customizationName')
-    if customization? and customization != @get('collection.customizationName')
-      if parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)? # -1 signifies the default view
-        uiState = @get('collection.personalizations').objectAt(index).get('settings')
-      else
     uiState = @get('collection.defaultPersonalization')
     if customization? and customization != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
       uiState = @get('collection.personalizations').objectAt(index).get('settings')
