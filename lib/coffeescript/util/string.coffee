@@ -24,3 +24,7 @@ if not String.prototype.trim?
   String.prototype.trim = () ->
     return @replace(/^\s+|\s+$/g,'')
 
+String.prototype.removeWhitespace = ->
+  # remove all whitespace from a string
+  @replace(/\s+/g, '')
+

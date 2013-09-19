@@ -1788,6 +1788,10 @@
     };
   }
 
+  String.prototype.removeWhitespace = function() {
+    return this.replace(/\s+/g, '');
+  };
+
 }).call(this);
 
 
@@ -4568,9 +4572,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 <<<<<<< HEAD
 =======
         } else {
-          this.get('collection').restoreFilters();
           uiState = this.get('collection.defaultPersonalization');
+<<<<<<< HEAD
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
+=======
+          uiState.filtering = this.get('collection').getEmptyFilter();
+>>>>>>> Adding menu tests.
         }
         this.set('collection.customizationName', uiState.customizationName);
         if (uiState.paging != null) {
@@ -12432,10 +12439,13 @@ Tent.Application.MainMenuView = Ember.View.extend({
     classNames: ['main-menu', 'mp-level'],
     didInsertElement: function() {
       this._super();
-      this.set('menuPlugin', new mlPushMenu(document.getElementById('mp-menu'), document.getElementById('dashboard-toggle'), {
+      this.applyMenuPlugin();
+      return this.selectItemFromUrl();
+    },
+    applyMenuPlugin: function() {
+      return this.set('menuPlugin', new mlPushMenu(document.getElementById('mp-menu'), document.getElementById('dashboard-toggle'), {
         type: 'cover'
       }));
-      return this.selectItemFromUrl();
     },
     selectedItemDidChange: (function() {
       if (this.get('controller.selectedItem') != null) {
@@ -12513,6 +12523,7 @@ Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.is
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MenuItemView = Ember.View.extend({
+    classNames: ['menu-item'],
     layoutName: 'application/menu_item',
     collapsed: false,
     isSelected: false,

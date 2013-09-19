@@ -8,11 +8,14 @@ Tent.Application.MainMenuView = Ember.View.extend
 
   didInsertElement: ->
     @_super()
+    @applyMenuPlugin()
+    @selectItemFromUrl()
+    #@$('a i, button i').tooltip('enable')
+
+  applyMenuPlugin: ->
     @set('menuPlugin', new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'dashboard-toggle' ), {
           type : 'cover'
         }))
-    @selectItemFromUrl()
-    #@$('a i, button i').tooltip('enable')
 
   selectedItemDidChange: (->
     @addHighlightToMenuItem(@get('controller.selectedItem')) if @get('controller.selectedItem')?
