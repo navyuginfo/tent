@@ -111,7 +111,7 @@
 			};
 
 			// open (or close) the menu
-			this.trigger.addEventListener( this.eventtype, function( ev ) {
+			$(this.trigger).bind( this.eventtype, function( ev ) {
 				ev.stopPropagation();
 				ev.preventDefault();
 				if( self.open ) {
@@ -120,7 +120,7 @@
 				else {
 					self._openMenu();
 					// the menu should close if clicking somewhere on the body (excluding clicks on the menu)
-					document.addEventListener( self.eventtype, function( ev ) {
+					$(document).bind( self.eventtype, function( ev ) {
 						if( self.open && !hasParent( ev.target, self.el.id ) ) {
 							bodyClickFn( this );
 						}
@@ -134,7 +134,7 @@
 				if (self._ismenuItemEnabled(el)) {
 					var subLevel = el.querySelector( 'div.mp-level' );
 					if( subLevel ) {
-						el.querySelector( 'a' ).addEventListener( self.eventtype, function( ev ) {
+						$(el).find('a').bind( self.eventtype, function( ev ) {
 							ev.preventDefault();
 							var level = closest( el, 'mp-level' ).getAttribute( 'data-level' );
 							if( self.level <= level ) {
@@ -152,7 +152,7 @@
 			// closing the sub levels :
 			// by clicking on the visible part of the level element
 			this.levels.forEach( function( el, i ) {
-				el.addEventListener( self.eventtype, function( ev ) {
+				$(el).bind( self.eventtype, function( ev ) {
 					//ev.stopPropagation();
 					var level = el.getAttribute( 'data-level' );
 					if( self.level > level ) {
@@ -164,7 +164,7 @@
 
 			// by clicking on a specific element
 			this.levelBack.forEach( function( el, i ) {
-				el.addEventListener( self.eventtype, function( ev ) {
+				$(el).bind( self.eventtype, function( ev ) {
 					ev.preventDefault();
 					var level = closest( el, 'mp-level' ).getAttribute( 'data-level' );
 					if( self.level <= level ) {
