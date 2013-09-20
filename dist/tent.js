@@ -4572,12 +4572,16 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 <<<<<<< HEAD
 =======
         } else {
+          this.get('collection').restoreFilters();
           uiState = this.get('collection.defaultPersonalization');
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
 =======
           uiState.filtering = this.get('collection').getEmptyFilter();
 >>>>>>> Adding menu tests.
+=======
+>>>>>>> Navigate menu to specified route.
         }
         this.set('collection.customizationName', uiState.customizationName);
         if (uiState.paging != null) {
@@ -12502,8 +12506,15 @@ Tent.Application.MainMenuView = Ember.View.extend({
       return selectedItem.set('isSelected', true);
     },
     navigateToCorrectMenuLevel: function(selectedItem) {
-      var level;
-      return level = selectedItem.$().parents('.mp-level:first').get(0);
+      var item, levels, reversed, _i, _len, _results;
+      levels = selectedItem.$().parentsUntil('#mp-menu', '.mp-level');
+      reversed = levels.toArray().reverse();
+      _results = [];
+      for (_i = 0, _len = reversed.length; _i < _len; _i++) {
+        item = reversed[_i];
+        _results.push($(item).find('a:first').click());
+      }
+      return _results;
     },
     unhighlightAllItems: function() {
       return this.forAllChildViews(function(view) {
@@ -12517,7 +12528,7 @@ Tent.Application.MainMenuView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t<li>\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} href=\"#\" {{action menuClicked target=\"view\"}}>\n\t\t\t<i {{bindAttr class=\"view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2 class=\"icon icon-display\">{{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\" href=\"#\">back</a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n\t</li>\n{{/if}}");
+Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t<li>\n\t\t\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} href=\"#\" {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-angle-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\"view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<a class=\"mp-back\" href=\"#\">back</a>\n\t\t\t\t<h2><i {{bindAttr class=\"view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n\t</li>\n{{/if}}");
 
 (function() {
 
@@ -13047,22 +13058,34 @@ GridController
 
   Tent.Data.Filter = Ember.Mixin.create({
 <<<<<<< HEAD
+<<<<<<< HEAD
     defaultFiltering: {
+=======
+    filteringInfo: {
+>>>>>>> Navigate menu to specified route.
       selectedFilter: 'default',
       availableFilters: [
         {
           name: "default",
           label: Tent.I18n.loc('tent.filter.noFilter'),
           description: "",
+<<<<<<< HEAD
           values: []
         }
       ]
     },
 =======
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
+=======
+          values: {}
+        }
+      ]
+    },
+>>>>>>> Navigate menu to specified route.
     init: function() {
       this.applyDefaultFilter();
       this._super();
+<<<<<<< HEAD
 <<<<<<< HEAD
       this.REQUEST_TYPE = this.REQUEST_TYPE || {};
       return this.REQUEST_TYPE.FILTER = 'filtering';
@@ -13070,6 +13093,9 @@ GridController
       this.REQUEST_TYPE.FILTER = 'filtering';
       return this.set('filteringInfo', this.getEmptyFilter());
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
+=======
+      return this.REQUEST_TYPE.FILTER = 'filtering';
+>>>>>>> Navigate menu to specified route.
       /*@set('filteringInfo', 
       			selectedFilter: 'task2'
       			availableFilters: [
@@ -13110,6 +13136,7 @@ GridController
 
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     ensureFilterAvailable: function() {
       if (!(this.get('selectedFilter') != null)) {
         return this.set('filteringInfo', {
@@ -13139,6 +13166,8 @@ GridController
       };
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
     },
+=======
+>>>>>>> Navigate menu to specified route.
     selectedFilter: (function() {
       return this.getSelectedFilter();
     }).property('filteringInfo', 'filteringInfo.selectedFilter'),
@@ -13251,9 +13280,6 @@ GridController
       var column, columnFilter, filter, filteringInfo, uiState, _i, _len, _ref, _results;
       uiState = this.get('defaultPersonalization');
       if (uiState.filtering != null) {
-        if (!(this.get('filteringInfo').selectedFilter != null)) {
-          this.set('filteringInfo', this.getEmptyFilter());
-        }
         filteringInfo = this.get('filteringInfo');
         filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter);
         _ref = this.get('columnsDescriptor');

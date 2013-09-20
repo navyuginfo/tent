@@ -63,8 +63,13 @@ Tent.Application.MainMenuView = Ember.View.extend
     selectedItem.set('isSelected', true)
 
   navigateToCorrectMenuLevel: (selectedItem) ->
-    level = selectedItem.$().parents('.mp-level:first').get(0)
+    #level = selectedItem.$().parents('.mp-level:first').get(0)
     #@get('menuPlugin')._openMenu(level) if @get('menuPlugin')?
+    $('.dashboard-toggle a').click()
+    levels = selectedItem.$().parentsUntil('#mp-menu','li')
+    reversed = levels.toArray().reverse()
+    for item in reversed
+      $(item).find('a:first').click()
 
   unhighlightAllItems: ->
     @forAllChildViews((view)->

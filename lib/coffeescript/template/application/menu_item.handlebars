@@ -1,13 +1,15 @@
 {{#if view.isEntitled}}
 	<li>
+		
 		<a {{bindAttr class="view.hasAction:menu-link view.isDisabled:ui-state-disabled"}} href="#" {{action menuClicked target="view"}}>
+			{{#if view.hasChildren}}<i class="icon-angle-left"></i>{{/if}}
 			<i {{bindAttr class="view.icon"}} {{bindAttr data-title="view.title"}} data-placement="right" data-animation="false"></i>
 			<span class="content">{{loc view.title}}</span>
 		</a>
 		{{#if view.hasChildren}}
 			<div class="mp-level">
-				<h2 class="icon icon-display">{{loc view.title}}</h2>
 				<a class="mp-back" href="#">back</a>
+				<h2><i {{bindAttr class="view.icon"}}></i> {{loc view.title}}</h2>
 				<ul>
 					{{yield}}
 				</ul>
