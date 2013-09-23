@@ -62,7 +62,7 @@ test 'get filterable columns', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 
-	equal controller.get('filterableColumns').length, 2, 'There should be 2 filterable columns'
+	equal filteringCollection.get('filterableColumns').length, 2, 'There should be 2 filterable columns'
 	ok true
 
 test 'selectedColumn binding', ->
