@@ -102,7 +102,7 @@ Tent.DateRangeField = Tent.TextField.extend
 		@_super(arguments)
 		widget = @
 		@initializeWithStartAndEndDates()
-		@.$('input').daterangepicker({
+		@$('input').daterangepicker({
 			presetRanges: @get('presetRanges') if @get('presetRanges')?
 			presets: @get('presets') if @get('presets')?
 			rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
@@ -130,14 +130,14 @@ Tent.DateRangeField = Tent.TextField.extend
 	* @return {String}
 	###
 	getValue: ->
-		@.$('input').val() if @.$('input')?
+		@$('input').val() if @$('input')?
 
 	###*
 	* @method setValue Set the value of the input field
 	* @param {String} value
 	###
 	setValue: (value)->
-		@.$('input').val(value)
+		@$('input').val(value)
 
 	initializeWithStartAndEndDates: ->
 		if not @get('value')?
@@ -162,7 +162,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('formattedValue')? and @get('formattedValue')!="" and @getValue()?
+		if @get('formattedValue')? and @get('formattedValue') != "" and @getValue()?
 			startString = @getValue().split(@get('rangeSplitter'))[0]
 			if startString?
 				try 
@@ -207,18 +207,18 @@ Tent.DateRangeField = Tent.TextField.extend
 	
 	handleReadonly: (->
 		if @get('readOnly')? && @get('readOnly')
-			@.$('input').bind('click', @get('readOnlyHandler'))
-			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
+			@$('input').bind('click', @get('readOnlyHandler'))
+			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
 		else 
-			@.$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
-			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
+			@$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
+			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('readOnly')
 
 	handleDisabled: (->
 		if @get('disabled')? && @get('disabled')
-			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
+			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
 		else 
-			@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
+			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('disabled')
 
 		 

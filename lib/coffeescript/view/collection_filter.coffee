@@ -40,9 +40,12 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   
   setupToggling: ->
     widget = @
-    @$(".open-dropdown").click((e)->
-      widget.toggleVisibility()
-    )
+
+    #@$(".open-dropdown").click((e)->
+    #  widget.toggleVisibility()
+    #)
+
+    @bindToggleVisibility(@$(".open-dropdown"), @$(".dropdown-menu"))
 
     @$(".filter-panel .close-panel .btn").click(->
       widget.closeFilterPanel()
@@ -81,9 +84,8 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   ensureAllFieldsRepresented: ->
     filter = @get('currentFilter')
     for column in @get('collection.columnsDescriptor')
-      if column.filterable!=false
-        if not @get('collection').getFilterValueForColumn(column.name)
-          @get('collection').createBlankFilterFieldValue(column.name)
+      unless column.filterable==false and not @get('collection').getFilterValueForColumn(column.name)
+        @get('collection').createBlankFilterFieldValue(column.name)
 
   clearFilter: ->
     @clearView(@)

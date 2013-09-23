@@ -50,13 +50,13 @@ test 'Add / Remove Filter Field', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 	controller.addFilterField()
-	equal controller.get('content').length, 8, 'Should be one entry' 
+	equal controller.get('content').length, 1, 'Should be one entry' 
 	controller.addFilterField()
-	equal controller.get('content').length, 9, 'Should be 2 entries' 
+	equal controller.get('content').length, 2, 'Should be 2 entries' 
 	controller.removeFilterField(controller.get('content')[0])
-	equal controller.get('content').length, 8, 'Should be 1 entry again' 
+	equal controller.get('content').length, 1, 'Should be 1 entry again' 
 	controller.removeFilterField(controller.get('content')[0])
-	equal controller.get('content').length, 7, 'Should be 0 entry again' 
+	equal controller.get('content').length, 0, 'Should be 0 entry again' 
 
 test 'get filterable columns', ->
 	controller = Tent.FilterPanelController.create
