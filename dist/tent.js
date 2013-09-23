@@ -3214,19 +3214,22 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
   Tent.FormattingSupport = Ember.Mixin.create({
     init: function() {
       this._super();
-      return this.set('formattedValue', this.format(this.get('value')));
+      return this.set("formattedValue", this.format(this.get("value")));
     },
     valueDidChange: (function() {
-      this.set("formattedValue", this.format(this.get('value')));
-      return this.set('isValid', this.validate());
-    }).observes('value'),
+      this.set("formattedValue", this.format(this.get("value")));
+      return this.set("isValid", this.validate());
+    }).observes("value"),
     format: function(value) {
-      if (value) {
-        return value.trim();
-      }
+      return this.trimValue(value);
     },
     unFormat: function(value) {
       return value;
+    },
+    trimValue: function(value) {
+      if (value) {
+        return value.trim();
+      }
     }
   });
 
@@ -3327,7 +3330,13 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       var currentFilterOperator;
       currentFilterOperator = this.get('filterOp');
       return currentFilterOperator === 'range';
-    }).property('filterOp')
+    }).property('filterOp'),
+    observeFilterOp: (function() {
+      var op;
+      if (((op = this.get('filterOp')) != null) && !op.isBlank() && (this.get('operators') != null)) {
+        return this.set('selectedOperator', this.get('operators').findProperty('operator', op));
+      }
+    }).observes('filterOp')
   });
 
 }).call(this);
@@ -3439,11 +3448,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-<<<<<<< HEAD
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n        advanced=false\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
-=======
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
->>>>>>> feature/side_filter_panel
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -3483,6 +3488,9 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
+    trimmedValue: (function() {
+      return this.trimValue(this.get('value'));
+    }).property('value'),
     change: function() {
       var unformatted;
       this._super(arguments);
@@ -4376,12 +4384,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.initializeWithNewPersonalization(0);
     }).observes('collection.personalizations'),
     initializeWithNewPersonalization: function(index) {
-      var uiState;
-      if (this.get('customizationName') !== this.get('collection.customizationName')) {
-        if (parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
+      var customization, uiState;
+      customization = this.get('customizationName');
+      uiState = this.get('collection.defaultPersonalization');
+      if (uiState != null) {
+        uiState.filtering = this.get('collection.defaultFiltering');
+        if ((customization != null) && customization !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
           uiState = this.get('collection.personalizations').objectAt(index).get('settings');
-        } else {
-          uiState = this.get('collection.defaultPersonalization');
         }
         this.set('collection.customizationName', uiState.customizationName);
         if (uiState.paging != null) {
@@ -8488,11 +8497,7 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-<<<<<<< HEAD
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.isLoading}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classNameBindings=\"view.inputSizeClass\" \n               class=\"primary-class\"\n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\"\n               advancedBinding=\"view.advanced\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
-=======
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classBinding=\"view.inputSizeClass\" \n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
->>>>>>> feature/side_filter_panel
+Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classNameBindings=\"view.inputSizeClass\" \n               class=\"primary-class\"\n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\"\n               advancedBinding=\"view.advanced\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
 
@@ -8573,18 +8578,14 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
      * This will usually be represented in the UI by a spinning icon.
     */
 
-<<<<<<< HEAD
-    isLoading: false,
+    isLoading: null,
+    isLoaded: null,
     /**
     * @property {Boolean} advanced This attached Select2 behavior to the widget, allowing such features as autocomplete,
     * option formatting and tag management.
     */
 
     advanced: false,
-=======
-    isLoading: null,
-    isLoaded: null,
->>>>>>> feature/side_filter_panel
     init: function() {
       this._super();
       if (this.get('list.length') === 1 && this.get('preselectSingleElement')) {
@@ -8693,7 +8694,6 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
       this._super(arguments);
       return this.set('isValid', this.validate());
     },
-<<<<<<< HEAD
     setupAdvancedMode: function() {
       if (this.get('advanced') && !this.get('isRadioGroup') && Tent.Browsers.getIEVersion() !== 8) {
         return this.$('.primary-class').select2({
@@ -8702,8 +8702,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           dropdownAutoWidth: true
         });
       }
-    }
-=======
+    },
     showSpinner: (function() {
       if (this.get('isLoaded') != null) {
         return !this.get('isLoaded');
@@ -8712,7 +8711,6 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         return this.get('isLoading');
       }
     }).property('isLoaded', 'isLoading')
->>>>>>> feature/side_filter_panel
   });
 
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
@@ -12352,7 +12350,7 @@ GridController
 (function() {
 
   Tent.Data.Filter = Ember.Mixin.create({
-    filteringInfo: {
+    defaultFiltering: {
       selectedFilter: 'default',
       availableFilters: [
         {
@@ -12364,6 +12362,7 @@ GridController
       ]
     },
     init: function() {
+      this.applyDefaultFilter();
       this._super();
       this.REQUEST_TYPE = this.REQUEST_TYPE || {};
       return this.REQUEST_TYPE.FILTER = 'filtering';
@@ -12517,6 +12516,9 @@ GridController
       filter.name = filter.name || filter.label.split(" ").join('');
       this.set('filteringInfo.selectedFilter', filter.name);
       return this.get('filteringInfo.availableFilters').push(Ember.copy(filter, true));
+    },
+    applyDefaultFilter: function() {
+      return this.set('filteringInfo', $.extend({}, this.get('defaultFiltering')));
     }
   });
 
