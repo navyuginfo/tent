@@ -204,13 +204,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         dropdownAutoWidth: true
       })
 
-  showSpinner: (->
-    if @get('isLoaded')?
-      return not @get('isLoaded')
-    if @get('isLoading')?
-      return @get('isLoading')
-  ).property('isLoaded', 'isLoading')
-
 Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
   defaultTemplate: Ember.Handlebars.compile('
     {{#if view.prompt}}
