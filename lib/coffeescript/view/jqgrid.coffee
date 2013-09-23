@@ -4,6 +4,7 @@ require '../mixin/grid/selection_support'
 require '../mixin/grid/data_adapters'
 require '../mixin/grid/export_support'
 require '../mixin/grid/editable_support'
+require '../mixin/grid/filter_support'
 require '../mixin/grid/grouping_support'
 require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
@@ -19,6 +20,7 @@ require '../mixin/grid/horizontal_scroll_support'
 * @mixins Tent.Grid.Adapters
 * @mixins Tent.Grid.ExportSupport
 * @mixins Tent.Grid.EditableSupport
+* @mixins Tent.Grid.FilterSupport
 * @mixins Tent.Grid.GroupingSupport
 * @mixins Tent.Grid.ColumnChooserSupport
 * @mixins Tent.Grid.ColumnMenu
@@ -44,10 +46,10 @@ require '../mixin/grid/horizontal_scroll_support'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned']
 
 	###*
 	* @property {String} title The title caption to appear above the table
@@ -384,11 +386,12 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 				# account for scrollbar
 				@$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth)
 			else
-				@getTableDom().setGridWidth(@$().innerWidth(), true)
+				@getTableDom().setGridWidth(@$('.table-container').innerWidth(), true)
 				widthWithoutScrollbar = bdiv.get(0).clientWidth
 				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 				# Removed for performance reasons
 				# @columnsDidChange()
+			bdiv.css('width','auto') if Tent.Browsers.isIE()
 			@adjustHeight()
 
 	padLastCellsForScrollbar: ->

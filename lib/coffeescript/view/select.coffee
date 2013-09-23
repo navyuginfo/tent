@@ -21,14 +21,16 @@
 
 require '../template/select'
 require '../template/radio_group'
+require '../mixin/filtering_support'
 require '../mixin/tooltip_support'
 require '../mixin/aria_support'
 require '../mixin/readonly_support'
 
-Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
+Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport,
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
   contentBinding: 'selection'
+  value: null
 
   ###*
   * @property {Array} list An array of objects to be presented as the dropdown options. Each item of
@@ -82,7 +84,9 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
    * @property {Boolean} isLoading A boolean to indicate that the content for the control has not yet loaded.
    * This will usually be represented in the UI by a spinning icon.
   ###
-  isLoading: false
+  isLoading: null
+
+  isLoaded: null
 
   ###*
   * @property {Boolean} advanced This attached Select2 behavior to the widget, allowing such features as autocomplete,
@@ -112,6 +116,10 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
         if $(this).hasClass('clicked') then $(this).addClass 'mouseout' else $(this).removeClass 'expand'
       ).bind 'blur', ->
         $(this).removeClass 'expand clicked mouseout'
+
+    # Ensure that supplying an initial value will defaul the dropdown at the correct option 
+    if @get('value')?
+      @valueDidChange()
             
   valueForMandatoryValidation: (->
     if @get('multiple')
@@ -128,6 +136,18 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
   selectionDidChange: (->
     @set('content', @get('selection'))
   ).observes('selected')
+
+  # Ensure that the correct operator is selected in the operators dropdown
+  valueDidChange: (->
+    value = @get('value')
+    if value?
+      valuePath = @get('optionValuePath').replace(/^content\.?/, '')
+      selectedValueObject = @get('list').filter((item)=>
+        value == if valuePath? then Ember.get(item, valuePath) else item
+      )
+      @set('selection', selectedValueObject[0]) if selectedValueObject.length == 1
+  ).observes('value')
+  
 
   listObserver: (->
     if @get 'preselectSingleElement'
@@ -164,6 +184,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @_super(arguments)
       @set('isValid', @validate())
 
+
   setupAdvancedMode: ->
     if @get('advanced') and not @get('isRadioGroup') and Tent.Browsers.getIEVersion() != 8
       @$('.primary-class').select2({
@@ -172,6 +193,14 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
         dropdownAutoWidth: true
       })
 
+
+
+  showSpinner: (->
+    if @get('isLoaded')?
+      return not @get('isLoaded')
+    if @get('isLoading')?
+      return @get('isLoading')
+  ).property('isLoaded', 'isLoading')
 
 
 Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,

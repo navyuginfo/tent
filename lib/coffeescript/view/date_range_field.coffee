@@ -90,6 +90,9 @@ Tent.DateRangeField = Tent.TextField.extend
 	###
 	dateFormat: Tent.Formatting.date.getFormat()
 
+	# This control will display a range UI, so there is no need for the template to handle that.
+	hasOwnRangeDisplay: true
+
 	operators: null # We don't need operators with a date range
 
 	init: ->		 
@@ -118,12 +121,16 @@ Tent.DateRangeField = Tent.TextField.extend
 		@handleDisabled()
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
+	willDestroyElement: ->
+		@$('input').remove()
+		$('#ui-datepicker-div').remove()
+
 	###*
 	* @method getValue Return the current value of the input field
 	* @return {String}
 	###
 	getValue: ->
-		@.$('input').val()
+		@.$('input').val() if @.$('input')?
 
 	###*
 	* @method setValue Set the value of the input field
@@ -155,7 +162,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('formattedValue')? and @get('formattedValue')!=""
+		if @get('formattedValue')? and @get('formattedValue')!="" and @getValue()?
 			startString = @getValue().split(@get('rangeSplitter'))[0]
 			if startString?
 				try 

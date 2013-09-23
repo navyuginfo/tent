@@ -1,0 +1,24 @@
+<div class="filter-container slide-from-left"}}>
+		<div>
+			<h3>Filter</h3>
+			<a {{action togglePin target="view"}} {{bindAttr class=":pin-button :pull-right view.isPinned:selected"}}><i class="icon-pushpin"></i></a>
+		</div>
+		
+		<div class="filterpanel">
+			<header>
+				<a {{action addFilterField target="controller"}} class="add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
+				<a {{action applyFilter target="controller"}} class="filter-button">{{loc tent.filter.filter}}<i class="icon-caret-right"></i></a>
+			</header>
+			<div class="content">
+				<div class="background-hint">{{loc tent.filter.bgHint}}</div>
+				{{#each view.controller.content}}
+					{{view Tent.FilterFieldView contentBinding="this"}}
+				{{/each}}
+			</div>
+		</div>
+</div>
+
+
+
+
+ 
