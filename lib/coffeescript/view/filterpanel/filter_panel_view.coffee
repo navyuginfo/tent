@@ -42,6 +42,16 @@ Tent.FilterPanelView = Ember.View.extend
 	willDestroyElement: ->
 		delete @get('controller')
 
+	togglePin: ->
+		@toggleProperty('isPinned')
+		Ember.run.next =>
+			$.publish("/window/resize")
+
+	showFilterDidChange: (->
+		@set('isPinned', false)
+		$.publish("/window/resize")
+	).observes('showFilter')
+
 
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
