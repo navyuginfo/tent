@@ -592,6 +592,21 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   color: #aaa;
   cursor: default;
 }
+<<<<<<< HEAD
+=======
+.tent-jqgrid .jqgrid-title-button .btn {
+  padding: 0px 4px;
+}
+.tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button {
+  float: right;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.tent-jqgrid .column-chooser span.ui-icon, .tent-jqgrid .jqgrid-title-button span.ui-icon {
+  float: left;
+  margin: 1px 1px;
+}
+>>>>>>> dist files
 .tent-jqgrid .export .export-json {
   background-image: url(images/export/);
 }
