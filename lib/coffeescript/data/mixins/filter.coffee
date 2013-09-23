@@ -135,9 +135,6 @@ Tent.Data.Filter = Ember.Mixin.create
 	getFilteringInfo: ->
 		@getSelectedFilter()
 
-	#addFieldToFilter: (field)->
-	#		@get('selectedFilter.values')[]
-
 	# Add a new field to the value array of the currently selected filter, 
 	# ready to be populated with a filter field value for the specified column.
 	createBlankFilterFieldValue: (columnName)->
@@ -153,6 +150,13 @@ Tent.Data.Filter = Ember.Mixin.create
 		@get('selectedFilter.values').filter((value)->
 			value.field == columnName
 		)
+
+	# Return only columns that are filterable
+	filterableColumns: (->
+		@get('columnsDescriptor').filter((column)->
+			column.filterable != false
+		)
+	).property('columnsDescriptor')
 
 
 	saveFilter: (filterDef) -> 

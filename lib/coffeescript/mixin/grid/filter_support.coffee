@@ -8,7 +8,7 @@ Tent.Grid.FilterSupport = Ember.Mixin.create
 	maximizeGridOnFilter: false
 
 	toggleFilter: ->
-		@set('showFilter', !@get('showFilter'))
+		@toggleProperty('showFilter')
 		@resizeToContainer()
 
 		if @get('maximizeGridOnFilter')

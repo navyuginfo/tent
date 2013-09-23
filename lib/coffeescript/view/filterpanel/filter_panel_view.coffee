@@ -18,12 +18,6 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)
 
-	filterableColumns: (->
-		@get('collection.columnsDescriptor').filter((column)->
-			column.filterable != false
-		)
-	).property('collection.columnsDescriptor')
-
 
 Tent.FilterPanelView = Ember.View.extend
 	templateName: 'filterpanel/filter_panel_view'
