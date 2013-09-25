@@ -326,7 +326,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     uiState = @get('collection.defaultPersonalization')
     if uiState?
       uiState.filtering = @get('collection.defaultFiltering')
-      if @get('customizationName') != @get('collection.customizationName') and @shouldUseIndex(index)
+      if @shouldUseIndex(index)
         uiState = @get('collection.personalizations').objectAt(index).get('settings')
       @set('collection.customizationName', uiState.customizationName)
       @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
@@ -338,4 +338,4 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @populateCollectionDropdown()
 
   shouldUseIndex: (index)->
-    parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
+    @get('customizationName') != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
