@@ -112,7 +112,7 @@ Tent.Data.Customizable = Ember.Mixin.create
 
   saveReport: (report)->
     reportName = report.get('name')
-    settings = $.extend(true, {}, @gatherGridData(reportName), report.get('settings'))
+    settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
     newRecord = @get('store').savePersonalization('report', @get('dataType'), reportName, settings)
     
   removeExistingCustomization: (name)->
