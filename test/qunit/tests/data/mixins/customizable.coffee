@@ -4,35 +4,56 @@ teardown = ->
 
 module 'Tent.Data.Customizable', setup, teardown
 
+Customizable = Ember.Object.extend Tent.Data.Customizable,
+  dataType: 'lego'
+  fetchPersonalizations: ->
+  createPersonalizationRecordForClientSide: ->
+    Ember.Object.create({name:"1"})
+  personalizations: []
+
 test 'Test saveUIState', ->
+  ###
+  - set the customization name on the collection
+  - save the latest state to the server
+  - update the existing p13n or adda  new one if it doesnt exist
+  ###
 
-	###
-	- set the customization name on the collection
-	- save the latest state to the server
-	- update the existing p13n or adda  new one if it doesnt exist
-	###
+  customizable = Customizable.create()
+  mock = sinon.mock(customizable)
+  mock.expects('savePersonalization').once()
 
-	Customizable = Ember.Object.extend Tent.Data.Customizable,
-		fetchPersonalizations: ->
-		createPersonalizationRecordForClientSide: ->
-			Ember.Object.create({name:"1"})
-		personalizations: []
+  customizable.saveUIState('thisYear')
+  equal customizable.get('customizationName'), 'thisYear', 'set the customization name on the collection'
+  equal customizable.get('personalizations').length, 1, 'Added a p13n'
 
-	customizable = Customizable.create()
+  mock.verify()
+  mock.restore()
 
-	#spStub = sinon.stub(customizable, 'savePersonalization')
-	mock = sinon.mock(customizable)
-	mock.expects('savePersonalization').once()
+  spStub = sinon.stub(customizable, 'savePersonalization')
 
-	customizable.saveUIState('thisYear')
-	equal customizable.get('customizationName'), 'thisYear', 'set the customization name on the collection' 
-	equal customizable.get('personalizations').length, 1, 'Added a p13n'
+  customizable.saveUIState(' thisYear    ')
+  equal customizable.get('customizationName'), 'thisYear', 'ensure trim on the name'
 
-	mock.verify()
-	mock.restore()
+test 'personalizations are saved correctly', ->
+  # by default, personalizations are saved with a subcategory equal
+  # to the dataType of the Collection
+  store = Ember.Object.extend({savePersonalization: ->}).create()
+  mock = sinon.mock(store)
+  mock.expects('savePersonalization').once().withArgs('collection', 'lego', 'foo')
 
-	spStub = sinon.stub(customizable, 'savePersonalization')
+  customizable = Customizable.create()
+  customizable.set('store', store)
+  customizable.saveUIState('foo')
 
-	customizable.saveUIState(' thisYear    ')
-	equal customizable.get('customizationName'), 'thisYear', 'ensure trim on the name' 
+  mock.verify()
 
+  # the personalization subcategory can be overridden by setting the
+  # personalizationType property
+  mock = sinon.mock(store)
+  mock.expects('savePersonalization').once().withArgs('collection', 'testType', 'foo')
+
+  customizable.set('personalizationType', 'testType')
+  customizable.saveUIState('foo')
+
+  mock.verify()
+  expect(0)
