@@ -246,8 +246,16 @@ $headerHeight: 20px;
 		}
 	}
 
+
+ 
+	.jqgrid-title-button {
+		.btn {
+			padding: 0px 4px;
+		}
+	}
+
 	/* Column Chooser */
-	.column-chooser, .jqgrid-title-button, .btn-filter  {
+	.column-chooser, .jqgrid-title-button, .btn-filter {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;

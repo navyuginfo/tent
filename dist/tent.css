@@ -550,6 +550,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   color: #aaa;
   cursor: default;
 }
+.tent-jqgrid .jqgrid-title-button .btn {
+  padding: 0px 4px;
+}
 .tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button, .tent-jqgrid .btn-filter {
   float: right;
   margin-right: 30px;
@@ -1365,6 +1368,13 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   padding-top: 10px;
 }
 
+.fixed-header .collection-panel-container {
+  position: absolute;
+  top: 20px;
+  bottom: 0px;
+  overflow: auto;
+}
+
 .collection-panel {
   display: inline-block;
   margin: 10px;
@@ -1384,6 +1394,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   font-weight: normal;
   text-rendering: inherit;
   display: inline-block;
+}
+.collection-panel h1 input {
+  display: inline-block!important;
 }
 .collection-panel label {
   color: #7d7d7d;
@@ -1449,6 +1462,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .collection-panel header .header-border input[type='checkbox'] {
   margin-top: 0px;
+  display: inline-block!important;
 }
 .collection-panel header a {
   color: white;

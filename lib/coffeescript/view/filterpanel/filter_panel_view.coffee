@@ -11,6 +11,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	removeFilterField: (fieldContent)->
 		@get('collection').removeFilterFieldValue(fieldContent)
 
+	applyFilter: ->
+		@get('collection').doFilter()
+
 	# Called from the view
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)

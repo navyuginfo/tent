@@ -1,8 +1,12 @@
 <div class="btn-group header-buttons">
+
 	{{#if view.grid.scroll}}
 		<div class="header-pager">
 			Page {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}
 		</div>
+	{{/if}}
+	{{#if view.grid.showMultiview}}
+		{{view Tent.Grid.MultiviewButtons showCardViewBinding="view.grid.showCardView" showListViewBinding="view.grid.showListView"}}
 	{{/if}}
 
 	{{#if view.grid.showAutofitButton}}

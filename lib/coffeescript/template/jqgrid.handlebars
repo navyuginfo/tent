@@ -13,10 +13,22 @@
 	{{view Tent.FilterPanelView collectionBinding="view.collection" isPinnedBinding="view.isPinned" showFilterBinding="view.showFilter" usageContextBinding="view.usageContext"}}
 
 	<div class="table-container">
-    	<table class="grid-table"></table>
+        {{#if view.showMultiview}}
+            {{view Tent.CollectionPanelView 
+                collectionBinding="view.collection"
+                contentViewTypeBinding="view.cardViewType"
+                selectionBinding="view.selection"
+                selectable=true
+                isVisibleBinding="view.showCardView"
+            }} 
+        {{/if}}
+        <div {{bindAttr class=":visibility-wrapper view.showCardView:hidden"}}>
+    	   <table class="grid-table"></table>
+           <div class="gridpager"></div>
+        </div>
     </div>
 </div>
-<div class="gridpager"></div>
+
 {{#if view.hasErrors}}
 	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
 {{/if}}

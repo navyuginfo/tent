@@ -95,6 +95,8 @@
         hideShowCaption: 'Columns',
         hideShowTitle: 'Hide/Show Columns',
         horizontalScroll: 'Auto-Fit',
+        multiviewList: 'List View',
+        multiviewCard: 'Card View',
         "export": {
           xml: 'XML',
           json: 'JSON',
@@ -4125,6 +4127,7 @@ Tent.Table = Ember.View.extend({
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n\t<div class=\"table-container\">\n    \t<table class=\"grid-table\"></table>\n    </div>\n</div>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
 =======
 Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{#if view.showFilter}}\n\t\t<div class=\"filter-container\">\n\t\t\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\"}}\n\t\t</div>\n\t{{/if}}     \n\t<div class=\"table-container\">\n    \t<table class=\"grid-table\"></table>\n    </div>\n</div>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
@@ -4152,6 +4155,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 =======
 Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\t<div class=\"table-container\">\n    \t<table class=\"grid-table\"></table>\n    </div>\n</div>\n<div class=\"gridpager\"></div>\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
 >>>>>>> Adding tent.js
+=======
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\t<div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n            }} \n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n    \t   <table class=\"grid-table\"></table>\n           <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+>>>>>>> Personalization set separately from UI and directly on the collection.
 
 (function() {
 
@@ -4297,7 +4303,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           name = $(e.target).attr('data-name');
           _this.set('customizationIndex', index);
           _this.set('customizationName', name);
-          return _this.initializeWithNewPersonalization(index);
+          return _this.initializeFromCustomizationIndex(index);
         });
       }
     }).observes('collection.personalizations', 'collection.personalizations.@each'),
@@ -4564,8 +4570,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return sortable && postdata.sidx !== "" && (postdata.sidx !== this.get('sortingInfo.fields.firstObject.field') || postdata.sord !== this.get('sortingInfo.fields.firstObject.sortDir'));
     },
     restoreUIState: (function() {
-      return this.initializeWithNewPersonalization(0);
+      return this.initializeFromCollectionPersonalizationName();
     }).observes('collection.personalizations'),
+<<<<<<< HEAD
     initializeWithNewPersonalization: function(index) {
 <<<<<<< HEAD
       var uiState;
@@ -4582,29 +4589,74 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if ((customization != null) && customization !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
 >>>>>>> no message
           uiState = this.get('collection.personalizations').objectAt(index).get('settings');
-        }
-        this.set('collection.customizationName', uiState.customizationName);
-        if (uiState.paging != null) {
-          this.set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging));
-        }
-        if (uiState.sorting != null) {
-          this.set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting));
-        }
-        if (uiState.filtering != null) {
-          this.set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering));
-        }
-        if (uiState.columns != null) {
-          this.set('columnInfo', jQuery.extend(true, {}, uiState.columns));
-        }
-        if (uiState.grouping != null) {
-          this.set('groupingInfo', jQuery.extend(true, {}, uiState.grouping));
-        }
-        this.applyStoredPropertiesToGrid();
-        return this.populateCollectionDropdown();
+=======
+    personalizationWasAdded: (function() {
+      return this.initializeFromCollectionPersonalizationName();
+    }).observes('collection.personalizations.@each'),
+    initializeFromCollectionPersonalizationName: function() {
+      var personalization, settings;
+      personalization = this.getPersonalizationFromName(this.get('collection.customizationName'));
+      if (personalization != null) {
+        settings = personalization.get('settings');
+      } else {
+        settings = this.get('collection.defaultPersonalization');
+        settings.filtering = this.get('collection.defaultFiltering');
       }
+      this.updateCollectionWithNewPersonalizationValues(this.get('collection.customizationName'), settings);
+      return this.updateGridWitNewPersonalizationValues(settings);
+    },
+    getPersonalizationFromName: function(name) {
+      var matches,
+        _this = this;
+      matches = this.get('collection.personalizations').filter(function(item) {
+        return item.get('name') === name;
+      });
+      if (matches.length > 0) {
+        return matches[0];
+      }
+    },
+    initializeFromCustomizationIndex: function(index) {
+      var customization, customizationName, settings;
+      customization = this.get('customizationName');
+      settings = this.get('collection.defaultPersonalization');
+      if (settings != null) {
+        settings.filtering = this.get('collection.defaultFiltering');
+        if (this.get('customizationName') !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
+          settings = this.get('collection.personalizations').objectAt(index).get('settings');
+>>>>>>> Personalization set separately from UI and directly on the collection.
+        }
+        customizationName = this.get('collection.personalizations').objectAt(index).get('name');
+        this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
+        return this.updateGridWitNewPersonalizationValues(settings);
+      }
+    },
+    updateCollectionWithNewPersonalizationValues: function(name, settings) {
+      this.set('collection.customizationName', name);
+      if (settings.paging != null) {
+        this.set('collection.pagingInfo', jQuery.extend(true, {}, settings.paging));
+      }
+      if (settings.sorting != null) {
+        this.set('collection.sortingInfo', jQuery.extend(true, {}, settings.sorting));
+      }
+<<<<<<< HEAD
     },
     shouldUseIndex: function(index) {
       return this.get('customizationName') !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null);
+=======
+      if (settings.filtering != null) {
+        return this.set('collection.filteringInfo', jQuery.extend(true, {}, settings.filtering));
+      }
+    },
+    updateGridWitNewPersonalizationValues: function(settings) {
+      if (settings.columns != null) {
+        this.set('columnInfo', jQuery.extend(true, {}, settings.columns));
+      }
+      if (settings.grouping != null) {
+        this.set('groupingInfo', jQuery.extend(true, {}, settings.grouping));
+      }
+      this.applyStoredPropertiesToGrid();
+      return this.populateCollectionDropdown();
+>>>>>>> Personalization set separately from UI and directly on the collection.
     }
   });
 
@@ -6054,6 +6106,17 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 
 
 (function() {
+
+  Tent.Grid.MultiViewSupport = Ember.Mixin.create({
+    showMultiview: false,
+    showCardView: false,
+    showListView: true
+  });
+
+}).call(this);
+
+
+(function() {
 /**
   * @class Tent.JqGrid
   * @mixins Tent.ValidationSupport
@@ -6090,7 +6153,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
   */
 
 
-  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, {
+  Tent.JqGrid = Ember.View.extend(Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.Grid.MultiViewSupport, {
     templateName: 'jqgrid',
     classNames: ['tent-jqgrid'],
 <<<<<<< HEAD
@@ -6703,7 +6766,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\t{{#if view.grid.scroll}}\n\t\t<div class=\"header-pager\">\n\t\t\tPage {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}\n\t\t</div>\n\t{{/if}}\n\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t{{#if view.grid.collection}}\n\t\t{{#if view.grid.filtering}}\n\t\t\t<a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter pull-right\">\n\t\t\t\t<i class=\"icon-filter\"></i>{{loc tent.filter.filter}}\n\t\t\t</a>\n\t\t{{/if}}\n\t{{/if}}\t\n\n</div>\n\n");
+Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\n\t{{#if view.grid.scroll}}\n\t\t<div class=\"header-pager\">\n\t\t\tPage {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}\n\t\t</div>\n\t{{/if}}\n\t{{#if view.grid.showMultiview}}\n\t\t{{view Tent.Grid.MultiviewButtons showCardViewBinding=\"view.grid.showCardView\" showListViewBinding=\"view.grid.showListView\"}}\n\t{{/if}}\n\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t{{#if view.grid.collection}}\n\t\t{{#if view.grid.filtering}}\n\t\t\t<a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter pull-right\">\n\t\t\t\t<i class=\"icon-filter\"></i>{{loc tent.filter.filter}}\n\t\t\t</a>\n\t\t{{/if}}\n\t{{/if}}\t\n\n</div>\n\n");
 
 Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
 
@@ -7767,6 +7830,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     applyFilter: function() {
       return this.get('collection').doFilter();
@@ -7774,6 +7838,11 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
 >>>>>>> Allow enumerations defined in the column meta to be used in filters.
 =======
 >>>>>>> Adding tent.js
+=======
+    applyFilter: function() {
+      return this.get('collection').doFilter();
+    },
+>>>>>>> Personalization set separately from UI and directly on the collection.
     deleteFilterField: function(event) {
       return this.removeFilterField(event.context);
     },
@@ -8268,6 +8337,37 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       if (fieldView != null) {
         this.set('fieldView', fieldView);
         return this.get('childViews').pushObject(fieldView);
+      }
+    }
+  });
+
+}).call(this);
+
+
+Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"btn active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"btn\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
+
+(function() {
+Tent.Grid.MultiviewButtons = Ember.View.extend({
+    templateName: 'grid/multiview_buttons',
+    classNames: ['jqgrid-title-button'],
+    showCardView: false,
+    showListView: true,
+    didInsertElement: function() {
+      return this.$('.btn-group').button();
+    },
+    click: function(e) {
+      var selected;
+      selected = this.$('.active').attr('data-view');
+      switch (selected) {
+        case "card":
+          this.set('showCardView', true);
+          return this.set('showListView', false);
+        case "list":
+          this.set('showCardView', false);
+          return this.set('showListView', true);
+        default:
+          this.set('showCardView', false);
+          return this.set('showListView', true);
       }
     }
   });
@@ -12456,7 +12556,7 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 
 Ember.TEMPLATES['collection_panel']=Ember.Handlebars.compile("{{#each item in view.collection.modelData}}\n\t<article class=\"collection-panel\">\n\t\t{{view Tent.CollectionPanelContentContainerView \n\t\t\titemBinding=\"item\" \n\t\t\tcontentViewTypeBinding=\"view.contentViewType\" \n\t\t\tcollectionBinding=\"view.collection\"\n\t\t\tselectableBinding=\"view.selectable\"\n\t\t\tselectionBinding=\"view.selection\"\n\t\t}}\n\t</article>\n{{/each}}");
 
-Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t{{view Tent.TextField \n              valueBinding=\"view.content.title\" \n              label=\"Title\"               \n        }}\n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
+Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t \n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
 
 (function() {
 /**
@@ -12496,7 +12596,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       if (!(this.get('selection') != null)) {
         return this.set('selection', Ember.A());
       }
-    }
+    },
+    selectionDidChange: (function() {
+      return console.log('selection changed');
+    }).observes('selection', 'selection.@each')
   });
 
   Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend({
@@ -12512,13 +12615,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
           content: this.get('item'),
           collection: this.get('collection'),
           selectable: this.get('selectable'),
-          selected: this.get('isSelected')
+          selection: this.get('selection')
         });
       }
     }).property('item'),
-    isSelected: (function() {
-      return this.get('selection').contains(this.get('item'));
-    }).property('selection.@each'),
     selectedDidChange: function(isSelected) {
       if (isSelected) {
         return this.addToSelection();
@@ -12552,10 +12652,14 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     classNameBindings: ['selected'],
     content: null,
     selectable: false,
-    selected: false,
+    selection: [],
     didInsertElement: function() {
       return this.$().parents('.collection-panel:first').css('opacity', '1');
     },
+    selected: (function() {
+      var _ref;
+      return (_ref = this.get('selection')) != null ? _ref.contains(this.get('content')) : void 0;
+    }).property('selection.@each'),
     /**
     	* @method getLabelForField Returns a translated label for the given field name of a collections columns
     	* @param {String} fieldName the field name of the column to be returned
@@ -12586,11 +12690,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       } else {
         return value;
       }
-    },
-    selectedDidChange: (function() {
-      this.set('selected', this.get('selected'));
-      return this.get('parentView').selectedDidChange(this.get('selected'));
-    }).observes('selected')
+    }
   });
 
 }).call(this);
@@ -13572,6 +13672,13 @@ grouping: {
 
   Tent.Data.Customizable = Ember.Mixin.create({
     isCustomizable: true,
+    /**
+    * @property {Boolean} fetchPersonalizationsOnCreation Instruct the collection to load its personalizations from the 
+    * server when it is instantiated.
+    */
+
+    fetchPersonalizationsOnCreation: true,
+    personalizationCategory: 'collection',
     defaultName: Tent.I18n.loc('tent.jqGrid.saveUi.defaultName'),
     defaultPersonalization: {
       customizationName: Tent.I18n.loc('tent.jqGrid.saveUi.defaultName'),
@@ -13632,6 +13739,15 @@ grouping: {
         return this.get('personalizations').pushObject(newRecord);
       }
     },
+    addReportToCollection: function(report) {
+      return this.get('personalizations').pushObject(report);
+    },
+    saveReport: function(report) {
+      var newRecord, reportName, settings;
+      reportName = report.get('name');
+      settings = $.extend(true, {}, this.gatherGridData(reportName), report.get('settings'));
+      return newRecord = this.get('store').savePersonalization('report', this.get('dataType'), reportName, settings);
+    },
     removeExistingCustomization: function(name) {
       var index, p, _i, _len, _ref;
       _ref = this.get('personalizations');
@@ -13661,7 +13777,11 @@ grouping: {
       });
     },
     fetchPersonalizations: function() {
+<<<<<<< HEAD
       return this.get('store').fetchPersonalizations('collection', this.get('personalizationSubCategory'));
+=======
+      return this.get('store').fetchPersonalizations(this.get('personalizationCategory'), this.get('dataType'));
+>>>>>>> Personalization set separately from UI and directly on the collection.
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');
