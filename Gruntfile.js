@@ -138,7 +138,9 @@ module.exports = function (grunt) {
                     dot: true,
                     src: [
                         '.tmp',
-                        '<%= yeoman.dist %>/javascript/*'
+                        '<%= yeoman.dist %>/javascript/compiled-templates.js',
+                        '<%= yeoman.dist %>/javascript/tent.js',
+                        '<%= yeoman.dist %>/javascript/qunit_test.js'
                     ]
                 }]
             },
@@ -478,7 +480,6 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('karma-watch-qunit-test', [
-        'clean:test',
         'coffee:test',
         'coffee:tent',
         'ember_templates',
@@ -486,7 +487,6 @@ module.exports = function (grunt) {
         'neuterall:qunit_test',
         'karma:unit_qunit_watch:run'
     ]);
-
 
 
     //
