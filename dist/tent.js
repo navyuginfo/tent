@@ -3208,19 +3208,22 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
   Tent.FormattingSupport = Ember.Mixin.create({
     init: function() {
       this._super();
-      return this.set('formattedValue', this.format(this.get('value')));
+      return this.set("formattedValue", this.format(this.get("value")));
     },
     valueDidChange: (function() {
-      this.set("formattedValue", this.format(this.get('value')));
-      return this.set('isValid', this.validate());
-    }).observes('value'),
+      this.set("formattedValue", this.format(this.get("value")));
+      return this.set("isValid", this.validate());
+    }).observes("value"),
     format: function(value) {
-      if (value) {
-        return value.trim();
-      }
+      return this.trimValue(value);
     },
     unFormat: function(value) {
       return value;
+    },
+    trimValue: function(value) {
+      if (value) {
+        return value.trim();
+      }
     }
   });
 
@@ -3310,7 +3313,13 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       var currentFilterOperator;
       currentFilterOperator = this.get('filterOp');
       return currentFilterOperator === 'range';
-    }).property('filterOp')
+    }).property('filterOp'),
+    observeFilterOp: (function() {
+      var op;
+      if (((op = this.get('filterOp')) != null) && !op.isBlank() && (this.get('operators') != null)) {
+        return this.set('selectedOperator', this.get('operators').findProperty('operator', op));
+      }
+    }).observes('filterOp')
   });
 
 }).call(this);
@@ -3422,7 +3431,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -3462,6 +3471,9 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
+    trimmedValue: (function() {
+      return this.trimValue(this.get('value'));
+    }).property('value'),
     change: function() {
       var unformatted;
       this._super(arguments);
@@ -4356,11 +4368,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     }).observes('collection.personalizations'),
     initializeWithNewPersonalization: function(index) {
       var uiState;
-      if (this.get('customizationName') !== this.get('collection.customizationName')) {
-        if (parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
+      uiState = this.get('collection.defaultPersonalization');
+      if (uiState != null) {
+        uiState.filtering = this.get('collection.defaultFiltering');
+        if (this.shouldUseIndex(index)) {
           uiState = this.get('collection.personalizations').objectAt(index).get('settings');
-        } else {
-          uiState = this.get('collection.defaultPersonalization');
         }
         this.set('collection.customizationName', uiState.customizationName);
         if (uiState.paging != null) {
@@ -4381,6 +4393,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         this.applyStoredPropertiesToGrid();
         return this.populateCollectionDropdown();
       }
+    },
+    shouldUseIndex: function(index) {
+      return this.get('customizationName') !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null);
     }
   });
 
@@ -12027,7 +12042,7 @@ GridController
 (function() {
 
   Tent.Data.Filter = Ember.Mixin.create({
-    filteringInfo: {
+    defaultFiltering: {
       selectedFilter: 'default',
       availableFilters: [
         {
@@ -12039,6 +12054,7 @@ GridController
       ]
     },
     init: function() {
+      this.applyDefaultFilter();
       this._super();
       return this.REQUEST_TYPE.FILTER = 'filtering';
       /*@set('filteringInfo', 
@@ -12159,6 +12175,9 @@ GridController
       filter.name = filter.name || filter.label.split(" ").join('');
       this.set('filteringInfo.selectedFilter', filter.name);
       return this.get('filteringInfo.availableFilters').push(Ember.copy(filter, true));
+    },
+    applyDefaultFilter: function() {
+      return this.set('filteringInfo', $.extend({}, this.get('defaultFiltering')));
     }
   });
 
@@ -12332,6 +12351,16 @@ grouping: {
       }
     },
     personalizations: [],
+    personalizationType: null,
+    personalizationSubCategory: (function() {
+      var type;
+      type = this.get('personalizationType');
+      if (type != null) {
+        return type;
+      } else {
+        return this.get('dataType');
+      }
+    }).property('dataType', 'personalizationType'),
     init: function() {
       this._super();
       this.set('customizationName', this.get('defaultName') || "");
@@ -12355,7 +12384,7 @@ grouping: {
       return this.addPersonalizationToCollection(name, uiState);
     },
     savePersonalization: function(name, uiState) {
-      return this.set('newRecord', this.get('store').savePersonalization('collection', this.get('dataType'), name, uiState));
+      return this.set('newRecord', this.get('store').savePersonalization('collection', this.get('personalizationSubCategory'), name, uiState));
     },
     addPersonalizationToCollection: function(name, uiState) {
       var newRecord;
@@ -12394,7 +12423,7 @@ grouping: {
       });
     },
     fetchPersonalizations: function() {
-      return this.get('store').fetchPersonalizations('collection', this.get('dataType'));
+      return this.get('store').fetchPersonalizations('collection', this.get('personalizationSubCategory'));
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');
