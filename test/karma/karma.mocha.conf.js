@@ -4,14 +4,8 @@ module.exports = function(config) {
     frameworks: ['mocha'],
     files: [
       '../../test/karma/lib/chai.js',
-    '../../dist/javascript/jquery.js',
-    //'test/static/javascript/sinon-1.3.4.js',
-    //'test/static/javascript/sinon-qunit-1.0.0.js',
-    //'dist/javascript/vendor.js',
-    //'dist/javascript/compiled-templates.js',
-    //'dist/javascript/tent.js',
-    //'.tmp/test/lib/test_helpers.js',
-    '../../test/mocha/tests/test.js'
+      '../../dist/javascript/jquery.js',
+      '../../test/mocha/tests/test.js'
     ],
     // list of files to exclude
     exclude: [],
