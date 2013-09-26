@@ -204,8 +204,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 				fieldView = Tent.DateRangeField.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					valueBinding: "content.data"
-					filterOpBinding: "content.op"
+					valueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"
@@ -218,8 +218,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
 					serializer: Tent.Formatting.number.serializer
-					rangeValueBinding: "content.data"
-					filterOpBinding: "content.op"
+					rangeValueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
@@ -228,8 +228,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 				fieldView = Tent.Checkbox.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					checkedBinding: "content.data" 
-					filterOpBinding: "content.op"
+					checkedBinding: "parentView.content.data" 
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
