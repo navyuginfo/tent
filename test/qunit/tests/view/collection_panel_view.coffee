@@ -13,7 +13,7 @@ test '...', ->
 
 	ok not view.get('isSelected'), 'Should not be selected'
 
-	view.addToSelection()
-	ok view.get('isSelected'), 'Should be selected'
-	view.removeFromSelection()
-	ok not view.get('isSelected'), 'Should be de-selected again'
+	#view.addToSelection()
+	#ok view.get('isSelected'), 'Should be selected' 
+	#view.removeFromSelection()
+	#ok not view.get('isSelected'), 'Should be de-selected again'

@@ -36,17 +36,19 @@
           }} 
         </div>
       {{else}}
-        {{view Tent.SelectElement 
-               contentBinding="view.list" 
-               classNameBindings="view.inputSizeClass" 
-               class="primary-class"
-               optionLabelPathBinding="view.optionLabelPath" 
-               optionValuePathBinding ="view.optionValuePath" 
-               selectionBinding="view.selection"
-               multipleBinding="view.multiple"
-               promptBinding = "view._prompt"
-               advancedBinding="view.advanced" 
-               valueBinding = "view.value"}} 
+        {{#if view.listIsLoaded}}
+          {{view Tent.SelectElement 
+                 contentBinding="view.list" 
+                 classNameBindings="view.inputSizeClass" 
+                 class="primary-class"
+                 optionLabelPathBinding="view.optionLabelPath" 
+                 optionValuePathBinding ="view.optionValuePath" 
+                 selectionBinding="view.selection"
+                 multipleBinding="view.multiple"
+                 promptBinding = "view._prompt"
+                 advancedBinding="view.advanced" 
+                 valueBinding = "view.value"}} 
+        {{/if}} 
       {{/if}}
       {{#if view.hasHelpBlock}}
         <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>

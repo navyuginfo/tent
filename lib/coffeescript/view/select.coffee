@@ -159,6 +159,15 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           @set "showPrompt", true
   ).observes("list", "list.length", "list@each")
 
+  listIsLoaded: (->
+    if @get('list.isLoadable')?
+      # Ensure that the selection updates when the content is loaded.
+      @valueDidChange()
+      @get('list.isLoaded')
+    else
+      true
+  ).property("list", "list.length", "list@each", "list.isLoaded")
+
   currentSelectedLabel: (->
     content = @get('selection')
     if content? 
