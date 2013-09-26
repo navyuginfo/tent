@@ -193,3 +193,32 @@ test 'Ensure aria attributes are applied ', ->
   equal $("#" + viewId+"_error").length, 1, 'error field id exists for'
   equal $("#" + viewId+"_help").length, 1, 'help field id exists for'
 
+test 'Selection updates when asynchronous list returns', ->
+  list = Ember.A()
+  list.set('isLoadable', true)
+  list.set('isLoaded', false)
+
+  view = Ember.View.create   
+    list: list
+    value: "AR"
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          listBinding="view.list"
+                          optionLabelPath="content.stateName"  
+                          optionValuePath="content.stateCode"
+                          valueBinding="view.value"
+                          }}'
+  appendView()
+
+  widget = Ember.View.views[view.$('.tent-select').attr('id')]
+  equal widget.get('selection'), null, 'No selection to start'
+
+  list.push(Ember.Object.create({stateName: 'Georgia', stateCode: 'GA'}))
+  list.push(Ember.Object.create({stateName: 'Florida', stateCode: 'FL'}))
+  list.push(Ember.Object.create({stateName: 'Arkansas', stateCode: 'AR'}))
+
+  Ember.run ->
+    widget.set('list.isLoaded', true)
+  equal widget.get('selection.stateName'), "Arkansas", 'Selection after isLoaded'
+  
+
+
