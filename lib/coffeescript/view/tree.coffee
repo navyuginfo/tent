@@ -209,10 +209,23 @@ Tent.Tree = Ember.View.extend
     })
 
   contentDidChange: (->
+    if not @contentIsValid()
+      return
+
     @reloadTree(@get('content'))
     @addArrayObservers(@get('content'))
     @get('selection').clear()
   ).observes('content') # explicitly did not add content.@each
+
+  contentIsValid: ->
+    if not @get('content')? 
+      return false
+    if @get('content.isLoadable') && @get('content.isLoaded')
+      return true
+    if @get('content.isLoadable') && not @get('content.isLoaded')
+      return false
+    return true
+    
 
   optionsDidChange: (->
     options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'minExpandLevel',

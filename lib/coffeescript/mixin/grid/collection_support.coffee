@@ -344,7 +344,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 
   initializeFromCollectionPersonalizationName: ->
-    personalization = @getPersonalizationFromName(@get('collection.customizationName'))
+    personalization = @get('collection').getSelectedPersonalization()
 
     if personalization?
       settings = personalization.get('settings')

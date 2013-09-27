@@ -4595,7 +4595,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     }).observes('collection.personalizations.@each'),
     initializeFromCollectionPersonalizationName: function() {
       var personalization, settings;
-      personalization = this.getPersonalizationFromName(this.get('collection.customizationName'));
+      personalization = this.get('collection').getSelectedPersonalization();
       if (personalization != null) {
         settings = personalization.get('settings');
       } else {
@@ -12298,10 +12298,25 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
       }));
     },
     contentDidChange: (function() {
+      if (!this.contentIsValid()) {
+        return;
+      }
       this.reloadTree(this.get('content'));
       this.addArrayObservers(this.get('content'));
       return this.get('selection').clear();
     }).observes('content'),
+    contentIsValid: function() {
+      if (!(this.get('content') != null)) {
+        return false;
+      }
+      if (this.get('content.isLoadable') && this.get('content.isLoaded')) {
+        return true;
+      }
+      if (this.get('content.isLoadable') && !this.get('content.isLoaded')) {
+        return false;
+      }
+      return true;
+    },
     optionsDidChange: (function() {
       var element, name, optionDidChange, options, value, _i, _len, _results;
       options = ['activeVisible', 'autoActivate', 'aria', 'autoCollapse', 'autoScroll', 'minExpandLevel', 'clickFolderMode', 'checkbox', 'disabled', 'icons', 'keyboard', 'selectMode', 'tabbable'];
@@ -13820,7 +13835,20 @@ grouping: {
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');
-    }).property('customizationName')
+    }).property('customizationName'),
+    getPersonalizationFromName: function(name) {
+      var matches,
+        _this = this;
+      matches = this.get('personalizations').filter(function(item) {
+        return item.get('name') === name;
+      });
+      if (matches.length > 0) {
+        return matches[0];
+      }
+    },
+    getSelectedPersonalization: function() {
+      return this.getPersonalizationFromName(this.get('customizationName'));
+    }
   });
 
 }).call(this);

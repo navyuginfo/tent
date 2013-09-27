@@ -145,4 +145,11 @@ Tent.Data.Customizable = Ember.Mixin.create
     return @get('customizationName') == @get('defaultName')
   ).property('customizationName')
 
+  getPersonalizationFromName: (name) ->
+    matches = @get('personalizations').filter((item)=> item.get('name') ==  name)
+    matches[0] if matches.length > 0
+
+  getSelectedPersonalization: ->
+    @getPersonalizationFromName(@get('customizationName'))
+
 
