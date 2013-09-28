@@ -1684,6 +1684,26 @@
     return res;
   };
 
+  Tent.Browsers.executeForIE = function(context, callback, args) {
+    if (Tent.Browsers.getIEVersion() !== 8) {
+      if (args != null) {
+        return callback.apply(context, args);
+      } else {
+        return callback.apply(context);
+      }
+    } else {
+      if (args != null) {
+        return setTimeout((function() {
+          return callback.apply(context, args);
+        }), 10);
+      } else {
+        return setTimeout((function() {
+          return callback.apply(context);
+        }), 10);
+      }
+    }
+  };
+
 }).call(this);
 
 
@@ -6093,9 +6113,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     },
     columnsDidChange: function(colChangedIndex) {
       this._super();
-      this.adjustHeight();
-      this.removeLastDragBar();
-      return this.setHeaderWidths();
+      return Tent.Browsers.executeForIE(this, function() {
+        if (this.$() != null) {
+          this.adjustHeight();
+          this.removeLastDragBar();
+          return this.setHeaderWidths();
+        }
+      });
     },
     adjustHeight: function() {
       var top;
@@ -6156,29 +6180,35 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }).last();
     },
     resizeToContainer: function() {
-      var bdiv, widthWithoutScrollbar;
-      if (this.$() != null) {
-        bdiv = this.$('.ui-jqgrid-bdiv');
-        if (this.get('horizontalScrolling')) {
-          this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width', '100%');
-          bdiv.css('width', 'auto');
-          this.$('.ui-jqgrid-bdiv > div').css('position', 'static');
-          this.$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth);
-        } else {
-          this.getTableDom().setGridWidth(this.$().innerWidth(), true);
-          widthWithoutScrollbar = bdiv.get(0).clientWidth;
-          this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
+      return Tent.Browsers.executeForIE(this, function() {
+        var bdiv, widthWithoutScrollbar;
+        if (this.$() != null) {
+          bdiv = this.$('.ui-jqgrid-bdiv');
+          if (this.get('horizontalScrolling')) {
+            this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width', '100%');
+            bdiv.css('width', 'auto');
+            this.$('.ui-jqgrid-bdiv > div').css('position', 'static');
+            this.$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth);
+          } else {
+            this.getTableDom().setGridWidth(this.$().innerWidth(), true);
+            widthWithoutScrollbar = bdiv.get(0).clientWidth;
+            this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
+          }
+          return this.adjustHeight();
         }
-        return this.adjustHeight();
-      }
+      });
     },
     padLastCellsForScrollbar: function() {
-      this.$('.ui-jqgrid-bdiv td').removeClass('last-cell');
-      if (this.get('horizontalScrolling') || (Tent.Browsers.getIEVersion() === 8) || (Tent.Browsers.getIEVersion() === 9)) {
-        return this.$('.ui-jqgrid-bdiv tr').each(function(index, row) {
-          return $('td:not(:hidden)', row).last().addClass('last-cell');
-        });
-      }
+      return Tent.Browsers.executeForIE(this, function() {
+        if (this.$() != null) {
+          this.$('.ui-jqgrid-bdiv td').removeClass('last-cell');
+          if (this.get('horizontalScrolling') || (Tent.Browsers.getIEVersion() === 8) || (Tent.Browsers.getIEVersion() === 9)) {
+            return this.$('.ui-jqgrid-bdiv tr').each(function(index, row) {
+              return $('td:not(:hidden)', row).last().addClass('last-cell');
+            });
+          }
+        }
+      });
     },
     hideGrid: function() {
       this.$(".gridpager").hide();
@@ -6235,17 +6265,19 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return sel;
     }).property('selection.@each'),
     updateGrid: function(doValidation) {
-      if (this.getTableDom() != null) {
-        this.unHighlightAllRows();
-        this.highlightRows();
-        this.showEditableCells();
-        this.setHeaderWidths();
-        this.resizeToContainer();
-      }
-      if (doValidation) {
-        this.validate();
-      }
-      return $.publish("/grid/rendered");
+      return Tent.Browsers.executeForIE(this, function() {
+        if ((this.$() != null) && (this.getTableDom() != null)) {
+          this.unHighlightAllRows();
+          this.highlightRows();
+          this.showEditableCells();
+          this.setHeaderWidths();
+          this.resizeToContainer();
+        }
+        if (doValidation) {
+          this.validate();
+        }
+        return $.publish("/grid/rendered");
+      });
     },
     highlightRows: function() {
       var grid, item, table, _i, _len, _ref;
