@@ -12187,7 +12187,7 @@ GridController
           if (item.name === currentFilter.name) {
             if (item.label === currentFilter.label) {
               replacedExisting = true;
-              return Ember.copy(currentFilter, true);
+              return Ember.Object.create($.extend(true, {}, currentFilter));
             } else {
               currentFilter.name = currentFilter.label.split(" ").join('');
               return item;
