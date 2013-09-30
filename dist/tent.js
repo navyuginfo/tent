@@ -4232,7 +4232,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     }).observes('scroll', 'collection'),
     addNavigationBar: function() {
       this._super();
-      if (this.get('collection.personalizable')) {
+      if (this.get('collection.personalizable') && (this.get('usageContext') !== 'report')) {
         if (this.get('collection') != null) {
           this.renderSaveUIStateButton();
         }

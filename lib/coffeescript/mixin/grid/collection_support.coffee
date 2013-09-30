@@ -70,8 +70,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   addNavigationBar: ->
     @_super()
-    if @get('collection.personalizable')
-      @renderSaveUIStateButton() if this.get('collection')?
+    if @get('collection.personalizable') and (@get('usageContext') != 'report')
+      @renderSaveUIStateButton() if @get('collection')? 
       @renderCollectionName()
       @populateCollectionDropdown()
 
