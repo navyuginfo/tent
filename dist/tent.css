@@ -1502,6 +1502,7 @@ body > .modal-backdrop {
   margin-left: -360px;
   box-sizing: border-box;
   z-index: 800;
+  min-width: 540px;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
