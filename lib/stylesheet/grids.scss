@@ -397,6 +397,23 @@ $headerHeight: 20px;
 			color: #222;
 		}
 
+		.filter .open-dropdown {
+			@include transition(all 0.2s ease);
+			border-top: 1px solid transparent;
+			border-left: 1px solid transparent;
+			margin-top: 2px;
+			@include border-radius(2px);
+			margin-left: 3px;
+			padding: 0px 2px 2px 2px;
+			&:hover {
+				border-color: #CCC;
+			}
+			&.active{
+				border-color: #CCC;
+				background: #eee;
+			}		
+		}
+
 		.horizontal-scroll-button {
 			@include transition(all 0.2s ease);
 			border-top: 1px solid transparent;
