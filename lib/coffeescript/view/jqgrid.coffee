@@ -225,7 +225,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
-			rowNum: if @get('paged') then @get('pagingInfo.pageSize') else -1,
+			rowNum: if @get('paged') then @get('collection.pagingInfo.pageSize') else -1,
 			gridview: true,
 			toppager:false,
 			cloneToTop:false,
@@ -341,11 +341,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 			
-			@$('.ui-jqgrid-bdiv').css('bottom', @heightForFooter())
+			@$('.ui-jqgrid-bdiv').css('bottom', @heightForFooter() + @heightForPager())
 			if @get('footerRow')
 				if @get('horizontalScrolling')
 					@$('.ui-jqgrid-sdiv').css('bottom', @heightForPager())
-					@$('.ui-jqgrid-view').css('bottom', @heightForFooter() + this.heightForPager())
+					@$('.ui-jqgrid-view').css('bottom', @heightForFooter() + @heightForPager())
 				else 
 					@$('.ui-jqgrid-view').css('bottom', @heightForPager())
 					@$('.ui-jqgrid-sdiv').css('bottom', '0px')
