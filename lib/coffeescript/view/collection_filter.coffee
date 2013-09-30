@@ -36,18 +36,30 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
 
   didInsertElement: ->
     @set('grid', @get('parentView.grid'))
-    # For performance reasons
-    #if @get('collection.columnsDescriptor')?
-    #  @clearFilter()
     @setupToggling()
   
   setupToggling: ->
     widget = @
-    @bindToggleVisibility(@$(".open-dropdown"), @.$(".dropdown-menu"))
+    @$(".open-dropdown").click((e)->
+      widget.toggleVisibility()
+    )
 
     @$(".filter-panel .close-panel .btn").click(->
       widget.closeFilterPanel()
     )
+
+  toggleVisibility: ->
+    component = @.$(".dropdown-menu")
+    source = @$(".open-dropdown")
+
+    if component.css('display')=='none'
+      @set('isShowing', true)
+      component.css('display', 'block')
+      source.addClass('active')
+    else
+      @set('isShowing', false)
+      component.css('display', 'none')
+      source.removeClass('active')
 
   filteringInfoDidChange: (->
     # Update currentFilter when the collection filter is changed
@@ -84,10 +96,11 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
   filter: ->
     @stopGroupingOnGrid()
     @get('collection').doFilter(@get('currentFilter'))
-    #@closeFilterPanel()
+    @closeFilterPanel()
 
   closeFilterPanel: ->
-    @hideComponent(widget.$(".dropdown-menu"))
+    @toggleVisibility()
+    # @hideComponent(widget.$(".dropdown-menu"))
 
   showFilterFields: (->
     #  # For IE, prevent script timeout by loading the filter panel when it is shown,
@@ -95,25 +108,12 @@ Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
     @get('fieldsHaveRendered') or @get('isShowing')
   ).property('fieldsHaveRendered', 'isShowing')
 
-  #changeFilter: ->
-  #  @stopGroupingOnGrid()
-  #  @get('collection').doFilter()
-  #  @closeFilterPanel()  
-
   stopGroupingOnGrid: ->
     @get('grid').clearAllGrouping() if @get('grid')?
-
-  #selectedFilterDidChange: (->
-  #  if @get('dropdownSelection')?
-  #    @get('collection').setSelectedFilter(@get('dropdownSelection.name'))
-  #    @populateFilterFromCollection()
-  #    @changeFilter()
-  #).observes('dropdownSelection')
 
   saveFilter: ->
     @get('collection').saveFilter(@get('currentFilter'))
     @set('dropdownSelection', {name: @get('currentFilter').name, label:@get('currentFilter').label})
-    #@closeFilterPanel()
     return true
 
   newFilter: ->
@@ -185,8 +185,6 @@ Tent.FilterFieldsView = Ember.ContainerView.extend
           arrows:true
           filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op" 
           dateFormat: "yy-mm-dd"
-          #filterBinding: "parentView.grid.currentFilter"
-          #field: column.name
       when "number", "amount"
         fieldView = Tent.NumericTextField.create
           label: Tent.I18n.loc(column.title) 

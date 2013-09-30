@@ -660,6 +660,27 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .tent-jqgrid .ui-widget-header .dropdown-menu a {
   color: #222;
 }
+.tent-jqgrid .ui-widget-header .filter .open-dropdown {
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  margin-top: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  margin-left: 3px;
+  padding: 0px 2px 2px 2px;
+}
+.tent-jqgrid .ui-widget-header .filter .open-dropdown:hover {
+  border-color: #CCC;
+}
+.tent-jqgrid .ui-widget-header .filter .open-dropdown.active {
+  border-color: #CCC;
+  background: #eee;
+}
 .tent-jqgrid .ui-widget-header .horizontal-scroll-button {
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
