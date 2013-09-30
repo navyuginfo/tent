@@ -10072,10 +10072,26 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     setupToggling: function() {
       var widget;
       widget = this;
-      this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
+      this.$(".open-dropdown").click(function(e) {
+        return widget.toggleVisibility();
+      });
       return this.$(".filter-panel .close-panel .btn").click(function() {
         return widget.closeFilterPanel();
       });
+    },
+    toggleVisibility: function() {
+      var component, source;
+      component = this.$(".dropdown-menu");
+      source = this.$(".open-dropdown");
+      if (component.css('display') === 'none') {
+        this.set('isShowing', true);
+        component.css('display', 'block');
+        return source.addClass('active');
+      } else {
+        this.set('isShowing', false);
+        component.css('display', 'none');
+        return source.removeClass('active');
+      }
     },
     filteringInfoDidChange: (function() {
       return this.populateFilterFromCollection();
@@ -10146,10 +10162,11 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     },
     filter: function() {
       this.stopGroupingOnGrid();
-      return this.get('collection').doFilter(this.get('currentFilter'));
+      this.get('collection').doFilter(this.get('currentFilter'));
+      return this.closeFilterPanel();
     },
     closeFilterPanel: function() {
-      return this.hideComponent(widget.$(".dropdown-menu"));
+      return this.toggleVisibility();
     },
     showFilterFields: (function() {
       return this.get('fieldsHaveRendered') || this.get('isShowing');
