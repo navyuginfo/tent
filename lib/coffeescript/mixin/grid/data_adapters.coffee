@@ -102,9 +102,9 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@getTableDom()[0].p.viewrecords = true
 		data = 
 			rows: @get('gridData')
-			total: @get('pagingInfo.totalPages') if @get('pagingInfo')? 
-			records: @get('pagingInfo.totalRows') if @get('pagingInfo')?
-			page: @get('pagingInfo').page if @get('pagingInfo')?
+			total: @get('collection.pagingInfo.totalPages') if @get('collection.pagingInfo')? 
+			records: @get('collection.pagingInfo.totalRows') if @get('collection.pagingInfo')?
+			page: @get('collection.pagingInfo').page if @get('collection.pagingInfo')?
 			userdata: @get('fixedRows')
 			remoteGrouping: @isShowingValidGroups()
 			columns: @get('columnModel')

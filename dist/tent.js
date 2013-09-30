@@ -4662,9 +4662,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }
       data = {
         rows: this.get('gridData'),
-        total: this.get('pagingInfo') != null ? this.get('pagingInfo.totalPages') : void 0,
-        records: this.get('pagingInfo') != null ? this.get('pagingInfo.totalRows') : void 0,
-        page: this.get('pagingInfo') != null ? this.get('pagingInfo').page : void 0,
+        total: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo.totalPages') : void 0,
+        records: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo.totalRows') : void 0,
+        page: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo').page : void 0,
         userdata: this.get('fixedRows'),
         remoteGrouping: this.isShowingValidGroups(),
         columns: this.get('columnModel')
@@ -6005,7 +6005,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         viewsortcols: [true, 'vertical', false],
         hidegrid: false,
         viewrecords: true,
-        rowNum: this.get('paged') ? this.get('pagingInfo.pageSize') : -1,
+        rowNum: this.get('paged') ? this.get('collection.pagingInfo.pageSize') : -1,
         gridview: true,
         toppager: false,
         cloneToTop: false,
@@ -6133,7 +6133,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if (Tent.Browsers.isIE()) {
           this.$('.ui-jqgrid-bdiv').css('height', 'auto');
         }
-        this.$('.ui-jqgrid-bdiv').css('bottom', this.heightForFooter());
+        this.$('.ui-jqgrid-bdiv').css('bottom', this.heightForFooter() + this.heightForPager());
         if (this.get('footerRow')) {
           if (this.get('horizontalScrolling')) {
             this.$('.ui-jqgrid-sdiv').css('bottom', this.heightForPager());
