@@ -399,4 +399,9 @@ Tent.Tree = Ember.View.extend
         index = @get('selection').indexOf(data.node.data.value)
         @get('selection').removeAt(index) unless index is -1
       else
+        if @get('nodeSelection') != 'multiSelect'
+          @get('selection').clear()
         @get('selection').pushObject(data.node.data.value)
+
+
+
