@@ -155,11 +155,7 @@
             {{view Tent.Checkbox label="_isFilter" checkedBinding="Pad.isFilter"}}
           {{/view}}
 
-          {{#view Tent.Form name="Fields" id="form-section"}}
-
-
-            
-
+          {{#view Tent.Form name="Fields" id="form-section"}} 
 
             {{view Tent.TextField 
               valueBinding="Pad.appName" 
@@ -476,9 +472,11 @@
 
             <h4>Toggle button</h4>
             {{view Tent.Button label="_buttonToggle" type="primary" dataToggle="button"}}
-            <p id="click-label"></p>
-        
-            <p id="click-label"></p>
+            
+
+            <h4>Confirmation button</h4>
+            {{view Tent.Button label="_buttonToggle" type="primary" confirmationMessage="Are you sure you want to delete me?"}}
+            
           {{/view}}
         {{/view}}
           
