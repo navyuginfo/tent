@@ -32,7 +32,7 @@ test 'Ensure it gives error for non numeric values', ->
 
   Ember.run ->
       view.$('input').val('newValue')
-      view.$('input').trigger('change')
+      view.$('input').trigger('focusout')
   equal view.$('.error').length, 1, 'Error reported for non-numeric value'
   equal view.$('.help-inline').text(), Tent.I18n.loc(Tent.messages.NUMERIC_ERROR), 'Received Tent.messages.NUMERIC_ERROR'
 
@@ -80,12 +80,12 @@ test 'Formatting is actually called', ->
 
   Ember.run ->
       view.$('input').val('newValue')
-      view.$('input').trigger('change')
+      view.$('input').trigger('focusout')
   equal view.get('name'), '1234', 'Controller value is set to 1234'
 
   Ember.run ->
       view.$('input').val('')
-      view.$('input').trigger('change')
+      view.$('input').trigger('focusout')
   equal view.get('name'), null, 'Controller value is set to null'
 
 test 'Formatting of read-only', ->
@@ -160,14 +160,14 @@ test 'operators', ->
 
   Ember.run ->
       view.$('input').eq(0).val('1')
-      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(0).trigger('focusout')
   equal numeric.get('rangeValue'), '1', 'Single value'
 
   Ember.run ->
       view.$('input').eq(0).val('1')
-      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(0).trigger('focusout')
       view.$('input').eq(1).val('9')
-      view.$('input').eq(1).trigger('change')
+      view.$('input').eq(1).trigger('focusout')
   equal numeric.get('rangeValue'), '1', 'Single value'
 
   
@@ -175,9 +175,9 @@ test 'operators', ->
       numeric.set('filterOp', 'range')
   Ember.run ->
       view.$('input').eq(0).val('1')
-      view.$('input').eq(0).trigger('change')
+      view.$('input').eq(0).trigger('focusout')
       view.$('input').eq(1).val('9')
-      view.$('input').eq(1).trigger('change')
+      view.$('input').eq(1).trigger('focusout')
   equal numeric.get('rangeValue').split(',')[0], 1, 'Range value is a comma-separated string'
   equal numeric.get('rangeValue').split(',')[1], 9, 'Range value is an array [1]'
 
