@@ -175,8 +175,11 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
 Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
   defaultTemplate: Ember.Handlebars.compile('
     {{#if view.prompt}}
-      {{#if view.advanced}}<option></option>{{/if}}
-      {{#unless view.advanced}}<option value>{{view.prompt}}</option>{{/unless}}
+      {{#if view.advanced}}
+        <option></option>
+      {{else}}
+        <option value>{{view.prompt}}</option>
+      {{/if}}
     {{/if}}
     {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}'
   )
