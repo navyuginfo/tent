@@ -223,7 +223,7 @@ Tent.Validations.compareValue = Tent.Validation.create
   ###
   validate: (value, options, message, view)->
     if not options? or not (options.greaterThan? or options.lessThan?)
-      return false
+      return true
     message = if(not message? and options.message?) then options.message
     if value
       if options.greaterThan? and options.greaterThan >= value
