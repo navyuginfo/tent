@@ -85,8 +85,8 @@ test 'Unique value validation with parameters', ->
 	ok not Tent.Validations.uniqueValue.validate(value, {testArr:testArr, property:property, item: item}), 'testArr is not an array'
 
 test "Validating that a number is greater than or less than a given number", ->
-	equal Tent.Validations.compareValue.validate(12), false, "no options specified"
-	equal Tent.Validations.compareValue.validate(12, {}), false, 'options specified without parameters'
+	equal Tent.Validations.compareValue.validate(12), true, "no options specified"
+	equal Tent.Validations.compareValue.validate(12, {}), true, 'options specified without parameters'
 	equal Tent.Validations.compareValue.validate(null, {greaterThan: 3}), true, "no value specified"
 	equal Tent.Validations.compareValue.validate(12, {greaterThan: 14}), false, 'value < specified greaterThan value'
 	equal Tent.Validations.compareValue.validate(14, {lessThan: 12}), false, 'value > specified lessThan value'
