@@ -47,6 +47,7 @@ Tent.I18n.loadTranslations(
 		on: 'On'
 		off: 'Off'
 		pleaseSelect: 'Please Select...'
+		confirm: 'Confirmation'
 		button: {
 			ok: 'Ok'
 			yes: 'Yes'

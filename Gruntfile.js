@@ -206,7 +206,8 @@ module.exports = function (grunt) {
             unit_qunit_watch: {
                 configFile: 'test/karma/karma.qunit.conf.js',
                 singleRun: false,
-                background: true
+                background: true,
+                browsers: ['PhantomJS']
             },
             unit_qunit_ci: {
                 configFile: 'test/karma/karma.qunit.conf.js',
