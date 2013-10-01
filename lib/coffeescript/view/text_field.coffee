@@ -51,18 +51,20 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	).property('formattedValue')
 	  
 	trimmedValue: (->
-    @trimValue(@get('value'))
-  ).property('value')
+        @trimValue(@get('value'))
+    ).property('value')
 
 
-  change: ->
-    @_super(arguments)
-    @set('isValid', @validate())
-    if @get('isValid')
-      unformatted = @unFormat(@get('formattedValue'))
-      @set('value', unformatted)
-      @set('formattedValue', @format(unformatted))
-      @validateWarnings()
+
+    # change: ->
+    focusOut: ->
+        @_super(arguments)
+        @set('isValid', @validate())
+        if @get('isValid')
+            unformatted = @unFormat(@get('formattedValue'))
+            @set('value', unformatted)
+            @set('formattedValue', @format(unformatted))
+            @validateWarnings()
 
 Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport
 	

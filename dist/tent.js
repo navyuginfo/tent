@@ -1837,6 +1837,10 @@
 
   Tent.messages.MAX_VALUE_ERROR = "error.maxValue";
 
+  Tent.messages.GREATER_VALUE_ERROR = "error.greaterValue";
+
+  Tent.messages.LESS_VALUE_ERROR = "error.lessValue";
+
   Tent.messages.VALUE_BETWEEN_ERROR = "error.valueBetween";
 
   Tent.messages.POSITIVE_ERROR = "error.positive";
@@ -2453,6 +2457,52 @@
       return !(options.testArr.contains(value));
     },
     ERROR_MESSAGE: Tent.messages.UNIQUE_VALUE_ERROR
+  });
+
+  /**
+  * @class Tent.Validations.compareValue Validates that the value is greater than or less than numbers
+  */
+
+
+  Tent.Validations.compareValue = Tent.Validation.create({
+    /**
+    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain either a 
+    * 'greaterThan' or 'lessThan' value 
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
+    validate: function(value, options, message, view) {
+      if (!(options != null) || !((options.greaterThan != null) || (options.lessThan != null))) {
+        return true;
+      }
+      message = !(message != null) && (options.message != null) ? options.message : void 0;
+      if (value) {
+        if ((options.greaterThan != null) && options.greaterThan >= value) {
+          if (!message) {
+            message = Tent.messages.GREATER_VALUE_ERROR;
+          }
+          if (message != null) {
+            this.set('ERROR_MESSAGE', message);
+          }
+          return false;
+        } else if ((options.lessThan != null) && options.lessThan <= value) {
+          if (!message) {
+            message = Tent.messages.LESS_VALUE_ERROR;
+          }
+          if (message != null) {
+            this.set('ERROR_MESSAGE', message);
+          }
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
   });
 
 }).call(this);
@@ -3494,7 +3544,7 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
-    change: function() {
+    focusOut: function() {
       var unformatted;
       this._super(arguments);
       this.set('isValid', this.validate());
