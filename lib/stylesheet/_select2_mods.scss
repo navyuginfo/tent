@@ -1,0 +1,27 @@
+$select2-image: url('images/select2.png');
+
+.select2-search-choice-close {
+	background: $select2-image right top no-repeat;
+}
+
+.select2-container .select2-choice .select2-arrow b {
+	background: $select2-image no-repeat 0 0px;
+}
+
+.select2-container .select2-choice abbr {
+	background: $select2-image right top no-repeat;
+}
+
+.select2-drop-active, .select2-container-active .select2-choice, .select2-container-active .select2-choices {
+	border-color: #aaa;
+	@include box-shadow(none);
+}
+
+.select2-default {
+	color: #555!important;
+}
+
+.select2-container .select2-choice abbr {
+	top: 6px;
+}
+
