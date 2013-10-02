@@ -65,6 +65,11 @@ Tent.Data.Customizable = Ember.Mixin.create
       availableFilters: []
     }
   personalizations: []
+  personalizationType: null
+  personalizationSubCategory: (->
+    type = @get('personalizationType')
+    if type? then type else @get('dataType')
+  ).property('dataType', 'personalizationType')
 
   init: ->
     @_super()
@@ -81,20 +86,20 @@ Tent.Data.Customizable = Ember.Mixin.create
   saveUIState: (name) ->
     if name?
       name=name.trim()
-      @set('customizationName', name) 
+      @set('customizationName', name)
     uiState = $.extend(true, {}, @gatherGridData(@get('customizationName')))
     @savePersonalization(name, uiState)
     @addPersonalizationToCollection(name, uiState)
 
   savePersonalization: (name, uiState)->
-    @set('newRecord', @get('store').savePersonalization('collection', @get('dataType'), name, uiState))
+    @set('newRecord', @get('store').savePersonalization('collection', @get('personalizationSubCategory'), name, uiState))
 
   addPersonalizationToCollection: (name, uiState) ->
     newRecord = @createPersonalizationRecordForClientSide(name, uiState)
     if newRecord?
       @removeExistingCustomization(name)
       @get('personalizations').pushObject(newRecord) 
-     
+
   removeExistingCustomization: (name)->
     for p, index in @get('personalizations')
       if p.get('name') == name
@@ -107,7 +112,7 @@ Tent.Data.Customizable = Ember.Mixin.create
   #storeFinished: (->
   #  r = @get('newRecord')
   #).observes('newRecord', 'newRecord.@each')
-    
+
   gatherGridData: (name)->
     state = $.extend(
       {customizationName: name},
@@ -119,7 +124,7 @@ Tent.Data.Customizable = Ember.Mixin.create
     )
 
   fetchPersonalizations: ->
-    @get('store').fetchPersonalizations('collection', @get('dataType'))
+    @get('store').fetchPersonalizations('collection', @get('personalizationSubCategory'))
 
   isShowingDefault: (->
     return @get('customizationName') == @get('defaultName')

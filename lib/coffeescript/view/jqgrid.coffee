@@ -225,7 +225,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			viewsortcols: [true,'vertical',false],
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
-			rowNum: if @get('paged') then @get('pagingInfo.pageSize') else -1,
+			rowNum: if @get('paged') then @get('collection.pagingInfo.pageSize') else -1,
 			gridview: true,
 			toppager:false,
 			cloneToTop:false,
@@ -321,10 +321,14 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
  		@_super()
 
 	columnsDidChange: (colChangedIndex)->
-		@_super()
-		@adjustHeight()
-		@removeLastDragBar()
-		@setHeaderWidths()
+		@_super() 
+		Tent.Browsers.executeForIE(@, ->
+			if @$()?
+				@adjustHeight()
+				@removeLastDragBar()
+				@setHeaderWidths()	
+		)
+		
 
 	# After any changes to the dimensions of the grid, re-calculate for display
 	adjustHeight: ->
@@ -337,11 +341,11 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 
 			@$('.ui-jqgrid-bdiv').css('height', 'auto') if Tent.Browsers.isIE()
 			
-			@$('.ui-jqgrid-bdiv').css('bottom', @heightForFooter())
+			@$('.ui-jqgrid-bdiv').css('bottom', @heightForFooter() + @heightForPager())
 			if @get('footerRow')
 				if @get('horizontalScrolling')
 					@$('.ui-jqgrid-sdiv').css('bottom', @heightForPager())
-					@$('.ui-jqgrid-view').css('bottom', @heightForFooter() + this.heightForPager())
+					@$('.ui-jqgrid-view').css('bottom', @heightForFooter() + @heightForPager())
 				else 
 					@$('.ui-jqgrid-view').css('bottom', @heightForPager())
 					@$('.ui-jqgrid-sdiv').css('bottom', '0px')
@@ -374,29 +378,35 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		).last()
 
 	resizeToContainer: ->
-		if @$()? 
-			bdiv = @$('.ui-jqgrid-bdiv')
-			if @get('horizontalScrolling') 
-				# Override default jqgrid sizing
-				@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width','100%')
-				bdiv.css('width','auto')
-				@$('.ui-jqgrid-bdiv > div').css('position', 'static')
-				# account for scrollbar
-				@$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth)
-			else
-				@getTableDom().setGridWidth(@$().innerWidth(), true)
-				widthWithoutScrollbar = bdiv.get(0).clientWidth
-				@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
-				# Removed for performance reasons
-				# @columnsDidChange()
-			@adjustHeight()
+		Tent.Browsers.executeForIE(@, ->
+			if @$()? 
+				bdiv = @$('.ui-jqgrid-bdiv')
+				if @get('horizontalScrolling') 
+					# Override default jqgrid sizing
+					@$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width','100%')
+					bdiv.css('width','auto')
+					@$('.ui-jqgrid-bdiv > div').css('position', 'static')
+					# account for scrollbar
+					@$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth)
+				else
+					@getTableDom().setGridWidth(@$().innerWidth(), true)
+					widthWithoutScrollbar = bdiv.get(0).clientWidth
+					@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
+					# Removed for performance reasons
+					# @columnsDidChange()
+				@adjustHeight()
+		)
+		
 
 	padLastCellsForScrollbar: ->
-		@$('.ui-jqgrid-bdiv td').removeClass('last-cell')
-		if @get('horizontalScrolling') or (Tent.Browsers.getIEVersion() == 8) or (Tent.Browsers.getIEVersion() == 9)
-			@$('.ui-jqgrid-bdiv tr').each((index, row)->
-				$('td:not(:hidden)', row).last().addClass('last-cell')
-			)
+		Tent.Browsers.executeForIE(@, ->
+			if @$()?
+				@$('.ui-jqgrid-bdiv td').removeClass('last-cell')
+				if @get('horizontalScrolling') or (Tent.Browsers.getIEVersion() == 8) or (Tent.Browsers.getIEVersion() == 9)
+					@$('.ui-jqgrid-bdiv tr').each((index, row)->
+						$('td:not(:hidden)', row).last().addClass('last-cell')
+					)
+		)
 
 	hideGrid: ->
 		@$(".gridpager").hide()
@@ -449,14 +459,16 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	).property('selection.@each')
 
 	updateGrid: (doValidation)->
-		if @getTableDom()?
-			@unHighlightAllRows()
-			@highlightRows()
-			@showEditableCells()
-			@setHeaderWidths()
-			@resizeToContainer()
-		@validate() if doValidation
-		$.publish("/grid/rendered")
+		Tent.Browsers.executeForIE(@, ->
+			if @$()? and @getTableDom()?
+				@unHighlightAllRows()
+				@highlightRows()
+				@showEditableCells()
+				@setHeaderWidths()
+				@resizeToContainer()
+			@validate() if doValidation
+			$.publish("/grid/rendered")
+		)
 
 	highlightRows: ()->
 		table = @getTableDom()

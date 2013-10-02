@@ -37,7 +37,7 @@ test 'Ensure the email format error gets applied', ->
 
   Ember.run ->
     view.$('input').val('invalidemail')
-    view.$('input').trigger('change')
+    view.$('input').trigger('focusout')
   equal view.$('.error').length, 1, 'error class should now get applied'
 
   #equal view.$('.help-inline').text(), Tent.messages.EMAIL_FORMAT_ERROR, 'Received Tent.messages.EMAIL_FORMAT_ERROR'   

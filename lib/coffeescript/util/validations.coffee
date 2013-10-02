@@ -208,3 +208,33 @@ Tent.Validations.uniqueValue = Tent.Validation.create
     !(options.testArr.contains(value))
 
   ERROR_MESSAGE: Tent.messages.UNIQUE_VALUE_ERROR
+
+###*
+* @class Tent.Validations.compareValue Validates that the value is greater than or less than numbers
+###
+Tent.Validations.compareValue = Tent.Validation.create
+  ###*
+  * @method validate
+  * @param {String} value the value to test
+  * @param {Object} options the options to pass to the validation. options must contain either a 
+  * 'greaterThan' or 'lessThan' value 
+  * @param {String} message an optional message to display if the validation fails
+  * @return {Boolean} the result of the validation
+  ###
+  validate: (value, options, message, view)->
+    if not options? or not (options.greaterThan? or options.lessThan?)
+      return true
+    message = if(not message? and options.message?) then options.message
+    if value
+      if options.greaterThan? and options.greaterThan >= value
+        message = Tent.messages.GREATER_VALUE_ERROR unless message
+        @set('ERROR_MESSAGE', message) if message?
+        false
+      else if options.lessThan? and options.lessThan <= value
+        message = Tent.messages.LESS_VALUE_ERROR unless message
+        @set('ERROR_MESSAGE', message) if message?
+        false
+      else
+        true
+    else 
+      true

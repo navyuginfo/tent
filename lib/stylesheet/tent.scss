@@ -7,6 +7,7 @@
 @import "layout";
 @import "sidemenu";
 @import "collection_panel";
+@import "select2_mods";
 
 
 /* Tent-Specific */
@@ -89,6 +90,7 @@ body > .modal-backdrop {
 	margin-left: -360px;
 	box-sizing: border-box;
 	z-index: 800;
+	min-width: 540px;
 	@include transition(all 0.3s ease);
 
 	li {

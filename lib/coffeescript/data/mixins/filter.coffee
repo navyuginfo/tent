@@ -92,7 +92,7 @@ Tent.Data.Filter = Ember.Mixin.create
 				if item.name == currentFilter.name 
 					if item.label == currentFilter.label
 						replacedExisting = true
-						Ember.copy(currentFilter,true)
+						Ember.Object.create($.extend(true, {}, currentFilter))
 					else
 						currentFilter.name = currentFilter.label.split(" ").join('')
 						item

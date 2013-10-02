@@ -1684,6 +1684,26 @@
     return res;
   };
 
+  Tent.Browsers.executeForIE = function(context, callback, args) {
+    if (Tent.Browsers.getIEVersion() !== 8) {
+      if (args != null) {
+        return callback.apply(context, args);
+      } else {
+        return callback.apply(context);
+      }
+    } else {
+      if (args != null) {
+        return setTimeout((function() {
+          return callback.apply(context, args);
+        }), 10);
+      } else {
+        return setTimeout((function() {
+          return callback.apply(context);
+        }), 10);
+      }
+    }
+  };
+
 }).call(this);
 
 
@@ -1816,6 +1836,10 @@
   Tent.messages.MIN_VALUE_ERROR = "error.minValue";
 
   Tent.messages.MAX_VALUE_ERROR = "error.maxValue";
+
+  Tent.messages.GREATER_VALUE_ERROR = "error.greaterValue";
+
+  Tent.messages.LESS_VALUE_ERROR = "error.lessValue";
 
   Tent.messages.VALUE_BETWEEN_ERROR = "error.valueBetween";
 
@@ -2433,6 +2457,52 @@
       return !(options.testArr.contains(value));
     },
     ERROR_MESSAGE: Tent.messages.UNIQUE_VALUE_ERROR
+  });
+
+  /**
+  * @class Tent.Validations.compareValue Validates that the value is greater than or less than numbers
+  */
+
+
+  Tent.Validations.compareValue = Tent.Validation.create({
+    /**
+    * @method validate
+    * @param {String} value the value to test
+    * @param {Object} options the options to pass to the validation. options must contain either a 
+    * 'greaterThan' or 'lessThan' value 
+    * @param {String} message an optional message to display if the validation fails
+    * @return {Boolean} the result of the validation
+    */
+
+    validate: function(value, options, message, view) {
+      if (!(options != null) || !((options.greaterThan != null) || (options.lessThan != null))) {
+        return true;
+      }
+      message = !(message != null) && (options.message != null) ? options.message : void 0;
+      if (value) {
+        if ((options.greaterThan != null) && options.greaterThan >= value) {
+          if (!message) {
+            message = Tent.messages.GREATER_VALUE_ERROR;
+          }
+          if (message != null) {
+            this.set('ERROR_MESSAGE', message);
+          }
+          return false;
+        } else if ((options.lessThan != null) && options.lessThan <= value) {
+          if (!message) {
+            message = Tent.messages.LESS_VALUE_ERROR;
+          }
+          if (message != null) {
+            this.set('ERROR_MESSAGE', message);
+          }
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
   });
 
 }).call(this);
@@ -3208,19 +3278,22 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
   Tent.FormattingSupport = Ember.Mixin.create({
     init: function() {
       this._super();
-      return this.set('formattedValue', this.format(this.get('value')));
+      return this.set("formattedValue", this.format(this.get("value")));
     },
     valueDidChange: (function() {
-      this.set("formattedValue", this.format(this.get('value')));
-      return this.set('isValid', this.validate());
-    }).observes('value'),
+      this.set("formattedValue", this.format(this.get("value")));
+      return this.set("isValid", this.validate());
+    }).observes("value"),
     format: function(value) {
-      if (value) {
-        return value.trim();
-      }
+      return this.trimValue(value);
     },
     unFormat: function(value) {
       return value;
+    },
+    trimValue: function(value) {
+      if (value) {
+        return value.trim();
+      }
     }
   });
 
@@ -3310,7 +3383,13 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       var currentFilterOperator;
       currentFilterOperator = this.get('filterOp');
       return currentFilterOperator === 'range';
-    }).property('filterOp')
+    }).property('filterOp'),
+    observeFilterOp: (function() {
+      var op;
+      if (((op = this.get('filterOp')) != null) && !op.isBlank() && (this.get('operators') != null)) {
+        return this.set('selectedOperator', this.get('operators').findProperty('operator', op));
+      }
+    }).observes('filterOp')
   });
 
 }).call(this);
@@ -3422,7 +3501,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{view Tent.TextFieldInput \n          valueBinding=\"view.value2\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          classBinding=\"view.controlClass\"\n          classNames=\"range-end\"\n          typeBinding=\"view.type\"\n        }}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -3462,7 +3541,10 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
-    change: function() {
+    trimmedValue: (function() {
+      return this.trimValue(this.get('value'));
+    }).property('value'),
+    focusOut: function() {
       var unformatted;
       this._super(arguments);
       this.set('isValid', this.validate());
@@ -4356,11 +4438,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     }).observes('collection.personalizations'),
     initializeWithNewPersonalization: function(index) {
       var uiState;
-      if (this.get('customizationName') !== this.get('collection.customizationName')) {
-        if (parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
+      uiState = this.get('collection.defaultPersonalization');
+      if (uiState != null) {
+        uiState.filtering = this.get('collection.defaultFiltering');
+        if (this.shouldUseIndex(index)) {
           uiState = this.get('collection.personalizations').objectAt(index).get('settings');
-        } else {
-          uiState = this.get('collection.defaultPersonalization');
         }
         this.set('collection.customizationName', uiState.customizationName);
         if (uiState.paging != null) {
@@ -4381,6 +4463,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         this.applyStoredPropertiesToGrid();
         return this.populateCollectionDropdown();
       }
+    },
+    shouldUseIndex: function(index) {
+      return this.get('customizationName') !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null);
     }
   });
 
@@ -4627,9 +4712,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }
       data = {
         rows: this.get('gridData'),
-        total: this.get('pagingInfo') != null ? this.get('pagingInfo.totalPages') : void 0,
-        records: this.get('pagingInfo') != null ? this.get('pagingInfo.totalRows') : void 0,
-        page: this.get('pagingInfo') != null ? this.get('pagingInfo').page : void 0,
+        total: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo.totalPages') : void 0,
+        records: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo.totalRows') : void 0,
+        page: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo').page : void 0,
         userdata: this.get('fixedRows'),
         remoteGrouping: this.isShowingValidGroups(),
         columns: this.get('columnModel')
@@ -5970,7 +6055,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         viewsortcols: [true, 'vertical', false],
         hidegrid: false,
         viewrecords: true,
-        rowNum: this.get('paged') ? this.get('pagingInfo.pageSize') : -1,
+        rowNum: this.get('paged') ? this.get('collection.pagingInfo.pageSize') : -1,
         gridview: true,
         toppager: false,
         cloneToTop: false,
@@ -6078,9 +6163,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     },
     columnsDidChange: function(colChangedIndex) {
       this._super();
-      this.adjustHeight();
-      this.removeLastDragBar();
-      return this.setHeaderWidths();
+      return Tent.Browsers.executeForIE(this, function() {
+        if (this.$() != null) {
+          this.adjustHeight();
+          this.removeLastDragBar();
+          return this.setHeaderWidths();
+        }
+      });
     },
     adjustHeight: function() {
       var top;
@@ -6094,7 +6183,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if (Tent.Browsers.isIE()) {
           this.$('.ui-jqgrid-bdiv').css('height', 'auto');
         }
-        this.$('.ui-jqgrid-bdiv').css('bottom', this.heightForFooter());
+        this.$('.ui-jqgrid-bdiv').css('bottom', this.heightForFooter() + this.heightForPager());
         if (this.get('footerRow')) {
           if (this.get('horizontalScrolling')) {
             this.$('.ui-jqgrid-sdiv').css('bottom', this.heightForPager());
@@ -6141,29 +6230,35 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }).last();
     },
     resizeToContainer: function() {
-      var bdiv, widthWithoutScrollbar;
-      if (this.$() != null) {
-        bdiv = this.$('.ui-jqgrid-bdiv');
-        if (this.get('horizontalScrolling')) {
-          this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width', '100%');
-          bdiv.css('width', 'auto');
-          this.$('.ui-jqgrid-bdiv > div').css('position', 'static');
-          this.$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth);
-        } else {
-          this.getTableDom().setGridWidth(this.$().innerWidth(), true);
-          widthWithoutScrollbar = bdiv.get(0).clientWidth;
-          this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
+      return Tent.Browsers.executeForIE(this, function() {
+        var bdiv, widthWithoutScrollbar;
+        if (this.$() != null) {
+          bdiv = this.$('.ui-jqgrid-bdiv');
+          if (this.get('horizontalScrolling')) {
+            this.$('.ui-jqgrid-view, .ui-jqgrid, .ui-jqgrid-pager, .ui-jqgrid-hdiv').css('width', '100%');
+            bdiv.css('width', 'auto');
+            this.$('.ui-jqgrid-bdiv > div').css('position', 'static');
+            this.$('.ui-jqgrid-btable').css('margin-right', bdiv.get(0).offsetWidth - bdiv.get(0).clientWidth);
+          } else {
+            this.getTableDom().setGridWidth(this.$().innerWidth(), true);
+            widthWithoutScrollbar = bdiv.get(0).clientWidth;
+            this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
+          }
+          return this.adjustHeight();
         }
-        return this.adjustHeight();
-      }
+      });
     },
     padLastCellsForScrollbar: function() {
-      this.$('.ui-jqgrid-bdiv td').removeClass('last-cell');
-      if (this.get('horizontalScrolling') || (Tent.Browsers.getIEVersion() === 8) || (Tent.Browsers.getIEVersion() === 9)) {
-        return this.$('.ui-jqgrid-bdiv tr').each(function(index, row) {
-          return $('td:not(:hidden)', row).last().addClass('last-cell');
-        });
-      }
+      return Tent.Browsers.executeForIE(this, function() {
+        if (this.$() != null) {
+          this.$('.ui-jqgrid-bdiv td').removeClass('last-cell');
+          if (this.get('horizontalScrolling') || (Tent.Browsers.getIEVersion() === 8) || (Tent.Browsers.getIEVersion() === 9)) {
+            return this.$('.ui-jqgrid-bdiv tr').each(function(index, row) {
+              return $('td:not(:hidden)', row).last().addClass('last-cell');
+            });
+          }
+        }
+      });
     },
     hideGrid: function() {
       this.$(".gridpager").hide();
@@ -6220,17 +6315,19 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return sel;
     }).property('selection.@each'),
     updateGrid: function(doValidation) {
-      if (this.getTableDom() != null) {
-        this.unHighlightAllRows();
-        this.highlightRows();
-        this.showEditableCells();
-        this.setHeaderWidths();
-        this.resizeToContainer();
-      }
-      if (doValidation) {
-        this.validate();
-      }
-      return $.publish("/grid/rendered");
+      return Tent.Browsers.executeForIE(this, function() {
+        if ((this.$() != null) && (this.getTableDom() != null)) {
+          this.unHighlightAllRows();
+          this.highlightRows();
+          this.showEditableCells();
+          this.setHeaderWidths();
+          this.resizeToContainer();
+        }
+        if (doValidation) {
+          this.validate();
+        }
+        return $.publish("/grid/rendered");
+      });
     },
     highlightRows: function() {
       var grid, item, table, _i, _len, _ref;
@@ -8230,7 +8327,7 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.isLoading}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classBinding=\"view.inputSizeClass\" \n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.isLoading}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{view Tent.SelectElement \n               contentBinding=\"view.list\" \n               classNameBindings=\"view.inputSizeClass\" \n               class=\"primary-class\"\n               optionLabelPathBinding=\"view.optionLabelPath\" \n               optionValuePathBinding =\"view.optionValuePath\" \n               selectionBinding=\"view.selection\"\n               multipleBinding=\"view.multiple\"\n               promptBinding = \"view._prompt\"\n               advancedBinding=\"view.advanced\" \n               valueBinding = \"view.value\"}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
 
@@ -8286,6 +8383,11 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
 
     multiple: false,
     /**
+    * @property {Boolean} isRadioGroup A boolean property to indicate that the presentation should be a group of radio buttons
+    */
+
+    isRadioGroup: false,
+    /**
     * @property {Boolean} [showPrompt=true] A boolean property to indicate whether a prompt should be displayed in
     * the select dropdown. 
     * If no 'prompt' property is set, the prompt will default to a message similar to 'Please Select ...'
@@ -8306,6 +8408,12 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     */
 
     isLoading: false,
+    /**
+    * @property {Boolean} advanced This attached Select2 behavior to the widget, allowing such features as autocomplete,
+    * option formatting and tag management.
+    */
+
+    advanced: false,
     init: function() {
       this._super();
       if (this.get('list.length') === 1 && this.get('preselectSingleElement')) {
@@ -8315,6 +8423,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     didInsertElement: function() {
       this._super(arguments);
       this.set('inputIdentifier', this.$('select').attr('id'));
+      this.setupAdvancedMode();
       if (Tent.Browsers.isIE()) {
         return this.$('.ember-select').bind('focus mouseover', function() {
           return $(this).removeClass('clicked mouseout').addClass('expand');
@@ -8395,11 +8504,28 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, {
     change: function() {
       this._super(arguments);
       return this.set('isValid', this.validate());
+    },
+    setupAdvancedMode: function() {
+      if (this.get('advanced') && !this.get('isRadioGroup') && Tent.Browsers.getIEVersion() !== 8) {
+        return this.$('.primary-class').select2({
+          placeholder: this.get('_prompt'),
+          allowClear: !this.get('multiple') ? true : void 0,
+          dropdownAutoWidth: true
+        });
+      }
     }
   });
 
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
-    defaultTemplate: Ember.Handlebars.compile('{{#if view.prompt}}<option value>{{view.prompt}}</option>{{/if}}{{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
+    defaultTemplate: Ember.Handlebars.compile('\
+    {{#if view.prompt}}\
+      {{#if view.advanced}}\
+        <option></option>\
+      {{else}}\
+        <option value>{{view.prompt}}</option>\
+      {{/if}}\
+    {{/if}}\
+    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
   });
 
   Tent.SelectOption = Ember.SelectOption.extend({
@@ -10025,10 +10151,26 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     setupToggling: function() {
       var widget;
       widget = this;
-      this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
+      this.$(".open-dropdown").click(function(e) {
+        return widget.toggleVisibility();
+      });
       return this.$(".filter-panel .close-panel .btn").click(function() {
         return widget.closeFilterPanel();
       });
+    },
+    toggleVisibility: function() {
+      var component, source;
+      component = this.$(".dropdown-menu");
+      source = this.$(".open-dropdown");
+      if (component.css('display') === 'none') {
+        this.set('isShowing', true);
+        component.css('display', 'block');
+        return source.addClass('active');
+      } else {
+        this.set('isShowing', false);
+        component.css('display', 'none');
+        return source.removeClass('active');
+      }
     },
     filteringInfoDidChange: (function() {
       return this.populateFilterFromCollection();
@@ -10099,10 +10241,11 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
     },
     filter: function() {
       this.stopGroupingOnGrid();
-      return this.get('collection').doFilter(this.get('currentFilter'));
+      this.get('collection').doFilter(this.get('currentFilter'));
+      return this.closeFilterPanel();
     },
     closeFilterPanel: function() {
-      return this.hideComponent(widget.$(".dropdown-menu"));
+      return this.toggleVisibility();
     },
     showFilterFields: (function() {
       return this.get('fieldsHaveRendered') || this.get('isShowing');
@@ -12027,7 +12170,7 @@ GridController
 (function() {
 
   Tent.Data.Filter = Ember.Mixin.create({
-    filteringInfo: {
+    defaultFiltering: {
       selectedFilter: 'default',
       availableFilters: [
         {
@@ -12039,6 +12182,7 @@ GridController
       ]
     },
     init: function() {
+      this.applyDefaultFilter();
       this._super();
       return this.REQUEST_TYPE.FILTER = 'filtering';
       /*@set('filteringInfo', 
@@ -12122,7 +12266,7 @@ GridController
           if (item.name === currentFilter.name) {
             if (item.label === currentFilter.label) {
               replacedExisting = true;
-              return Ember.copy(currentFilter, true);
+              return Ember.Object.create($.extend(true, {}, currentFilter));
             } else {
               currentFilter.name = currentFilter.label.split(" ").join('');
               return item;
@@ -12159,6 +12303,9 @@ GridController
       filter.name = filter.name || filter.label.split(" ").join('');
       this.set('filteringInfo.selectedFilter', filter.name);
       return this.get('filteringInfo.availableFilters').push(Ember.copy(filter, true));
+    },
+    applyDefaultFilter: function() {
+      return this.set('filteringInfo', $.extend({}, this.get('defaultFiltering')));
     }
   });
 
@@ -12332,6 +12479,16 @@ grouping: {
       }
     },
     personalizations: [],
+    personalizationType: null,
+    personalizationSubCategory: (function() {
+      var type;
+      type = this.get('personalizationType');
+      if (type != null) {
+        return type;
+      } else {
+        return this.get('dataType');
+      }
+    }).property('dataType', 'personalizationType'),
     init: function() {
       this._super();
       this.set('customizationName', this.get('defaultName') || "");
@@ -12355,7 +12512,7 @@ grouping: {
       return this.addPersonalizationToCollection(name, uiState);
     },
     savePersonalization: function(name, uiState) {
-      return this.set('newRecord', this.get('store').savePersonalization('collection', this.get('dataType'), name, uiState));
+      return this.set('newRecord', this.get('store').savePersonalization('collection', this.get('personalizationSubCategory'), name, uiState));
     },
     addPersonalizationToCollection: function(name, uiState) {
       var newRecord;
@@ -12394,7 +12551,7 @@ grouping: {
       });
     },
     fetchPersonalizations: function() {
-      return this.get('store').fetchPersonalizations('collection', this.get('dataType'));
+      return this.get('store').fetchPersonalizations('collection', this.get('personalizationSubCategory'));
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');

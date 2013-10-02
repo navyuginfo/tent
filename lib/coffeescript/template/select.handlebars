@@ -26,12 +26,14 @@
       {{else}}
         {{view Tent.SelectElement 
                contentBinding="view.list" 
-               classBinding="view.inputSizeClass" 
+               classNameBindings="view.inputSizeClass" 
+               class="primary-class"
                optionLabelPathBinding="view.optionLabelPath" 
                optionValuePathBinding ="view.optionValuePath" 
                selectionBinding="view.selection"
                multipleBinding="view.multiple"
-               promptBinding = "view._prompt" 
+               promptBinding = "view._prompt"
+               advancedBinding="view.advanced" 
                valueBinding = "view.value"}} 
       {{/if}}
       {{#if view.hasHelpBlock}}
