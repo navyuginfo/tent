@@ -165,7 +165,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport,
       @set('isValid', @validate())
 
   setupAdvancedMode: ->
-    if @get('advanced') and not @get('isRadioGroup') and Tent.Browsers.getIEVersion() != 8
+    if @get('advanced') and not @get('isRadioGroup')
       @$('.primary-class').select2({
         placeholder: @get('_prompt')
         allowClear: true if not @get('multiple')

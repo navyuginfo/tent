@@ -1435,11 +1435,26 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .select2-container .select2-choice .select2-arrow b {
-  background: url("images/select2.png") no-repeat 0 1px;
+  background: url("images/select2.png") no-repeat 0 0px;
 }
 
 .select2-container .select2-choice abbr {
   background: url("images/select2.png") right top no-repeat;
+}
+
+.select2-drop-active, .select2-container-active .select2-choice, .select2-container-active .select2-choices {
+  border-color: #aaa;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+.select2-default {
+  color: #555!important;
+}
+
+.select2-container .select2-choice abbr {
+  top: 6px;
 }
 
 /* Tent-Specific */
