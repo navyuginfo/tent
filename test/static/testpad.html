@@ -329,7 +329,7 @@
                
               <h5>Remote Paging, Sorting, Filtering</h5>
 
-              {{view Tent.FilterPanelView collectionBinding="Pad.jqRemoteCollection"}}
+               
  
                {{view Tent.JqGrid
                   label="Tasks"
@@ -351,7 +351,7 @@
                   resizeGridSteps=false
                   remoteGrouping=true
                   filtering=true
-                  horizontalScrolling=true
+                  horizontalScrolling=false
                   fixedColumnWidth=null
                   showAutofitButton=true
                   allowCsvExport=false
@@ -363,26 +363,7 @@
               <p>Selected jqGrid Items : </p> 
                 {{#each item in Pad.jqGridSelection}}{{item.title}}<br/>{{/each}}
               
-       
-              <h5>Client-Side</h5>
-
-              {{view Tent.JqGrid
-                  label="Tasks"
-                  collectionBinding="Pad.clientSideCollection"
-                  contentBinding= "Pad.clientSideCollection.modelData"
-                  selectionBinding="Pad.jqClientSideGridSelection"
-                  fixedHeader=false
-                  showMaximizeButton=true
-                  paged=true
-                  multiSelect=true
-                  useColumnFilters=false
-                  showColumnChooser=true
-                  onEditRowBinding="Pad.jqOnEditRow"
-                  onRestoreRowBinding="Pad.jqOnRestoreRow"
-                  onSaveCellBinding="Pad.jqOnSaveCell"
-                  required=true
-
-              }}
+        
             
 
               {{view Tent.Button label="Submit" validate="true"}}
