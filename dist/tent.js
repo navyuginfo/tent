@@ -9401,7 +9401,7 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          class=\"warning-panel\"\n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n\n{{#if view.shouldConfirm}}\n\n  {{#view Tent.ModalPane \n          class=\"confirmation-panel\"\n          autoLaunch=false\n          headerBinding=\"view.confirmationTitle\" \n          primaryLabelBinding=\"view.confirmationYes\" \n          secondaryLabelBinding=\"view.confirmationNo\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"confirmAction\"\n          primaryTargetBinding=\"view\"\n          closeAction=\"view.confirmationNo\"\n    }}\n\n      {{loc view.parentView.confirmationMessage}}\n      \n       \n  {{/view}}\n{{/if}}");
+Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          viewName=\"warningPanel\"\n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n\n{{#if view.shouldConfirm}}\n\n  {{#view Tent.ModalPane \n          viewName=\"confirmationPanel\"\n          autoLaunch=false\n          headerBinding=\"view.confirmationTitle\" \n          primaryLabelBinding=\"view.confirmationYes\" \n          secondaryLabelBinding=\"view.confirmationNo\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"confirmAction\"\n          primaryTargetBinding=\"view\"\n          closeAction=\"view.confirmationNo\"\n    }}\n\n      {{loc view.parentView.confirmationMessage}}\n      \n       \n  {{/view}}\n{{/if}}");
 
 
 /**
@@ -9574,7 +9574,7 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     confirmAction: function() {
       this.hideConfirmationPanel();
       this.set('confirmed', true);
-      return this.triggerAction();
+      return this.triggerAction(true);
     },
     classes: (function() {
       var classes, type;
@@ -9673,24 +9673,16 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
       return this.triggerAction(false);
     },
     showWarningPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.warning-panel').attr('id')];
-      return modal.launch();
+      return this.get('warningPanel').launch();
     },
     hideWarningPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.warning-panel').attr('id')];
-      return modal.hide();
+      return this.get('warningPanel').hide();
     },
     showConfirmationPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.confirmation-panel').attr('id')];
-      return modal.launch();
+      return this.get('confirmationPanel').launch();
     },
     hideConfirmationPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.confirmation-panel').attr('id')];
-      return modal.hide();
+      return this.get('confirmationPanel').hide();
     }
   });
 
