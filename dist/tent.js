@@ -8757,9 +8757,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           return $(this).removeClass('expand clicked mouseout');
         });
       }
-      if (this.get('value') != null) {
-        return this.valueDidChange();
-      }
+      return this.valueDidChange();
     },
     valueForMandatoryValidation: (function() {
       if (this.get('multiple')) {
@@ -10602,7 +10600,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         column = _ref[_i];
-        if (column.filterable !== false && !this.get('collection').getFilterValueForColumn(column.name)) {
+        if (!(column.filterable === false && !this.get('collection').getFilterValueForColumn(column.name))) {
           _results.push(this.get('collection').createBlankFilterFieldValue(column.name));
         } else {
           _results.push(void 0);
