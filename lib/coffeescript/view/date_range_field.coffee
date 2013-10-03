@@ -215,10 +215,11 @@ Tent.DateRangeField = Tent.TextField.extend
 	).observes('readOnly')
 
 	handleDisabled: (->
-		if @get('disabled')? && @get('disabled')
-			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
-		else 
-			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
+		if @$()?
+			if @get('disabled')? && @get('disabled')
+				@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
+			else 
+				@.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('disabled')
 
 		 

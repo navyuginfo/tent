@@ -351,6 +351,21 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .filter-container .filterpanel {
   background-color: white;
 }
+.filter-container .filter-field .icon-lock {
+  color: #aaa;
+}
+.filter-container .filter-field.selected .icon-lock {
+  color: #333;
+}
+.filter-container .filter-field .disabled > .icon-lock {
+  cursor: default;
+}
+.filter-container .field-lock .icon-lock {
+  color: #aaa;
+}
+.filter-container .field-lock.selected .icon-lock {
+  color: #333;
+}
 
 .tent-jqgrid {
   height: 100%;

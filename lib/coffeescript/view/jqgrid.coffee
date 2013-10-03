@@ -49,7 +49,7 @@ require '../mixin/grid/horizontal_scroll_support'
 Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
-	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned']
+	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned', 'filterCoversGrid']
 
 	###*
 	* @property {String} title The title caption to appear above the table
@@ -116,6 +116,15 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 	* and a getter.
 	###
 	selection: []
+
+	###*
+	* @property {String} usageContext The environment into which this grid is to be placed.
+	* The behavior and presentation of the grid and its components may differ in different usage
+	* contexts. e.g. Filter panel may default to opened when in the 'report' context.
+	*
+	* Current allowed values are 'view' and 'report'
+	###
+	usageContext: null
 
 	init: ->
 		@_super()

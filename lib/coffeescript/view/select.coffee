@@ -183,6 +183,13 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
       @_super(arguments)
       @set('isValid', @validate())
 
+  showSpinner: (->
+    if @get('isLoaded')?
+      return not @get('isLoaded')
+    if @get('isLoading')?
+      return @get('isLoading')
+  ).property('isLoaded', 'isLoading')
+
   setupAdvancedMode: ->
     if @get('advanced') and not @get('isRadioGroup')
       @$('.primary-class').select2({
@@ -190,13 +197,6 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         allowClear: true if not @get('multiple')
         dropdownAutoWidth: true
       })
-
-  showSpinner: (->
-    if @get('isLoaded')?
-      return not @get('isLoaded')
-    if @get('isLoading')?
-      return @get('isLoading')
-  ).property('isLoaded', 'isLoading')
 
 Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
   defaultTemplate: Ember.Handlebars.compile('

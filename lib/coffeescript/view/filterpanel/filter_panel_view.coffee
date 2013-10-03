@@ -11,12 +11,19 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	removeFilterField: (fieldContent)->
 		@get('collection').removeFilterFieldValue(fieldContent)
 
-	applyFilter: ->
-		@get('collection').doFilter()
-
 	# Called from the view
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)
+
+	filterableColumns: (->
+		filterableCols = @get('collection.columnsDescriptor').filter((column)->
+			column.filterable != false
+		)
+		# Clone the columns so that they don't get changed by the filtering.
+		filterableCols.map((item) ->
+        	Ember.copy(item,true)
+      	)
+	).property('collection.columnsDescriptor')
 
 
 Tent.FilterPanelView = Ember.View.extend
@@ -24,17 +31,13 @@ Tent.FilterPanelView = Ember.View.extend
 	collection: null
 	isPinned: false
 	showFilter: false
+	usageContext: null
 
 	init: ->
 		@_super()
 		@set('controller', Tent.FilterPanelController.create(
-			collectionBinding: 'collection'
+			collection: @get('collection')
 		))
-
-	collectionDidChange: (->
-		# collection may not be available when init() is called
-		@get('controller').set('collection', @get('collection'))
-	).observes('collection', 'collection.isLoaded')
 
 	willDestroyElement: ->
 		delete @get('controller')
@@ -53,23 +56,46 @@ Tent.FilterPanelView = Ember.View.extend
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null
+	lockedBinding: 'content.locked'
+	usageContext: null
 
 	deleteField: ->
 		@get('parentController').deleteFilterField(@get('content'))
 
+	toggleLock: ->
+		if @get('lockIsEnabled')
+			@toggleProperty('locked')
+
+	lockIsEnabled: (->
+		@get('usageContext')? and @get('usageContext') != 'view'
+	).property('usageContext')
+
+	# field should be disabled if it is locked and in view mode
+	isDisabled: (->
+		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
+	).property('locked','usageContext')
+
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
+	classNames: ['filter-field']
+	classNameBindings: ['controller.locked']
 	parentControllerBinding: 'parentView.controller'
 	collectionBinding: 'parentView.collection'
+	content: null
+	usageContext: null
+
 	init: ->
 		@_super()
-		@set('controller', Tent.FilterFieldController.create
+		@set('controller', @createController())
+		@initializeSelection()
+
+	createController: ->
+		Tent.FilterFieldController.create
 			content: @get('content')
 			parentController: @get('parentController')
 			collection: @get('collection')
-		)
-		@initializeSelection()
+			usageContext: @get('usageContext')
 
 	initializeSelection: ->
 		selectedField = @get('content.field')
@@ -82,17 +108,30 @@ Tent.FilterFieldView = Ember.View.extend
 
 	willDestroyElement: ->
 		delete @get('controller')
-		
+
 	typeIsSelected: (->
 		@get('content.field')?
 	).property('content.field')
+
+	showLockIcon: (->
+		# Show icon if not in view mode, or if in view mode but also locked
+		@get('controller.locked') or (@get('usageContext') != 'view' and @get('usageContext')?)
+	).property('usageContext', 'controller.locked')
+
+	lockIsSelected: (->
+		@get('controller.locked') and @get('controller.lockIsEnabled')
+	).property('controller.locked', 'controller.lockIsEnabled')
+
+	showTrashIcon: (->
+		@get('usageContext') != 'view' and @get('usageContext')?
+	).property('usageContext')
 
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
 	classNames: ['filter-field-control']
 	content: null
-	 
 	column: null
+	isDisabled: false
 
 	init: ->
 		@_super()
@@ -111,7 +150,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 
 	populateContainer: ()->
 		@resetFieldView()
-		
+
 		switch @get('column.type')
 			when "string"
 				if @get('column.edittype') == 'select'
@@ -129,6 +168,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							filterOpBinding: "parentView.content.op"
 							field: @get('column.name')
 							classNames: ["no-label"]
+							disabledBinding: "parentView.isDisabled"
+
 					if @get('column.editoptions.collection')
 						coll = eval(@get('column.editoptions.collection.name')).fetchCollection()
 						fieldView = Tent.Select.create
@@ -141,6 +182,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							filterOpBinding: "parentView.content.op"
 							field: @get('column.name')
 							classNames: ["no-label"]
+							disabledBinding: "parentView.isDisabled"
 				else
 					fieldView = Tent.TextField.create
 						label: Tent.I18n.loc(@get('column.title'))
@@ -149,17 +191,19 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 						filterOpBinding: "parentView.content.op"
 						field: @get('column.name')
 						classNames: ["no-label"]
+						disabledBinding: "parentView.isDisabled"
 
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					valueBinding: "parentView.content.data"
-					filterOpBinding: "parentView.content.op"
+					valueBinding: "content.data"
+					filterOpBinding: "content.op"
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 					#field: column.name
 
 			when "number", "amount"
@@ -167,21 +211,24 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
 					serializer: Tent.Formatting.number.serializer
-					rangeValueBinding: "parentView.content.data"
-					filterOpBinding: "parentView.content.op"
+					rangeValueBinding: "content.data"
+					filterOpBinding: "content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 
 			when "boolean"
 				fieldView = Tent.Checkbox.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					checkedBinding: "parentView.content.data" 
-					filterOpBinding: "parentView.content.op"
+					checkedBinding: "content.data" 
+					filterOpBinding: "content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
+					disabledBinding: "parentView.isDisabled"
 
 		if fieldView?
 			@set('fieldView', fieldView)
 			@get('childViews').pushObject(fieldView)
+
 
