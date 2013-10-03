@@ -267,8 +267,6 @@ test "Should confirm: ", ->
   Ember.run ->
     button.set('confirmationMessage', 'please provide a value')
     button.set('confirmed', false)
-
-  dump('confirmed = ' + button.get('confirmed'))
   ok button.get('shouldConfirm'), 'Confirmation is required now'
 
 
