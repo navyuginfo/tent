@@ -118,8 +118,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         $(this).removeClass 'expand clicked mouseout'
 
     # Ensure that supplying an initial value will defaul the dropdown at the correct option 
-    if @get('value')?
-      @valueDidChange()
+    @valueDidChange()
             
   valueForMandatoryValidation: (->
     if @get('multiple')
