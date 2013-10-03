@@ -11,15 +11,14 @@ Tent.Data.Filter = Ember.Mixin.create
 				name: "default"
 				label: Tent.I18n.loc 'tent.filter.noFilter'
 				description: ""
-				values: {
-					
-				}
+				values: []
 			}
 		]
 	
 	init: ->
 		@applyDefaultFilter()
 		@_super()
+		@REQUEST_TYPE = @REQUEST_TYPE || {}
 		@REQUEST_TYPE.FILTER = 'filtering'
 
 		###@set('filteringInfo', 
@@ -60,6 +59,20 @@ Tent.Data.Filter = Ember.Mixin.create
 			])
 		###
 
+	ensureFilterAvailable: ->
+		if not @get('selectedFilter')?
+			@set('filteringInfo',
+				selectedFilter: 'default'
+				availableFilters: [
+					{
+						name: "default"
+						label: Tent.I18n.loc 'tent.filter.noFilter'
+						description: ""
+						values: []
+					}
+				]
+			)
+
 	selectedFilter: ( ->
 		@getSelectedFilter()
 	).property('filteringInfo', 'filteringInfo.selectedFilter')
@@ -79,16 +92,16 @@ Tent.Data.Filter = Ember.Mixin.create
 		@set('filteringInfo.selectedFilter', name)
 
 	filterNames: (->
-		@get('filteringInfo.availableFilters').map((item)->
+		@get('filteringInfo.availableFilters').map((item) ->
 			name: item.name
 			label: item.label
 		)
 	).property('filteringInfo.availableFilters', 'filteringInfo.availableFilters.@each')
 
-	updateCurrentFilter: (currentFilter)->
+	updateCurrentFilter: (currentFilter) ->
 		replacedExisting = false
 		if @get('filteringInfo')?
-			filters = @get('filteringInfo.availableFilters').map((item)->
+			filters = @get('filteringInfo.availableFilters').map((item) ->
 				if item.name == currentFilter.name 
 					if item.label == currentFilter.label
 						replacedExisting = true
@@ -122,6 +135,30 @@ Tent.Data.Filter = Ember.Mixin.create
 	getFilteringInfo: ->
 		@getSelectedFilter()
 
+	# Add a new field to the value array of the currently selected filter, 
+	# ready to be populated with a filter field value for the specified column.
+	createBlankFilterFieldValue: (columnName) ->
+		@ensureFilterAvailable()
+		@get('selectedFilter.values').pushObject({field:columnName, op:"", data:""})
+
+	removeFilterFieldValue: (value) ->
+		@ensureFilterAvailable()
+		@get('selectedFilter.values').removeAt(@get('selectedFilter.values').indexOf(value))
+
+	# Return the filter value for the specified column from the currently selected filter.
+	getFilterValueForColumn: (columnName) ->
+		@get('selectedFilter.values').filter((value) ->
+			value.field == columnName
+		)
+
+	# Return only columns that are filterable
+	filterableColumns: (->
+		@get('columnsDescriptor').filter((column) ->
+			column.filterable != false
+		)
+	).property('columnsDescriptor')
+
+
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated
 		# TODO : store filter in datastore
@@ -129,7 +166,7 @@ Tent.Data.Filter = Ember.Mixin.create
 		@saveUIState()
 		#@get('availableFilters').notifyPropertyChange('content')
 
-	addNewFilter: (filter)->
+	addNewFilter: (filter) ->
 		filter.name = filter.name or filter.label.split(" ").join('')
 		@set('filteringInfo.selectedFilter', filter.name)
 		@get('filteringInfo.availableFilters').push(Ember.copy(filter,true))

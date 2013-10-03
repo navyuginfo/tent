@@ -12,10 +12,13 @@
   	{{#if view.grid.showColumnChooser}}
 		{{view Tent.Grid.ColumnChooserButton gridBinding="view.grid"}}  
 	{{/if}}
+
+	{{#if view.grid.collection}}
+		{{#if view.grid.filtering}}
+			<a {{action toggleFilter target="view.grid"}} class="btn-filter pull-right">
+				<i class="icon-filter"></i>{{loc tent.filter.filter}}
+			</a>
+		{{/if}}
+	{{/if}}	
 </div>
 
-{{#if view.grid.collection}}
-	{{#if view.grid.filtering}}
-		{{view Tent.CollectionFilter collectionBinding="view.grid.collection"}}
-	{{/if}}
-{{/if}}	

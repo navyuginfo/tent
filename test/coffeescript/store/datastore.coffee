@@ -88,17 +88,23 @@ Pad.DataStore = Ember.Object.extend
 ###
 	savePersonalization: ->
 
+
+	
+	
 	getColumnsForType: ->
+		# Sample Usage
+		# {id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
+		# {id: "duration", name: "duration", type:"string", title: "_hDuration",field: "duration", width:10, sortable: true, groupable:true, align: 'right'},
+		
 		[
-			Ember.Object.create {id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true}
-			Ember.Object.create {id: "title", name: "title", type:"string", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false}
-			# Ember.Object.create {id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', formatter: 'selectEdit', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}}
-			Ember.Object.create {id: "duration", name: "duration", type:"string", title: "_hDuration",field: "duration", width:10, sortable: true, groupable:true, align: 'right'}
-			Ember.Object.create {id: "%", name: "percentcomplete", type:"amount", title: "_hPercentComplete",field: "percentcomplete", formatter: "amount", width:10, sortable:true}
-			Ember.Object.create {id: "effortdriven", name: "effortdriven", type:"number", title: "_hEffortDriven", field: "effortdriven", groupable:true, width:10, sortable:true}
-			Ember.Object.create {id: "start", name: "start", type:"date", formatter:'date', formatoptions:{dateFormat: "dd-M-yy"}, title: "_hStart", field: "start", groupable:true, width:10, sortable:true}
-			Ember.Object.create {id: "finish", name: "finish", type:"date", title: "_hFinish",field: "finish", groupable:true, width:10, hideable: true, formatter: "date", sortable:true}
-			Ember.Object.create {id: "completed", name: "completed", type:"boolean", title: "_hCompleted",field: "completed", width:30, hideable: true, align: 'center', editable: false, sortable:true}
+			{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},
+			{id: "title", name: "title", type:"string", title: "_hTitle", field: "title", width:5, sortable: true, hideable: false},
+			{id: "duration", name: "duration", type:"number", title: "_hDuration",field: "duration", width:10, sortable: true, align: 'right', edittype: 'select', editoptions:{value: {1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six',7:'Seven',8:'Eight'}}},
+			{id: "%", name: "percentcomplete", type:"amount", title: "_hPercentComplete",field: "percentcomplete", formatter: "amount", width:10, sortable:true},
+			{id: "effortdriven", name: "effortdriven", type:"number", title: "_hEffortDriven", field: "effortdriven", groupable:true, width:10, sortable:true},
+			{id: "start", name: "start", type:"date", formatter:'date', formatoptions:{dateFormat: "dd-M-yy"}, title: "_hStart", field: "start", groupable:true, width:10, sortable:true},
+			{id: "finish", name: "finish", type:"date", title: "_hFinish",field: "finish", groupable:true, width:10, hideable: true, formatter: "date", sortable:true}
+			{id: "completed", name: "completed", type:"boolean", title: "_hCompleted",field: "completed", width:30, hideable: true, align: 'center', editable: false, sortable:true}
 		]
 
 	queryFixtures: (modelData, query) ->
