@@ -144,7 +144,7 @@ test 'Retrieve column model', ->
 			]
  
 	grid = Tent.JqGrid.create
-		collection: mockCollection 
+		collection: mockCollection
 
 	colModel = grid.get('columnModel')
 	equal colModel.length, 3, 'Should be 3 columns'
