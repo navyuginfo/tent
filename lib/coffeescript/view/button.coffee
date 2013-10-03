@@ -172,7 +172,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   confirmAction: ->
     @hideConfirmationPanel()
     @set('confirmed', true)
-    @triggerAction()
+    @triggerAction(true)
 
   classes: (->
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")
@@ -251,25 +251,21 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).property('messagePanel', 'messagePanel.hasSevereWarnings')
 
   ignoreWarnings: ->
-    @get('messagePanel').clearWarnings()
+    @get('messagePanel').clearWarnings()  
     @hideWarningPanel()
     @triggerAction(false)
 
   showWarningPanel: ->
-    modal = Ember.View.views[@$('.warning-panel').attr('id')]
-    modal.launch()
+    @get('warningPanel').launch()
 
   hideWarningPanel: ->
-    modal = Ember.View.views[@$('.warning-panel').attr('id')]
-    modal.hide()
+    @get('warningPanel').hide()
 
   showConfirmationPanel: ->
-    modal = Ember.View.views[@$('.confirmation-panel').attr('id')]
-    modal.launch()
+    @get('confirmationPanel').launch()
 
   hideConfirmationPanel: ->
-    modal = Ember.View.views[@$('.confirmation-panel').attr('id')]
-    modal.hide()
+    @get('confirmationPanel').hide()
 
 
 
