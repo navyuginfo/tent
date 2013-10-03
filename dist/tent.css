@@ -1481,18 +1481,13 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .select2-container .select2-choice .select2-arrow b {
-<<<<<<< HEAD
   background: url("images/select2.png") no-repeat 0 0px;
-=======
-  background: url("images/select2.png") no-repeat 0 1px;
->>>>>>> Adding select js and css library files.
 }
 
 .select2-container .select2-choice abbr {
   background: url("images/select2.png") right top no-repeat;
 }
 
-<<<<<<< HEAD
 .select2-drop-active, .select2-container-active .select2-choice, .select2-container-active .select2-choices {
   border-color: #aaa;
   -webkit-box-shadow: none;
@@ -1508,8 +1503,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   top: 6px;
 }
 
-=======
->>>>>>> Adding select js and css library files.
 /* Tent-Specific */
 /* Typography */
 /* Headers */
