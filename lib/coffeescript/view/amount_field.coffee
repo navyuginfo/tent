@@ -63,11 +63,6 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRan
   unFormat: (value)->
     return Tent.Formatting.amount.unformat(value)
 
-  #formats the value when the input field is out of focus
-  focusOut: ->
-    if @get('isValid')
-      @set('formattedValue', @format(@get('formattedValue')))
-
   observeCurrencyForValidationAndFormatting: (->
     # remove the error always and check add again if required
     @get('validationErrors').removeObject(Tent.I18n.loc (Tent.messages.CURRENCY_ERROR))
