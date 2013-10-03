@@ -2477,11 +2477,7 @@
 
     validate: function(value, options, message, view) {
       if (!(options != null) || !((options.greaterThan != null) || (options.lessThan != null))) {
-<<<<<<< HEAD
         return true;
-=======
-        return false;
->>>>>>> Adding confirmation behaviour
       }
       message = !(message != null) && (options.message != null) ? options.message : void 0;
       if (value) {
