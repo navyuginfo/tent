@@ -361,7 +361,7 @@ test 'Paging data collection binding', ->
 	appendView()
 
 	gridView = Ember.View.views[view.$('.tent-jqgrid').attr('id')]
-	equal gridView.pagingInfo.pageSize, 12, 'PageSize should be 1 - from the controller'
+	equal gridView.pagingInfo.pageSize, 1, 'PageSize should be 1 - from the controller'
 	equal gridView.pagingInfo.page, 1, 'Page should be 1 - from the controller'
 	equal gridView.pagingInfo.totalPages, 3, 'Total pages should be 3 - from the controller'
 
