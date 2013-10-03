@@ -85,7 +85,7 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
 
   ###*
   * @property {Boolean} warn If warn is set to true, a dialog will be presented if there are any 
-  * warnings pending on the page. The user will be asked to either procede, ignoring the warnings, or to 
+  * warnings pending on the page. The user will be asked to either proceed, ignoring the warnings, or to 
   * cancel the button action and fix the warnings. {@link #validate} must also be set to true to 
   * enable this property.
   ###
@@ -100,6 +100,33 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   optionTargetPath: 'target'
   optionActionPath: 'action'
 
+  ###*
+  * @property {String} confirmationTitle If a confirmation is required, this will be the title for the confirmation 
+  * dialog box
+  ###
+  confirmationTitle: "tent.confirm"
+
+  ###*
+  * @property {String} confirmationMessage If a confirmation is required, this will be the message to be displayed
+  * in the confirmation dialog box. A confirmation dialog will only be presented if a value is provided for 
+  * this property.
+  ###
+  confirmationMessage: null 
+
+  ###*
+  * @property {String} confirmationYes If a confirmation is required, this will be the label for the Yes button
+  * in the confirmation dialog box 
+  ###
+  confirmationYes: "tent.button.yes"
+
+  ###*
+  * @property {String} confirmationNo If a confirmation is required, this will be the label for the No button 
+  * in the confirmation dialog box
+  ###
+  confirmationNo: "tent.button.no"
+
+  confirmed: true
+
   init: ->
     @_super()
     @set('_options', Ember.ArrayProxy.create({content:  @get('optionList')}) || [] )
@@ -107,6 +134,8 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       @set('isDisabled', @get('disabled'))
     if @get('enabled')?
       @set('isDisabled', not @get('enabled'))
+    if @get('confirmationMessage')?
+      @set('confirmed', false)
 
   targetObject: (->
     target = @get('target')
@@ -127,12 +156,23 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
       if !@get('hasOptions')
         if @get('warn')==true and @get('doWarningsExist')
           @showWarningPanel()
+        else if @get('confirmationMessage')? and not @get('confirmed')
+          @showConfirmationPanel()
         else
           @_super() 
       else 
         return @.$().toggleClass('open')
     else 
       return false
+
+  shouldConfirm: (->
+    @get('confirmationMessage')? and not @get('confirmed')
+  ).property('confirmationMessage')
+
+  confirmAction: ->
+    @hideConfirmationPanel()
+    @set('confirmed', true)
+    @triggerAction(true)
 
   classes: (->
     classes = (if (type = @get("type")) isnt null and @BUTTON_CLASSES.indexOf(type.toLowerCase()) isnt -1 then "btn btn-" + type.toLowerCase() else "btn")
@@ -211,17 +251,23 @@ Tent.Button = Ember.View.extend Ember.TargetActionSupport,
   ).property('messagePanel', 'messagePanel.hasSevereWarnings')
 
   ignoreWarnings: ->
-    @get('messagePanel').clearWarnings()
+    @get('messagePanel').clearWarnings()  
     @hideWarningPanel()
     @triggerAction(false)
 
   showWarningPanel: ->
-    modal = Ember.View.views[@$('.tent-modal').attr('id')]
-    modal.launch()
+    @get('warningPanel').launch()
 
   hideWarningPanel: ->
-    modal = Ember.View.views[@$('.tent-modal').attr('id')]
-    modal.hide()
+    @get('warningPanel').hide()
+
+  showConfirmationPanel: ->
+    @get('confirmationPanel').launch()
+
+  hideConfirmationPanel: ->
+    @get('confirmationPanel').hide()
+
+
 
 Tent.ButtonOptions = Ember.View.extend Ember.TargetActionSupport,
   template: Ember.Handlebars.compile '<a href="#">{{#if view.content.iconClass}}<i {{bindAttr class="view.content.iconClass"}}></i>{{/if}} {{loc view.label}}</a>'

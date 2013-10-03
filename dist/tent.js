@@ -78,6 +78,7 @@
       on: 'On',
       off: 'Off',
       pleaseSelect: 'Please Select...',
+      confirm: 'Confirmation',
       button: {
         ok: 'Ok',
         yes: 'Yes',
@@ -9400,7 +9401,7 @@ Tent.ModalPane = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}");
+Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          viewName=\"warningPanel\"\n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n\n{{#if view.shouldConfirm}}\n\n  {{#view Tent.ModalPane \n          viewName=\"confirmationPanel\"\n          autoLaunch=false\n          headerBinding=\"view.confirmationTitle\" \n          primaryLabelBinding=\"view.confirmationYes\" \n          secondaryLabelBinding=\"view.confirmationNo\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"confirmAction\"\n          primaryTargetBinding=\"view\"\n          closeAction=\"view.confirmationNo\"\n    }}\n\n      {{loc view.parentView.confirmationMessage}}\n      \n       \n  {{/view}}\n{{/if}}");
 
 
 /**
@@ -9480,7 +9481,7 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     validate: false,
     /**
     * @property {Boolean} warn If warn is set to true, a dialog will be presented if there are any 
-    * warnings pending on the page. The user will be asked to either procede, ignoring the warnings, or to 
+    * warnings pending on the page. The user will be asked to either proceed, ignoring the warnings, or to 
     * cancel the button action and fix the warnings. {@link #validate} must also be set to true to 
     * enable this property.
     */
@@ -9494,6 +9495,32 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     optionLabelPath: 'label',
     optionTargetPath: 'target',
     optionActionPath: 'action',
+    /**
+    * @property {String} confirmationTitle If a confirmation is required, this will be the title for the confirmation 
+    * dialog box
+    */
+
+    confirmationTitle: "tent.confirm",
+    /**
+    * @property {String} confirmationMessage If a confirmation is required, this will be the message to be displayed
+    * in the confirmation dialog box. A confirmation dialog will only be presented if a value is provided for 
+    * this property.
+    */
+
+    confirmationMessage: null,
+    /**
+    * @property {String} confirmationYes If a confirmation is required, this will be the label for the Yes button
+    * in the confirmation dialog box
+    */
+
+    confirmationYes: "tent.button.yes",
+    /**
+    * @property {String} confirmationNo If a confirmation is required, this will be the label for the No button 
+    * in the confirmation dialog box
+    */
+
+    confirmationNo: "tent.button.no",
+    confirmed: true,
     init: function() {
       this._super();
       this.set('_options', Ember.ArrayProxy.create({
@@ -9503,7 +9530,10 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
         this.set('isDisabled', this.get('disabled'));
       }
       if (this.get('enabled') != null) {
-        return this.set('isDisabled', !this.get('enabled'));
+        this.set('isDisabled', !this.get('enabled'));
+      }
+      if (this.get('confirmationMessage') != null) {
+        return this.set('confirmed', false);
       }
     },
     targetObject: (function() {
@@ -9526,6 +9556,8 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
         if (!this.get('hasOptions')) {
           if (this.get('warn') === true && this.get('doWarningsExist')) {
             return this.showWarningPanel();
+          } else if ((this.get('confirmationMessage') != null) && !this.get('confirmed')) {
+            return this.showConfirmationPanel();
           } else {
             return this._super();
           }
@@ -9535,6 +9567,14 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
       } else {
         return false;
       }
+    },
+    shouldConfirm: (function() {
+      return (this.get('confirmationMessage') != null) && !this.get('confirmed');
+    }).property('confirmationMessage'),
+    confirmAction: function() {
+      this.hideConfirmationPanel();
+      this.set('confirmed', true);
+      return this.triggerAction(true);
     },
     classes: (function() {
       var classes, type;
@@ -9633,14 +9673,16 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
       return this.triggerAction(false);
     },
     showWarningPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.tent-modal').attr('id')];
-      return modal.launch();
+      return this.get('warningPanel').launch();
     },
     hideWarningPanel: function() {
-      var modal;
-      modal = Ember.View.views[this.$('.tent-modal').attr('id')];
-      return modal.hide();
+      return this.get('warningPanel').hide();
+    },
+    showConfirmationPanel: function() {
+      return this.get('confirmationPanel').launch();
+    },
+    hideConfirmationPanel: function() {
+      return this.get('confirmationPanel').hide();
     }
   });
 
@@ -10406,7 +10448,7 @@ Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-
 
 
   Tent.CollectionFilter = Ember.View.extend(Tent.ToggleVisibility, {
-    /**
+    /**   
     * @property {Tent.Collection} collection The collection which is to be filtered
     */
 

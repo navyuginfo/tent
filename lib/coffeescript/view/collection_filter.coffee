@@ -14,13 +14,13 @@ require '../mixin/toggle_visibility'
                  }} 
 ###
 
-Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility,
-  ###*
+Tent.CollectionFilter = Ember.View.extend Tent.ToggleVisibility, 
+  ###*   
   * @property {Tent.Collection} collection The collection which is to be filtered
   ###
-  collection: null
-  templateName: 'collection_filter'
-  classNames: ['tent-filter']
+  collection: null    
+  templateName: 'collection_filter'  
+  classNames: ['tent-filter'] 
   availableFiltersBinding: 'collection.filteringInfo.availableFilters'
   fieldsHaveRendered: false
 

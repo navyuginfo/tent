@@ -17,6 +17,7 @@
 {{#if view.warn}}
 
 	{{#view Tent.ModalPane 
+          viewName="warningPanel"
           autoLaunch=false
           header="tent.warning.header" 
           primaryLabel="tent.button.proceed" 
@@ -36,4 +37,26 @@
   		{{/each}}
 			 
     {{/view}}
+{{/if}}
+
+{{#if view.shouldConfirm}}
+
+  {{#view Tent.ModalPane 
+          viewName="confirmationPanel"
+          autoLaunch=false
+          headerBinding="view.confirmationTitle" 
+          primaryLabelBinding="view.confirmationYes" 
+          secondaryLabelBinding="view.confirmationNo"
+          primaryType="warning"
+          primaryIcon="icon-ok icon-white"
+          secondaryIcon="icon-remove"
+          primaryAction="confirmAction"
+          primaryTargetBinding="view"
+          closeAction="view.confirmationNo"
+    }}
+
+      {{loc view.parentView.confirmationMessage}}
+      
+       
+  {{/view}}
 {{/if}}

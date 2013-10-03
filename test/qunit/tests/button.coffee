@@ -260,3 +260,13 @@ test "Ensure options are rendered properly,  and Event will triggered properly(w
   equal true, reference.get('editClicked'), 'edit button choice was clicked'
   equal `undefined`, reference.get('addClicked'), 'add button choie remains unclicked'
   equal view.$('.open').length, 0 , 'dropdown-menu is closed gracefully'  
+
+test "Should confirm: ", ->
+  button = Tent.Button.create()
+  ok not button.get('shouldConfirm'), 'No confirmation when there is no message provided'
+  Ember.run ->
+    button.set('confirmationMessage', 'please provide a value')
+    button.set('confirmed', false)
+  ok button.get('shouldConfirm'), 'Confirmation is required now'
+
+
