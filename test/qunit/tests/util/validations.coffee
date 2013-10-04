@@ -94,3 +94,7 @@ test "Validating that a number is greater than or less than a given number", ->
 	equal Tent.Validations.compareValue.validate(12, {greaterThan: 12}), false, 'value === specified greaterThan value'
 	equal Tent.Validations.compareValue.validate(14.23, {greaterThan: 12}), true, 'value > specified greaterThan value'
 	equal Tent.Validations.compareValue.validate(10, {lessThan: 12}), true, 'value < specified lessThan value'
+
+test "Validating that a string cantain as a number is greater than or less than a given sting as a number", ->
+	equal Tent.Validations.compareValue.validate("10", {lessThan: 12}), true, 'value < specified lessThan value'
+	equal Tent.Validations.compareValue.validate("14.23", {greaterThan: "12"}), true, 'value > specified greaterThan value'
