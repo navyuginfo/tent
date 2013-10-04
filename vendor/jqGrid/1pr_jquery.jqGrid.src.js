@@ -1782,12 +1782,14 @@ $.fn.jqGrid = function( pin ) {
     updatepager = function(rn, dnd) {
       var cp, last, base, from,to,tot,fmt, pgboxes = "", sppg,
       tspg = ts.p.pager ? "_"+$.jgrid.jqID(ts.p.pager.substr(1)) : "",
-      tspg_t = ts.p.toppager ? "_"+ts.p.toppager.substr(1) : "";
+      tspg_t = ts.p.toppager ? "_"+ts.p.toppager.substr(1) : "",
+      pagesRenderedAtATime = 2;
+
       if (ts.p.scroll) {
-        base = parseInt(ts.p.page,10)-3;
+        base = parseInt(ts.p.page,10) - (pagesRenderedAtATime + 1);
         if(base < 0) { base = 0; }
-        base = base*parseInt(ts.p.rowNum/2,10);
-        to = base + ts.p.reccount/2;
+        base = base * parseInt(ts.p.rowNum / pagesRenderedAtATime,10);
+        to = base + ts.p.reccount/pagesRenderedAtATime;
       } else {
         base = parseInt(ts.p.page,10)-1;
         if(base < 0) { base = 0; }
@@ -1796,7 +1798,7 @@ $.fn.jqGrid = function( pin ) {
       }
       if (ts.p.scroll) {
         var rows = $("tbody:first > tr:gt(0)", ts.grid.bDiv);
-        base = to - rows.length/2;
+        base = to - rows.length/pagesRenderedAtATime;
         if(base < 0) { base = 0; }
         
         ts.p.reccount = rows.length;

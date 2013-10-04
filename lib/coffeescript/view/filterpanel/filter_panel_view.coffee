@@ -134,7 +134,6 @@ Tent.FilterFieldView = Ember.View.extend
 
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
-	classNames: ['filter-field-control']
 	content: null
 	column: null
 	isDisabled: false
@@ -237,6 +236,5 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		if fieldView?
 			@set('fieldView', fieldView)
 			@get('childViews').pushObject(fieldView)
-
 
 

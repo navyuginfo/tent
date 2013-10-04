@@ -50,6 +50,7 @@ test 'Add / Remove Filter Field', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 	controller.addFilterField()
+
 	equal controller.get('content').length, 1, 'Should be one entry' 
 	controller.addFilterField()
 	equal controller.get('content').length, 2, 'Should be 2 entries' 

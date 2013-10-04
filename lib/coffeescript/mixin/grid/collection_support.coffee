@@ -46,7 +46,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   ###*
   * @property {Number} pageSize The number of items in each page
   ###
-  pageSize: 12
+  pageSize: null
   
   pagingInfoBinding: 'collection.pagingInfo'
   sortingInfoBinding: 'collection.sortingInfo'
@@ -206,14 +206,11 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     @setPageSize()
 
   setPageSize: ->
-    # If the collection has a pageSize specified, use that.
-    if @get('pageSize')
+    # If the grid specifies a pageSize value, use that; otherwise fallback on 
+    # the collection value
+    if @get('pageSize')?
       @set('collection.pageSize', @get('pageSize'))
       @set('pagingInfo.pageSize', @get('pageSize')) if @get('pagingInfo')?
-    else
-      if @get('pagingInfo')?
-        if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
-          @set('pagingInfo.pageSize', @get('pageSize'))
 
   setupSortingProperties: ->
 
