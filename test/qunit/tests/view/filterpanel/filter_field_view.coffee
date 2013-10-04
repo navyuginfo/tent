@@ -88,9 +88,17 @@ test 'showTrashIcon', ->
 			Ember.Object.create({locked: false})
 
 	view.set('usageContext', 'view')
-	ok not view.get('showTrashIcon'), 'Dont show trash when in view mode'
+	ok view.get('showTrashIcon'), 'Show trash when in view mode'
 	view.set('usageContext', 'report')
 	ok view.get('showTrashIcon'), 'Show trash when in report mode'
 	view.set('usageContext', null)
-	ok not view.get('showTrashIcon'), 'Dont show trash when in undefined mode'
+	ok view.get('showTrashIcon'), 'Show trash when in undefined mode'
 
+	view.set('controller.locked', true)
+
+	view.set('usageContext', 'view')
+	ok not view.get('showTrashIcon'), 'Dont show trash when in view mode and locked'
+	view.set('usageContext', 'report')
+	ok view.get('showTrashIcon'), 'Show trash when in report mode and locked'
+	view.set('usageContext', null)
+	ok view.get('showTrashIcon'), 'Show trash when in undefined mode and locked'
