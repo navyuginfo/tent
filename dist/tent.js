@@ -114,7 +114,7 @@
           "export": 'Export'
         },
         saveUi: {
-          defaultName: ' ',
+          defaultName: 'No Customization',
           "default": 'No Customization',
           message: 'Save current settings as:'
         }
@@ -2500,6 +2500,13 @@
       }
       message = !(message != null) && (options.message != null) ? options.message : void 0;
       if (value) {
+        value = Number(value);
+        if (options.greaterThan != null) {
+          options.greaterThan = Number(options.greaterThan);
+        }
+        if (options.lessThan != null) {
+          options.lessThan = Number(options.lessThan);
+        }
         if ((options.greaterThan != null) && options.greaterThan >= value) {
           if (!message) {
             message = Tent.messages.GREATER_VALUE_ERROR;
@@ -4539,11 +4546,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     initializeFromCustomizationIndex: function(index) {
       var customization, customizationName, settings;
       customization = this.get('customizationName');
-      settings = this.get('collection.defaultPersonalization');
-      if (settings != null) {
+      if (Number(index) === -1) {
+        settings = this.get('collection.defaultPersonalization');
         settings.filtering = this.get('collection.defaultFiltering');
-        if (this.get('customizationName') !== this.get('collection.customizationName') && parseInt(index) !== -1 && (this.get('collection.personalizations').objectAt(index) != null)) {
+        customizationName = settings.customizationName;
+      } else {
+        if (this.get('customizationName') !== this.get('collection.customizationName') && (this.get('collection.personalizations').objectAt(index) != null)) {
           settings = this.get('collection.personalizations').objectAt(index).get('settings');
+<<<<<<< HEAD
 =======
     initializeWithNewPersonalization: function(index) {
       var uiState;
@@ -4569,11 +4579,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if (uiState.grouping != null) {
           this.set('groupingInfo', jQuery.extend(true, {}, uiState.grouping));
 >>>>>>> Latest tent after rebase
+=======
+          customizationName = this.get('collection.personalizations').objectAt(index).get('name');
+>>>>>>> When selecting a default customisation, the grid and filter panel will update with the correct content.
         }
-        customizationName = this.get('collection.personalizations').objectAt(index).get('name');
-        this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
-        return this.updateGridWitNewPersonalizationValues(settings);
       }
+      this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
+      return this.updateGridWitNewPersonalizationValues(settings);
     },
     updateCollectionWithNewPersonalizationValues: function(name, settings) {
       this.set('collection.customizationName', name);
@@ -7692,6 +7704,7 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 <<<<<<< HEAD
 Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"controller\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
 
+<<<<<<< HEAD
 Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("\n<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.collection.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n\n</section>\n\n \n");
 =======
 =======
@@ -7719,6 +7732,9 @@ Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<di
 
 Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.collection.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n </section>\n\n \n");
 >>>>>>> Latest tent after rebase
+=======
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("\n<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n\n</section>\n\n \n");
+>>>>>>> When selecting a default customisation, the grid and filter panel will update with the correct content.
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7915,7 +7931,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return this.get('controller.locked') && this.get('controller.lockIsEnabled');
     }).property('controller.locked', 'controller.lockIsEnabled'),
     showTrashIcon: (function() {
-      return this.get('usageContext') !== 'view' && (this.get('usageContext') != null);
+      return !(this.get('usageContext') === 'view' && this.get('controller.locked'));
     }).property('usageContext')
   });
 
@@ -12252,7 +12268,7 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
             return this.get('selection').removeAt(index);
           }
         } else {
-          if (this.get('nodeSelection') !== 'multiSelect') {
+          if ((this.get('nodeSelection') !== 'multiSelect') && (this.get('nodeSelection') !== 'heirMultiSelect')) {
             this.get('selection').clear();
           }
           return this.get('selection').pushObject(data.node.data.value);
@@ -13200,7 +13216,8 @@ GridController
     },
     removeFilterFieldValue: function(value) {
       this.ensureFilterAvailable();
-      return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value));
+      this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value));
+      return this.updateCurrentFilter(this.get('selectedFilter'));
     },
     getFilterValueForColumn: function(columnName) {
       return this.get('selectedFilter.values').filter(function(value) {

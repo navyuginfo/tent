@@ -83,7 +83,7 @@ Tent.I18n.loadTranslations(
 				export: 'Export'
 			}
 			saveUi: {
-				defaultName: ' '
+				defaultName: 'No Customization'
 				default: 'No Customization'
 				message: 'Save current settings as:'
 			}
