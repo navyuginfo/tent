@@ -226,7 +226,7 @@ Tent.Validations.compareValue = Tent.Validation.create
       return true
     message = if(not message? and options.message?) then options.message
     if value
-      value = Number(value)
+      value = Tent.Formatting.amount.unformat(value)
       options.greaterThan = Number(options.greaterThan) if options.greaterThan?
       options.lessThan = Number(options.lessThan) if options.lessThan?
       if options.greaterThan? and options.greaterThan >= value
