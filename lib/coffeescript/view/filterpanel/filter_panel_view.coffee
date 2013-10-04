@@ -11,6 +11,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 	removeFilterField: (fieldContent)->
 		@get('collection').removeFilterFieldValue(fieldContent)
 
+	applyFilter: ->
+		@get('collection').doFilter()
+
 	# Called from the view
 	deleteFilterField: (event)->
 		@removeFilterField(event.context)
@@ -39,6 +42,11 @@ Tent.FilterPanelView = Ember.View.extend
 			collection: @get('collection')
 		))
 
+	collectionDidChange: (->
+		# collection may not be available when init() is called
+		@get('controller').set('collection', @get('collection'))
+	).observes('collection', 'collection.isLoaded')
+
 	willDestroyElement: ->
 		delete @get('controller')
 
@@ -51,7 +59,6 @@ Tent.FilterPanelView = Ember.View.extend
 		@set('isPinned', false)
 		$.publish("/window/resize")
 	).observes('showFilter')
-
 
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
@@ -74,7 +81,6 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 	isDisabled: (->
 		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
 	).property('locked','usageContext')
-
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
@@ -183,6 +189,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							field: @get('column.name')
 							classNames: ["no-label"]
 							disabledBinding: "parentView.isDisabled"
+
 				else
 					fieldView = Tent.TextField.create
 						label: Tent.I18n.loc(@get('column.title'))
@@ -197,8 +204,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 				fieldView = Tent.DateRangeField.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					valueBinding: "content.data"
-					filterOpBinding: "content.op"
+					valueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"
@@ -211,8 +218,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
 					serializer: Tent.Formatting.number.serializer
-					rangeValueBinding: "content.data"
-					filterOpBinding: "content.op"
+					rangeValueBinding: "parentView.content.data"
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
@@ -221,8 +228,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 				fieldView = Tent.Checkbox.create
 					label: Tent.I18n.loc(@get('column.title')) 
 					isFilter: true 
-					checkedBinding: "content.data" 
-					filterOpBinding: "content.op"
+					checkedBinding: "parentView.content.data" 
+					filterOpBinding: "parentView.content.op"
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
@@ -230,5 +237,6 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		if fieldView?
 			@set('fieldView', fieldView)
 			@get('childViews').pushObject(fieldView)
+
 
 

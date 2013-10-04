@@ -1,6 +1,6 @@
 
 Tent.Grid.Adapters = Ember.Mixin.create
-	
+	cachedGridData: []
 	columns: (->
 		@get('collection.columnsDescriptor')
 	).property('collection.columnsDescriptor')
@@ -87,19 +87,27 @@ Tent.Grid.Adapters = Ember.Mixin.create
 						cell.push(model.get(column.name))
 					item.cell = cell
 					if model.get("presentationType") is "summary" then grid else grid.push(item)
+
+		@set('cachedGridData', grid)
+		@getTableDom()?[0].p.rowNum = grid.length
+		@getTableDom()?[0].p.pageSize = @get('pagingInfo.pageSize')
 		return grid
 	).property('content','content.isLoaded', 'content.@each')
 
 	gridDataDidChange: (->
+		if not @getTableDom()? 
+			return
 		@getTableDom()[0].p.viewrecords = false
-    #remove previous grid data
-		@getTableDom().jqGrid('clearGridData')
-		###
-		* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
-		* calculate whether there are any records or not using the reccount attribute
-		###
+
 		if @get('content.isLoaded')
+    		#remove previous grid data
+			@getTableDom().jqGrid('clearGridData')
+			###
+			* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
+			* calculate whether there are any records or not using the reccount attribute
+			###
 			@getTableDom()[0].p.viewrecords = true
+
 		data = 
 			rows: @get('gridData')
 			total: @get('collection.pagingInfo.totalPages') if @get('collection.pagingInfo')? 
@@ -119,6 +127,6 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@updatePagingForGroups(grid, data)
 			grid?.addGroupingData(data)
 		else
-			@getTableDom()[0]?.addJSONData(data)
+			@getTableDom()[0]?.addJSONData(data, @get('rcnt'))
 		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')

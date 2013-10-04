@@ -52,16 +52,26 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   sortingInfoBinding: 'collection.sortingInfo'
   columnInfoBinding: 'collection.columnInfo'
   groupingInfoBinding: 'collection.groupingInfo'
+
+  ###*
+  * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
+  ###
+  scroll: false
    
   init: ->
     @_super(arguments)
     if @get('collection')?
       @setupCustomizedProperties()
+      @addScrollPropertyToCollection()      
+
+  addScrollPropertyToCollection: (->
+    @set('collection.scroll', @get('scroll'))
+  ).observes('scroll','collection')
 
   addNavigationBar: ->
     @_super()
-    if @get('collection.personalizable')
-      @renderSaveUIStateButton() if this.get('collection')?
+    if @get('collection.personalizable') and (@get('usageContext') != 'report')
+      @renderSaveUIStateButton() if @get('collection')? 
       @renderCollectionName()
       @populateCollectionDropdown()
 
@@ -144,14 +154,14 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         name = $(e.target).attr('data-name')
         @set('customizationIndex', index)
         @set('customizationName', name)
-        @initializeWithNewPersonalization(index)
+        @initializeFromCustomizationIndex(index)
       )
   ).observes('collection.personalizations', 'collection.personalizations.@each')
   
   getInputField: ->
      @$('.save-ui-state input')
 
-  save: ->
+  save: -> 
     @toggleUIStatePanel()
     @set('customizationName', @get('collection.customizationName'))
     @saveUiState(@get('collection.customizationName'))
@@ -197,9 +207,13 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   setPageSize: ->
     # If the collection has a pageSize specified, use that.
-    if @get('pagingInfo')?
-      if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
-        @set('pagingInfo.pageSize', @get('pageSize'))
+    if @get('pageSize')
+      @set('collection.pageSize', @get('pageSize'))
+      @set('pagingInfo.pageSize', @get('pageSize')) if @get('pagingInfo')?
+    else
+      if @get('pagingInfo')?
+        if @get('paged') and @get('pageSize')? and not @get('pagingInfo.pageSize')?
+          @set('pagingInfo.pageSize', @get('pageSize'))
 
   setupSortingProperties: ->
 
@@ -292,8 +306,10 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @setupCustomizedProperties()
       #@get('collection').goToPage(1)
 
-  onPageOrSort: (postdata)->
+  onPageOrSort: (postdata, id, rcnt)->
     if @get('collection')?
+      if @get('scroll')
+        @set('rcnt', rcnt or 0)
       #  postdata is of the form:
       #       _search: false,  nd: 1349351912240, page: 1, rows: 12, sidx: "", sord: "asc"
       if @shouldSort(postdata)
@@ -319,23 +335,51 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   restoreUIState: (->
     # Retrieve the first personalization for now.
-    @initializeWithNewPersonalization(0)
+    @initializeFromCollectionPersonalizationName()
   ).observes('collection.personalizations')
 
-  initializeWithNewPersonalization: (index)->
-    uiState = @get('collection.defaultPersonalization')
-    if uiState?
-      uiState.filtering = @get('collection.defaultFiltering')
-      if @shouldUseIndex(index)
-        uiState = @get('collection.personalizations').objectAt(index).get('settings')
-      @set('collection.customizationName', uiState.customizationName)
-      @set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging)) if uiState.paging?
-      @set('collection.sortingInfo', jQuery.extend(true, {}, uiState.sorting)) if uiState.sorting?
-      @set('collection.filteringInfo', jQuery.extend(true, {}, uiState.filtering)) if uiState.filtering?
-      @set('columnInfo', jQuery.extend(true, {}, uiState.columns)) if uiState.columns?
-      @set('groupingInfo', jQuery.extend(true, {}, uiState.grouping)) if uiState.grouping?
-      @applyStoredPropertiesToGrid()
-      @populateCollectionDropdown()
+  personalizationWasAdded: (->
+    @initializeFromCollectionPersonalizationName()
+  ).observes('collection.personalizations.@each')
 
-  shouldUseIndex: (index)->
-    @get('customizationName') != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
+
+  initializeFromCollectionPersonalizationName: ->
+    personalization = @get('collection').getSelectedPersonalization()
+
+    if personalization?
+      settings = personalization.get('settings')
+    else
+      settings = @get('collection.defaultPersonalization')
+      settings.filtering = @get('collection.defaultFiltering')
+      
+    @updateCollectionWithNewPersonalizationValues(@get('collection.customizationName'), settings)
+    @updateGridWitNewPersonalizationValues(settings)
+
+  getPersonalizationFromName: (name) ->
+    matches = @get('collection.personalizations').filter((item)=> item.get('name') ==  name)
+    matches[0] if matches.length > 0
+
+  initializeFromCustomizationIndex: (index)->
+    customization = @get('customizationName')
+    settings = @get('collection.defaultPersonalization')
+    if settings?
+      settings.filtering = @get('collection.defaultFiltering')
+      if @get('customizationName') != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
+        settings = @get('collection.personalizations').objectAt(index).get('settings')
+
+      customizationName = @get('collection.personalizations').objectAt(index).get('name')
+      @updateCollectionWithNewPersonalizationValues(customizationName, settings)
+      @updateGridWitNewPersonalizationValues(settings)
+
+  updateCollectionWithNewPersonalizationValues: (name, settings) ->
+    @set('collection.customizationName', name)
+    @set('collection.pagingInfo', jQuery.extend(true, {}, settings.paging)) if settings.paging?
+    @set('collection.sortingInfo', jQuery.extend(true, {}, settings.sorting)) if settings.sorting?
+    @set('collection.filteringInfo', jQuery.extend(true, {}, settings.filtering)) if settings.filtering?
+
+  updateGridWitNewPersonalizationValues: (settings) ->
+    @set('columnInfo', jQuery.extend(true, {}, settings.columns)) if settings.columns?
+    @set('groupingInfo', jQuery.extend(true, {}, settings.grouping)) if settings.grouping?
+    @applyStoredPropertiesToGrid()
+    @populateCollectionDropdown()
+

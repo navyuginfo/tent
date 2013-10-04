@@ -64,6 +64,8 @@ Tent.I18n.loadTranslations(
 			hideShowCaption: 'Columns'
 			hideShowTitle: 'Hide/Show Columns'
 			horizontalScroll: 'Auto-Fit'
+			multiviewList: 'List View'
+			multiviewCard: 'Card View'
 			export: {
 				xml: 'XML'
 				json: 'JSON'

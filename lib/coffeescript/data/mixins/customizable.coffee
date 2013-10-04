@@ -50,6 +50,13 @@ grouping: {
 
 Tent.Data.Customizable = Ember.Mixin.create
   isCustomizable: true  #Allows the user to store and retrieve the current state of the collection (and UI properties such as grouping/column visibility etc)
+
+  ###*
+  * @property {Boolean} fetchPersonalizationsOnCreation Instruct the collection to load its personalizations from the 
+  * server when it is instantiated.
+  ###
+  fetchPersonalizationsOnCreation: true
+  personalizationCategory: 'collection'
   defaultName: Tent.I18n.loc 'tent.jqGrid.saveUi.defaultName'
   defaultPersonalization: 
     customizationName: Tent.I18n.loc 'tent.jqGrid.saveUi.defaultName'
@@ -100,6 +107,14 @@ Tent.Data.Customizable = Ember.Mixin.create
       @removeExistingCustomization(name)
       @get('personalizations').pushObject(newRecord) 
 
+  addReportToCollection: (report) ->
+    @get('personalizations').pushObject(report) 
+
+  saveReport: (report)->
+    reportName = report.get('name')
+    settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
+    newRecord = @get('store').savePersonalization('report', @get('dataType'), reportName, settings)
+    
   removeExistingCustomization: (name)->
     for p, index in @get('personalizations')
       if p.get('name') == name
@@ -124,10 +139,17 @@ Tent.Data.Customizable = Ember.Mixin.create
     )
 
   fetchPersonalizations: ->
-    @get('store').fetchPersonalizations('collection', @get('personalizationSubCategory'))
+    @get('store').fetchPersonalizations(@get('personalizationCategory'),  @get('personalizationSubCategory'))
 
   isShowingDefault: (->
     return @get('customizationName') == @get('defaultName')
   ).property('customizationName')
+
+  getPersonalizationFromName: (name) ->
+    matches = @get('personalizations').filter((item)=> item.get('name') ==  name)
+    matches[0] if matches.length > 0
+
+  getSelectedPersonalization: ->
+    @getPersonalizationFromName(@get('customizationName'))
 
 

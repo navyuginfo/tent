@@ -37,6 +37,10 @@ Tent.CollectionPanelView = Ember.View.extend
 		@get('collection').update()
 		@set('selection', Ember.A()) if not @get('selection')?
 
+	selectionDidChange: (->
+		console.log 'selection changed'
+	).observes('selection','selection.@each')
+
 
 Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 	item: null
@@ -51,13 +55,9 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
 				content: @get('item')
 				collection: @get('collection')
 				selectable: @get('selectable')
-				selected: @get('isSelected')
+				selection: @get('selection')
 
 	).property('item')
-
-	isSelected: (->
-		@get('selection').contains(@get('item'))
-	).property('selection.@each')
 
 	selectedDidChange: (isSelected)->
 		if isSelected
@@ -85,10 +85,14 @@ Tent.CollectionPanelContentView = Ember.View.extend
 	classNameBindings: ['selected']
 	content: null
 	selectable: false
-	selected: false
+	selection: []
 
 	didInsertElement: ->
 		@$().parents('.collection-panel:first').css('opacity', '1')
+
+	selected: (->
+		@get('selection')?.contains(@get('content'))
+	).property('selection.@each')
 
 	###*
 	* @method getLabelForField Returns a translated label for the given field name of a collections columns
@@ -112,10 +116,10 @@ Tent.CollectionPanelContentView = Ember.View.extend
 		else
 			value
 
-	selectedDidChange: (->
-		@set('selected', @get('selected'))
-		@get('parentView').selectedDidChange(@get('selected'))
-	).observes('selected')
+	#selectedDidChange: (->
+		#@set('selected', @get('selected'))
+	#	@get('parentView').selectedDidChange(@get('selected'))
+	#).observes('selected')
 
 
 

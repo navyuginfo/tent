@@ -10,6 +10,8 @@ require '../mixin/grid/column_chooser_support'
 require '../mixin/grid/column_menu'
 require '../mixin/grid/maximize_grid'
 require '../mixin/grid/horizontal_scroll_support'
+require '../mixin/grid/multiview_support'
+
 
 ###*
 * @class Tent.JqGrid
@@ -46,7 +48,7 @@ require '../mixin/grid/horizontal_scroll_support'
 * The columns for the grid will be bound to collection.columnsDescriptor
 ###
 
-Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, 
+Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, Tent.Grid.Maximize, Tent.Grid.CollectionSupport, Tent.Grid.SelectionSupport, Tent.Grid.Adapters, Tent.Grid.HorizontalScrollSupport, Tent.Grid.ColumnChooserSupport, Tent.Grid.ExportSupport, Tent.Grid.FilterSupport, Tent.Grid.EditableSupport, Tent.Grid.ColumnMenu, Tent.Grid.GroupingSupport, Tent.Grid.MultiViewSupport,
 	templateName: 'jqgrid'
 	classNames: ['tent-jqgrid']
 	classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned', 'filterCoversGrid']
@@ -211,8 +213,8 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 		widget = @
 		@getTableDom().jqGrid({
 			parentView: widget
-			datatype: (postdata) ->
-			  widget.onPageOrSort(postdata)
+			datatype: (postdata, id, rcnt) ->
+			  widget.onPageOrSort(postdata, id, rcnt)
 			height: @get('height') or 'auto',
 			colNames: @get('colNames'),
 			colModel: @get('columnModel'),
@@ -234,6 +236,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			forceFit: true, #column widths adapt when one is resized
 			shrinkToFit: if @get('horizontalScrolling') then false else true,
 			viewsortcols: [true,'vertical',false],
+			scroll: @get('scroll')
 			hidegrid: false, # display collapse icon on top right
 			viewrecords: true, # 'view 1 - 6 of 27'
 			rowNum: if @get('paged') then @get('collection.pagingInfo.pageSize') else -1,
@@ -278,7 +281,9 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			if Tent.Browsers.getIEVersion() == 8 and not @get('horizontalScrolling')
 				@revertHeaderIntoViewDiv()
 		)
-			
+		# override the native scrolling behavior of the grid
+		@getTableDom()[0].p.useCollectionScrolling = @get('scroll')
+
 	setInitialViewRecordsAttribute:()->
 	    ###
 	    * Set initial value of viewrecords to be false so that the text "no records to view" does not

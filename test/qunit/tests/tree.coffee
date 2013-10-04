@@ -164,3 +164,21 @@ test 'Tent.Tree dealing with clearing the content', ->
   tree.set('content', [{title: 'normal child node 1'}, {title: 'normal child node 2'}])
   equal view.$('.fancytree-folder').length, 0, 'No folder nodes as we did not add any'
   equal view.$('.fancytree-node').length, 2, "2 child nodes"
+
+
+test 'ContentIsValid', ->
+  initializeTree()
+
+  ok tree.contentIsValid(), 'Valid content'
+
+  tree.set('content.isLoadable', true)
+  tree.set('content.isLoaded', false)
+  ok not tree.contentIsValid(), 'Loadable and not loaded'  
+
+  tree.set('content.isLoadable', true)
+  tree.set('content.isLoaded', true)
+  ok tree.contentIsValid(), 'loadable and loaded'  
+
+  tree.set('content', null)
+  ok not tree.contentIsValid(), 'null content'    
+

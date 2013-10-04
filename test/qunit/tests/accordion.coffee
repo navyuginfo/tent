@@ -22,7 +22,6 @@ module 'Tent.Accordion', setup, teardown
 
 test 'Ensure markup is correct', ->
 	appendView()
-	debugger;  
 	equal view.$('.accordion').length, 1, 'Accordion root has been created'
 	equal view.$('.accordion-group').length, 2, '2 accordion groups created'
 	ok view.$('.accordion-heading a').eq(0).attr("href").split(" ").contains(".accordion-body"),  'Href for anchor 1'

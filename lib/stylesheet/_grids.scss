@@ -19,7 +19,6 @@ $headerHeight: 20px;
 
 .filter-container {
 	width: 30em;
-
 	.control-label {
 		width: auto;
 		display: inline-block;
@@ -57,7 +56,6 @@ $headerHeight: 20px;
 		}
 
 	}
-	
 }
 
 .tent-jqgrid {
@@ -248,8 +246,16 @@ $headerHeight: 20px;
 		}
 	}
 
+
+ 
+	.jqgrid-title-button {
+		.btn {
+			padding: 0px 4px;
+		}
+	}
+
 	/* Column Chooser */
-	.column-chooser, .jqgrid-title-button, .btn-filter  {
+	.column-chooser, .jqgrid-title-button, .btn-filter {
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -595,4 +601,18 @@ $headerHeight: 20px;
 /* Selected row in a Tent.Table */
 .tent-selected {
 	background-color: #CCC;
+}
+
+
+/*  Header Pager */
+.header-pager {
+	float: right;
+	font-size: .6rem;
+	background: rgb(245, 245, 245);
+	color: rgb(102, 102, 102);
+	padding: 0px 4px;
+	border-radius: 4px;
+	margin-top: 4px;
+	margin-right: 4px;
+	line-height: 15px;
 }

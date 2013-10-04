@@ -144,10 +144,9 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
       selectedValueObject = @get('list').filter((item)=>
         value == if valuePath? then Ember.get(item, valuePath) else item
       )
-      @set('selection', selectedValueObject[0]) if selectedValueObject.length == 1
+      @set('selection', selectedValueObject[0]) if selectedValueObject.length == 1 
   ).observes('value')
   
-
   listObserver: (->
     if @get 'preselectSingleElement'
       if @get("list.length") is 1
@@ -158,6 +157,15 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         Ember.run =>
           @set "showPrompt", true
   ).observes("list", "list.length", "list@each")
+
+  listIsLoaded: (->
+    if @get('list.isLoadable')? and @get('list.isLoadable') and @get('list.isLoaded')
+      # Ensure that the selection updates when the content is loaded.
+      @valueDidChange()
+      @get('list.isLoaded')
+    else
+      true
+  ).property("list", "list.length", "list@each", "list.isLoaded")
 
   currentSelectedLabel: (->
     content = @get('selection')

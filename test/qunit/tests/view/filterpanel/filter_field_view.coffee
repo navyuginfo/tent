@@ -94,5 +94,3 @@ test 'showTrashIcon', ->
 	view.set('usageContext', null)
 	ok not view.get('showTrashIcon'), 'Dont show trash when in undefined mode'
 
-
-

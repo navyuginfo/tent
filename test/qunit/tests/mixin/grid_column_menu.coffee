@@ -79,7 +79,6 @@ test 'rename column', ->
 		{id: "id", name: "id", title: "_hID", field: "id", sortable: false, groupable: false, renamable: false},
 		{id: "title", name: "title", title: "_hTitle", field: "title", sortable: false, groupable: false}
 	]
-	debugger;
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid

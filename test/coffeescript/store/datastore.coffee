@@ -21,7 +21,10 @@ Pad.DataStore = Ember.Object.extend
 		#$(elem).val($(this).getCell(rowId,3))
 
 	fetchPersonalizations: ->
-		[]
+		Ember.Object.create
+			isLoaded: true
+			toArray: ->
+				[]
 		###customizationName:'Default'
 		paging: {
 		  pageSize: 12
@@ -123,7 +126,11 @@ Pad.DataStore = Ember.Object.extend
 		if (start > modelData.length) 
 			start = 0
 			paging.page = 1
-		end = start + paging.pageSize - 1
+		if paging.scrolling
+			# Retrieve two pages at a time when performing infinite scrolling
+			end = start + (paging.pageSize * 2) - 1
+		else
+			end = start + paging.pageSize - 1
 		if (end > modelData.length) then end = modelData.length 
 		return modelData[start..end]
 
