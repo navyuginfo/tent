@@ -3599,8 +3599,8 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
-<<<<<<< HEAD
     focusOut: function() {
+<<<<<<< HEAD
 <<<<<<< HEAD
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
@@ -3610,6 +3610,8 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
 =======
     change: function() {
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
+=======
+>>>>>>> latest tent
       var unformatted;
       this._super(arguments);
       this.set('isValid', this.validate());
@@ -4559,6 +4561,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         if (this.get('customizationName') !== this.get('collection.customizationName') && (this.get('collection.personalizations').objectAt(index) != null)) {
           settings = this.get('collection.personalizations').objectAt(index).get('settings');
 <<<<<<< HEAD
+<<<<<<< HEAD
           customizationName = this.get('collection.personalizations').objectAt(index).get('name');
 =======
 =======
@@ -4588,6 +4591,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           this.set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging));
 >>>>>>> Implemented restructuring of menus and multi-level push menu.
         }
+=======
+        }
+        customizationName = this.get('collection.personalizations').objectAt(index).get('name');
+        this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
+        return this.updateGridWitNewPersonalizationValues(settings);
+>>>>>>> latest tent
       }
       this.get('collection').updateCollectionWithNewPersonalizationValues(customizationName, settings);
       return this.updateGridWitNewPersonalizationValues(settings);
@@ -12507,7 +12516,8 @@ Tent.Application.MainMenuView = Ember.View.extend({
     },
     navigateToCorrectMenuLevel: function(selectedItem) {
       var item, levels, reversed, _i, _len, _results;
-      levels = selectedItem.$().parentsUntil('#mp-menu', '.mp-level');
+      $('.dashboard-toggle a').click();
+      levels = selectedItem.$().parentsUntil('#mp-menu', 'li');
       reversed = levels.toArray().reverse();
       _results = [];
       for (_i = 0, _len = reversed.length; _i < _len; _i++) {
@@ -13057,45 +13067,22 @@ GridController
 (function() {
 
   Tent.Data.Filter = Ember.Mixin.create({
-<<<<<<< HEAD
-<<<<<<< HEAD
     defaultFiltering: {
-=======
-    filteringInfo: {
->>>>>>> Navigate menu to specified route.
       selectedFilter: 'default',
       availableFilters: [
         {
           name: "default",
           label: Tent.I18n.loc('tent.filter.noFilter'),
           description: "",
-<<<<<<< HEAD
           values: []
         }
       ]
     },
-=======
->>>>>>> Implemented restructuring of menus and multi-level push menu.
-=======
-          values: {}
-        }
-      ]
-    },
->>>>>>> Navigate menu to specified route.
     init: function() {
       this.applyDefaultFilter();
       this._super();
-<<<<<<< HEAD
-<<<<<<< HEAD
       this.REQUEST_TYPE = this.REQUEST_TYPE || {};
       return this.REQUEST_TYPE.FILTER = 'filtering';
-=======
-      this.REQUEST_TYPE.FILTER = 'filtering';
-      return this.set('filteringInfo', this.getEmptyFilter());
->>>>>>> Implemented restructuring of menus and multi-level push menu.
-=======
-      return this.REQUEST_TYPE.FILTER = 'filtering';
->>>>>>> Navigate menu to specified route.
       /*@set('filteringInfo', 
       			selectedFilter: 'task2'
       			availableFilters: [
@@ -13135,8 +13122,6 @@ GridController
       */
 
     },
-<<<<<<< HEAD
-<<<<<<< HEAD
     ensureFilterAvailable: function() {
       if (!(this.get('selectedFilter') != null)) {
         return this.set('filteringInfo', {
@@ -13151,23 +13136,7 @@ GridController
           ]
         });
       }
-=======
-    getEmptyFilter: function() {
-      return {
-        selectedFilter: 'default',
-        availableFilters: [
-          {
-            name: "default",
-            label: Tent.I18n.loc('tent.filter.noFilter'),
-            description: "",
-            values: {}
-          }
-        ]
-      };
->>>>>>> Implemented restructuring of menus and multi-level push menu.
     },
-=======
->>>>>>> Navigate menu to specified route.
     selectedFilter: (function() {
       return this.getSelectedFilter();
     }).property('filteringInfo', 'filteringInfo.selectedFilter'),
@@ -13272,32 +13241,8 @@ GridController
       this.set('filteringInfo.selectedFilter', filter.name);
       return this.get('filteringInfo.availableFilters').push(Ember.copy(filter, true));
     },
-<<<<<<< HEAD
     applyDefaultFilter: function() {
       return this.set('filteringInfo', $.extend({}, this.get('defaultFiltering')));
-=======
-    restoreFilters: function() {
-      var column, columnFilter, filter, filteringInfo, uiState, _i, _len, _ref, _results;
-      uiState = this.get('defaultPersonalization');
-      if (uiState.filtering != null) {
-        filteringInfo = this.get('filteringInfo');
-        filter = filteringInfo.availableFilters.findProperty('name', filteringInfo.selectedFilter);
-        _ref = this.get('columnsDescriptor');
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          column = _ref[_i];
-          columnFilter = filter.values[column.name];
-          if (columnFilter != null) {
-            Em.set(columnFilter, 'data', "");
-            Em.set(columnFilter, 'op', "");
-            _results.push(columnFilter);
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      }
->>>>>>> Implemented restructuring of menus and multi-level push menu.
     }
   });
 
