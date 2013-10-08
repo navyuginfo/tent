@@ -4560,43 +4560,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       } else {
         if (this.get('customizationName') !== this.get('collection.customizationName') && (this.get('collection.personalizations').objectAt(index) != null)) {
           settings = this.get('collection.personalizations').objectAt(index).get('settings');
-<<<<<<< HEAD
-<<<<<<< HEAD
           customizationName = this.get('collection.personalizations').objectAt(index).get('name');
-=======
-=======
-    initializeWithNewPersonalization: function(index) {
-      var uiState;
-      uiState = this.get('collection.defaultPersonalization');
-      if (uiState != null) {
-        uiState.filtering = this.get('collection.defaultFiltering');
-        if (this.shouldUseIndex(index)) {
-          uiState = this.get('collection.personalizations').objectAt(index).get('settings');
-<<<<<<< HEAD
-=======
-        } else {
-          this.get('collection').restoreFilters();
-          uiState = this.get('collection.defaultPersonalization');
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Implemented restructuring of menus and multi-level push menu.
-=======
-          uiState.filtering = this.get('collection').getEmptyFilter();
->>>>>>> Adding menu tests.
-=======
->>>>>>> Navigate menu to specified route.
         }
-        this.set('collection.customizationName', uiState.customizationName);
-        if (uiState.paging != null) {
-          this.set('collection.pagingInfo', jQuery.extend(true, {}, uiState.paging));
->>>>>>> Implemented restructuring of menus and multi-level push menu.
-        }
-=======
-        }
-        customizationName = this.get('collection.personalizations').objectAt(index).get('name');
-        this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
-        return this.updateGridWitNewPersonalizationValues(settings);
->>>>>>> latest tent
       }
       this.get('collection').updateCollectionWithNewPersonalizationValues(customizationName, settings);
       return this.updateGridWitNewPersonalizationValues(settings);
