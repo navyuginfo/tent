@@ -6379,7 +6379,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
             this.$('.ui-jqgrid-btable').width(widthWithoutScrollbar + 'px');
           }
           if (Tent.Browsers.isIE()) {
-            bdiv.css('width', 'auto');
+            bdiv.css('width', '100%');
           }
           return this.adjustHeight();
         }
@@ -7613,9 +7613,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     collectionDidChange: (function() {
       return this.get('controller').set('collection', this.get('collection'));
     }).observes('collection', 'collection.isLoaded'),
-    willDestroyElement: function() {
-      return delete this.get('controller');
-    },
+    willDestroyElement: function() {},
     togglePin: function() {
       var _this = this;
       this.toggleProperty('isPinned');
@@ -7684,9 +7682,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
         }
       }
     },
-    willDestroyElement: function() {
-      return delete this.get('controller');
-    },
+    willDestroyElement: function() {},
     typeIsSelected: (function() {
       return this.get('content.field') != null;
     }).property('content.field'),
@@ -12830,8 +12826,7 @@ GridController
     },
     removeFilterFieldValue: function(value) {
       this.ensureFilterAvailable();
-      this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value));
-      return this.updateCurrentFilter(this.get('selectedFilter'));
+      return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
     },
     getFilterValueForColumn: function(columnName) {
       return this.get('selectedFilter.values').filter(function(value) {
