@@ -358,15 +358,18 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
   initializeFromCustomizationIndex: (index)->
     customization = @get('customizationName')
-    settings = @get('collection.defaultPersonalization')
-    if settings?
-      settings.filtering = @get('collection.defaultFiltering')
-      if @get('customizationName') != @get('collection.customizationName') and parseInt(index) != -1 and @get('collection.personalizations').objectAt(index)?
-        settings = @get('collection.personalizations').objectAt(index).get('settings')
 
-      customizationName = @get('collection.personalizations').objectAt(index).get('name')
-      @updateCollectionWithNewPersonalizationValues(customizationName, settings)
-      @updateGridWitNewPersonalizationValues(settings)
+    if Number(index) == -1
+      settings = @get('collection.defaultPersonalization')
+      settings.filtering = @get('collection.defaultFiltering')
+      customizationName = settings.customizationName
+    else
+      if @get('customizationName') != @get('collection.customizationName') and @get('collection.personalizations').objectAt(index)?
+        settings = @get('collection.personalizations').objectAt(index).get('settings')
+        customizationName = @get('collection.personalizations').objectAt(index).get('name')
+
+    @updateCollectionWithNewPersonalizationValues(customizationName, settings)
+    @updateGridWitNewPersonalizationValues(settings)
 
   updateCollectionWithNewPersonalizationValues: (name, settings) ->
     @set('collection.customizationName', name)

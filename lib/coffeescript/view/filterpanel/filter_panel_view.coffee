@@ -129,7 +129,7 @@ Tent.FilterFieldView = Ember.View.extend
 	).property('controller.locked', 'controller.lockIsEnabled')
 
 	showTrashIcon: (->
-		@get('usageContext') != 'view' and @get('usageContext')?
+		not (@get('usageContext') == 'view' and @get('controller.locked'))
 	).property('usageContext')
 
 
