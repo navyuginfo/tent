@@ -7613,7 +7613,11 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     collectionDidChange: (function() {
       return this.get('controller').set('collection', this.get('collection'));
     }).observes('collection', 'collection.isLoaded'),
-    willDestroyElement: function() {},
+    willDestroyElement: function() {
+      if (this.get('controller') != null) {
+        return this.get('controller').destroy();
+      }
+    },
     togglePin: function() {
       var _this = this;
       this.toggleProperty('isPinned');
@@ -7682,7 +7686,11 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
         }
       }
     },
-    willDestroyElement: function() {},
+    willDestroyElement: function() {
+      if (this.get('controller') != null) {
+        return this.get('controller').destroy();
+      }
+    },
     typeIsSelected: (function() {
       return this.get('content.field') != null;
     }).property('content.field'),
