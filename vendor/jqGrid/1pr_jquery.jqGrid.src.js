@@ -1027,7 +1027,9 @@ $.fn.jqGrid = function( pin ) {
 
     /* PR. Watch for scroll events on jqgrid-view, to allow infinite scrolling in autoFit mode */
     $(gv).unbind('scroll').bind('scroll',function(){
-      grid.scrollGrid(this);
+      if (p.useCollectionScrolling) {
+        grid.scrollGrid(this);
+      }
     });
     /* PR */
 
