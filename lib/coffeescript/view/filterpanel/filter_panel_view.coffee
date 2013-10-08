@@ -48,7 +48,7 @@ Tent.FilterPanelView = Ember.View.extend
 	).observes('collection', 'collection.isLoaded')
 
 	willDestroyElement: ->
-		delete @get('controller')
+		@get('controller').destroy() if @get('controller')?
 
 	togglePin: ->
 		@toggleProperty('isPinned')
@@ -113,7 +113,7 @@ Tent.FilterFieldView = Ember.View.extend
 			@set('controller.selectedColumn', selectedColumn[0]) if selectedColumn.length == 1
 
 	willDestroyElement: ->
-		delete @get('controller')
+		@get('controller').destroy() if @get('controller')?
 
 	typeIsSelected: (->
 		@get('content.field')?
