@@ -415,7 +415,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 					@$('.ui-jqgrid-btable').width(widthWithoutScrollbar+ 'px')
 					# Removed for performance reasons
 					# @columnsDidChange()
-				bdiv.css('width','auto') if Tent.Browsers.isIE()
+				bdiv.css('width','100%') if Tent.Browsers.isIE()
 				@adjustHeight()
 		)
 
