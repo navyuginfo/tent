@@ -78,5 +78,17 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch error
 			return null
 
+	# Override from TextField so Date Fields are also validated when using the datepicker
+	focusOut: ->
+
+	change: ->
+        @_super()
+        @set('isValid', @validate())
+        if @get('isValid')
+            unformatted = @unFormat(@get('formattedValue'))
+            @set('value', unformatted)
+            @set('formattedValue', @format(unformatted))
+            @validateWarnings()
+
 
 		 
