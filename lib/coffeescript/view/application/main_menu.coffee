@@ -9,6 +9,7 @@ Tent.Application.MainMenuView = Ember.View.extend
   didInsertElement: ->
     @_super()
     @applyMenuPlugin()
+    $('.dashboard-toggle a').click()
     @selectItemFromUrl()
     #@$('a i, button i').tooltip('enable')
 
