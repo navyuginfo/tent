@@ -3208,7 +3208,12 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 
     prefix: null,
     translatedPlaceholder: (function() {
-      return Tent.I18n.loc(this.get('placeholder'));
+      var placeholderText;
+      placeholderText = Tent.I18n.loc(this.get('placeholder'));
+      if (Tent.Browsers.isIE()) {
+        this.addPlaceholder(placeholderText);
+      }
+      return placeholderText;
     }).property('placeholder'),
     isTextDisplay: (function() {
       return this.get('textDisplay') || (!this.get('isEditable'));
@@ -3256,6 +3261,19 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     didInsertElement: function() {
       this._super();
       return this.estimateFormStyle();
+    },
+    addPlaceholder: function(placeholderText) {
+      var _this = this;
+      return Ember.run.next(function() {
+        var field;
+        field = $('#' + _this.get('inputIdentifier'));
+        field.addClass('placeholder').val(placeholderText);
+        return field.focus((function() {
+          if (field.val() === placeholderText) {
+            return field.val('').removeClass('placeholder');
+          }
+        }));
+      });
     },
     estimateFormStyle: function() {},
     unEditableClass: (function() {
@@ -10313,6 +10331,18 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
         return Tent.Formatting.date.unformat(value, this.get('dateFormat'));
       } catch (error) {
         return null;
+      }
+    },
+    focusOut: function() {},
+    change: function() {
+      var unformatted;
+      this._super();
+      this.set('isValid', this.validate());
+      if (this.get('isValid')) {
+        unformatted = this.unFormat(this.get('formattedValue'));
+        this.set('value', unformatted);
+        this.set('formattedValue', this.format(unformatted));
+        return this.validateWarnings();
       }
     }
   });
