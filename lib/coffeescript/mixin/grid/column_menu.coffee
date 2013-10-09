@@ -15,30 +15,30 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 								{{#if column.sortable}}
 									<li class="sort dropdown-submenu">
 										<a tabindex="-1">{{sort}}</a>
-									    <ul class="dropdown-menu">
-									    	<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>
-									    	<li><a tabindex="-1" class="descending">{{descending}}</a></li>
-									    </ul>
+											<ul class="dropdown-menu">
+												<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>
+												<li><a tabindex="-1" class="descending">{{descending}}</a></li>
+											</ul>
 									</li>
 								{{/if}}
 								{{#if column.groupable}}
 									<li class="group dropdown-submenu">
 										<a tabindex="-1">{{group}}</a>
-									    <ul class="dropdown-menu">
-									    	<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>
-									    	{{#each groupType}}
-									    		<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>
-									    	{{/each}}
-									    </ul>
+											<ul class="dropdown-menu">
+												<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>
+												{{#each groupType}}
+													<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>
+												{{/each}}
+											</ul>
 									</li>
 								{{/if}}
 								{{#if column.renamable}}
 									<li class="rename dropdown-submenu">
 										<a tabindex="-1">{{rename}}</a>
-									    <ul class="dropdown-menu wide">
-									    	<li><input type="text" value="{{title}}" class="input-medium"/></li>
-									    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>
-									    </ul>
+											<ul class="dropdown-menu wide">
+												<li><input type="text" value="{{title}}" class="input-medium"/></li>
+												<li><a tabindex="-1" class="revert">{{revert}}</a></li>
+											</ul>
 									</li>
 								{{/if}}
 							</ul>'
@@ -48,7 +48,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 						groupType = Tent.JqGrid.Grouping.ranges.get(column.type)()
 					groupType = Tent.JqGrid.Grouping.ranges['string'] if not groupType?
 
-					context = 
+					context =
 						column: column
 						title: Tent.I18n.loc column.title
 						groupType: groupType
@@ -59,7 +59,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 						descending: Tent.I18n.loc ("tent.sorting.descending")
 						group: Tent.I18n.loc ("tent.grouping._groupBy")
 						rename: Tent.I18n.loc ("tent.rename.main")
-					
+
 					columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + column.name
 					@$(columnDivId).addClass('dropdown')
 					$(columnDivId + ' .title').after template(context)
@@ -69,7 +69,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			@groupByColumnBindings()
 			@renameColumnHeaderBindings()
 			@sortingBindings()
-	
+
 	toggleColumnDropdown: (columnField)->
 		columnDivId = '#jqgh_' + @get('elementId') + '_jqgrid_' + columnField
 		$(columnDivId + ' .title' ).dropdown('toggle')
@@ -81,7 +81,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 
 			table = @$('.ui-jqgrid-htable')
 			tableRight = $(window).width() - (table.offset().left + table.outerWidth())
-			
+
 			@$('.ui-th-column:visible').each(->
 				columnLeft = $(window).width() - $(this).offset().left
 				if (columnLeft - 250) < tableRight
@@ -91,7 +91,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			)
 
 	# We hide the standard sort buttons using css.
-	# When a dropdown sort button is selected, send a click event 
+	# When a dropdown sort button is selected, send a click event
 	# to the standard sort buttons and let jqGrid handle it.
 	sortingBindings: ->
 		widget = this
@@ -122,7 +122,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 	renameColumnHeaderBindings: ->
 		widget = this
 
-		@$('.rename.dropdown-submenu').hover((e)->
+		@$('.rename.dropdown-submenu').mouseenter((e)->
 			$('input',@).focus()
 		).click((e)->
 			target = $(e.target)
@@ -130,16 +130,22 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			e.preventDefault()
 		)
 
+		@$('.rename.dropdown-submenu').mouseleave((e)->
+			$('body').focus()
+		)
+
 		@$('.rename.dropdown-submenu input').bind('keyup', ((e)->
 			target = $(e.target)
 			dropdownMenu = target.parents('ul.column-dropdown:first')
 			columnField = dropdownMenu.attr('data-column')
-			
-			if e.keyCode == 13	# return key				
+
+			if e.keyCode == 13	# return key
+				$(this).blur()
 				widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu)
 			else if e.keyCode == 27 # escape key
 				# reset to the original title
 				lastTitle = dropdownMenu.attr('data-last-title')
+				$(this).blur()
 				widget.renameGridColumnHeader(columnField, lastTitle)
 				$(this).val(lastTitle)
 				widget.toggleColumnDropdown(columnField)
@@ -154,6 +160,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			columnField = dropdownMenu.attr('data-column')
 
 			originalTitle = dropdownMenu.attr('data-orig-title')
+			$('.rename.dropdown-submenu input').blur()
 			widget.renameColumnHeader(columnField, originalTitle, dropdownMenu)
 			$('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle)
 		)
