@@ -4134,7 +4134,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }
     },
     addScrollPropertyToCollection: (function() {
-      return this.set('collection.scroll', this.get('scroll'));
+      if (this.get('collection') != null) {
+        return this.set('collection.scroll', this.get('scroll'));
+      }
     }).observes('scroll', 'collection'),
     addNavigationBar: function() {
       this._super();
@@ -4477,15 +4479,17 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     }).observes('collection.personalizations.@each'),
     initializeFromCollectionPersonalizationName: function() {
       var personalization, settings;
-      personalization = this.get('collection').getSelectedPersonalization();
-      if (personalization != null) {
-        settings = personalization.get('settings');
-      } else {
-        settings = this.get('collection.defaultPersonalization');
-        settings.filtering = this.get('collection.defaultFiltering');
+      if (this.get('collection') != null) {
+        personalization = this.get('collection').getSelectedPersonalization();
+        if (personalization != null) {
+          settings = personalization.get('settings');
+        } else {
+          settings = this.get('collection.defaultPersonalization');
+          settings.filtering = this.get('collection.defaultFiltering');
+        }
+        this.updateCollectionWithNewPersonalizationValues(this.get('collection.customizationName'), settings);
+        return this.updateGridWitNewPersonalizationValues(settings);
       }
-      this.updateCollectionWithNewPersonalizationValues(this.get('collection.customizationName'), settings);
-      return this.updateGridWitNewPersonalizationValues(settings);
     },
     getPersonalizationFromName: function(name) {
       var matches,
