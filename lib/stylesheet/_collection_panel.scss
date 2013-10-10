@@ -86,6 +86,7 @@ $collection-panel-content-border-color: #b1b1b1;
 
 		@include background-image($collection-panel-header-background-gradient);
 		color: $collection-panel-header-text-color;
+        background-color: #465e8e;
 		a {
 			color: $collection-panel-header-text-color;
 		}
@@ -109,6 +110,7 @@ $collection-panel-content-border-color: #b1b1b1;
 		@include background-image($collection-panel-footer-background-gradient);
 		border-bottom-left-radius: 3px;
 		border-bottom-right-radius: 3px;
+        background-color: #f4f4f4;
 		.footer-border {
 			@include vertical-align-table();
 			border-top: 1px solid #fefefe;
