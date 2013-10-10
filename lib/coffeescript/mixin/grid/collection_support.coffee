@@ -65,7 +65,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
       @addScrollPropertyToCollection()      
 
   addScrollPropertyToCollection: (->
-    @set('collection.scroll', @get('scroll'))
+    @set('collection.scroll', @get('scroll')) if @get('collection')?
   ).observes('scroll','collection')
 
   addNavigationBar: ->
@@ -341,16 +341,17 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 
   initializeFromCollectionPersonalizationName: ->
-    personalization = @get('collection').getSelectedPersonalization()
+    if @get('collection')?
+      personalization = @get('collection').getSelectedPersonalization()
 
-    if personalization?
-      settings = personalization.get('settings')
-    else
-      settings = @get('collection.defaultPersonalization')
-      settings.filtering = @get('collection.defaultFiltering')
-      
-    @updateCollectionWithNewPersonalizationValues(@get('collection.customizationName'), settings)
-    @updateGridWitNewPersonalizationValues(settings)
+      if personalization?
+        settings = personalization.get('settings')
+      else
+        settings = @get('collection.defaultPersonalization')
+        settings.filtering = @get('collection.defaultFiltering')
+        
+      @updateCollectionWithNewPersonalizationValues(@get('collection.customizationName'), settings)
+      @updateGridWitNewPersonalizationValues(settings)
 
   getPersonalizationFromName: (name) ->
     matches = @get('collection.personalizations').filter((item)=> item.get('name') ==  name)
