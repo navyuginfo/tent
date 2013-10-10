@@ -330,15 +330,9 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     sortable and postdata.sidx!="" and (postdata.sidx != @get('sortingInfo.fields.firstObject.field') or postdata.sord != @get('sortingInfo.fields.firstObject.sortDir'))
 
 
-  restoreUIState: (->
-    # Retrieve the first personalization for now.
-    @initializeFromCollectionPersonalizationName()
-  ).observes('collection.personalizations')
-
   personalizationWasAdded: (->
     @initializeFromCollectionPersonalizationName()
   ).observes('collection.personalizations.@each')
-
 
   initializeFromCollectionPersonalizationName: ->
     if @get('collection')?
