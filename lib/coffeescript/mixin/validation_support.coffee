@@ -154,8 +154,15 @@ Tent.ValidationSupport = Ember.Mixin.create
     warning =  Tent.I18n.loc(warning) if (typeof warning is "string")
     @get('validationWarnings').pushObject(warning)
 
- 
+  resetRecursively: ->
+    @forEachChildView (childView)->
+      if childView.get('childViews.length') isnt 0 and childView.resetRecursively?
+        childView.resetRecursively()
 
+    if (@get('hasErrors'))
+      @flushValidationErrors()
+    else
+      return;
  
 
 

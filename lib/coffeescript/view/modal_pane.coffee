@@ -276,15 +276,21 @@ Tent.ModalPane = Ember.View.extend
   disableMessagePanel: ->
     primaryPanel = @getPrimaryMessagePanelView()
     panel = @getMessagePanelView()
+    form = @getChildFormView()
     panel.clearAll() if panel?
     primaryPanel.setActive(true) if primaryPanel?
     panel.setActive(false)  if panel?
+    if form?
+      form.resetRecursively()
   
   getPrimaryMessagePanelView: ->
     Ember.View.views[$('.tent-message-panel.primary').attr('id')]
 
   getMessagePanelView: ->
     Ember.View.views[@$('.tent-message-panel:first').attr('id')]
+
+  getChildFormView: ->
+    Ember.View.views[this.$('form:first-of-type').attr('id')]
 
   triggerCancelAction: (e)->
     # Make sure to get the correct cancel button

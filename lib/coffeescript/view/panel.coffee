@@ -181,14 +181,13 @@ Tent.PanelLink = Ember.View.extend
   title: ""
 
 
-Tent.Form = Tent.Panel.extend
+Tent.Form = Tent.Panel.extend Tent.ValidationSupport,
   tagName: 'form'
   staticClasses: ''
   classNameBindings: ['spanClass', 'staticClasses', 'formClass']
   classNames: ['tent-form']
   formStyle: 'horizontal'
   formClass: (-> 'form-' + @get('formStyle')).property('formStyle')
-
 
 Tent.Fieldset = Tent.Panel.extend
   layout: Ember.Handlebars.compile '{{#if view.legendName}}<legend>{{loc view.legendName}}</legend>{{/if}}{{yield}}'
