@@ -232,7 +232,56 @@ test "Modal within modal", ->
   equal outerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'outer backdrop hidden'
   equal innerModalView.$('.modal-backdrop:first').attr('data-hidden'), "true", 'inner backdrop should be visible'
   
+test "Modal contains form and flush validation errors within it", ->
+  view = Ember.View.create
+    template: Ember.Handlebars.compile("""
+      {{#view Tent.ModalPane text="Modal text" buttonClass="left" type="secondary" header="Rejection Note"
+        primaryLabel="Save" secondaryLabel="Cancel" primaryAction="reject"
+        secondaryAction="cancel" closeAction="cancel" }}
+        {{#view Tent.Panel span="10" }}
+           {{#view Tent.Form id="form-section" formStyle="vertical"}}
+              {{view Tent.Textarea label="note" inputSizeClass="enlarge"
+                     valueBinding="note" required=true}}
+              {{#view Tent.Section}}
+                {{#view Tent.Content}}
+                  {{view Tent.TextField valueBniding="value" required=true}}
+                  {{view Tent.TextField value="text"}}
+                {{/view}}
+              {{/view}}
+           {{/view}}
+        {{/view}}
+      {{/view}}
+    """)
+  note = ""
+  text = ""
+  appendView()
+  modalView = Ember.View.views[view.$('.tent-modal:first').attr('id')]
+  equal modalView.$('.modal-body').length, 1, 'Body exists'
+  equal modalView.$('.modal-footer').length, 1, 'Footer exists'
+  equal modalView.$('.btn:contains(Cancel)').length, 1, 'Cancel button exists'
+  equal modalView.$('.tent-widget').length, 3, 'Modal body contains 3 form elements'
+  equal modalView.$('.tent-section').length, 1, 'Modal body contains a section'
+  equal modalView.$('.tent-section .tent-widget').length, 2, 'Section contains 2 form elements nested'
 
+  textAreaView = modalView.get('childViews.3.childViews.0.childViews.0')
+  ok textAreaView isnt null
+  textFields = modalView.get('childViews.3.childViews.0.childViews.1.childViews.0.childViews')
+  ok textFields isnt null
+  textAreaView.validate()
+  textFields.forEach (item) => item.validate()
+  equal textAreaView.get('hasErrors'), true, 'Text area has validation error'
+  equal textFields[0].get('hasErrors'), true, 'First text Field has validation error'
+  equal textFields[1].get('hasErrors'), false, 'First text Field does not has validation error'
 
+  Ember.run ->
+    modalView.$('.btn:contains(Cancel)').click()
+
+  textAreaView = modalView.get('childViews.3.childViews.0.childViews.0')
+  ok textAreaView isnt null
+  textFields = modalView.get('childViews.3.childViews.0.childViews.1.childViews.0.childViews')
+  ok textFields isnt null
+  equal textAreaView.get('hasErrors'), false, 'Text area does not has validation error'
+  equal textFields[0].get('hasErrors'), false, 'First text Field does not has validation error'
+  equal textFields[1].get('hasErrors'), false, 'First text Field does not has validation error'
   
 

@@ -181,7 +181,7 @@ Tent.PanelLink = Ember.View.extend
   title: ""
 
 
-Tent.Form = Tent.Panel.extend Tent.ValidationSupport,
+Tent.Form = Tent.Panel.extend
   tagName: 'form'
   staticClasses: ''
   classNameBindings: ['spanClass', 'staticClasses', 'formClass']
