@@ -28,6 +28,8 @@ setup = ->
 			@get('filteringInfo.availableFilters')[0]
 		).property('filteringInfo.availableFilters')
 
+		doFilter: ->
+
 		columnsDescriptor: 
 			[
 				{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},
@@ -70,6 +72,19 @@ test 'selectedColumn binding', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 	ok true
+
+test 'apply filter', ->
+
+	sinon.spy(filteringCollection, 'doFilter')
+	view = Tent.FilterPanelView.create
+		collection: filteringCollection
+	view.init()
+	view.set('showFilter', true)
+	view.set('isPinned', false)
+	view.applyFilter()
+	ok not view.get('showFilter'), 'Filter should be hidden'
+	ok filteringCollection.doFilter.calledOnce, 'Called doFilter'
+
  
 	
 ###

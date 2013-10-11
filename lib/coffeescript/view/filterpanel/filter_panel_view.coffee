@@ -60,6 +60,10 @@ Tent.FilterPanelView = Ember.View.extend
 		$.publish("/window/resize")
 	).observes('showFilter')
 
+	applyFilter: ->
+		@set('showFilter', false) if not @get('isPinned')
+		@get('controller').applyFilter()
+
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null

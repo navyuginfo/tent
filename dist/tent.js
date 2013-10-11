@@ -4180,8 +4180,12 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       widget = this;
       button = "<div class=\"btn-group save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
       this.$(".grid-header").append(button);
+      this.$('.save-ui-state .save-as-panel').mouseleave(function(e) {
+        return $('body').focus();
+      });
       this.$('.save-ui-state').bind('keyup', (function(e) {
         if (e.keyCode === 27) {
+          $('body').focus();
           return widget.toggleUIStatePanel();
         }
       }));
@@ -6716,6 +6720,9 @@ Tent.JqGridHeaderView = Ember.View.extend({
             }
           }
         });
+        this.$('.custom-export').mouseleave(function(e) {
+          return $('body').focus();
+        });
         return this.$('#customDelimiter').blur(function() {
           if ($('#customDelimiter').val().length > 0) {
             return $('#delimiter').val('');
@@ -7601,7 +7608,7 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"controller\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"view\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
 
 Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
 
@@ -7662,7 +7669,13 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     showFilterDidChange: (function() {
       this.set('isPinned', false);
       return $.publish("/window/resize");
-    }).observes('showFilter')
+    }).observes('showFilter'),
+    applyFilter: function() {
+      if (!this.get('isPinned')) {
+        this.set('showFilter', false);
+      }
+      return this.get('controller').applyFilter();
+    }
   });
 
   Tent.FilterFieldController = Ember.ObjectController.extend({
@@ -13134,7 +13147,7 @@ grouping: {
       var newRecord, reportName, settings;
       reportName = report.get('name');
       settings = $.extend(true, {}, report.get('settings'), this.gatherGridData(reportName));
-      return newRecord = this.get('store').savePersonalization('report', this.get('dataType'), reportName, settings);
+      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings);
     },
     removeExistingCustomization: function(name) {
       var index, p, _i, _len, _ref;
