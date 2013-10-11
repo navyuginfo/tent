@@ -8,12 +8,13 @@
 		<div class="filterpanel">
 			<header>
 				<a {{action addFilterField target="controller"}} class="add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
-				<a {{action applyFilter target="view"}} class="filter-button">{{loc tent.filter.filter}}<i class="icon-caret-right"></i></a>
+
+				{{view Tent.Button label="tent.filter.filter" type="link" action="applyFilter" targetBinding="view" class="filter-button" iconClass="icon-caret-right" isDisabledBinding="view.areAnyFieldsInvalid"}}
 			</header>
 			<div class="content">
 				<div class="background-hint">{{loc tent.filter.bgHint}}</div>
 				{{#each view.controller.content}}
-					{{view Tent.FilterFieldView contentBinding="this" usageContextBinding="view.usageContext"}}
+					{{view Tent.FilterFieldView contentBinding="this" usageContextBinding="view.usageContext" }}
 				{{/each}}
 			</div>
 		</div>

@@ -85,8 +85,22 @@ test 'apply filter', ->
 	ok not view.get('showFilter'), 'Filter should be hidden'
 	ok filteringCollection.doFilter.calledOnce, 'Called doFilter'
 
- 
-	
+test 'Filter button should disable when fields are invalid', ->
+	view = Tent.FilterPanelView.create
+		collection: filteringCollection
+	view.init()
+
+	ok not view.get('areAnyFieldsInvalid'), 'Should be valid to start'
+	view.fieldValidationStateChanged('field1', false)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field'
+	view.fieldValidationStateChanged('field2', false)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field 2'
+	view.fieldValidationStateChanged('field1', true)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field 1'
+	view.fieldValidationStateChanged('field2', true)
+	ok not view.get('areAnyFieldsInvalid'), 'Should be all valid again'
+
+
 ###
 
 test 'get stored filter values', ->

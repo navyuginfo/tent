@@ -7608,9 +7608,9 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"view\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t{{view Tent.Button label=\"tent.filter.filter\" type=\"link\" action=\"applyFilter\" targetBinding=\"view\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.areAnyFieldsInvalid\"}}\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\" }}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
 
-Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7645,6 +7645,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     isPinned: false,
     showFilter: false,
     usageContext: null,
+    validations: Ember.A(),
     init: function() {
       this._super();
       return this.set('controller', Tent.FilterPanelController.create({
@@ -7675,7 +7676,24 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
         this.set('showFilter', false);
       }
       return this.get('controller').applyFilter();
-    }
+    },
+    fieldValidationStateChanged: function(fieldId, isValid) {
+      var field;
+      field = this.get('validations').findProperty('id', fieldId);
+      if (field != null) {
+        return field.set('value', isValid);
+      } else {
+        return this.get('validations').pushObject(Ember.Object.create({
+          id: fieldId,
+          value: isValid
+        }));
+      }
+    },
+    areAnyFieldsInvalid: (function() {
+      var invalids;
+      invalids = this.get('validations').findProperty('value', false);
+      return invalids != null;
+    }).property('validations.@each', 'validations.@each.value')
   });
 
   Tent.FilterFieldController = Ember.ObjectController.extend({
@@ -7707,6 +7725,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     collectionBinding: 'parentView.collection',
     content: null,
     usageContext: null,
+    isValid: true,
     init: function() {
       this._super();
       this.set('controller', this.createController());
@@ -7749,13 +7768,17 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     }).property('controller.locked', 'controller.lockIsEnabled'),
     showTrashIcon: (function() {
       return !(this.get('usageContext') === 'view' && this.get('controller.locked'));
-    }).property('usageContext')
+    }).property('usageContext'),
+    isValidDidChange: (function() {
+      return this.get('parentView').fieldValidationStateChanged(this.get('elementId'), this.get('isValid'));
+    }).observes('isValid')
   });
 
   Tent.FilterFieldControlView = Ember.ContainerView.extend({
     content: null,
     column: null,
     isDisabled: false,
+    isValid: true,
     init: function() {
       this._super();
       return this.populateContainer();
@@ -7765,10 +7788,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     }).observes('column'),
     resetFieldView: function() {
       if (this.get('fieldView') != null) {
-        this.get('childViews').removeObject(this.get('fieldView'));
-        this.set('fieldView', null);
+        this.get('fieldView').destroy();
         this.set('parentView.content.op', null);
-        return this.set('parentView.content.data', null);
+        this.set('parentView.content.data', null);
+        return this.set('isValid', true);
       }
     },
     populateContainer: function() {
@@ -7788,7 +7811,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 filterOpBinding: "parentView.content.op",
                 field: this.get('column.name'),
                 classNames: ["no-label"],
-                disabledBinding: "parentView.isDisabled"
+                disabledBinding: "parentView.isDisabled",
+                isValidBinding: "parentView.isValid"
               });
             }
             if (this.get('column.editoptions.collection')) {
@@ -7803,7 +7827,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 filterOpBinding: "parentView.content.op",
                 field: this.get('column.name'),
                 classNames: ["no-label"],
-                disabledBinding: "parentView.isDisabled"
+                disabledBinding: "parentView.isDisabled",
+                isValidBinding: "parentView.isValid"
               });
             }
           } else {
@@ -7814,7 +7839,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
               filterOpBinding: "parentView.content.op",
               field: this.get('column.name'),
               classNames: ["no-label"],
-              disabledBinding: "parentView.isDisabled"
+              disabledBinding: "parentView.isDisabled",
+              isValidBinding: "parentView.isValid"
             });
           }
           break;
@@ -7829,7 +7855,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             arrows: true,
             dateFormat: "yy-mm-dd",
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid"
           });
           break;
         case "number":
@@ -7842,7 +7869,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             filterOpBinding: "parentView.content.op",
             field: this.get('column.name'),
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid"
           });
           break;
         case "boolean":
@@ -7853,7 +7881,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             filterOpBinding: "parentView.content.op",
             field: this.get('column.name'),
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid"
           });
       }
       if (fieldView != null) {

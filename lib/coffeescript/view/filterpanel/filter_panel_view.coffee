@@ -35,6 +35,7 @@ Tent.FilterPanelView = Ember.View.extend
 	isPinned: false
 	showFilter: false
 	usageContext: null
+	validations: Ember.A()
 
 	init: ->
 		@_super()
@@ -64,11 +65,26 @@ Tent.FilterPanelView = Ember.View.extend
 		@set('showFilter', false) if not @get('isPinned')
 		@get('controller').applyFilter()
 
+	fieldValidationStateChanged: (fieldId, isValid)->
+		field = @get('validations').findProperty('id', fieldId)
+		if field?
+			field.set('value', isValid)
+		else
+			@get('validations').pushObject(Ember.Object.create({id:fieldId, value:isValid}))
+
+	areAnyFieldsInvalid: (->
+		invalids = @get('validations').findProperty('value', false)
+		invalids?
+	).property('validations.@each', 'validations.@each.value')
+	
+
+
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null
 	lockedBinding: 'content.locked'
 	usageContext: null
+	
 
 	deleteField: ->
 		@get('parentController').deleteFilterField(@get('content'))
@@ -94,6 +110,7 @@ Tent.FilterFieldView = Ember.View.extend
 	collectionBinding: 'parentView.collection'
 	content: null
 	usageContext: null
+	isValid: true
 
 	init: ->
 		@_super()
@@ -136,11 +153,16 @@ Tent.FilterFieldView = Ember.View.extend
 		not (@get('usageContext') == 'view' and @get('controller.locked'))
 	).property('usageContext')
 
+	isValidDidChange: (->
+		@get('parentView').fieldValidationStateChanged(@get('elementId'), @get('isValid'))
+	).observes('isValid')
+
 
 Tent.FilterFieldControlView = Ember.ContainerView.extend
 	content: null
 	column: null
 	isDisabled: false
+	isValid: true
 
 	init: ->
 		@_super()
@@ -152,10 +174,10 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 
 	resetFieldView: ->
 		if @get('fieldView')?
-			@get('childViews').removeObject(@get('fieldView'))
-			@set('fieldView', null)
+			@get('fieldView').destroy()
 			@set('parentView.content.op', null)
 			@set('parentView.content.data', null)
+			@set('isValid', true)
 
 	populateContainer: ()->
 		@resetFieldView()
@@ -178,6 +200,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							field: @get('column.name')
 							classNames: ["no-label"]
 							disabledBinding: "parentView.isDisabled"
+							isValidBinding: "parentView.isValid"
 
 					if @get('column.editoptions.collection')
 						coll = eval(@get('column.editoptions.collection.name')).fetchCollection()
@@ -192,6 +215,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							field: @get('column.name')
 							classNames: ["no-label"]
 							disabledBinding: "parentView.isDisabled"
+							isValidBinding: "parentView.isValid"
 
 				else
 					fieldView = Tent.TextField.create
@@ -202,6 +226,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 						field: @get('column.name')
 						classNames: ["no-label"]
 						disabledBinding: "parentView.isDisabled"
+						isValidBinding: "parentView.isValid"
 
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
@@ -214,6 +239,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					dateFormat: "yy-mm-dd"
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
+					isValidBinding: "parentView.isValid"
 					#field: column.name
 
 			when "number", "amount"
@@ -226,6 +252,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
+					isValidBinding: "parentView.isValid"
 
 			when "boolean"
 				fieldView = Tent.Checkbox.create
@@ -236,6 +263,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					field: @get('column.name')
 					classNames: ["no-label"]
 					disabledBinding: "parentView.isDisabled"
+					isValidBinding: "parentView.isValid"
 
 		if fieldView?
 			@set('fieldView', fieldView)
