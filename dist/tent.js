@@ -7786,8 +7786,12 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     columnDidChange: (function() {
       return this.populateContainer();
     }).observes('column'),
+    willDestroyElement: function() {
+      return this.resetFieldView();
+    },
     resetFieldView: function() {
       if (this.get('fieldView') != null) {
+        this.get('fieldView').flushValidationErrors();
         this.get('fieldView').destroy();
         this.set('parentView.content.op', null);
         this.set('parentView.content.data', null);

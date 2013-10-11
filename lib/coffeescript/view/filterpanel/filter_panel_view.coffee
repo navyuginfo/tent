@@ -172,8 +172,12 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 		@populateContainer()
 	).observes('column')
 
+	willDestroyElement: ->
+		@resetFieldView()
+
 	resetFieldView: ->
 		if @get('fieldView')?
+			@get('fieldView').flushValidationErrors()
 			@get('fieldView').destroy()
 			@set('parentView.content.op', null)
 			@set('parentView.content.data', null)
