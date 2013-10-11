@@ -100,9 +100,12 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     """
     @$(".grid-header").append(button)
 
-
+    @$('.save-ui-state .save-as-panel').mouseleave((e)->
+      $('body').focus()
+    )
     @$('.save-ui-state').bind('keyup', ((e)->
       if e.keyCode == 27 # escape key
+        $('body').focus();
         widget.toggleUIStatePanel()
       )
     )
