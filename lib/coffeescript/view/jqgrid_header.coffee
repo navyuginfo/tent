@@ -97,6 +97,10 @@ Tent.JqGridHeaderView = Ember.View.extend
         else
           $('#delimiter').val(',') if $('#customDelimiter').val().length == 0
 
+      @$('.custom-export').mouseleave((e)->
+        $('body').focus()
+      )
+
       @$('#customDelimiter').blur =>
         if $('#customDelimiter').val().length > 0
           $('#delimiter').val('')
