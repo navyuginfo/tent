@@ -91,6 +91,7 @@ Tent.I18n.loadTranslations(
 		}
 		filter: {
 			filter: 'Filters'
+			filterAction: 'Filter'
 			add: 'Add Field'
 			bgHint: 'Add Filters'
 			prompt: 'Select a field ...'

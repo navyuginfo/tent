@@ -9,7 +9,7 @@
 				<header>
 					<a {{action addFilterField target="controller"}} class="add-filter-button"><i class="icon-plus"></i>{{loc tent.filter.add}}</a>
 
-					{{view Tent.Button label="tent.filter.filter" type="link" action="applyFilter" targetBinding="view.parentView" class="filter-button" iconClass="icon-caret-right" isDisabledBinding="view.parentView.areAnyFieldsInvalid" validate=true }}
+					{{view Tent.Button label="tent.filter.filterAction" type="link" action="applyFilter" targetBinding="view.parentView" class="filter-button" iconClass="icon-caret-right" isDisabledBinding="view.parentView.areAnyFieldsInvalid" validate=true }}
 				</header>
 				<div class="content">
 					<div class="background-hint">{{loc tent.filter.bgHint}}</div>
