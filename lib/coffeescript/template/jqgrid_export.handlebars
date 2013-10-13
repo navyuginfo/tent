@@ -1,5 +1,5 @@
 <a class="" data-toggle="dropdown" href="#">
-  <i class="icon-share"></i>Export
+  Export<i class="icon-caret-down right-align"></i>
 </a>
 <ul class="dropdown-menu">
   {{#if view.allowXlsExport}}
@@ -9,11 +9,11 @@
     <li><a {{action exportData "view.csv" target="view"}} href="#" class="export-csv">{{loc tent.jqGrid.export.csv}}</a></li>
     <!-- <li><a class="export-xml">#{Tent.I18n.loc("tent.jqGrid.export.xml")}</a></li> -->
     <li class="divider"></li>
-    <li class="dropdown-submenu-left">
+    <li class="dropdown-submenu">
       <a href="#">Delimiter</a>
       <ul class="dropdown-menu custom-export">
         <li>
-          <form class="form-horizontal well" id="customExportForm">
+          <form class="form-horizontal" id="customExportForm">
             <div class="control-group">
               <label class="control-label">Delimiter</label>
               <div class="controls">

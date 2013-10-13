@@ -78,7 +78,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   renderSaveUIStateButton: ->
     widget = @
     button = """
-        <div class="btn-group save-ui-state">
+        <div class="button save-ui-state">
           <a data-toggle="dropdown"><i class="icon-camera"></i><span class="custom-name"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a class="save">#{Tent.I18n.loc("tent.button.save")}</a></li>
@@ -98,7 +98,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
           </ul>
         </div>
     """
-    @$(".grid-header").append(button)
+    @$(".grid-header .header-buttons.left").append(button)
 
     if (Tent.Browsers.isIE())
       @$('.save-ui-state .save-as-panel').mouseleave((e)->

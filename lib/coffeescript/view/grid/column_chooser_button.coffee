@@ -3,7 +3,7 @@ require '../../mixin/toggle_visibility'
 
 
 Tent.Grid.ColumnChooserButton = Ember.View.extend Tent.ToggleVisibility,
-	classNames: ['tent-column-chooser-button']
+	classNames: ['button column-chooser']
 	templateName: 'grid/column_chooser_button'
 	#title: Tent.I18n.loc("tent.jqGrid.horizontalScroll")
 	grid: null
@@ -22,9 +22,9 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend Tent.ToggleVisibility,
 
 	didInsertElement: ->
 		grid = @get('grid')
-		@bindToggleVisibility(@$(".column-chooser .open-dropdown"), @.$(".column-chooser .dropdown-menu"))
+		@bindToggleVisibility(@$(".open-dropdown"), @.$(".dropdown-menu"))
 
-		@$('.column-chooser').on('click', 'input', (e) -> 
+		@$().on('click', 'input', (e) -> 
 			column = $(this).attr('data-column')
 			if $(this).is(':checked')
 				grid.showCol(column)

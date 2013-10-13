@@ -113,6 +113,7 @@
           inclQuotes: 'Include Quotes',
           "export": 'Export'
         },
+        pagerViewing: 'VIEWING',
         saveUi: {
           defaultName: 'No Customization',
           "default": 'No Customization',
@@ -120,7 +121,7 @@
         }
       },
       filter: {
-        filter: 'Filter',
+        filter: 'Filters',
         add: 'Add Field',
         bgHint: 'Add Filters',
         prompt: 'Select a field ...',
@@ -3326,8 +3327,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       return this.set("formattedValue", this.format(this.get("value")));
     },
     valueDidChange: (function() {
-      this.set("formattedValue", this.format(this.get("value")));
-      return this.set("isValid", this.validate());
+      return this.set("formattedValue", this.format(this.get("value")));
     }).observes("value"),
     format: function(value) {
       return this.trimValue(value);
@@ -4178,8 +4178,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     renderSaveUIStateButton: function() {
       var button, widget;
       widget = this;
-      button = "<div class=\"btn-group save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
-      this.$(".grid-header").append(button);
+      button = "<div class=\"button save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
+      this.$(".grid-header .header-buttons.left").append(button);
       this.$('.save-ui-state .save-as-panel').mouseleave(function(e) {
         return $('body').focus();
       });
@@ -5633,7 +5633,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       var widget;
       widget = this;
       if (this.get('showMaximizeButton')) {
-        this.$(".grid-header").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>');
+        this.$(".grid-header .left").prepend('<div class="button"><a class="maximize"><i class="ui-icon ui-icon-arrow-4-diag"></i></a></div>');
         return this.$('a.maximize').click(function() {
           return widget.toggleFullScreen(this);
         });
@@ -6602,9 +6602,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\n\t{{#if view.grid.scroll}}\n\t\t<div class=\"header-pager\">\n\t\t\tPage {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}\n\t\t</div>\n\t{{/if}}\n\t{{#if view.grid.showMultiview}}\n\t\t{{view Tent.Grid.MultiviewButtons showCardViewBinding=\"view.grid.showCardView\" showListViewBinding=\"view.grid.showListView\"}}\n\t{{/if}}\n\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t{{#if view.grid.collection}}\n\t\t{{#if view.grid.filtering}}\n\t\t\t<a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter pull-right\">\n\t\t\t\t<i class=\"icon-filter\"></i>{{loc tent.filter.filter}}\n\t\t\t</a>\n\t\t{{/if}}\n\t{{/if}}\t\n\n</div>\n\n");
+Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"header-buttons left\">\n    {{#if view.grid.showExportButton}}\n        {{#if view.someExportsAreAllowed}}\n            {{view view.exportView}}\n        {{/if}}\n    {{/if}}\n</div>\n<div class=\"header-buttons middle\">\n    {{#if view.grid.scroll}}\n        <div class=\"header-pager\">\n            <p class=\"title\">{{loc tent.jqGrid.pagerViewing}}</p>\n            <p class=\"pager-details\">Page {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}</p>\n        </div>\n    {{/if}}\n</div>\n<div class=\"header-buttons right\">\n    {{#if view.grid.showAutofitButton}}\n        {{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n    {{/if}}\n    {{#if view.grid.showMultiview}}\n        {{view Tent.Grid.MultiviewButtons showCardViewBinding=\"view.grid.showCardView\" showListViewBinding=\"view.grid.showListView\"}}\n    {{/if}}\n    {{#if view.grid.showColumnChooser}}\n        {{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n    {{/if}}\n    {{#if view.grid.collection}}\n        {{#if view.grid.filtering}}\n            <div class=\"button\">\n                <a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter\">\n                    {{loc tent.filter.filter}}\n                </a>\n            </div>\n        {{/if}}\n    {{/if}}  \n</div>\n\n");
 
-Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
+Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  Export<i class=\"icon-caret-down right-align\"></i>\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
 
 (function() {
 Tent.JqGridHeaderView = Ember.View.extend({
@@ -6616,7 +6616,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
       return (this.get('grid.enabledExports') != null) && (((_ref = this.get('grid.enabledExports')) != null ? _ref.length : void 0) > 0);
     }).property(),
     exportView: Ember.View.extend({
-      classNames: ['btn-group', 'export', 'jqgrid-title-button'],
+      classNames: ['export button'],
       templateName: 'jqgrid_export',
       csv: 'csv',
       json: 'json',
@@ -7482,12 +7482,12 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button :jqgrid-title-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
+Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
 
 (function() {
 Tent.Grid.AutofitButton = Ember.View.extend({
-    classNames: ['tent-autofit-button'],
-    templateName: 'grid/autofit_button',
+    classNames: ['button'],
+    template: Ember.Handlebars.compile('<a {{bindAttr title="view.title"}} {{bindAttr class=":horizontal-scroll-button view.active:active"}}><i class="icon-resize-horizontal"></i></a>'),
     title: Tent.I18n.loc("tent.jqGrid.horizontalScroll"),
     grid: null,
     active: (function() {
@@ -7501,7 +7501,7 @@ Tent.Grid.AutofitButton = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div class=\"btn-group column-chooser\">\n\t<a class=\"open-dropdown\">\n\t\t<i class=\"icon-columns\"></i>{{loc tent.jqGrid.hideShowCaption}}\n\t</a>\n\t<div class=\"dropdown-menu columns pull-right\">\n\t\t<div class=\"window\"></div>\n\t\t<ul>\n\t\t\t{{#each view.model}}\n\t\t\t\t<li><label><input type=\"checkbox\" {{bindAttr data-column=\"name\"}} {{bindAttr checked=\"checked\"}}/><span class=\"title\">{{loc title}}</span></label></li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t</div>\n</div>");
+Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<a class=\"open-dropdown\">\n\t{{loc tent.jqGrid.hideShowCaption}}<i class=\"icon-caret-down\"></i>\n</a>\n<div class=\"dropdown-menu columns pull-right\">\n\t<div class=\"window\"></div>\n\t<ul>\n\t\t{{#each view.model}}\n\t\t\t<li><label><input type=\"checkbox\" {{bindAttr data-column=\"name\"}} {{bindAttr checked=\"checked\"}}/><span class=\"title\">{{loc title}}</span></label></li>\n\t\t{{/each}}\n\t</ul>\n</div>");
 
 
 /**
@@ -7573,7 +7573,7 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
 
 (function() {
 Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
-    classNames: ['tent-column-chooser-button'],
+    classNames: ['button column-chooser'],
     templateName: 'grid/column_chooser_button',
     grid: null,
     model: (function() {
@@ -7592,8 +7592,8 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
     didInsertElement: function() {
       var grid;
       grid = this.get('grid');
-      this.bindToggleVisibility(this.$(".column-chooser .open-dropdown"), this.$(".column-chooser .dropdown-menu"));
-      return this.$('.column-chooser').on('click', 'input', function(e) {
+      this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
+      return this.$().on('click', 'input', function(e) {
         var column;
         column = $(this).attr('data-column');
         if ($(this).is(':checked')) {
@@ -7608,7 +7608,7 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t{{view Tent.Button label=\"tent.filter.filter\" type=\"link\" action=\"applyFilter\" targetBinding=\"view\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.areAnyFieldsInvalid\"}}\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\" }}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t{{#view Tent.Form formStyle=\"vertical\"}}\n\t\t\t<div class=\"filterpanel\">\n\t\t\t\t<header>\n\t\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t\t{{view Tent.Button label=\"tent.filter.filter\" type=\"link\" action=\"applyFilter\" targetBinding=\"view.parentView\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.parentView.areAnyFieldsInvalid\" validate=true }}\n\t\t\t\t</header>\n\t\t\t\t<div class=\"content\">\n\t\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.parentView.usageContext\" }}\n\t\t\t\t\t{{/each}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t{{/view}}\n</div>\n");
 
 Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
 
@@ -7721,8 +7721,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     templateName: 'filterpanel/filter_field_view',
     classNames: ['filter-field'],
     classNameBindings: ['controller.locked'],
-    parentControllerBinding: 'parentView.controller',
-    collectionBinding: 'parentView.collection',
+    parentControllerBinding: 'parentView.parentView.controller',
+    collectionBinding: 'parentView.parentView.collection',
     content: null,
     usageContext: null,
     isValid: true,
@@ -7753,6 +7753,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       }
     },
     willDestroyElement: function() {
+      this.set('isValid', true);
       if (this.get('controller') != null) {
         return this.get('controller').destroy();
       }
@@ -7770,7 +7771,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return !(this.get('usageContext') === 'view' && this.get('controller.locked'));
     }).property('usageContext'),
     isValidDidChange: (function() {
-      return this.get('parentView').fieldValidationStateChanged(this.get('elementId'), this.get('isValid'));
+      return this.get('parentView.parentView').fieldValidationStateChanged(this.get('elementId'), this.get('isValid'));
     }).observes('isValid')
   });
 
@@ -7790,12 +7791,15 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return this.resetFieldView();
     },
     resetFieldView: function() {
+      var _this = this;
       if (this.get('fieldView') != null) {
-        this.get('fieldView').flushValidationErrors();
-        this.get('fieldView').destroy();
-        this.set('parentView.content.op', null);
-        this.set('parentView.content.data', null);
-        return this.set('isValid', true);
+        return Ember.run(function() {
+          _this.get('fieldView').flushValidationErrors();
+          _this.get('fieldView').destroy();
+          _this.set('parentView.content.op', null);
+          _this.set('parentView.content.data', null);
+          return _this.set('isValid', true);
+        });
       }
     },
     populateContainer: function() {
@@ -7816,7 +7820,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 field: this.get('column.name'),
                 classNames: ["no-label"],
                 disabledBinding: "parentView.isDisabled",
-                isValidBinding: "parentView.isValid"
+                isValidBinding: "parentView.isValid",
+                required: true
               });
             }
             if (this.get('column.editoptions.collection')) {
@@ -7832,7 +7837,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 field: this.get('column.name'),
                 classNames: ["no-label"],
                 disabledBinding: "parentView.isDisabled",
-                isValidBinding: "parentView.isValid"
+                isValidBinding: "parentView.isValid",
+                required: true
               });
             }
           } else {
@@ -7844,7 +7850,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
               field: this.get('column.name'),
               classNames: ["no-label"],
               disabledBinding: "parentView.isDisabled",
-              isValidBinding: "parentView.isValid"
+              isValidBinding: "parentView.isValid",
+              required: true
             });
           }
           break;
@@ -7860,7 +7867,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             dateFormat: "yy-mm-dd",
             classNames: ["no-label"],
             disabledBinding: "parentView.isDisabled",
-            isValidBinding: "parentView.isValid"
+            isValidBinding: "parentView.isValid",
+            required: true
           });
           break;
         case "number":
@@ -7874,7 +7882,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             field: this.get('column.name'),
             classNames: ["no-label"],
             disabledBinding: "parentView.isDisabled",
-            isValidBinding: "parentView.isValid"
+            isValidBinding: "parentView.isValid",
+            required: true
           });
           break;
         case "boolean":
@@ -7886,7 +7895,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             field: this.get('column.name'),
             classNames: ["no-label"],
             disabledBinding: "parentView.isDisabled",
-            isValidBinding: "parentView.isValid"
+            isValidBinding: "parentView.isValid",
+            required: true
           });
       }
       if (fieldView != null) {
@@ -7899,12 +7909,12 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"btn active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"btn\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
+Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
 
 (function() {
 Tent.Grid.MultiviewButtons = Ember.View.extend({
     templateName: 'grid/multiview_buttons',
-    classNames: ['jqgrid-title-button'],
+    classNames: ['button'],
     showCardView: false,
     showListView: true,
     didInsertElement: function() {
@@ -9046,7 +9056,16 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           dropdownAutoWidth: true
         });
       }
-    }
+    },
+    operators: [
+      Ember.Object.create({
+        label: "tent.filter.equal",
+        operator: Tent.Constants.get('OPERATOR_EQUALS')
+      }), Ember.Object.create({
+        label: "tent.filter.nEqual",
+        operator: Tent.Constants.get('OPERATOR_NOT_EQUALS')
+      })
+    ]
   });
 
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
@@ -9869,14 +9888,14 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     },
     validateChildViews: function(parentView) {
       var view, _i, _len, _ref, _results;
-      _ref = parentView.get('childViews');
+      _ref = parentView.get('_childViews');
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         view = _ref[_i];
         if (typeof view.validate === 'function') {
           view.validate();
         }
-        if (view.get('childViews') != null) {
+        if (view.get('_childViews') != null) {
           _results.push(this.validateChildViews(view));
         } else {
           _results.push(void 0);

@@ -82,6 +82,7 @@ Tent.I18n.loadTranslations(
 				inclQuotes: 'Include Quotes'
 				export: 'Export'
 			}
+			pagerViewing: 'VIEWING'
 			saveUi: {
 				defaultName: 'No Customization'
 				default: 'No Customization'
@@ -89,7 +90,7 @@ Tent.I18n.loadTranslations(
 			}
 		}
 		filter: {
-			filter: 'Filter'
+			filter: 'Filters'
 			add: 'Add Field'
 			bgHint: 'Add Filters'
 			prompt: 'Select a field ...'

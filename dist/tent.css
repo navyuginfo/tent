@@ -318,6 +318,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .tent-modal .tent-tabs.fixed-header .tab-pane {
   position: relative;
+  overflow: hidden;
 }
 
 /* Spinner icon for Select controls*/
@@ -369,12 +370,29 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 
 .tent-jqgrid {
   height: 100%;
+  overflow: hidden;
   /* Ensure that headers wrap */
   /****/
   /* Make the drag bars wider */
   /* Sorting */
   /* Save UI State Button */
-  /* Column Chooser */
+ 	/*
+	.jqgrid-title-button {
+		.btn {
+			padding: 0px 4px;
+		}
+	}
+
+	Column Chooser 
+	.column-chooser, .jqgrid-title-button, .btn-filter {
+		float: right;
+		margin-right: 30px;
+		cursor: pointer;
+		span.ui-icon {
+			float: left;
+			margin: 1px 1px;
+		}
+	}*/
   /* Export */
   /* Column Chooser */
   /* Fixed header styles */
@@ -397,6 +415,36 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .tent-jqgrid .grid-header {
   position: relative;
+}
+.tent-jqgrid .grid-header .header-buttons {
+  height: 24px;
+  display: table;
+  border: 1px solid transparent;
+}
+.tent-jqgrid .grid-header .header-buttons.middle {
+  margin-left: auto;
+  margin-right: auto;
+}
+.tent-jqgrid .grid-header .header-buttons.left {
+  position: absolute;
+}
+.tent-jqgrid .grid-header .header-buttons.right {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.tent-jqgrid .grid-header .header-buttons > .button {
+  display: table-cell!important;
+  vertical-align: middle;
+}
+.tent-jqgrid .grid-header .header-buttons > .button > a {
+  display: inline-block;
+  margin: 4px 3px;
+  cursor: pointer;
+  border: 1px solid #eee;
+}
+.tent-jqgrid .grid-header .header-buttons > .button > a i {
+  margin-top: -1px;
 }
 .tent-jqgrid .ui-jqgrid {
   position: absolute;
@@ -522,11 +570,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .tent-jqgrid .ui-icon-triangle-1-s {
   background-position: -65px -18px;
 }
-.tent-jqgrid .ui-widget-header .save-ui-state {
-  float: left;
-  cursor: pointer;
-  margin-left: 30px;
-}
 .tent-jqgrid .ui-widget-header .save-ui-state li .save-as-panel {
   padding: 4px;
 }
@@ -540,18 +583,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .tent-jqgrid .ui-widget-header .save-ui-state li a.disabled {
   color: #aaa;
   cursor: default;
-}
-.tent-jqgrid .jqgrid-title-button .btn {
-  padding: 0px 4px;
-}
-.tent-jqgrid .column-chooser, .tent-jqgrid .jqgrid-title-button, .tent-jqgrid .btn-filter {
-  float: right;
-  margin-right: 30px;
-  cursor: pointer;
-}
-.tent-jqgrid .column-chooser span.ui-icon, .tent-jqgrid .jqgrid-title-button span.ui-icon, .tent-jqgrid .btn-filter span.ui-icon {
-  float: left;
-  margin: 1px 1px;
 }
 .tent-jqgrid .export .export-json {
   background-image: url(images/export/);
@@ -588,7 +619,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   height: 3.2em;
 }
 .tent-jqgrid .column-chooser .dropdown-menu.pull-right {
-  right: -10em;
+  right: 2em;
 }
 .tent-jqgrid .column-chooser label {
   margin-bottom: 0px;
@@ -835,15 +866,21 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 
 /*  Header Pager */
 .header-pager {
-  float: right;
-  font-size: .6rem;
-  background: whitesmoke;
-  color: #666666;
-  padding: 0px 4px;
-  border-radius: 4px;
-  margin-top: 4px;
-  margin-right: 4px;
-  line-height: 15px;
+  text-align: center;
+  text-shadow: 1px 1px 0px white;
+}
+.header-pager .title {
+  font-size: .7em;
+  color: #b3b3b3;
+  margin: 0px;
+  font-weight: normal;
+}
+.header-pager .pager-details {
+  font-size: .8rem;
+  font-weight: normal;
+  color: #666464;
+  vertical-align: middle;
+  display: table-cell;
 }
 
 /* Standard Panel, with expandable */
@@ -1416,6 +1453,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   background-image: -o-linear-gradient(#465e8e, #384e77);
   background-image: linear-gradient(#465e8e, #384e77);
   color: white;
+  background-color: #465e8e;
 }
 .collection-panel header .header-border {
   	/*
@@ -1479,6 +1517,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   background-image: linear-gradient(#f4f4f4, #e4e4e4);
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
+  background-color: #f4f4f4;
 }
 .collection-panel footer .footer-border {
   /*

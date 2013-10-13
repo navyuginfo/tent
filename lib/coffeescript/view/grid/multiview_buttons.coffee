@@ -2,7 +2,7 @@ require '../../template/grid/multiview_buttons'
 
 Tent.Grid.MultiviewButtons = Ember.View.extend
 	templateName: 'grid/multiview_buttons'
-	classNames: ['jqgrid-title-button']
+	classNames: ['button']
 	showCardView: false
 	showListView: true
 
