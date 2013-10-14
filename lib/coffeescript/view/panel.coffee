@@ -189,7 +189,6 @@ Tent.Form = Tent.Panel.extend
   formStyle: 'horizontal'
   formClass: (-> 'form-' + @get('formStyle')).property('formStyle')
 
-
 Tent.Fieldset = Tent.Panel.extend
   layout: Ember.Handlebars.compile '{{#if view.legendName}}<legend>{{loc view.legendName}}</legend>{{/if}}{{yield}}'
   tagName: 'fieldset'

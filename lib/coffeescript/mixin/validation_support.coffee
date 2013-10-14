@@ -153,9 +153,3 @@ Tent.ValidationSupport = Ember.Mixin.create
   addValidationWarning: (warning) ->
     warning =  Tent.I18n.loc(warning) if (typeof warning is "string")
     @get('validationWarnings').pushObject(warning)
-
- 
-
- 
-
-
