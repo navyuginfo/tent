@@ -4471,9 +4471,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }
       return sortable && postdata.sidx !== "" && (postdata.sidx !== this.get('sortingInfo.fields.firstObject.field') || postdata.sord !== this.get('sortingInfo.fields.firstObject.sortDir'));
     },
-    restoreUIState: (function() {
-      return this.initializeFromCollectionPersonalizationName();
-    }).observes('collection.personalizations'),
     personalizationWasAdded: (function() {
       return this.initializeFromCollectionPersonalizationName();
     }).observes('collection.personalizations.@each'),
@@ -5397,30 +5394,30 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 								{{#if column.sortable}}\
 									<li class="sort dropdown-submenu">\
 										<a tabindex="-1">{{sort}}</a>\
-									    <ul class="dropdown-menu">\
-									    	<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>\
-									    	<li><a tabindex="-1" class="descending">{{descending}}</a></li>\
-									    </ul>\
+											<ul class="dropdown-menu">\
+												<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>\
+												<li><a tabindex="-1" class="descending">{{descending}}</a></li>\
+											</ul>\
 									</li>\
 								{{/if}}\
 								{{#if column.groupable}}\
 									<li class="group dropdown-submenu">\
 										<a tabindex="-1">{{group}}</a>\
-									    <ul class="dropdown-menu">\
-									    	<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>\
-									    	{{#each groupType}}\
-									    		<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>\
-									    	{{/each}}\
-									    </ul>\
+											<ul class="dropdown-menu">\
+												<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>\
+												{{#each groupType}}\
+													<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>\
+												{{/each}}\
+											</ul>\
 									</li>\
 								{{/if}}\
 								{{#if column.renamable}}\
 									<li class="rename dropdown-submenu">\
 										<a tabindex="-1">{{rename}}</a>\
-									    <ul class="dropdown-menu wide">\
-									    	<li><input type="text" value="{{title}}" class="input-medium"/></li>\
-									    	<li><a tabindex="-1" class="revert">{{revert}}</a></li>\
-									    </ul>\
+											<ul class="dropdown-menu wide">\
+												<li><input type="text" value="{{title}}" class="input-medium"/></li>\
+												<li><a tabindex="-1" class="revert">{{revert}}</a></li>\
+											</ul>\
 									</li>\
 								{{/if}}\
 							</ul>');
@@ -5512,7 +5509,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     renameColumnHeaderBindings: function() {
       var widget;
       widget = this;
-      this.$('.rename.dropdown-submenu').hover(function(e) {
+      this.$('.rename.dropdown-submenu').mouseenter(function(e) {
         return $('input', this).focus();
       }).click(function(e) {
         var target;
@@ -5520,15 +5517,20 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         e.stopPropagation();
         return e.preventDefault();
       });
+      this.$('.rename.dropdown-submenu').mouseleave(function(e) {
+        return $('body').focus();
+      });
       this.$('.rename.dropdown-submenu input').bind('keyup', (function(e) {
         var columnField, dropdownMenu, lastTitle, target;
         target = $(e.target);
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         if (e.keyCode === 13) {
+          $(this).blur();
           return widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu);
         } else if (e.keyCode === 27) {
           lastTitle = dropdownMenu.attr('data-last-title');
+          $(this).blur();
           widget.renameGridColumnHeader(columnField, lastTitle);
           $(this).val(lastTitle);
           widget.toggleColumnDropdown(columnField);
@@ -5542,6 +5544,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         originalTitle = dropdownMenu.attr('data-orig-title');
+        $('.rename.dropdown-submenu input').blur();
         widget.renameColumnHeader(columnField, originalTitle, dropdownMenu);
         return $('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle);
       });
