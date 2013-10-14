@@ -159,6 +159,10 @@ Tent.DateRangeField = Tent.TextField.extend
 			@set('formattedValue', @format(unformatted))
 			@set('value', @convertSingleDateToDateRange(unformatted))
 
+	focusOut: ->
+		# override the default behavior for textfields, since we do not want to validate
+		# for just interacting with the dropdown.
+
 	convertSingleDateToDateRange: (date)->
 		dateArr = date.split(',')
 		if dateArr.length == 1
