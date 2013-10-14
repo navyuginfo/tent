@@ -156,8 +156,15 @@ Tent.DateRangeField = Tent.TextField.extend
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('formattedValue'))
-			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
+			@set('value', @convertSingleDateToDateRange(unformatted))
+
+	convertSingleDateToDateRange: (date)->
+		dateArr = date.split(',')
+		if dateArr.length == 1
+			dateArr.push(dateArr[0])
+			date = dateArr.join(',')
+		date
 
 	validate: ->
 		isValid = @_super()

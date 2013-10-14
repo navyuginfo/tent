@@ -182,8 +182,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 			Ember.run =>
 				@get('fieldView').flushValidationErrors()
 				@get('fieldView').destroy()
-				@set('parentView.content.op', null)
-				@set('parentView.content.data', null)
+				@set('parentView.content.op', "")
+				@set('parentView.content.data', "")
 				@set('isValid', true)
 
 	populateContainer: ()->
