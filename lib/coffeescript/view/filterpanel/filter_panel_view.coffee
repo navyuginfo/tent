@@ -19,7 +19,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 		@removeFilterField(event.context)
 
 	filterableColumns: (->
-		filterableCols = @get('collection.columnsDescriptor').filter((column)->
+		filterableCols = @get('collection.columnsDescriptor').filter((column)=>
 			column.filterable != false
 		)
 		# Clone the columns so that they don't get changed by the filtering.
@@ -133,6 +133,10 @@ Tent.FilterFieldView = Ember.View.extend
 			)
 			@set('controller.selectedColumn', selectedColumn[0]) if selectedColumn.length == 1
 
+	filterableColumns: (->
+		filterableCols = @get('parentController.filterableColumns')
+	).property('parentController.filterableColumns')
+
 	willDestroyElement: ->
 		# Ensure that the error panel gets cleared of any errors for this field.
 		@set('isValid', true)
@@ -180,8 +184,9 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 	resetFieldView: ->
 		if @get('fieldView')?
 			Ember.run =>
-				@get('fieldView').flushValidationErrors()
-				@get('fieldView').destroy()
+				if not @get('fieldView').isDestroyed
+					@get('fieldView').flushValidationErrors()
+					@get('fieldView').destroy()
 				@set('parentView.content.op', "")
 				@set('parentView.content.data', "")
 				@set('isValid', true)

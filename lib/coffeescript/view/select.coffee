@@ -187,9 +187,15 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
       if prompt = Tent.I18n.loc(@get('prompt')) then prompt else Tent.I18n.loc 'tent.pleaseSelect'
   ).property('prompt','showPrompt')
   
-  change: ->
-      @_super(arguments)
-      @set('isValid', @validate())
+  change: (e)->
+    @_super(arguments)
+    @set('isValid', @validate())
+    # Don't validate parent control on focusOut
+    e.stopPropagation()
+
+  focusOut: (e)->  
+    # If this is an operator, dont validate parent control on focusOut
+    e.stopPropagation()
 
   showSpinner: (->
     if @get('isLoaded')?
