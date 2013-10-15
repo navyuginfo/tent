@@ -66,6 +66,7 @@ Tent.I18n.loadTranslations(
 			horizontalScroll: 'Auto-Fit'
 			multiviewList: 'List View'
 			multiviewCard: 'Card View'
+			emptyRecords: 'No results were returned'
 			export: {
 				xml: 'XML'
 				json: 'JSON'

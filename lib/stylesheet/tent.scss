@@ -357,5 +357,16 @@ select.expand {
 	left: 0px;
 	right: 0px;
 	text-align: center;
+
+	&.light{
+		/* For a lighter background */
+		font-size: 17px;
+ 		color: #D1D1D1;
+		text-shadow: -1px -1px #FFFFFF;
+		letter-spacing: 1px;
+	}
 }
+
+ 
+
 

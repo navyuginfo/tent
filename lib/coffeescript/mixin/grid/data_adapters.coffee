@@ -130,3 +130,11 @@ Tent.Grid.Adapters = Ember.Mixin.create
 			@getTableDom()[0]?.addJSONData(data, @get('rcnt'))
 		@updateGrid()
 	).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+
+	gridIsEmpty: (->
+		if @get('content.isLoaded') and @get('content').toArray().length == 0
+			@$('.ui-jqgrid-bdiv').prepend('<div class="empty-message background-hint light">'+Tent.I18n.loc("tent.jqGrid.emptyRecords")+'</div>')
+		else
+			@$('.ui-jqgrid-bdiv .empty-message').remove()
+	).observes('content.isLoaded', 'content.@each')
+

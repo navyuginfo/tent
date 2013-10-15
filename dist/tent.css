@@ -1873,6 +1873,13 @@ select.expand {
   right: 0px;
   text-align: center;
 }
+.background-hint.light {
+  /* For a lighter background */
+  font-size: 17px;
+  color: #D1D1D1;
+  text-shadow: -1px -1px white;
+  letter-spacing: 1px;
+}
 @charset "UTF-8";
 /*
  * jQuery File Upload UI Plugin CSS 8.1

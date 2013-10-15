@@ -97,6 +97,7 @@
         horizontalScroll: 'Auto-Fit',
         multiviewList: 'List View',
         multiviewCard: 'Card View',
+        emptyRecords: 'No results were returned',
         "export": {
           xml: 'XML',
           json: 'JSON',
@@ -4850,7 +4851,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         }
       }
       return this.updateGrid();
-    }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+    }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo'),
+    gridIsEmpty: (function() {
+      if (this.get('content.isLoaded') && this.get('content').toArray().length === 0) {
+        return this.$('.ui-jqgrid-bdiv').prepend('<div class="empty-message background-hint light">' + Tent.I18n.loc("tent.jqGrid.emptyRecords") + '</div>');
+      } else {
+        return this.$('.ui-jqgrid-bdiv .empty-message').remove();
+      }
+    }).observes('content.isLoaded', 'content.@each')
   });
 
 }).call(this);
