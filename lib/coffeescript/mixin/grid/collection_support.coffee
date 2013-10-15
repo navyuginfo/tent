@@ -100,12 +100,13 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     """
     @$(".grid-header").append(button)
 
-    @$('.save-ui-state .save-as-panel').mouseleave((e)->
-      $('body').focus()
-    )
+    if (Tent.Browsers.isIE())
+      @$('.save-ui-state .save-as-panel').mouseleave((e)->
+        $('body').focus()
+      )
     @$('.save-ui-state').bind('keyup', ((e)->
       if e.keyCode == 27 # escape key
-        $('body').focus();
+        $('body').focus() if (Tent.Browsers.isIE())
         widget.toggleUIStatePanel()
       )
     )
@@ -113,6 +114,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
     @$('.save-ui-state input').bind('keyup', ((e)->
       widget.observeValueInput($(this))
       if e.keyCode == 13 # return key
+        $('body').focus() if (Tent.Browsers.isIE())
         widget.saveAs($(@))
     ))
 
