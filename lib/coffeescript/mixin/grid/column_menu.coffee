@@ -140,12 +140,12 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			columnField = dropdownMenu.attr('data-column')
 
 			if e.keyCode == 13	# return key
-				$(this).blur()
+				$(this).blur() if (Tent.Browsers.isIE())
 				widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu)
 			else if e.keyCode == 27 # escape key
 				# reset to the original title
 				lastTitle = dropdownMenu.attr('data-last-title')
-				$(this).blur()
+				$(this).blur() if (Tent.Browsers.isIE())
 				widget.renameGridColumnHeader(columnField, lastTitle)
 				$(this).val(lastTitle)
 				widget.toggleColumnDropdown(columnField)
@@ -160,7 +160,7 @@ Tent.Grid.ColumnMenu = Ember.Mixin.create
 			columnField = dropdownMenu.attr('data-column')
 
 			originalTitle = dropdownMenu.attr('data-orig-title')
-			$('.rename.dropdown-submenu input').blur()
+			$('.rename.dropdown-submenu input').blur() if (Tent.Browsers.isIE())
 			widget.renameColumnHeader(columnField, originalTitle, dropdownMenu)
 			$('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle)
 		)
