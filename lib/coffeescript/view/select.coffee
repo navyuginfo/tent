@@ -19,7 +19,7 @@
           }}
 ###
 
-require '../template/select'
+require '../template/select' 
 require '../template/radio_group'
 require '../mixin/filtering_support'
 require '../mixin/tooltip_support'
@@ -101,7 +101,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
   
   didInsertElement: ->
     @_super(arguments)
-    @set('inputIdentifier', @$('select').attr('id'))
+    @set('inputIdentifier', @$('> .controls > .input-prepend > select').attr('id'))
 
     @setupAdvancedMode()
     
