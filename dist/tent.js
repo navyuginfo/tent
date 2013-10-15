@@ -3251,6 +3251,16 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     focus: function() {
       return $('#' + this.get('inputIdentifier')).focus();
     },
+    validateField: function() {
+      var unformatted;
+      this.set('isValid', this.validate());
+      if (this.get('isValid')) {
+        unformatted = this.unFormat(this.get('formattedValue'));
+        this.set('value', unformatted);
+        this.set('formattedValue', this.format(unformatted));
+        return this.validateWarnings();
+      }
+    },
     resize: function() {
       this._super();
       return this.estimateFormStyle();
@@ -3580,26 +3590,25 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     */
 
     type: 'text',
-    didInsertElement: function() {
-      this._super(arguments);
-      return this.set('inputIdentifier', this.$('input').attr('id'));
-    },
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
-    focusOut: function() {
-      var unformatted;
+    didInsertElement: function() {
       this._super(arguments);
-      this.set('isValid', this.validate());
-      if (this.get('isValid')) {
-        unformatted = this.unFormat(this.get('formattedValue'));
-        this.set('value', unformatted);
-        this.set('formattedValue', this.format(unformatted));
-        return this.validateWarnings();
+      return this.set('inputIdentifier', this.$('input').attr('id'));
+    },
+    focusOut: function() {
+      var fieldValue;
+      fieldValue = $('#' + this.get('inputIdentifier')).val();
+      if (fieldValue === '' || fieldValue === this.get('translatedPlaceholder')) {
+        return this.validateField();
       }
+    },
+    change: function() {
+      return this.validateField();
     }
   });
 
@@ -10282,6 +10291,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     uiType: 'datepicker',
     uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'],
     classNames: ['tent-date-field'],
+    datePickerClicked: false,
     placeholder: (function() {
       return this.get('options').dateFormat;
     }).property('options.dateFormat'),
@@ -10296,13 +10306,6 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       buttonImage: "stylesheet/images/calendar.gif",
       buttonImageOnly: true
     },
-    init: function() {
-      return this._super();
-    },
-    didInsertElement: function() {
-      this._super(arguments);
-      return this.$('input').datepicker(this.get('options'));
-    },
     optionDidChange: (function() {
       if (this.get('disabled') || this.get('isReadOnly') || this.get('readOnly')) {
         return this.$('input').datepicker('disable');
@@ -10310,6 +10313,13 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
         return this.$('input').datepicker('enable');
       }
     }).observes('disabled', 'readOnly', 'isReadOnly'),
+    init: function() {
+      return this._super();
+    },
+    didInsertElement: function() {
+      this._super(arguments);
+      return this.$('input').datepicker(this.get('options'));
+    },
     validate: function() {
       var isValid, isValidDate;
       isValid = this._super();
@@ -10340,17 +10350,18 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
         return null;
       }
     },
-    focusOut: function() {},
-    change: function() {
-      var unformatted;
-      this._super();
-      this.set('isValid', this.validate());
-      if (this.get('isValid')) {
-        unformatted = this.unFormat(this.get('formattedValue'));
-        this.set('value', unformatted);
-        this.set('formattedValue', this.format(unformatted));
-        return this.validateWarnings();
+    focusOut: function() {
+      var field, today;
+      field = this.$('input').val();
+      today = this.format(new Date());
+      if (!field || field === '') {
+        this.$('input').val(today);
+        this.set('formattedValue', today);
       }
+      return this.validateField();
+    },
+    change: function() {
+      return this.validateField();
     }
   });
 
@@ -10629,16 +10640,15 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
       this._super();
       return this.set('inputIdentifier', this.$('textarea').attr('id'));
     },
-    change: function() {
-      var unformatted;
-      this._super(arguments);
-      this.set('isValid', this.validate());
-      if (this.get('isValid')) {
-        unformatted = this.unFormat(this.get('formattedValue'));
-        this.set('value', unformatted);
-        this.set('formattedValue', this.format(unformatted));
-        return this.validateWarnings();
+    focusOut: function() {
+      var fieldValue;
+      fieldValue = $('#' + this.get('inputIdentifier')).val();
+      if (fieldValue === '' || fieldValue === this.get('translatedPlaceholder')) {
+        return this.validateField();
       }
+    },
+    change: function() {
+      return this.validateField();
     }
   });
 

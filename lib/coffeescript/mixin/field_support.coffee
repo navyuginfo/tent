@@ -152,6 +152,14 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   focus: ->
     $('#' + @get('inputIdentifier')).focus()
 
+  validateField: ->
+    @set('isValid', @validate())
+    if @get('isValid')
+        unformatted = @unFormat(@get('formattedValue'))
+        @set('value', unformatted)
+        @set('formattedValue', @format(unformatted))
+        @validateWarnings()
+
   resize: ->
   	@_super()
   	@estimateFormStyle()

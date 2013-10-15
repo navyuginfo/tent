@@ -21,6 +21,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'
 	]
 	classNames: ['tent-date-field']
+	datePickerClicked: false
 	
 	placeholder: (->
 		@get('options').dateFormat
@@ -38,13 +39,6 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		buttonImage: "stylesheet/images/calendar.gif"
 		buttonImageOnly: true
 
-	init: ->
-		@_super()
-	
-	didInsertElement: ->
-		@_super(arguments)
-		@.$('input').datepicker(@get('options'))
-
 	optionDidChange: (->
 		#@set('options', @_gatherOptions())
 		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
@@ -52,6 +46,13 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		else
 			@.$('input').datepicker('enable')
 	).observes('disabled', 'readOnly', 'isReadOnly')
+
+	init: ->
+		@_super()
+	
+	didInsertElement: ->
+		@_super(arguments)
+		@.$('input').datepicker(@get('options'))
 
 	validate: ->
 		isValid = @_super()
@@ -78,17 +79,15 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch error
 			return null
 
-	# Override from TextField so Date Fields are also validated when using the datepicker
 	focusOut: ->
+		field = @.$('input').val()
+		today = @format(new Date())
+		if !field or field == ''
+			@.$('input').val(today)
+			@set('formattedValue', today)
+		@validateField()
 
 	change: ->
-        @_super()
-        @set('isValid', @validate())
-        if @get('isValid')
-            unformatted = @unFormat(@get('formattedValue'))
-            @set('value', unformatted)
-            @set('formattedValue', @format(unformatted))
-            @validateWarnings()
-
+	    @validateField()
 
 		 
