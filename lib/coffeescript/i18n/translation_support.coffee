@@ -95,6 +95,7 @@ Tent.I18n.loadTranslations(
 			add: 'Add Field'
 			bgHint: 'Add Filters'
 			prompt: 'Select a field ...'
+			operatorLabel: 'Operator'
 			operatorPrompt: 'Select an operator'
 			del: 'Delete Field'
 			lock: 'Lock Field '
