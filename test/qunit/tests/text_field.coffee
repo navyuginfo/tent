@@ -79,7 +79,7 @@ test 'Ensure value is propagated back from DOM to controller', ->
 
   Ember.run ->
     view.$('input').val('newValue')
-    view.$('input').trigger('focusout')
+    view.$('input').trigger('change')
   equal view.$('input').val(), 'newValue', 'Dom value changed'
   equal TemplateTests.controller.get('content'), 'newValue', 'Controller value is set to "newValue"'
 
@@ -102,12 +102,12 @@ test 'Ensure required check', ->
 
   Ember.run ->
     view.$('input').val('newValue')
-    view.$('input').trigger('focusout')
+    view.$('input').trigger('change')
   ok view.get('isValid')
 
   Ember.run ->
     view.$('input').val('')
-    view.$('input').trigger('focusout')
+    view.$('input').trigger('change')
   ok not view.get('isValid')  
 
 test 'Test for readonly', ->
@@ -176,5 +176,5 @@ test 'Ensure that the text entered gets trimmed value check', ->
 
   Ember.run ->
     view.$('input').val('   testValue   ')
-    view.$('input').trigger('focusout')
+    view.$('input').trigger('change')
   equal view.get('newValue'), 'testValue'
