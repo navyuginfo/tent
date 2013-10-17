@@ -21,7 +21,6 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'
 	]
 	classNames: ['tent-date-field']
-	datePickerClicked: false
 	
 	placeholder: (->
 		@get('options').dateFormat
@@ -42,9 +41,9 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	optionDidChange: (->
 		#@set('options', @_gatherOptions())
 		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
-			@.$('input').datepicker('disable')
+			@$().datepicker('disable')
 		else
-			@.$('input').datepicker('enable')
+			@$().datepicker('enable')
 	).observes('disabled', 'readOnly', 'isReadOnly')
 
 	init: ->
@@ -80,7 +79,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 			return null
 
 	focusOut: ->
-		field = @.$('input').val()
+		field = @$().val()
 		today = @format(new Date())
 		if !field or field == ''
 			@.$('input').val(today)
