@@ -38,20 +38,20 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		buttonImage: "stylesheet/images/calendar.gif"
 		buttonImageOnly: true
 
+	optionDidChange: (->
+		#@set('options', @_gatherOptions())
+		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
+			@$().datepicker('disable')
+		else
+			@$().datepicker('enable')
+	).observes('disabled', 'readOnly', 'isReadOnly')
+
 	init: ->
 		@_super()
 	
 	didInsertElement: ->
 		@_super(arguments)
 		@.$('input').datepicker(@get('options'))
-
-	optionDidChange: (->
-		#@set('options', @_gatherOptions())
-		if @get('disabled') or @get('isReadOnly') or @get('readOnly')
-			@.$('input').datepicker('disable')
-		else
-			@.$('input').datepicker('enable')
-	).observes('disabled', 'readOnly', 'isReadOnly')
 
 	validate: ->
 		isValid = @_super()
@@ -78,5 +78,15 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch error
 			return null
 
+	focusOut: ->
+		field = @$().val()
+		today = @format(new Date())
+		if !field or field == ''
+			@.$('input').val(today)
+			@set('formattedValue', today)
+		@validateField()
+
+	change: ->
+	    @validateField()
 
 		 

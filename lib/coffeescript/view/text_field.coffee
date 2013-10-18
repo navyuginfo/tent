@@ -42,10 +42,6 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
 	###
 	type: 'text'
 
-	didInsertElement: ->
-		@_super(arguments)
-		@set('inputIdentifier', @$('input').attr('id'))
-
 	valueForMandatoryValidation: (->
 		@get('formattedValue')
 	).property('formattedValue')
@@ -54,16 +50,20 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
         @trimValue(@get('value'))
     ).property('value')
 
-    # Validation of fields happens on focusout regardless if the field has changed 
-    # This is so fields aren't missed when completing a form
-    focusOut: ->  
+    didInsertElement: ->
         @_super(arguments)
-        @set('isValid', @validate())
-        if @get('isValid')
-            unformatted = @unFormat(@get('formattedValue'))
-            @set('value', unformatted)
-            @set('formattedValue', @format(unformatted))
-            @validateWarnings()
+        @set('inputIdentifier', @$('input').attr('id'))
+
+    # Validate on focusOut so that fields on a form are not missed.  Clicking in then out will trigger an error.
+    # Do this only when the field is empty because validation also occurs on change
+    focusOut: ->
+        fieldValue = $('#' + @get('inputIdentifier')).val()
+        if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
+            @validateField()
+
+    # Validate on change
+    change: ->
+        @validateField()
 
 Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport
 	

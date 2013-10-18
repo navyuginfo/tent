@@ -105,7 +105,10 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   prefix: null
 
   translatedPlaceholder: (->
-    Tent.I18n.loc(@get('placeholder'))
+    placeholderText = Tent.I18n.loc(@get('placeholder'))
+    if Tent.Browsers.isIE()
+      @addPlaceholder(placeholderText)
+    placeholderText
   ).property('placeholder')
   
   isTextDisplay: (->
@@ -149,6 +152,14 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
   focus: ->
     $('#' + @get('inputIdentifier')).focus()
 
+  validateField: ->
+    @set('isValid', @validate())
+    if @get('isValid')
+        unformatted = @unFormat(@get('formattedValue'))
+        @set('value', unformatted)
+        @set('formattedValue', @format(unformatted))
+        @validateWarnings()
+
   resize: ->
   	@_super()
   	@estimateFormStyle()
@@ -160,6 +171,15 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     @_super()
     @estimateFormStyle()
   	
+  addPlaceholder: (placeholderText) ->
+    Ember.run.next =>
+      field = $('#' + @get('inputIdentifier'))
+      field.addClass('placeholder').val(placeholderText)
+      field.focus (->
+        if field.val() == placeholderText
+          field.val('').removeClass('placeholder')
+      )
+
   estimateFormStyle: ->
   	#form.set('formStyle', if @get('widthExpectation') > form.$().width() then 'vertical' else 'horizontal') if (form = @get('form'))
 
