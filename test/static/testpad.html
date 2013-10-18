@@ -202,8 +202,7 @@
 
             {{view Tent.Select listBinding="Pad.colorContent" selectionBinding="Pad.colorMultipleSelection" label="State Autocomplete" optionLabelPath="content.colorName" optionValuePath="content.colorCode" multiple=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="Select a color" advanced=true}}
 
-
-
+            {{view Tent.Select listBinding="Pad.colorContent" selectionBinding="Pad.colorDisabledSelection" label="Disabled Options" optionLabelPath="content.colorName" optionValuePath="content.colorCode" optionDisabledPath="content.isDisabled" multiple=false requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" prompt="Select a color" advanced=false}}
 
 
             {{view Tent.Select listBinding="Pad.contents" selectionBinding="Pad.radioSelection" valueBinding="Pad.radioValue" label="_radio" optionLabelPath="content.stateName" optionValuePath="content.stateCode" isRadioGroup=true requiredBinding="Pad.isRequired"  disabledBinding="Pad.isDisabled"  textDisplayBinding="Pad.textDisplay" }}

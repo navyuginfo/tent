@@ -221,4 +221,29 @@ test 'Selection updates when asynchronous list returns', ->
   equal widget.get('selection.stateName'), "Arkansas", 'Selection after isLoaded'
   
 
+test 'Test for disabled options', ->
+  Application.set("content", [
+      Ember.Object.create({stateName: 'Georgia', stateCode: 'GA', isDisabled: true}),
+      Ember.Object.create({stateName: 'Florida',  stateCode: 'FL'}),
+      Ember.Object.create({stateName: 'Arkansas',  stateCode: 'AR'})
+    ])
+
+  Application.stateSelection = Ember.Object.create()  
+
+  view = Ember.View.create
+    app: Application
+    label: 'label1'
+    template: Ember.Handlebars.compile '{{view Tent.Select 
+                          labelBinding="view.label"
+                          listBinding="app.content" 
+                          optionLabelPath="content.stateName"  
+                          optionValuePath="content.stateCode"
+                          selectionBinding="application.stateSelection"}}'
+
+  appendView()
+
+  ok view.$().length, 'Select was rendered'
+  equal view.$('optgroup').length, 1, 'One optgroup was rendered'
+  equal view.$('optgroup').attr('label'), 'Georgia', 'Added label to optgroup'
+  equal view.$('option').length, Application.content.length,  'Options were rendered for two items'
 

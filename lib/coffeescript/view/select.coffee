@@ -226,7 +226,16 @@ Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Te
         <option value>{{view.prompt}}</option>
       {{/if}}
     {{/if}}
-    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}'
+
+    {{#each option in view.content}}
+      {{#with option}}
+        {{#if isDisabled}}
+          {{view Tent.DisabledSelectOption contentBinding="this"}}
+        {{else}}
+          {{view Tent.SelectOption contentBinding="this"}}
+        {{/if}}
+      {{/with}}
+    {{/each}}'
   )
 
 Tent.SelectOption = Ember.SelectOption.extend
@@ -239,5 +248,10 @@ Tent.SelectOption = Ember.SelectOption.extend
     ).property(labelPath).cacheable())
   , 'parentView.optionLabelPath')
 
+Tent.DisabledSelectOption = Ember.View.extend
+  tagName: 'optgroup'
+  attributeBindings: ['label']
 
-
+  label: (->
+    Tent.I18n.loc(@get(@get('parentView.optionLabelPath')))
+  ).property('')
