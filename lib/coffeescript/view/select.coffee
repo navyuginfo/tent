@@ -30,6 +30,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
   contentBinding: 'selection'
+  operatorsIsValid: true
   value: null
 
   ###*
