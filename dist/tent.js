@@ -139,6 +139,7 @@
         newFilter: 'New Filter',
         filterLabel: 'Filter Label',
         filterDescription: 'Filter Description',
+        duplicate: 'A filter already exists for the selected field',
         save: 'Save',
         saveAs: 'Save As',
         cancel: 'Cancel',
@@ -2888,7 +2889,9 @@
     },
     willDestroyElement: function() {
       this._super();
-      return this.flushValidationErrors();
+      if (!this.isDestroyed) {
+        return this.flushValidationErrors();
+      }
     },
     validate: function() {
       var valid;
@@ -3599,7 +3602,12 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
+<<<<<<< HEAD
     didInsertElement: function() {
+=======
+    change: function() {
+      var unformatted;
+>>>>>>> Don't allow duplicate filter fields
       this._super(arguments);
       return this.set('inputIdentifier', this.$('input').attr('id'));
     },
@@ -7620,7 +7628,7 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 
 Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t{{#view Tent.Form formStyle=\"vertical\"}}\n\t\t\t<div class=\"filterpanel\">\n\t\t\t\t<header>\n\t\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t\t{{view Tent.Button label=\"tent.filter.filterAction\" type=\"link\" action=\"applyFilter\" targetBinding=\"view.parentView\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.parentView.areAnyFieldsInvalid\" validate=true }}\n\t\t\t\t</header>\n\t\t\t\t<div class=\"content\">\n\t\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.parentView.usageContext\" }}\n\t\t\t\t\t{{/each}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t{{/view}}\n</div>\n");
 
-Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=false preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=false preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{#if view.duplicateField}}\n \t\t\t\t<div class=\"errorss\">{{loc tent.filter.duplicate}}</div>\n \t\t\t{{else}}\n \t\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t\t{{/if}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7731,7 +7739,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
   Tent.FilterFieldView = Ember.View.extend({
     templateName: 'filterpanel/filter_field_view',
     classNames: ['filter-field'],
-    classNameBindings: ['controller.locked'],
+    classNameBindings: ['controller.locked', 'duplicateField'],
     parentControllerBinding: 'parentView.parentView.controller',
     collectionBinding: 'parentView.parentView.collection',
     content: null,
@@ -7752,9 +7760,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     },
     initializeSelection: function() {
       var columns, selectedColumn, selectedField;
-      selectedField = this.get('content.field');
+      selectedField = this.get('controller.content.field');
       if (selectedField != null) {
-        columns = this.get('parentController.filterableColumns');
+        columns = this.get('filterableColumns');
         selectedColumn = columns.filter(function(item) {
           return item.name === selectedField;
         });
@@ -7765,7 +7773,26 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     },
     filterableColumns: (function() {
       var filterableCols;
-      return filterableCols = this.get('parentController.filterableColumns');
+      filterableCols = this.get('parentController.filterableColumns');
+      /*@set('cachedValue', 'controller.content.field')
+      		filterableCols.map((origCol)=>
+      			col = Ember.copy(origCol, true)
+      			if @get('collection.selectedFilter.values')?
+      				if @get('collection.selectedFilter.values').findProperty('field', col.name)? and col.name != @get('content.field')
+      					try
+      						Ember.set(col, 'isDisabled', true)
+      					catch e
+      						col.isDisabled = true
+      				else 
+      					try
+      						Ember.set(col, 'isDisabled', false);
+      					catch e
+      						col.isDisabled = false;
+      				col
+      		)
+      */
+
+      return filterableCols;
     }).property('parentController.filterableColumns'),
     willDestroyElement: function() {
       this.set('isValid', true);
@@ -7775,6 +7802,22 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     },
     typeIsSelected: (function() {
       return this.get('content.field') != null;
+    }).property('content.field'),
+    duplicateField: (function() {
+      var matches,
+        _this = this;
+      if (this.get('content.field') != null) {
+        matches = this.get('collection.selectedFilter.values').filter(function(item) {
+          return item.field === _this.get('content.field');
+        });
+        if (matches.length > 1) {
+          setTimeout(function() {
+            return _this.set('content.field', null);
+          }, 2000);
+          return true;
+        }
+      }
+      return false;
     }).property('content.field'),
     showLockIcon: (function() {
       return this.get('controller.locked') || (this.get('usageContext') !== 'view' && (this.get('usageContext') != null));
@@ -7803,7 +7846,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return this.populateContainer();
     }).observes('column'),
     willDestroyElement: function() {
-      return this.resetFieldView();
+      if (!this.isDestroyed) {
+        return this.resetFieldView();
+      }
     },
     resetFieldView: function() {
       var _this = this;
@@ -9098,7 +9143,16 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         <option value>{{view.prompt}}</option>\
       {{/if}}\
     {{/if}}\
-    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
+\
+    {{#each option in view.content}}\
+      {{#with option}}\
+        {{#if isDisabled}}\
+          {{view Tent.DisabledSelectOption contentBinding="this"}}\
+        {{else}}\
+          {{view Tent.SelectOption contentBinding="this"}}\
+        {{/if}}\
+      {{/with}}\
+    {{/each}}')
   });
 
   Tent.SelectOption = Ember.SelectOption.extend({
@@ -9114,6 +9168,14 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         }
       }).property(labelPath).cacheable());
     }, 'parentView.optionLabelPath')
+  });
+
+  Tent.DisabledSelectOption = Ember.View.extend({
+    tagName: 'optgroup',
+    attributeBindings: ['label'],
+    label: (function() {
+      return Tent.I18n.loc(this.get(this.get('parentView.optionLabelPath')));
+    }).property('')
   });
 
 }).call(this);
@@ -10576,7 +10638,9 @@ Tent.DateRangeField = Tent.TextField.extend({
       return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
     },
     willDestroyElement: function() {
-      this.$('input').remove();
+      if (!this.isDestroyed) {
+        this.$('input').remove();
+      }
       return $('#ui-datepicker-div').remove();
     },
     /**
@@ -12977,7 +13041,9 @@ GridController
     },
     removeFilterFieldValue: function(value) {
       this.ensureFilterAvailable();
-      return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
+      if (this.get('selectedFilter.values').indexOf(value) > -1) {
+        return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
+      }
     },
     getFilterValueForColumn: function(columnName) {
       return this.get('selectedFilter.values').filter(function(value) {

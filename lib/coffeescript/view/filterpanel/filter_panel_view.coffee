@@ -50,6 +50,7 @@ Tent.FilterPanelView = Ember.View.extend
 
 	willDestroyElement: ->
 		@get('controller').destroy() if @get('controller')?
+		@get('validations').clear()
 
 	togglePin: ->
 		@toggleProperty('isPinned')
@@ -105,7 +106,7 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
 	classNames: ['filter-field']
-	classNameBindings: ['controller.locked']
+	classNameBindings: ['controller.locked', 'duplicateField']
 	parentControllerBinding: 'parentView.parentView.controller'
 	collectionBinding: 'parentView.parentView.collection'
 	content: null
@@ -125,9 +126,9 @@ Tent.FilterFieldView = Ember.View.extend
 			usageContext: @get('usageContext')
 
 	initializeSelection: ->
-		selectedField = @get('content.field')
+		selectedField = @get('controller.content.field')
 		if selectedField?
-			columns = @get('parentController.filterableColumns')
+			columns = @get('filterableColumns')
 			selectedColumn = columns.filter((item)->
 				item.name == selectedField
 			)
@@ -135,6 +136,7 @@ Tent.FilterFieldView = Ember.View.extend
 
 	filterableColumns: (->
 		filterableCols = @get('parentController.filterableColumns')
+		return filterableCols
 	).property('parentController.filterableColumns')
 
 	willDestroyElement: ->
@@ -144,6 +146,19 @@ Tent.FilterFieldView = Ember.View.extend
 
 	typeIsSelected: (->
 		@get('content.field')?
+	).property('content.field')
+
+	duplicateField: (->
+		if @get('content.field')?
+			matches = @get('collection.selectedFilter.values').filter((item)=>
+				item.field == @get('content.field')
+			)
+			if matches.length > 1
+				setTimeout(=> 
+					@set('content.field', null)
+				, 2000)
+				return true
+		false
 	).property('content.field')
 
 	showLockIcon: (->
@@ -179,7 +194,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 	).observes('column')
 
 	willDestroyElement: ->
-		@resetFieldView()
+		if not this.isDestroyed
+			@resetFieldView()
 
 	resetFieldView: ->
 		if @get('fieldView')?

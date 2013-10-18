@@ -45,6 +45,15 @@ $headerHeight: 20px;
 		.disabled > .icon-lock {
 			cursor: default;
 		}
+
+		&.duplicate-field section {
+			background-color: #f2dede;
+			.error {
+				color: rgb(185, 74, 72);
+				font-size: .85em;
+				text-shadow: 1px 1px 1px rgb(255, 242, 242);
+			}
+		}
 	}
 
 	.field-lock {

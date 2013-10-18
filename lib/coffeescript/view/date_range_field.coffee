@@ -122,7 +122,8 @@ Tent.DateRangeField = Tent.TextField.extend
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
 	willDestroyElement: ->
-		@$('input').remove()
+		if not this.isDestroyed
+			@$('input').remove()
 		$('#ui-datepicker-div').remove()
 
 	###*

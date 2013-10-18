@@ -361,6 +361,14 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 .filter-container .filter-field .disabled > .icon-lock {
   cursor: default;
 }
+.filter-container .filter-field.duplicate-field section {
+  background-color: #f2dede;
+}
+.filter-container .filter-field.duplicate-field section .error {
+  color: #b94a48;
+  font-size: .85em;
+  text-shadow: 1px 1px 1px #fff2f2;
+}
 .filter-container .field-lock .icon-lock {
   color: #aaa;
 }

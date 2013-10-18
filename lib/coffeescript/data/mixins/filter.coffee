@@ -143,7 +143,8 @@ Tent.Data.Filter = Ember.Mixin.create
 
 	removeFilterFieldValue: (value) ->
 		@ensureFilterAvailable()
-		@get('selectedFilter.values').removeAt(@get('selectedFilter.values').indexOf(value), 1)
+		if @get('selectedFilter.values').indexOf(value) > -1
+			@get('selectedFilter.values').removeAt(@get('selectedFilter.values').indexOf(value), 1)
 		
 	# Return the filter value for the specified column from the currently selected filter.
 	getFilterValueForColumn: (columnName) ->

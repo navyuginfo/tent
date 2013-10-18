@@ -108,6 +108,7 @@ Tent.I18n.loadTranslations(
 			newFilter: 'New Filter'
 			filterLabel: 'Filter Label'
 			filterDescription: 'Filter Description'
+			duplicate: 'A filter already exists for the selected field'
 			save: 'Save'
 			saveAs: 'Save As'
 			cancel: 'Cancel'

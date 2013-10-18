@@ -29,7 +29,8 @@ Tent.ValidationSupport = Ember.Mixin.create
     
   willDestroyElement:->
     @_super()
-    @flushValidationErrors()
+    if not this.isDestroyed
+      @flushValidationErrors()
   
   validate: ->
     @flushValidationErrors()

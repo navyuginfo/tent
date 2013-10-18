@@ -10,7 +10,11 @@
 	<div class="filter-field">
 		{{view Tent.Select listBinding="view.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false required=false preselectSingleElement=true class="no-label" prompt="tent.filter.prompt" disabledBinding="controller.isDisabled"}}
  		{{#if view.typeIsSelected}}
- 			{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content" isDisabledBinding="controller.isDisabled" isValidBinding="view.isValid"}}
+ 			{{#if view.duplicateField}}
+ 				<div class="errorss">{{loc tent.filter.duplicate}}</div>
+ 			{{else}}
+ 				{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content" isDisabledBinding="controller.isDisabled" isValidBinding="view.isValid"}}
+ 			{{/if}}
  		{{/if}}
  	</div>
 </section>
