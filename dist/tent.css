@@ -1763,8 +1763,8 @@ body > .modal-backdrop {
   vertical-align: middle;
 }
 .tent-message-panel .in .caret {
-  border-top: 0px;
-  border-bottom: 4px solid black;
+  border-bottom: 0px;
+  border-top: 4px solid black;
 }
 .tent-message-panel .alert, .tent-message-panel .alert-error, .tent-message-panel .alert-info, .tent-message-panel .alert-success {
   position: relative;

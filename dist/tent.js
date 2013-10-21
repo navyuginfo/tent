@@ -3597,25 +3597,16 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     */
 
     type: 'text',
+    didInsertElement: function() {
+      this._super(arguments);
+      return this.set('inputIdentifier', this.$('input').attr('id'));
+    },
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
-<<<<<<< HEAD
-<<<<<<< HEAD
-    didInsertElement: function() {
-=======
-    change: function() {
-=======
-    focusOut: function() {
->>>>>>> Test for validation of operators.
-      var unformatted;
->>>>>>> Don't allow duplicate filter fields
-      this._super(arguments);
-      return this.set('inputIdentifier', this.$('input').attr('id'));
-    },
     focusOut: function() {
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
@@ -4196,18 +4187,25 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       widget = this;
       button = "<div class=\"button save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
       this.$(".grid-header .header-buttons.left").append(button);
-      this.$('.save-ui-state .save-as-panel').mouseleave(function(e) {
-        return $('body').focus();
-      });
+      if (Tent.Browsers.isIE()) {
+        this.$('.save-ui-state .save-as-panel').mouseleave(function(e) {
+          return $('body').focus();
+        });
+      }
       this.$('.save-ui-state').bind('keyup', (function(e) {
         if (e.keyCode === 27) {
-          $('body').focus();
+          if (Tent.Browsers.isIE()) {
+            $('body').focus();
+          }
           return widget.toggleUIStatePanel();
         }
       }));
       this.$('.save-ui-state input').bind('keyup', (function(e) {
         widget.observeValueInput($(this));
         if (e.keyCode === 13) {
+          if (Tent.Browsers.isIE()) {
+            $('body').focus();
+          }
           return widget.saveAs($(this));
         }
       }));
@@ -5580,11 +5578,15 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         if (e.keyCode === 13) {
-          $(this).blur();
+          if (Tent.Browsers.isIE()) {
+            $(this).blur();
+          }
           return widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu);
         } else if (e.keyCode === 27) {
           lastTitle = dropdownMenu.attr('data-last-title');
-          $(this).blur();
+          if (Tent.Browsers.isIE()) {
+            $(this).blur();
+          }
           widget.renameGridColumnHeader(columnField, lastTitle);
           $(this).val(lastTitle);
           widget.toggleColumnDropdown(columnField);
@@ -5598,7 +5600,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         originalTitle = dropdownMenu.attr('data-orig-title');
-        $('.rename.dropdown-submenu input').blur();
+        if (Tent.Browsers.isIE()) {
+          $('.rename.dropdown-submenu input').blur();
+        }
         widget.renameColumnHeader(columnField, originalTitle, dropdownMenu);
         return $('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle);
       });
@@ -6743,9 +6747,16 @@ Tent.JqGridHeaderView = Ember.View.extend({
             }
           }
         });
-        this.$('.custom-export').mouseleave(function(e) {
-          return $('body').focus();
-        });
+        if (Tent.Browsers.isIE()) {
+          this.$('.custom-export').mouseleave(function(e) {
+            return $('body').focus();
+          });
+          this.$('.custom-export').bind('keyup', (function(e) {
+            if (e.keyCode === 27 || e.keyCode === 13) {
+              return $('body').focus();
+            }
+          }));
+        }
         return this.$('#customDelimiter').blur(function() {
           if ($('#customDelimiter').val().length > 0) {
             return $('#delimiter').val('');
@@ -9622,14 +9633,29 @@ Tent.ModalPane = Ember.View.extend({
         primaryPanel.setActive(true);
       }
       if (panel != null) {
-        return panel.setActive(false);
+        panel.setActive(false);
       }
+      return this.clearValidationsOnHide();
     },
     getPrimaryMessagePanelView: function() {
       return Ember.View.views[$('.tent-message-panel.primary').attr('id')];
     },
     getMessagePanelView: function() {
       return Ember.View.views[this.$('.tent-message-panel:first').attr('id')];
+    },
+    clearValidationsOnHide: function(element) {
+      var _this = this;
+      if (element == null) {
+        element = this;
+      }
+      element.forEachChildView(function(childView) {
+        if (childView.get('childViews.length') !== 0) {
+          return _this.clearValidationsOnHide(childView);
+        }
+      });
+      if (element.get('hasErrors') && (element.flushValidationErrors != null)) {
+        return element.flushValidationErrors();
+      }
     },
     triggerCancelAction: function(e) {
       var buttonView, id, modal, selectedCancel;
@@ -10438,7 +10464,6 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     uiType: 'datepicker',
     uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'],
     classNames: ['tent-date-field'],
-    datePickerClicked: false,
     placeholder: (function() {
       return this.get('options').dateFormat;
     }).property('options.dateFormat'),
@@ -10455,9 +10480,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     optionDidChange: (function() {
       if (this.get('disabled') || this.get('isReadOnly') || this.get('readOnly')) {
-        return this.$('input').datepicker('disable');
+        return this.$().datepicker('disable');
       } else {
-        return this.$('input').datepicker('enable');
+        return this.$().datepicker('enable');
       }
     }).observes('disabled', 'readOnly', 'isReadOnly'),
     init: function() {
@@ -10499,7 +10524,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     focusOut: function() {
       var field, today;
-      field = this.$('input').val();
+      field = this.$().val();
       today = this.format(new Date());
       if (!field || field === '') {
         this.$('input').val(today);
@@ -11196,7 +11221,7 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}}\n<section class=\"alert-error clearfix\">\n\t<h5>Errors</h5>\n\t{{#if view.collapsible}}\n\t\t<div {{bindAttr class=\"view.expandoClass\"}}>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t<a class=\"dropdown-toggle pull-right close\" data-toggle=\"collapse\" data-target=\".error-expando\">\n\t\t\t\t\t<b class=\"caret\"></b></a>\n\t\t\t{{/if}}\n\t\t</div>\n\t\t\n\t{{else}}\n\t\t<div>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t</div>\n\t{{/if}}\n</section>\n{{/if}}\n\n{{#if view.hasInfos}}\n<section class=\"alert-info clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearInfos\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Info</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.info}}\n\t\t\t<div class=\"info-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasSuccesses}}\n<section class=\"alert-success clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearSuccesses\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Success</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.success}}\n\t\t\t<div class=\"success-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t<section class=\"alert clearfix\" {{bindAttr data-target=\"this.sourceId\"}} data-type=\"warning\">\n\t\t\t{{view Tent.Button label=\"x\" type=\"link\" action=\"removeMessageCommand\" targetBinding=\"view\" class=\"close\"}}\n\t\t\t<h5>Warning</h5>\n\t\t\t\t<div>\n\t\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t\t  \t\t\t\t<label>{{loc this.label}}:</label> {{this.messages}}\n\t\t  \t\t\t</div> \n\t\t\t \t</div>\n\t\t</section>\n\t{{/each}}\n{{/if}}\n\n");
+Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}}\n<section class=\"alert-error clearfix\">\n\t<h5>Errors</h5>\n\t{{#if view.collapsible}}\n\t\t<div {{bindAttr class=\"view.expandoClass\"}}>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t<a class=\"dropdown-toggle pull-right close collapsed\" data-toggle=\"collapse\" data-target=\".error-expando\">\n\t\t\t\t\t<b class=\"caret\"></b>\n\t\t\t\t</a>\n\t\t\t{{/if}}\n\t\t</div>\n\t\t\n\t{{else}}\n\t\t<div>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t</div>\n\t{{/if}}\n</section>\n{{/if}}\n\n{{#if view.hasInfos}}\n<section class=\"alert-info clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearInfos\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Info</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.info}}\n\t\t\t<div class=\"info-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasSuccesses}}\n<section class=\"alert-success clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearSuccesses\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Success</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.success}}\n\t\t\t<div class=\"success-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t<section class=\"alert clearfix\" {{bindAttr data-target=\"this.sourceId\"}} data-type=\"warning\">\n\t\t\t{{view Tent.Button label=\"x\" type=\"link\" action=\"removeMessageCommand\" targetBinding=\"view\" class=\"close\"}}\n\t\t\t<h5>Warning</h5>\n\t\t\t\t<div>\n\t\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t\t  \t\t\t\t<label>{{loc this.label}}:</label> {{this.messages}}\n\t\t  \t\t\t</div> \n\t\t\t \t</div>\n\t\t</section>\n\t{{/each}}\n{{/if}}\n\n");
 
 (function() {
 /**
