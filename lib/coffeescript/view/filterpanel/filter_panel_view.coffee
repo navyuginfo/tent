@@ -159,7 +159,7 @@ Tent.FilterFieldView = Ember.View.extend
 			if matches.length > 1
 				setTimeout(=> 
 					@set('content.field', null)
-				, 2000)
+				, 4000)
 				return true
 		false
 	).property('content.field')

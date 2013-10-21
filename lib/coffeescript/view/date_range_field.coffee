@@ -165,11 +165,9 @@ Tent.DateRangeField = Tent.TextField.extend
 		# for just interacting with the dropdown.
 
 	convertSingleDateToDateRange: (date)->
-		dateArr = date.split(',')
-		if dateArr.length == 1
-			dateArr.push(dateArr[0])
-			date = dateArr.join(',')
-		date
+    if (date.indexOf(",") == -1)
+      date += ",#{date}"
+    date
 
 	validate: ->
 		isValid = @_super()
