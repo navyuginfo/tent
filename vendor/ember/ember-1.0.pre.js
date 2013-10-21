@@ -13539,7 +13539,10 @@ Ember.View.reopenClass({
 
   */
   _parsePropertyPath: function(path) {
-    var split = path.split(/:/),
+    // fix for bindAttr helper does not recognize literal's (for 
+    // example :foo, :selected etc). for more info visit 
+    // https://github.com/emberjs/ember.js/pull/1300
+    var split = path.split(':'),
         propertyPath = split[0],
         classNames = "",
         className,
@@ -18557,7 +18560,7 @@ EmberHandlebars.registerHelper('bindAttr', function(options) {
       // to which we were bound has been removed from the view.
       // In that case, we can assume the template has been re-rendered
       // and we need to clean up the observer.
-      if (elem.length === 0) {
+      if (!elem || elem.length === 0) {
         Ember.removeObserver(pathRoot, path, invoker);
         return;
       }
@@ -18672,7 +18675,7 @@ EmberHandlebars.bindClasses = function(context, classBindings, view, bindAttrId,
 
       // If we can't find the element anymore, a parent template has been
       // re-rendered and we've been nuked. Remove the observer.
-      if (elem.length === 0) {
+      if (!elem || elem.length === 0) {
         Ember.removeObserver(pathRoot, path, invoker);
       } else {
         // If we had previously added a class to the element, remove it.
