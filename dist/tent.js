@@ -4864,7 +4864,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.updateGrid();
     }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo'),
     gridIsEmpty: (function() {
-      if (this.get('content.isLoaded') && this.get('content').toArray().length === 0) {
+      if (this.get('content.isLoaded') && !this.get('content.content.length')) {
         return this.$('.ui-jqgrid-bdiv').prepend('<div class="empty-message background-hint light">' + Tent.I18n.loc("tent.jqGrid.emptyRecords") + '</div>');
       } else {
         return this.$('.ui-jqgrid-bdiv .empty-message').remove();
@@ -10712,11 +10712,8 @@ Tent.DateRangeField = Tent.TextField.extend({
     },
     focusOut: function() {},
     convertSingleDateToDateRange: function(date) {
-      var dateArr;
-      dateArr = date.split(',');
-      if (dateArr.length === 1) {
-        dateArr.push(dateArr[0]);
-        date = dateArr.join(',');
+      if (date.indexOf(",") === -1) {
+        date += "," + date;
       }
       return date;
     },
@@ -13065,8 +13062,8 @@ GridController
     },
     removeFilterFieldValue: function(value) {
       this.ensureFilterAvailable();
-      if (this.get('selectedFilter.values').indexOf(value) > -1) {
-        return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
+      if (this.get('selectedFilter.values').contains(value)) {
+        return this.get('selectedFilter.values').removeObject(value);
       }
     },
     getFilterValueForColumn: function(columnName) {
