@@ -1,7 +1,9 @@
 {
   "name": "tent",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "time-grunt": "~0.1.1"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
@@ -42,7 +44,8 @@
     "karma-coffee-preprocessor": "~0.1.0",
     "karma": "~0.10.2",
     "karma-qunit": "~0.1.1",
-    "karma-mocha": "~0.1.0"
+    "karma-mocha": "~0.1.0",
+    "time-grunt": "~0.1.1"
   },
   "engines": {
     "node": ">=0.8.0"
