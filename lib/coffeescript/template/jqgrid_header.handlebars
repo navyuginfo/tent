@@ -1,35 +1,36 @@
-<div class="btn-group header-buttons">
-
-	{{#if view.grid.scroll}}
-		<div class="header-pager">
-			Page {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}
-		</div>
-	{{/if}}
-	{{#if view.grid.showMultiview}}
-		{{view Tent.Grid.MultiviewButtons showCardViewBinding="view.grid.showCardView" showListViewBinding="view.grid.showListView"}}
-	{{/if}}
-
-	{{#if view.grid.showAutofitButton}}
-		{{view Tent.Grid.AutofitButton gridBinding="view.grid"}}
-	{{/if}}
-
-  	{{#if view.grid.showExportButton}}
-  		{{#if view.someExportsAreAllowed}}
-    		{{view view.exportView}}
-    	{{/if}}
-  	{{/if}}
-
-  	{{#if view.grid.showColumnChooser}}
-		{{view Tent.Grid.ColumnChooserButton gridBinding="view.grid"}}  
-	{{/if}}
-
-	{{#if view.grid.collection}}
-		{{#if view.grid.filtering}}
-			<a {{action toggleFilter target="view.grid"}} class="btn-filter pull-right">
-				<i class="icon-filter"></i>{{loc tent.filter.filter}}
-			</a>
-		{{/if}}
-	{{/if}}	
-
+<div class="header-buttons left">
+    {{#if view.grid.showExportButton}}
+        {{#if view.someExportsAreAllowed}}
+            {{view view.exportView}}
+        {{/if}}
+    {{/if}}
+</div>
+<div class="header-buttons middle">
+    {{#if view.grid.scroll}}
+        <div class="header-pager">
+            <p class="title">{{loc tent.jqGrid.pagerViewing}}</p>
+            <p class="pager-details">Page {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}</p>
+        </div>
+    {{/if}}
+</div>
+<div class="header-buttons right">
+    {{#if view.grid.showAutofitButton}}
+        {{view Tent.Grid.AutofitButton gridBinding="view.grid"}}
+    {{/if}}
+    {{#if view.grid.showMultiview}}
+        {{view Tent.Grid.MultiviewButtons showCardViewBinding="view.grid.showCardView" showListViewBinding="view.grid.showListView"}}
+    {{/if}}
+    {{#if view.grid.showColumnChooser}}
+        {{view Tent.Grid.ColumnChooserButton gridBinding="view.grid"}}  
+    {{/if}}
+    {{#if view.grid.collection}}
+        {{#if view.grid.filtering}}
+            <div class="button">
+                <a {{action toggleFilter target="view.grid"}} class="btn-filter">
+                    {{loc tent.filter.filter}}
+                </a>
+            </div>
+        {{/if}}
+    {{/if}}  
 </div>
 

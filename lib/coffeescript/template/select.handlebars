@@ -5,13 +5,18 @@
 <div class="controls">
   {{#if view.isFilter}}
     {{#if view.operators}}
-      {{view Tent.Select listBinding="view.operators" class="embed no-label operators" 
+      {{view Tent.Select 
+        label="tent.filter.operatorLabel"
+        listBinding="view.operators" 
+        class="embed no-label operators" 
         optionLabelPath="content.label"
         optionValuePath="content.operator"
         selectionBinding="view.filterSelection"
         valueBinding="view.filterOp"
         prompt="tent.filter.operatorPrompt"
         disabledBinding="view.disabled"
+        isValidBinding="view.operatorsIsValid"
+        required=true
       }}
     {{/if}}
   {{/if}}

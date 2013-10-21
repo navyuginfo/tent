@@ -45,6 +45,15 @@ $headerHeight: 20px;
 		.disabled > .icon-lock {
 			cursor: default;
 		}
+
+		&.duplicate-field section {
+			background-color: #f2dede;
+			.error {
+				color: rgb(185, 74, 72);
+				font-size: .85em;
+				text-shadow: 1px 1px 1px rgb(255, 242, 242);
+			}
+		}
 	}
 
 	.field-lock {
@@ -61,6 +70,7 @@ $headerHeight: 20px;
 
 .tent-jqgrid {
 	height: 100%;
+	overflow: hidden;
 
 	table {
 		font-size: 12px;
@@ -76,6 +86,38 @@ $headerHeight: 20px;
 
 	.grid-header {
 		position: relative; // To allow a mask for expansion
+		.header-buttons {
+			height: 24px;
+			display: table;
+			border: 1px solid transparent;
+			&.middle {
+				margin-left: auto;
+				margin-right: auto;
+			}
+			&.left {
+				position: absolute;
+			}
+			&.right {
+				position: absolute;
+				right: 0px;
+				top: 0px;
+			}
+			> .button {
+				display: table-cell!important;
+				vertical-align: middle;
+				> a {
+					display: inline-block;
+					margin: 4px 3px;
+					cursor: pointer;
+					border: 1px solid #eee;
+					i {
+						margin-top: -1px;
+					}
+				}
+			}
+			
+			
+		}
 	}
 
 	.ui-jqgrid {
@@ -226,9 +268,9 @@ $headerHeight: 20px;
 
 	/* Save UI State Button */
 	.ui-widget-header .save-ui-state {
-		float: left;
-		cursor: pointer;
-		margin-left: 30px; 
+		//float: left;
+		//cursor: pointer;
+		//margin-left: 30px; 
 		li {
 			.save-as-panel {
 				padding: 4px;
@@ -248,14 +290,14 @@ $headerHeight: 20px;
 	}
 
 
- 
+ 	/*
 	.jqgrid-title-button {
 		.btn {
 			padding: 0px 4px;
 		}
 	}
 
-	/* Column Chooser */
+	Column Chooser 
 	.column-chooser, .jqgrid-title-button, .btn-filter {
 		float: right;
 		margin-right: 30px;
@@ -264,7 +306,7 @@ $headerHeight: 20px;
 			float: left;
 			margin: 1px 1px;
 		}
-	}
+	}*/
 
 	/* Export */
 	.export {
@@ -309,7 +351,7 @@ $headerHeight: 20px;
 
 			&.pull-right {
 				// Ensure that the dropdown does not get hidden by adjacent panel.
-				right: -10em; 
+				right: 2em; 
 			}
 		}
 		label {
@@ -607,13 +649,19 @@ $headerHeight: 20px;
 
 /*  Header Pager */
 .header-pager {
-	float: right;
-	font-size: .6rem;
-	background: rgb(245, 245, 245);
-	color: rgb(102, 102, 102);
-	padding: 0px 4px;
-	border-radius: 4px;
-	margin-top: 4px;
-	margin-right: 4px;
-	line-height: 15px;
+	text-align: center;
+	text-shadow: 1px 1px 0px white;
+	.title {
+		font-size: .7em;
+		color: #b3b3b3;
+		margin: 0px;
+		font-weight: normal;
+	}
+	.pager-details {
+		font-size: .8rem;
+		font-weight: normal;
+		color: #666464;
+		vertical-align: middle;
+		display: table-cell;
+	}
 }

@@ -72,3 +72,18 @@ test 'initializeWithStartAndEndDates', ->
 
 	#rangeWidget = Ember.View.views[view.$('input').attr('id')]
 	equal view.$('input').val(), '11/11/2011- 12/11/2011', 'Value should be set from dates'
+
+test 'convertSingleDateToDateRange', ->
+	view = Tent.DateRangeField.create
+			dateFormat: 'mm/dd/yyyy'
+			rangeSplitter: 'x'
+	newDate = view.convertSingleDateToDateRange("date1")
+	equal newDate, 'date1,date1', 'duplicate single date'
+	newDate = view.convertSingleDateToDateRange("date1,date2")
+	dateArr = newDate.split(',')
+	equal dateArr[0], 'date1', 'first date does not change'
+	equal dateArr[1], 'date2', 'second date does not change'
+	equal dateArr.length, 2, 'Contains 2 items'
+
+
+

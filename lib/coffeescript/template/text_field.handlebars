@@ -4,7 +4,10 @@
 <div class="controls">
   {{#if view.isFilter}}
     {{#if view.operators}}
-      {{view Tent.Select listBinding="view.operators" class="embed no-label operators" 
+      {{view Tent.Select 
+        label="tent.filter.operatorLabel"
+        listBinding="view.operators" 
+        class="embed no-label operators" 
         optionLabelPath="content.label"
         optionValuePath="content.operator"
         selectionBinding="view.filterSelection"
@@ -13,6 +16,8 @@
         advanced=false
         prompt="tent.filter.operatorPrompt"
         disabledBinding="view.disabled"
+        required=true
+        isValidBinding="view.operatorsIsValid"
       }}
     {{/if}}
   {{/if}}

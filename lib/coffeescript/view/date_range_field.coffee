@@ -122,7 +122,8 @@ Tent.DateRangeField = Tent.TextField.extend
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
 	willDestroyElement: ->
-		@$('input').remove()
+		if not this.isDestroyed
+			@$('input').remove()
 		$('#ui-datepicker-div').remove()
 
 	###*
@@ -156,8 +157,19 @@ Tent.DateRangeField = Tent.TextField.extend
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('formattedValue'))
-			@set('value', unformatted)
 			@set('formattedValue', @format(unformatted))
+			@set('value', @convertSingleDateToDateRange(unformatted))
+
+	focusOut: ->
+		# override the default behavior for textfields, since we do not want to validate
+		# for just interacting with the dropdown.
+
+	convertSingleDateToDateRange: (date)->
+		dateArr = date.split(',')
+		if dateArr.length == 1
+			dateArr.push(dateArr[0])
+			date = dateArr.join(',')
+		date
 
 	validate: ->
 		isValid = @_super()

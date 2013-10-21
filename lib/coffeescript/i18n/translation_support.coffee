@@ -66,6 +66,7 @@ Tent.I18n.loadTranslations(
 			horizontalScroll: 'Auto-Fit'
 			multiviewList: 'List View'
 			multiviewCard: 'Card View'
+			emptyRecords: 'No results were returned'
 			export: {
 				xml: 'XML'
 				json: 'JSON'
@@ -82,6 +83,7 @@ Tent.I18n.loadTranslations(
 				inclQuotes: 'Include Quotes'
 				export: 'Export'
 			}
+			pagerViewing: 'VIEWING'
 			saveUi: {
 				defaultName: 'No Customization'
 				default: 'No Customization'
@@ -89,10 +91,12 @@ Tent.I18n.loadTranslations(
 			}
 		}
 		filter: {
-			filter: 'Filter'
+			filter: 'Filters'
+			filterAction: 'Filter'
 			add: 'Add Field'
 			bgHint: 'Add Filters'
 			prompt: 'Select a field ...'
+			operatorLabel: 'Operator'
 			operatorPrompt: 'Select an operator'
 			del: 'Delete Field'
 			lock: 'Lock Field '
@@ -104,6 +108,7 @@ Tent.I18n.loadTranslations(
 			newFilter: 'New Filter'
 			filterLabel: 'Filter Label'
 			filterDescription: 'Filter Description'
+			duplicate: 'A filter already exists for the selected field'
 			save: 'Save'
 			saveAs: 'Save As'
 			cancel: 'Cancel'

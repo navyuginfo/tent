@@ -97,6 +97,7 @@
         horizontalScroll: 'Auto-Fit',
         multiviewList: 'List View',
         multiviewCard: 'Card View',
+        emptyRecords: 'No results were returned',
         "export": {
           xml: 'XML',
           json: 'JSON',
@@ -113,6 +114,7 @@
           inclQuotes: 'Include Quotes',
           "export": 'Export'
         },
+        pagerViewing: 'VIEWING',
         saveUi: {
           defaultName: 'No Customization',
           "default": 'No Customization',
@@ -120,10 +122,12 @@
         }
       },
       filter: {
-        filter: 'Filter',
+        filter: 'Filters',
+        filterAction: 'Filter',
         add: 'Add Field',
         bgHint: 'Add Filters',
         prompt: 'Select a field ...',
+        operatorLabel: 'Operator',
         operatorPrompt: 'Select an operator',
         del: 'Delete Field',
         lock: 'Lock Field ',
@@ -135,6 +139,7 @@
         newFilter: 'New Filter',
         filterLabel: 'Filter Label',
         filterDescription: 'Filter Description',
+        duplicate: 'A filter already exists for the selected field',
         save: 'Save',
         saveAs: 'Save As',
         cancel: 'Cancel',
@@ -2884,7 +2889,9 @@
     },
     willDestroyElement: function() {
       this._super();
-      return this.flushValidationErrors();
+      if (!this.isDestroyed) {
+        return this.flushValidationErrors();
+      }
     },
     validate: function() {
       var valid;
@@ -3326,8 +3333,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
       return this.set("formattedValue", this.format(this.get("value")));
     },
     valueDidChange: (function() {
-      this.set("formattedValue", this.format(this.get("value")));
-      return this.set("isValid", this.validate());
+      return this.set("formattedValue", this.format(this.get("value")));
     }).observes("value"),
     format: function(value) {
       return this.trimValue(value);
@@ -3557,7 +3563,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.controlClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -3580,26 +3586,27 @@ Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-l
 Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport, {
     templateName: 'text_field',
     classNames: ['tent-text-field', 'control-group'],
+    operatorsIsValid: true,
     /**
-    	* @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
+    * @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
     */
 
     controlClass: '',
     /**
-    	* @property {String} type The type of the input element ('text', 'password' etc)
+    * @property {String} type The type of the input element ('text', 'password' etc)
     */
 
     type: 'text',
+    didInsertElement: function() {
+      this._super(arguments);
+      return this.set('inputIdentifier', this.$('input').attr('id'));
+    },
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
     trimmedValue: (function() {
       return this.trimValue(this.get('value'));
     }).property('value'),
-    didInsertElement: function() {
-      this._super(arguments);
-      return this.set('inputIdentifier', this.$('input').attr('id'));
-    },
     focusOut: function() {
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
@@ -4178,16 +4185,27 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     renderSaveUIStateButton: function() {
       var button, widget;
       widget = this;
-      button = "<div class=\"btn-group save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
-      this.$(".grid-header").append(button);
+      button = "<div class=\"button save-ui-state\">\n  <a data-toggle=\"dropdown\"><i class=\"icon-camera\"></i><span class=\"custom-name\"></span><span class=\"caret\"></span></a>\n  <ul class=\"dropdown-menu\">\n    <li><a class=\"save\">" + (Tent.I18n.loc("tent.button.save")) + "</a></li>\n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.saveAs")) + "</a>\n      <ul class=\"dropdown-menu save-as-panel\">\n          <p>" + (Tent.I18n.loc("tent.jqGrid.saveUi.message")) + "</p>\n          <p><input type=\"text\" class=\"input-medium keep-open\" value=\"" + (widget.get('collection.customizationName')) + "\"/></p>\n          <div><a class='btn pull-left cancel'>" + (Tent.I18n.loc("tent.button.cancel")) + "</a><a class='btn pull-right saveas'>" + (Tent.I18n.loc("tent.button.save")) + "</a></div>\n      </ul>\n    </li> \n    <li class=\"dropdown-submenu\">\n      <a>" + (Tent.I18n.loc("tent.button.load")) + "</a>\n      <ul class=\"dropdown-menu load-panel\">\n      </ul>\n    </li>  \n  </ul>\n</div>";
+      this.$(".grid-header .header-buttons.left").append(button);
+      if (Tent.Browsers.isIE()) {
+        this.$('.save-ui-state .save-as-panel').mouseleave(function(e) {
+          return $('body').focus();
+        });
+      }
       this.$('.save-ui-state').bind('keyup', (function(e) {
         if (e.keyCode === 27) {
+          if (Tent.Browsers.isIE()) {
+            $('body').focus();
+          }
           return widget.toggleUIStatePanel();
         }
       }));
       this.$('.save-ui-state input').bind('keyup', (function(e) {
         widget.observeValueInput($(this));
         if (e.keyCode === 13) {
+          if (Tent.Browsers.isIE()) {
+            $('body').focus();
+          }
           return widget.saveAs($(this));
         }
       }));
@@ -4844,7 +4862,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         }
       }
       return this.updateGrid();
-    }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo')
+    }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo'),
+    gridIsEmpty: (function() {
+      if (this.get('content.isLoaded') && this.get('content').toArray().length === 0) {
+        return this.$('.ui-jqgrid-bdiv').prepend('<div class="empty-message background-hint light">' + Tent.I18n.loc("tent.jqGrid.emptyRecords") + '</div>');
+      } else {
+        return this.$('.ui-jqgrid-bdiv .empty-message').remove();
+      }
+    }).observes('content.isLoaded', 'content.@each')
   });
 
 }).call(this);
@@ -5553,11 +5578,15 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         if (e.keyCode === 13) {
-          $(this).blur();
+          if (Tent.Browsers.isIE()) {
+            $(this).blur();
+          }
           return widget.renameColumnHeader(columnField, $(this).val(), dropdownMenu);
         } else if (e.keyCode === 27) {
           lastTitle = dropdownMenu.attr('data-last-title');
-          $(this).blur();
+          if (Tent.Browsers.isIE()) {
+            $(this).blur();
+          }
           widget.renameGridColumnHeader(columnField, lastTitle);
           $(this).val(lastTitle);
           widget.toggleColumnDropdown(columnField);
@@ -5571,7 +5600,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         dropdownMenu = target.parents('ul.column-dropdown:first');
         columnField = dropdownMenu.attr('data-column');
         originalTitle = dropdownMenu.attr('data-orig-title');
-        $('.rename.dropdown-submenu input').blur();
+        if (Tent.Browsers.isIE()) {
+          $('.rename.dropdown-submenu input').blur();
+        }
         widget.renameColumnHeader(columnField, originalTitle, dropdownMenu);
         return $('.rename.dropdown-submenu input', dropdownMenu).val(originalTitle);
       });
@@ -5629,7 +5660,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       var widget;
       widget = this;
       if (this.get('showMaximizeButton')) {
-        this.$(".grid-header").append('<a class="maximize"><span class="ui-icon ui-icon-arrow-4-diag"></span> </a>');
+        this.$(".grid-header .left").prepend('<div class="button"><a class="maximize"><i class="ui-icon ui-icon-arrow-4-diag"></i></a></div>');
         return this.$('a.maximize').click(function() {
           return widget.toggleFullScreen(this);
         });
@@ -6598,9 +6629,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"btn-group header-buttons\">\n\n\t{{#if view.grid.scroll}}\n\t\t<div class=\"header-pager\">\n\t\t\tPage {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}\n\t\t</div>\n\t{{/if}}\n\t{{#if view.grid.showMultiview}}\n\t\t{{view Tent.Grid.MultiviewButtons showCardViewBinding=\"view.grid.showCardView\" showListViewBinding=\"view.grid.showListView\"}}\n\t{{/if}}\n\n\t{{#if view.grid.showAutofitButton}}\n\t\t{{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n\t{{/if}}\n\n  \t{{#if view.grid.showExportButton}}\n  \t\t{{#if view.someExportsAreAllowed}}\n    \t\t{{view view.exportView}}\n    \t{{/if}}\n  \t{{/if}}\n\n  \t{{#if view.grid.showColumnChooser}}\n\t\t{{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n\t{{/if}}\n\n\t{{#if view.grid.collection}}\n\t\t{{#if view.grid.filtering}}\n\t\t\t<a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter pull-right\">\n\t\t\t\t<i class=\"icon-filter\"></i>{{loc tent.filter.filter}}\n\t\t\t</a>\n\t\t{{/if}}\n\t{{/if}}\t\n\n</div>\n\n");
+Ember.TEMPLATES['jqgrid_header']=Ember.Handlebars.compile("<div class=\"header-buttons left\">\n    {{#if view.grid.showExportButton}}\n        {{#if view.someExportsAreAllowed}}\n            {{view view.exportView}}\n        {{/if}}\n    {{/if}}\n</div>\n<div class=\"header-buttons middle\">\n    {{#if view.grid.scroll}}\n        <div class=\"header-pager\">\n            <p class=\"title\">{{loc tent.jqGrid.pagerViewing}}</p>\n            <p class=\"pager-details\">Page {{view.grid.pagingInfo.page}} of {{view.grid.pagingInfo.totalPages}}</p>\n        </div>\n    {{/if}}\n</div>\n<div class=\"header-buttons right\">\n    {{#if view.grid.showAutofitButton}}\n        {{view Tent.Grid.AutofitButton gridBinding=\"view.grid\"}}\n    {{/if}}\n    {{#if view.grid.showMultiview}}\n        {{view Tent.Grid.MultiviewButtons showCardViewBinding=\"view.grid.showCardView\" showListViewBinding=\"view.grid.showListView\"}}\n    {{/if}}\n    {{#if view.grid.showColumnChooser}}\n        {{view Tent.Grid.ColumnChooserButton gridBinding=\"view.grid\"}}  \n    {{/if}}\n    {{#if view.grid.collection}}\n        {{#if view.grid.filtering}}\n            <div class=\"button\">\n                <a {{action toggleFilter target=\"view.grid\"}} class=\"btn-filter\">\n                    {{loc tent.filter.filter}}\n                </a>\n            </div>\n        {{/if}}\n    {{/if}}  \n</div>\n\n");
 
-Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  <i class=\"icon-share\"></i>Export\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu-left\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal well\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
+Ember.TEMPLATES['jqgrid_export']=Ember.Handlebars.compile("<a class=\"\" data-toggle=\"dropdown\" href=\"#\">\n  Export<i class=\"icon-caret-down right-align\"></i>\n</a>\n<ul class=\"dropdown-menu\">\n  {{#if view.allowXlsExport}}\n    <li><a {{action exportData \"view.xls\" target=\"view\"}} href=\"#\" class=\"export-xls\">{{loc tent.jqGrid.export.xls}}</a></li>\n  {{/if}}\n  {{#if view.allowCsvExport}}\n    <li><a {{action exportData \"view.csv\" target=\"view\"}} href=\"#\" class=\"export-csv\">{{loc tent.jqGrid.export.csv}}</a></li>\n    <!-- <li><a class=\"export-xml\">#{Tent.I18n.loc(\"tent.jqGrid.export.xml\")}</a></li> -->\n    <li class=\"divider\"></li>\n    <li class=\"dropdown-submenu\">\n      <a href=\"#\">Delimiter</a>\n      <ul class=\"dropdown-menu custom-export\">\n        <li>\n          <form class=\"form-horizontal\" id=\"customExportForm\">\n            <div class=\"control-group\">\n              <label class=\"control-label\">Delimiter</label>\n              <div class=\"controls\">\n                  <select name=\"delimiter\" class=\"input-small\" id=\"delimiter\">\n                  <option value=\"\">{{loc tent.pleaseSelect}}</option>\n                  <option value=\",\" selected>{{loc tent.jqGrid.export.comma}}</option>\n                  <option value=\"|\">{{loc tent.jqGrid.export.pipe}}</option>\n                  <option value=\";\">{{loc tent.jqGrid.export.semicolon}}</option>\n                  <option value=\":\">{{loc tent.jqGrid.export.colon}}</option>\n                </select>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export._or}}</label>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.enterDelimiter}}</label>\n              <div class=\"controls\">\n                <input type=\"text\" name=\"customDelimiter\" id=\"customDelimiter\"  maxlength=\"1\" class=\"input-small\">\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.headers}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"columnHeaders\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <label class=\"control-label\">{{loc tent.jqGrid.export.inclQuotes}}</label>\n              <div class=\"controls\">\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"true\" checked>{{loc tent.on}}\n                </label>\n                <label class=\"radio inline\">\n                  <input type=\"radio\" name=\"includeQuotes\" value=\"false\">{{loc tent.off}}\n                </label>\n              </div>\n            </div>\n            <div class=\"control-group\">\n              <div class=\"controls\">\n                <button type=\"button\" class=\"btn\">{{loc tent.jqGrid.export.export}}</button>\n              </div>\n            </div>\n\n          </form>\n        </li>\n      </ul>\n    </li>\n    <li class=\"divider\"></li>\n  {{/if}}\n  {{#if view.allowJsonExport}}\n    <li><a {{action exportData \"view.json\" target=\"view\"}} href=\"#\" class=\"export-json\">{{loc tent.jqGrid.export.json}}</a></li>\n  {{/if}}\n</ul>\n");
 
 (function() {
 Tent.JqGridHeaderView = Ember.View.extend({
@@ -6612,7 +6643,7 @@ Tent.JqGridHeaderView = Ember.View.extend({
       return (this.get('grid.enabledExports') != null) && (((_ref = this.get('grid.enabledExports')) != null ? _ref.length : void 0) > 0);
     }).property(),
     exportView: Ember.View.extend({
-      classNames: ['btn-group', 'export', 'jqgrid-title-button'],
+      classNames: ['export button'],
       templateName: 'jqgrid_export',
       csv: 'csv',
       json: 'json',
@@ -6716,6 +6747,16 @@ Tent.JqGridHeaderView = Ember.View.extend({
             }
           }
         });
+        if (Tent.Browsers.isIE()) {
+          this.$('.custom-export').mouseleave(function(e) {
+            return $('body').focus();
+          });
+          this.$('.custom-export').bind('keyup', (function(e) {
+            if (e.keyCode === 27 || e.keyCode === 13) {
+              return $('body').focus();
+            }
+          }));
+        }
         return this.$('#customDelimiter').blur(function() {
           if ($('#customDelimiter').val().length > 0) {
             return $('#delimiter').val('');
@@ -7475,12 +7516,12 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button :jqgrid-title-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
+Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
 
 (function() {
 Tent.Grid.AutofitButton = Ember.View.extend({
-    classNames: ['tent-autofit-button'],
-    templateName: 'grid/autofit_button',
+    classNames: ['button'],
+    template: Ember.Handlebars.compile('<a {{bindAttr title="view.title"}} {{bindAttr class=":horizontal-scroll-button view.active:active"}}><i class="icon-resize-horizontal"></i></a>'),
     title: Tent.I18n.loc("tent.jqGrid.horizontalScroll"),
     grid: null,
     active: (function() {
@@ -7494,7 +7535,7 @@ Tent.Grid.AutofitButton = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div class=\"btn-group column-chooser\">\n\t<a class=\"open-dropdown\">\n\t\t<i class=\"icon-columns\"></i>{{loc tent.jqGrid.hideShowCaption}}\n\t</a>\n\t<div class=\"dropdown-menu columns pull-right\">\n\t\t<div class=\"window\"></div>\n\t\t<ul>\n\t\t\t{{#each view.model}}\n\t\t\t\t<li><label><input type=\"checkbox\" {{bindAttr data-column=\"name\"}} {{bindAttr checked=\"checked\"}}/><span class=\"title\">{{loc title}}</span></label></li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t</div>\n</div>");
+Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<a class=\"open-dropdown\">\n\t{{loc tent.jqGrid.hideShowCaption}}<i class=\"icon-caret-down\"></i>\n</a>\n<div class=\"dropdown-menu columns pull-right\">\n\t<div class=\"window\"></div>\n\t<ul>\n\t\t{{#each view.model}}\n\t\t\t<li><label><input type=\"checkbox\" {{bindAttr data-column=\"name\"}} {{bindAttr checked=\"checked\"}}/><span class=\"title\">{{loc title}}</span></label></li>\n\t\t{{/each}}\n\t</ul>\n</div>");
 
 
 /**
@@ -7566,7 +7607,7 @@ Ember.TEMPLATES['grid/column_chooser_button']=Ember.Handlebars.compile("<div cla
 
 (function() {
 Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
-    classNames: ['tent-column-chooser-button'],
+    classNames: ['button column-chooser'],
     templateName: 'grid/column_chooser_button',
     grid: null,
     model: (function() {
@@ -7585,8 +7626,8 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
     didInsertElement: function() {
       var grid;
       grid = this.get('grid');
-      this.bindToggleVisibility(this.$(".column-chooser .open-dropdown"), this.$(".column-chooser .dropdown-menu"));
-      return this.$('.column-chooser').on('click', 'input', function(e) {
+      this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
+      return this.$().on('click', 'input', function(e) {
         var column;
         column = $(this).attr('data-column');
         if ($(this).is(':checked')) {
@@ -7601,9 +7642,9 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t\t<a {{action applyFilter target=\"controller\"}} class=\"filter-button\">{{loc tent.filter.filter}}<i class=\"icon-caret-right\"></i></a>\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.usageContext\"}}\n\t\t\t\t{{/each}}\n\t\t\t</div>\n\t\t</div>\n</div>\n");
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t{{#view Tent.Form formStyle=\"vertical\"}}\n\t\t\t<div class=\"filterpanel\">\n\t\t\t\t<header>\n\t\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t\t{{view Tent.Button label=\"tent.filter.filterAction\" type=\"link\" action=\"applyFilter\" targetBinding=\"view.parentView\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.parentView.areAnyFieldsInvalid\" validate=true }}\n\t\t\t\t</header>\n\t\t\t\t<div class=\"content\">\n\t\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.parentView.usageContext\" }}\n\t\t\t\t\t{{/each}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t{{/view}}\n</div>\n");
 
-Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.parentController.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=\"false\" preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\"}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"controller\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected controller.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=false preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"controller.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{#if view.duplicateField}}\n \t\t\t\t<div class=\"errorss\">{{loc tent.filter.duplicate}}</div>\n \t\t\t{{else}}\n \t\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"controller.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t\t{{/if}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7622,7 +7663,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       return this.removeFilterField(event.context);
     },
     filterableColumns: (function() {
-      var filterableCols;
+      var filterableCols,
+        _this = this;
       filterableCols = this.get('collection.columnsDescriptor').filter(function(column) {
         return column.filterable !== false;
       });
@@ -7638,6 +7680,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     isPinned: false,
     showFilter: false,
     usageContext: null,
+    validations: Ember.A(),
     init: function() {
       this._super();
       return this.set('controller', Tent.FilterPanelController.create({
@@ -7649,8 +7692,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     }).observes('collection', 'collection.isLoaded'),
     willDestroyElement: function() {
       if (this.get('controller') != null) {
-        return this.get('controller').destroy();
+        this.get('controller').destroy();
       }
+      return this.get('validations').clear();
     },
     togglePin: function() {
       var _this = this;
@@ -7662,7 +7706,31 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     showFilterDidChange: (function() {
       this.set('isPinned', false);
       return $.publish("/window/resize");
-    }).observes('showFilter')
+    }).observes('showFilter'),
+    applyFilter: function() {
+      if (!this.get('isPinned')) {
+        this.set('showFilter', false);
+      }
+      return this.get('controller').applyFilter();
+    },
+    fieldValidationStateChanged: function(fieldId, isValid, operatorsIsValid) {
+      var allValid, field;
+      allValid = isValid && operatorsIsValid;
+      field = this.get('validations').findProperty('id', fieldId);
+      if (field != null) {
+        return field.set('value', allValid);
+      } else {
+        return this.get('validations').pushObject(Ember.Object.create({
+          id: fieldId,
+          value: allValid
+        }));
+      }
+    },
+    areAnyFieldsInvalid: (function() {
+      var invalids;
+      invalids = this.get('validations').findProperty('value', false);
+      return invalids != null;
+    }).property('validations.@each', 'validations.@each.value')
   });
 
   Tent.FilterFieldController = Ember.ObjectController.extend({
@@ -7689,11 +7757,13 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
   Tent.FilterFieldView = Ember.View.extend({
     templateName: 'filterpanel/filter_field_view',
     classNames: ['filter-field'],
-    classNameBindings: ['controller.locked'],
-    parentControllerBinding: 'parentView.controller',
-    collectionBinding: 'parentView.collection',
+    classNameBindings: ['controller.locked', 'duplicateField'],
+    parentControllerBinding: 'parentView.parentView.controller',
+    collectionBinding: 'parentView.parentView.collection',
     content: null,
     usageContext: null,
+    isValid: true,
+    operatorsIsValid: true,
     init: function() {
       this._super();
       this.set('controller', this.createController());
@@ -7709,9 +7779,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     },
     initializeSelection: function() {
       var columns, selectedColumn, selectedField;
-      selectedField = this.get('content.field');
+      selectedField = this.get('controller.content.field');
       if (selectedField != null) {
-        columns = this.get('parentController.filterableColumns');
+        columns = this.get('filterableColumns');
         selectedColumn = columns.filter(function(item) {
           return item.name === selectedField;
         });
@@ -7720,13 +7790,36 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
         }
       }
     },
+    filterableColumns: (function() {
+      var filterableCols;
+      filterableCols = this.get('parentController.filterableColumns');
+      return filterableCols;
+    }).property('parentController.filterableColumns'),
     willDestroyElement: function() {
+      this.set('isValid', true);
+      this.set('operatorsIsValid', true);
       if (this.get('controller') != null) {
         return this.get('controller').destroy();
       }
     },
     typeIsSelected: (function() {
       return this.get('content.field') != null;
+    }).property('content.field'),
+    duplicateField: (function() {
+      var matches,
+        _this = this;
+      if (this.get('content.field') != null) {
+        matches = this.get('collection.selectedFilter.values').filter(function(item) {
+          return item.field === _this.get('content.field');
+        });
+        if (matches.length > 1) {
+          setTimeout(function() {
+            return _this.set('content.field', null);
+          }, 2000);
+          return true;
+        }
+      }
+      return false;
     }).property('content.field'),
     showLockIcon: (function() {
       return this.get('controller.locked') || (this.get('usageContext') !== 'view' && (this.get('usageContext') != null));
@@ -7736,13 +7829,18 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     }).property('controller.locked', 'controller.lockIsEnabled'),
     showTrashIcon: (function() {
       return !(this.get('usageContext') === 'view' && this.get('controller.locked'));
-    }).property('usageContext')
+    }).property('usageContext'),
+    isValidDidChange: (function() {
+      return this.get('parentView.parentView').fieldValidationStateChanged(this.get('elementId'), this.get('isValid'), this.get('operatorsIsValid'));
+    }).observes('isValid', 'operatorsIsValid')
   });
 
   Tent.FilterFieldControlView = Ember.ContainerView.extend({
     content: null,
     column: null,
     isDisabled: false,
+    isValid: true,
+    operatorsIsValid: true,
     init: function() {
       this._super();
       return this.populateContainer();
@@ -7750,12 +7848,23 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     columnDidChange: (function() {
       return this.populateContainer();
     }).observes('column'),
+    willDestroyElement: function() {
+      if (!this.isDestroyed) {
+        return this.resetFieldView();
+      }
+    },
     resetFieldView: function() {
+      var _this = this;
       if (this.get('fieldView') != null) {
-        this.get('childViews').removeObject(this.get('fieldView'));
-        this.set('fieldView', null);
-        this.set('parentView.content.op', null);
-        return this.set('parentView.content.data', null);
+        return Ember.run(function() {
+          if (!_this.get('fieldView').isDestroyed) {
+            _this.get('fieldView').flushValidationErrors();
+            _this.get('fieldView').destroy();
+          }
+          _this.set('parentView.content.op', "");
+          _this.set('parentView.content.data', "");
+          return _this.set('isValid', true);
+        });
       }
     },
     populateContainer: function() {
@@ -7775,7 +7884,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 filterOpBinding: "parentView.content.op",
                 field: this.get('column.name'),
                 classNames: ["no-label"],
-                disabledBinding: "parentView.isDisabled"
+                disabledBinding: "parentView.isDisabled",
+                isValidBinding: "parentView.isValid",
+                operatorsIsValidBinding: 'parentView.operatorsIsValid',
+                required: true
               });
             }
             if (this.get('column.editoptions.collection')) {
@@ -7790,7 +7902,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 filterOpBinding: "parentView.content.op",
                 field: this.get('column.name'),
                 classNames: ["no-label"],
-                disabledBinding: "parentView.isDisabled"
+                disabledBinding: "parentView.isDisabled",
+                isValidBinding: "parentView.isValid",
+                operatorsIsValidBinding: 'parentView.operatorsIsValid',
+                required: true
               });
             }
           } else {
@@ -7801,7 +7916,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
               filterOpBinding: "parentView.content.op",
               field: this.get('column.name'),
               classNames: ["no-label"],
-              disabledBinding: "parentView.isDisabled"
+              disabledBinding: "parentView.isDisabled",
+              isValidBinding: "parentView.isValid",
+              operatorsIsValidBinding: 'parentView.operatorsIsValid',
+              required: true
             });
           }
           break;
@@ -7816,7 +7934,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             arrows: true,
             dateFormat: "yy-mm-dd",
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid",
+            operatorsIsValidBinding: 'parentView.operatorsIsValid',
+            required: true
           });
           break;
         case "number":
@@ -7829,7 +7950,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             filterOpBinding: "parentView.content.op",
             field: this.get('column.name'),
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid",
+            operatorsIsValidBinding: 'parentView.operatorsIsValid',
+            required: true
           });
           break;
         case "boolean":
@@ -7840,7 +7964,10 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             filterOpBinding: "parentView.content.op",
             field: this.get('column.name'),
             classNames: ["no-label"],
-            disabledBinding: "parentView.isDisabled"
+            disabledBinding: "parentView.isDisabled",
+            isValidBinding: "parentView.isValid",
+            operatorsIsValidBinding: 'parentView.operatorsIsValid',
+            required: true
           });
       }
       if (fieldView != null) {
@@ -7853,12 +7980,12 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"btn active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"btn\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
+Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
 
 (function() {
 Tent.Grid.MultiviewButtons = Ember.View.extend({
     templateName: 'grid/multiview_buttons',
-    classNames: ['jqgrid-title-button'],
+    classNames: ['button'],
     showCardView: false,
     showListView: true,
     didInsertElement: function() {
@@ -8781,7 +8908,7 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select listBinding=\"view.operators\" class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{#if view.listIsLoaded}}\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 classNameBindings=\"view.inputSizeClass\" \n                 class=\"primary-class\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 multipleBinding=\"view.multiple\"\n                 promptBinding = \"view._prompt\"\n                 advancedBinding=\"view.advanced\" \n                 valueBinding = \"view.value\"}} \n        {{/if}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        isValidBinding=\"view.operatorsIsValid\"\n        required=true\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{#if view.listIsLoaded}}\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 classNameBindings=\"view.inputSizeClass\" \n                 class=\"primary-class\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 multipleBinding=\"view.multiple\"\n                 promptBinding = \"view._prompt\"\n                 advancedBinding=\"view.advanced\" \n                 valueBinding = \"view.value\"}} \n        {{/if}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
 
@@ -8808,6 +8935,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
     templateName: 'select',
     classNames: ['tent-select', 'control-group'],
     contentBinding: 'selection',
+    operatorsIsValid: true,
     value: null,
     /**
     * @property {Array} list An array of objects to be presented as the dropdown options. Each item of
@@ -8878,7 +9006,7 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
     },
     didInsertElement: function() {
       this._super(arguments);
-      this.set('inputIdentifier', this.$('select').attr('id'));
+      this.set('inputIdentifier', this.$('> .controls > .input-prepend > select').attr('id'));
       this.setupAdvancedMode();
       if (Tent.Browsers.isIE()) {
         this.$('.ember-select').bind('focus mouseover', function() {
@@ -8980,9 +9108,13 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         }
       }
     }).property('prompt', 'showPrompt'),
-    change: function() {
+    change: function(e) {
       this._super(arguments);
-      return this.set('isValid', this.validate());
+      this.set('isValid', this.validate());
+      return e.stopPropagation();
+    },
+    focusOut: function(e) {
+      return e.stopPropagation();
     },
     showSpinner: (function() {
       if (this.get('isLoaded') != null) {
@@ -9000,7 +9132,16 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           dropdownAutoWidth: true
         });
       }
-    }
+    },
+    operators: [
+      Ember.Object.create({
+        label: "tent.filter.equal",
+        operator: Tent.Constants.get('OPERATOR_EQUALS')
+      }), Ember.Object.create({
+        label: "tent.filter.nEqual",
+        operator: Tent.Constants.get('OPERATOR_NOT_EQUALS')
+      })
+    ]
   });
 
   Tent.SelectElement = Ember.Select.extend(Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport, {
@@ -9012,7 +9153,16 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         <option value>{{view.prompt}}</option>\
       {{/if}}\
     {{/if}}\
-    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}')
+\
+    {{#each option in view.content}}\
+      {{#with option}}\
+        {{#if isDisabled}}\
+          {{view Tent.DisabledSelectOption contentBinding="this"}}\
+        {{else}}\
+          {{view Tent.SelectOption contentBinding="this"}}\
+        {{/if}}\
+      {{/with}}\
+    {{/each}}')
   });
 
   Tent.SelectOption = Ember.SelectOption.extend({
@@ -9028,6 +9178,14 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         }
       }).property(labelPath).cacheable());
     }, 'parentView.optionLabelPath')
+  });
+
+  Tent.DisabledSelectOption = Ember.View.extend({
+    tagName: 'optgroup',
+    attributeBindings: ['label'],
+    label: (function() {
+      return Tent.I18n.loc(this.get(this.get('parentView.optionLabelPath')));
+    }).property('')
   });
 
 }).call(this);
@@ -9475,14 +9633,29 @@ Tent.ModalPane = Ember.View.extend({
         primaryPanel.setActive(true);
       }
       if (panel != null) {
-        return panel.setActive(false);
+        panel.setActive(false);
       }
+      return this.clearValidationsOnHide();
     },
     getPrimaryMessagePanelView: function() {
       return Ember.View.views[$('.tent-message-panel.primary').attr('id')];
     },
     getMessagePanelView: function() {
       return Ember.View.views[this.$('.tent-message-panel:first').attr('id')];
+    },
+    clearValidationsOnHide: function(element) {
+      var _this = this;
+      if (element == null) {
+        element = this;
+      }
+      element.forEachChildView(function(childView) {
+        if (childView.get('childViews.length') !== 0) {
+          return _this.clearValidationsOnHide(childView);
+        }
+      });
+      if (element.get('hasErrors') && (element.flushValidationErrors != null)) {
+        return element.flushValidationErrors();
+      }
     },
     triggerCancelAction: function(e) {
       var buttonView, id, modal, selectedCancel;
@@ -9823,14 +9996,14 @@ Tent.Button = Ember.View.extend(Ember.TargetActionSupport, {
     },
     validateChildViews: function(parentView) {
       var view, _i, _len, _ref, _results;
-      _ref = parentView.get('childViews');
+      _ref = parentView.get('_childViews');
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         view = _ref[_i];
         if (typeof view.validate === 'function') {
           view.validate();
         }
-        if (view.get('childViews') != null) {
+        if (view.get('_childViews') != null) {
           _results.push(this.validateChildViews(view));
         } else {
           _results.push(void 0);
@@ -10291,7 +10464,6 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     uiType: 'datepicker',
     uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'],
     classNames: ['tent-date-field'],
-    datePickerClicked: false,
     placeholder: (function() {
       return this.get('options').dateFormat;
     }).property('options.dateFormat'),
@@ -10308,9 +10480,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     optionDidChange: (function() {
       if (this.get('disabled') || this.get('isReadOnly') || this.get('readOnly')) {
-        return this.$('input').datepicker('disable');
+        return this.$().datepicker('disable');
       } else {
-        return this.$('input').datepicker('enable');
+        return this.$().datepicker('enable');
       }
     }).observes('disabled', 'readOnly', 'isReadOnly'),
     init: function() {
@@ -10352,7 +10524,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     focusOut: function() {
       var field, today;
-      field = this.$('input').val();
+      field = this.$().val();
       today = this.format(new Date());
       if (!field || field === '') {
         this.$('input').val(today);
@@ -10490,7 +10662,9 @@ Tent.DateRangeField = Tent.TextField.extend({
       return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
     },
     willDestroyElement: function() {
-      this.$('input').remove();
+      if (!this.isDestroyed) {
+        this.$('input').remove();
+      }
       return $('#ui-datepicker-div').remove();
     },
     /**
@@ -10532,9 +10706,19 @@ Tent.DateRangeField = Tent.TextField.extend({
       this.set('isValid', this.validate());
       if (this.get('isValid')) {
         unformatted = this.unFormat(this.get('formattedValue'));
-        this.set('value', unformatted);
-        return this.set('formattedValue', this.format(unformatted));
+        this.set('formattedValue', this.format(unformatted));
+        return this.set('value', this.convertSingleDateToDateRange(unformatted));
       }
+    },
+    focusOut: function() {},
+    convertSingleDateToDateRange: function(date) {
+      var dateArr;
+      dateArr = date.split(',');
+      if (dateArr.length === 1) {
+        dateArr.push(dateArr[0]);
+        date = dateArr.join(',');
+      }
+      return date;
     },
     validate: function() {
       var endDate, endString, isValid, isValidEndDate, isValidStartDate, startDate, startString;
@@ -11037,7 +11221,7 @@ Tent.FileUpload = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}}\n<section class=\"alert-error clearfix\">\n\t<h5>Errors</h5>\n\t{{#if view.collapsible}}\n\t\t<div {{bindAttr class=\"view.expandoClass\"}}>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t<a href=\"#\" class=\"dropdown-toggle pull-right close\" data-toggle=\"collapse\" data-target=\".error-expando\">\n\t\t\t\t\t<b class=\"caret\"></b></a>\n\t\t\t{{/if}}\n\t\t</div>\n\t\t\n\t{{else}}\n\t\t<div>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t</div>\n\t{{/if}}\n</section>\n{{/if}}\n\n{{#if view.hasInfos}}\n<section class=\"alert-info clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearInfos\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Info</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.info}}\n\t\t\t<div class=\"info-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasSuccesses}}\n<section class=\"alert-success clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearSuccesses\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Success</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.success}}\n\t\t\t<div class=\"success-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t<section class=\"alert clearfix\" {{bindAttr data-target=\"this.sourceId\"}} data-type=\"warning\">\n\t\t\t{{view Tent.Button label=\"x\" type=\"link\" action=\"removeMessageCommand\" targetBinding=\"view\" class=\"close\"}}\n\t\t\t<h5>Warning</h5>\n\t\t\t\t<div>\n\t\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t\t  \t\t\t\t<label>{{loc this.label}}:</label> {{this.messages}}\n\t\t  \t\t\t</div> \n\t\t\t \t</div>\n\t\t</section>\n\t{{/each}}\n{{/if}}\n\n");
+Ember.TEMPLATES['message_panel']=Ember.Handlebars.compile("{{#if view.hasErrors}}\n<section class=\"alert-error clearfix\">\n\t<h5>Errors</h5>\n\t{{#if view.collapsible}}\n\t\t<div {{bindAttr class=\"view.expandoClass\"}}>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t  \t{{#if view.hasMoreThanOneError}}\n\t\t\t\t<a class=\"dropdown-toggle pull-right close collapsed\" data-toggle=\"collapse\" data-target=\".error-expando\">\n\t\t\t\t\t<b class=\"caret\"></b>\n\t\t\t\t</a>\n\t\t\t{{/if}}\n\t\t</div>\n\t\t\n\t{{else}}\n\t\t<div>\n\t\t\t{{#each view.error}}\n\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t  \t\t\t\t{{#if this.label}}<label>{{loc this.label}}: </label>{{/if}}<ul>{{#each this.messages}}<li>{{this}}</li>{{/each}}</ul>\n\t  \t\t\t</div> \n\t\t  \t{{/each}}\n\t\t</div>\n\t{{/if}}\n</section>\n{{/if}}\n\n{{#if view.hasInfos}}\n<section class=\"alert-info clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearInfos\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Info</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.info}}\n\t\t\t<div class=\"info-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasSuccesses}}\n<section class=\"alert-success clearfix\">\n\t{{view Tent.Button label=\"x\" type=\"link\" action=\"clearSuccesses\" targetBinding=\"view\" class=\"close\"}}\n\t<h5>Success</h5>\n\t<div class=\"info-expando\">\n\t\t{{#each view.success}}\n\t\t\t<div class=\"success-message\" {{bindAttr data-target=\"this.sourceId\"}}>{{this.messages}}</div> \n\t  \t{{/each}}\n\t</div>\n</section>\n{{/if}}\n\n{{#if view.hasWarnings}}\n\t{{#each view.warning}}\n\t\t<section class=\"alert clearfix\" {{bindAttr data-target=\"this.sourceId\"}} data-type=\"warning\">\n\t\t\t{{view Tent.Button label=\"x\" type=\"link\" action=\"removeMessageCommand\" targetBinding=\"view\" class=\"close\"}}\n\t\t\t<h5>Warning</h5>\n\t\t\t\t<div>\n\t\t\t\t\t<div class=\"error-message\" {{bindAttr data-target=\"this.sourceId\"}}>\n\t\t  \t\t\t\t<label>{{loc this.label}}:</label> {{this.messages}}\n\t\t  \t\t\t</div> \n\t\t\t \t</div>\n\t\t</section>\n\t{{/each}}\n{{/if}}\n\n");
 
 (function() {
 /**
@@ -12881,7 +13065,9 @@ GridController
     },
     removeFilterFieldValue: function(value) {
       this.ensureFilterAvailable();
-      return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
+      if (this.get('selectedFilter.values').indexOf(value) > -1) {
+        return this.get('selectedFilter.values').removeAt(this.get('selectedFilter.values').indexOf(value), 1);
+      }
     },
     getFilterValueForColumn: function(columnName) {
       return this.get('selectedFilter.values').filter(function(value) {
@@ -13134,7 +13320,7 @@ grouping: {
       var newRecord, reportName, settings;
       reportName = report.get('name');
       settings = $.extend(true, {}, report.get('settings'), this.gatherGridData(reportName));
-      return newRecord = this.get('store').savePersonalization('report', this.get('dataType'), reportName, settings);
+      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings);
     },
     removeExistingCustomization: function(name) {
       var index, p, _i, _len, _ref;

@@ -19,7 +19,7 @@ test 'Test hscrolling attribute', ->
 	
 	appendView()
 
-	autoFit = Ember.View.views[view.$('.tent-autofit-button').attr('id')]
+	autoFit = Ember.View.views[view.$('.button').attr('id')]
 
 	button = view.$('.horizontal-scroll-button')
 	equal button.length, 1, 'Anchor should be displayed'
@@ -38,4 +38,3 @@ test 'Test hscrolling attribute', ->
 
 	equal grid.get('horizontalScrolling'), true, 'scrolling is now true'
 	equal button.hasClass('active'), false, 'de-activated'
-	

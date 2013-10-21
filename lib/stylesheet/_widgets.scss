@@ -172,6 +172,7 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
   }
   .tab-pane {
     position: relative;
+    overflow: hidden;
   }
 }
 

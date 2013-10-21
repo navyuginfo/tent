@@ -12,7 +12,7 @@ Tent.JqGridHeaderView = Ember.View.extend
   ).property()
 
   exportView: Ember.View.extend
-    classNames: ['btn-group', 'export', 'jqgrid-title-button']
+    classNames: ['export button']
     templateName: 'jqgrid_export'
     csv: 'csv'
     json: 'json'

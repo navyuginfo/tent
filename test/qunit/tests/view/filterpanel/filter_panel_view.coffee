@@ -28,6 +28,8 @@ setup = ->
 			@get('filteringInfo.availableFilters')[0]
 		).property('filteringInfo.availableFilters')
 
+		doFilter: ->
+
 		columnsDescriptor: 
 			[
 				{id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},
@@ -70,8 +72,35 @@ test 'selectedColumn binding', ->
 	controller = Tent.FilterPanelController.create
 		collection: filteringCollection
 	ok true
- 
-	
+
+test 'apply filter', ->
+
+	sinon.spy(filteringCollection, 'doFilter')
+	view = Tent.FilterPanelView.create
+		collection: filteringCollection
+	view.init()
+	view.set('showFilter', true)
+	view.set('isPinned', false)
+	view.applyFilter()
+	ok not view.get('showFilter'), 'Filter should be hidden'
+	ok filteringCollection.doFilter.calledOnce, 'Called doFilter'
+
+test 'Filter button should disable when fields are invalid', ->
+	view = Tent.FilterPanelView.create
+		collection: filteringCollection
+	view.init()
+
+	ok not view.get('areAnyFieldsInvalid'), 'Should be valid to start'
+	view.fieldValidationStateChanged('field1', false)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field'
+	view.fieldValidationStateChanged('field2', false)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field 2'
+	view.fieldValidationStateChanged('field1', true)
+	ok view.get('areAnyFieldsInvalid'), 'Should be an invalid field 1'
+	view.fieldValidationStateChanged('field2', true)
+	ok not view.get('areAnyFieldsInvalid'), 'Should be all valid again'
+
+
 ###
 
 test 'get stored filter values', ->

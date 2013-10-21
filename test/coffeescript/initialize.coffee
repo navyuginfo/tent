@@ -274,7 +274,7 @@
 	]
 
 	Pad.colorContent = [
-		Ember.Object.create({colorName: "Red", colorCode: "rd"}),
+		Ember.Object.create({colorName: "Red", colorCode: "rd", isDisabled: true}),
 		Ember.Object.create({colorName: "Green", colorCode: "gr"}),
 		Ember.Object.create({colorName: "Blue", colorCode: "bl"})
 		Ember.Object.create({colorName: "Brown", colorCode: "br"})

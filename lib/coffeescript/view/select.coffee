@@ -19,7 +19,7 @@
           }}
 ###
 
-require '../template/select'
+require '../template/select' 
 require '../template/radio_group'
 require '../mixin/filtering_support'
 require '../mixin/tooltip_support'
@@ -30,6 +30,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
   templateName: 'select'
   classNames: ['tent-select', 'control-group']
   contentBinding: 'selection'
+  operatorsIsValid: true
   value: null
 
   ###*
@@ -101,7 +102,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
   
   didInsertElement: ->
     @_super(arguments)
-    @set('inputIdentifier', @$('select').attr('id'))
+    @set('inputIdentifier', @$('> .controls > .input-prepend > select').attr('id'))
 
     @setupAdvancedMode()
     
@@ -187,9 +188,15 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
       if prompt = Tent.I18n.loc(@get('prompt')) then prompt else Tent.I18n.loc 'tent.pleaseSelect'
   ).property('prompt','showPrompt')
   
-  change: ->
-      @_super(arguments)
-      @set('isValid', @validate())
+  change: (e)->
+    @_super(arguments)
+    @set('isValid', @validate())
+    # Don't validate parent control on focusOut
+    e.stopPropagation()
+
+  focusOut: (e)->  
+    # If this is an operator, dont validate parent control on focusOut
+    e.stopPropagation()
 
   showSpinner: (->
     if @get('isLoaded')?
@@ -206,6 +213,11 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
         dropdownAutoWidth: true
       })
 
+  operators: [
+    Ember.Object.create({label: "tent.filter.equal", operator: Tent.Constants.get('OPERATOR_EQUALS')}),
+    Ember.Object.create({label: "tent.filter.nEqual", operator: Tent.Constants.get('OPERATOR_NOT_EQUALS')})
+  ]
+
 Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Tent.DisabledSupport,
   defaultTemplate: Ember.Handlebars.compile('
     {{#if view.prompt}}
@@ -215,7 +227,16 @@ Tent.SelectElement = Ember.Select.extend Tent.AriaSupport, Tent.Html5Support, Te
         <option value>{{view.prompt}}</option>
       {{/if}}
     {{/if}}
-    {{#each view.content}}{{view Tent.SelectOption contentBinding="this"}}{{/each}}'
+
+    {{#each option in view.content}}
+      {{#with option}}
+        {{#if isDisabled}}
+          {{view Tent.DisabledSelectOption contentBinding="this"}}
+        {{else}}
+          {{view Tent.SelectOption contentBinding="this"}}
+        {{/if}}
+      {{/with}}
+    {{/each}}'
   )
 
 Tent.SelectOption = Ember.SelectOption.extend
@@ -228,5 +249,10 @@ Tent.SelectOption = Ember.SelectOption.extend
     ).property(labelPath).cacheable())
   , 'parentView.optionLabelPath')
 
+Tent.DisabledSelectOption = Ember.View.extend
+  tagName: 'optgroup'
+  attributeBindings: ['label']
 
-
+  label: (->
+    Tent.I18n.loc(@get(@get('parentView.optionLabelPath')))
+  ).property('')
