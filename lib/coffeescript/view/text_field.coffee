@@ -29,42 +29,42 @@ require '../mixin/html5_support'
 require '../template/text_field'
 
 Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Tent.TooltipSupport, Tent.FilteringSupport,
-  templateName: 'text_field'
-  classNames: ['tent-text-field', 'control-group']
-  operatorsIsValid: true
+    templateName: 'text_field'
+    classNames: ['tent-text-field', 'control-group']
+    operatorsIsValid: true
 
 
-  ###*
-  * @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
-  ###
-  controlClass: ''
+    ###*
+    * @property {String} controlClass Additional classes to be added to the input field (not added to the wrapping elements)
+    ###
+    controlClass: ''
 
-  ###*
-  * @property {String} type The type of the input element ('text', 'password' etc)
-  ###
-  type: 'text'
+    ###*
+    * @property {String} type The type of the input element ('text', 'password' etc)
+    ###
+    type: 'text'
 
-  didInsertElement: ->
-    @_super(arguments)
-    @set('inputIdentifier', @$('input').attr('id'))
+    didInsertElement: ->
+        @_super(arguments)
+        @set('inputIdentifier', @$('input').attr('id'))
 
-  valueForMandatoryValidation: (->
-    @get('formattedValue')
-  ).property('formattedValue')
-    
-  trimmedValue: (->
-      @trimValue(@get('value'))
-  ).property('value')
+    valueForMandatoryValidation: (->
+        @get('formattedValue')
+    ).property('formattedValue')
 
-  # Validation of fields happens on focusout regardless if the field has changed 
-  # This is so fields aren't missed when completing a form
-  focusOut: ->  
-    fieldValue = $('#' + @get('inputIdentifier')).val()
-    if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
+    trimmedValue: (->
+        @trimValue(@get('value'))
+    ).property('value')
+
+    # Validation of fields happens on focusout regardless if the field has changed 
+    # This is so fields aren't missed when completing a form
+    focusOut: ->  
+        fieldValue = $('#' + @get('inputIdentifier')).val()
+        if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
+            @validateField()
+
+    # Validate on change
+    change: ->
         @validateField()
- 
-  # Validate on change
-  change: ->
-    @validateField()
 
 Tent.TextFieldInput = Ember.TextField.extend Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport

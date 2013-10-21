@@ -3611,6 +3611,7 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
       if (fieldValue === '' || fieldValue === this.get('translatedPlaceholder')) {
+        console.log(this.get('translatedPlaceholder'), fieldValue);
         return this.validateField();
       }
     },
