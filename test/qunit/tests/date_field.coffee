@@ -10,12 +10,12 @@ module 'Tent.DateField', setup, teardown
 test 'Test format and unFormat', ->
   view = Tent.DateField.create()
   equal view.get('options').dateFormat, 'mm/dd/yy', 'Date format option was set'
-  equal view.format(new Date()), '01/01/1970', 'Format a date'
-  deepEqual view.unFormat('01/01/1970'), new Date(), 'UnFormat a date'
+  equal view.format(new Date('01/01/1970')), '01/01/1970', 'Format a date'
+  deepEqual view.unFormat('01/01/1970'), new Date('01/01/1970'), 'UnFormat a date'
   
   view.set('dateFormat','yy/dd/mm')
-  equal view.format(new Date()), '1970/01/01', 'Format a date, force the format'
-  deepEqual view.unFormat('1970/01/01'), new Date(), 'UnFormat a date, force the format'
+  equal view.format(new Date('01/01/1970')), '1970/01/01', 'Format a date, force the format'
+  deepEqual view.unFormat('1970/01/01'), new Date('01/01/1970'), 'UnFormat a date, force the format'
 
 
 test 'Test Validate', ->

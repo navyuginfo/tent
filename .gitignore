@@ -71,3 +71,5 @@ coverage
 # tags
 tags
 gems.tags
+
+dist/javascript/*
