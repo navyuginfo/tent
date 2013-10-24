@@ -124,7 +124,6 @@ Tent.DateRangeField = Tent.TextField.extend
 	willDestroyElement: ->
 		if not this.isDestroyed
 			@$('input').remove()
-		$('#ui-datepicker-div').remove()
 
 	###*
 	* @method getValue Return the current value of the input field

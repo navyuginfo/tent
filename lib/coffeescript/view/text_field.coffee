@@ -60,7 +60,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
   # This is so fields aren't missed when completing a form
   focusOut: ->  
     fieldValue = $('#' + @get('inputIdentifier')).val()
-    if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
+    if fieldValue == ''
         @validateField()
  
   # Validate on change

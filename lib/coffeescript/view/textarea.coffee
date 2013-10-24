@@ -29,9 +29,6 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 		@set('inputIdentifier', @$('textarea').attr('id'))
 
 	focusOut: ->
-		fieldValue = $('#' + @get('inputIdentifier')).val()
-		if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
-		    @validateField()
 
 	change: ->  
 		@validateField()

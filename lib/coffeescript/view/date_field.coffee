@@ -30,6 +30,14 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@get('formattedValue')
 	).property('formattedValue')
 
+	tooltipT: (->
+		toolTip = Tent.I18n.loc(@get('tooltip'))
+		if Tent.Browsers.isIE()
+			toolTip + ' - ' + @get('placeholder')
+		else
+			toolTip
+	).property('tooltip', 'placeholder')
+
 	defaultOptions: 
 		dateFormat: Tent.Formatting.date.getFormat()
 		changeMonth: true
