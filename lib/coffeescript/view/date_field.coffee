@@ -30,6 +30,14 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@get('formattedValue')
 	).property('formattedValue')
 
+	tooltipT: (->
+		toolTip = Tent.I18n.loc(@get('tooltip'))
+		if Tent.Browsers.isIE()
+			toolTip + ' - ' + @get('placeholder')
+		else
+			toolTip
+	).property('tooltip', 'placeholder')
+
 	defaultOptions: 
 		dateFormat: Tent.Formatting.date.getFormat()
 		changeMonth: true
@@ -78,6 +86,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		catch error
 			return null
 
+	# Focusing out of a date field will auto-fill the current date to avoid multiple validation errors
 	focusOut: ->
 		field = @$().val()
 		today = @format(new Date())

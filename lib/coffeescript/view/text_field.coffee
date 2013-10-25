@@ -56,11 +56,11 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
       @trimValue(@get('value'))
   ).property('value')
 
-  # Validation of fields happens on focusout regardless if the field has changed 
-  # This is so fields aren't missed when completing a form
+  # Validation of fields happens on focusout to ensure fields aren't missed when completing a form
+  # Only validate if it is empty, otherwise validation will occur on change.
   focusOut: ->  
     fieldValue = $('#' + @get('inputIdentifier')).val()
-    if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
+    if fieldValue == ''
         @validateField()
  
   # Validate on change
