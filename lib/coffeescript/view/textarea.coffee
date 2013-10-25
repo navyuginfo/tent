@@ -28,6 +28,7 @@ Tent.Textarea = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Ten
 		@_super()
 		@set('inputIdentifier', @$('textarea').attr('id'))
 
+	# Text areas don't have line specific validations. Therefore we only validate when saving the form.
 	focusOut: ->
 
 	change: ->  
