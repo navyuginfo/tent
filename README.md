@@ -23,6 +23,7 @@ Unit tests may be run at: http://localhost:9292/qunit.html
 * /lib: code and assets for tent
 * /test: scaffold for testpad.html test page, and unit tests
 * /vendor: dependencies for tent
+* /bower: dependencies for tent
 
 ## Running Tests
 
