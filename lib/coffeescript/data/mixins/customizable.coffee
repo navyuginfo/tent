@@ -110,10 +110,11 @@ Tent.Data.Customizable = Ember.Mixin.create
   addReportToCollection: (report) ->
     @get('personalizations').pushObject(report) 
 
-  saveReport: (report)->
+  saveReport: (report, callback)->
     reportName = report.get('name')
     settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
-    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings)
+    # 'callback' accepts the createdRecord as a parameter, and any lifecycle listeners should be defined in the callback.
+    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback)
     
   removeExistingCustomization: (name)->
     for p, index in @get('personalizations')
