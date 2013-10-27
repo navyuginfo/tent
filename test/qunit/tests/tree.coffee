@@ -7,7 +7,7 @@ view = null
 tree = null
 appendView = -> (Ember.run -> view.appendTo('#qunit-fixture'))
 
-initializeTree = ->
+getContent = ->
   node1 = {
     title: 'Node 1',
     folder: true,
@@ -28,7 +28,10 @@ initializeTree = ->
   }
   node3 = {title: 'Just a node', value: {name: 'Tent'}}
   Application.set "content", [node1, node2, node3]
-  Application.stateSelection = Ember.A()
+
+initializeTree = (selection = Ember.A()) ->
+  getContent()
+  Application.stateSelection = selection
 
   view = Ember.View.create({
     app: Application
@@ -111,6 +114,16 @@ test 'Tent.Tree selections', ->
   equal Application.stateSelection.length, 2, 'New length after deselection is 2'
   deepEqual Application.stateSelection[0], [1,2,3], 'Selection now has array as first element'
   deepEqual Application.stateSelection[1], {name: 'Tent'}, 'Selection now has the hash object as second/last element'
+
+test 'Tent.Tree initial selection', ->
+  initializeTree([{title: 'Just a node', value: {name: 'Tent'}}])
+  equal tree.get('selection').length, 1, 'Initially one selection'
+
+  selected = false
+  tree.getTree().visit (node) -> 
+    dump ("\n node value = " + node.data.value)
+    selected = true if node.isSelected and node.data.value?.name == 'Tent'
+  ok selected
 
 test 'Tent.Tree add children', ->
   initializeTree()
