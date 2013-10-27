@@ -11635,6 +11635,7 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
       guid = Ember.guidFor(this);
       return Ember.Handlebars.compile("<div id=\"" + guid + "-tree\" {{bindAttr class=\"view.radio:fancytree-radio\"}}></div>");
     }).property(),
+    classNames: ['tent-tree'],
     /**
     * @property {Boolean} [aria=false] A boolean property which enables/disables WAI-ARIA support.
     */
@@ -11856,8 +11857,19 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
       this.getTreeDom().fancytree(options);
       if (!this.get('hasArrayObservers')) {
         this.addArrayObservers(this.get('content'));
-        return this.set('hasArrayObservers', true);
+        this.set('hasArrayObservers', true);
       }
+      return this.highlightSelectedNodes();
+    },
+    highlightSelectedNodes: function() {
+      var item, _i, _len, _ref, _results;
+      _ref = this.get('selection');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        item = _ref[_i];
+        _results.push(this.selectNode(item));
+      }
+      return _results;
     },
     getTreeEvents: function() {
       var event, options, treeEvents, _i, _len,
@@ -11957,6 +11969,13 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
     selectAll: (function() {
       return this.getTree().visit(function(node) {
         return node.setSelected(true);
+      });
+    }),
+    selectNode: (function(val) {
+      return this.getTree().visit(function(node) {
+        if (node.data.value === val) {
+          return node.setSelected(true);
+        }
       });
     }),
     deselectAll: (function() {
@@ -13309,11 +13328,11 @@ grouping: {
     addReportToCollection: function(report) {
       return this.get('personalizations').pushObject(report);
     },
-    saveReport: function(report) {
+    saveReport: function(report, callback) {
       var newRecord, reportName, settings;
       reportName = report.get('name');
       settings = $.extend(true, {}, report.get('settings'), this.gatherGridData(reportName));
-      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings);
+      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback);
     },
     removeExistingCustomization: function(name) {
       var index, p, _i, _len, _ref;
