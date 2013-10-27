@@ -121,7 +121,6 @@ test 'Tent.Tree initial selection', ->
 
   selected = false
   tree.getTree().visit (node) -> 
-    dump ("\n node value = " + node.data.value)
     selected = true if node.isSelected and node.data.value?.name == 'Tent'
   ok selected
 
