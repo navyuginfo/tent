@@ -41,17 +41,13 @@ Tent.CollectionPanelView = Ember.View.extend
     console.log 'selection changed'
   ).observes('selection','selection.@each')
 
-  isVisibleDidChange: (->
-    console.log('changed visibility')
-  ).observes('isVisible')
-
 
 Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
   item: null
   contentViewType: null
   collection: null
   selectable: false
-  selection: Ember.A()
+   
   childViews: ['contentView']
   contentView: (->
     if @get('contentViewType')?
@@ -60,8 +56,11 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
         collection: @get('collection')
         selectable: @get('selectable')
         selection: @get('selection')
-
   ).property('item')
+
+  selectionDidChange: (->
+    @set('contentView.selection', @get('selection'))
+  ).observes('selection','selection.@each')
 
   selectedDidChange: (isSelected)->
     if isSelected
@@ -73,10 +72,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
     @get('selection').pushObject(@get('item')) if not @get('selection').contains(@get('item'))
     
   removeFromSelection: ->
-    myItem = @get('item')
-    @set('selection', @get('selection').filter((item)->
-      item != myItem
-    ))
+    @get('selection').removeObject(@get('item'))
 
 
 ###*
@@ -96,7 +92,7 @@ Tent.CollectionPanelContentView = Ember.View.extend
 
   selected: (->
     @get('selection')?.contains(@get('content'))
-  ).property('selection.@each')
+  ).property('selection', 'selection.@each')
 
   ###*
   * @method getLabelForField Returns a translated label for the given field name of a collections columns
@@ -120,10 +116,11 @@ Tent.CollectionPanelContentView = Ember.View.extend
     else
       value
 
-  #selectedDidChange: (->
-    #@set('selected', @get('selected'))
-  # @get('parentView').selectedDidChange(@get('selected'))
-  #).observes('selected')
+  click: (e)->
+    if $(e.target).is('.item-selector')
+      checked = $(e.target).is(':checked')
+      @get('parentView').selectedDidChange(checked)
+
 
 
 
