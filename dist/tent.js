@@ -4643,9 +4643,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.removeItemFromSelection(itemId);
     },
     removeItemFromSelection: function(id) {
-      return this.set('selection', this.get('selection').filter(function(item, index) {
-        return item.get('id') !== parseInt(id);
-      }));
+      return this.get('selection').removeObject(this.getItemFromModel(id));
     },
     didSelectAll: function(rowIds, status) {
       var allPageItems, id, selectedIds, selectedItem, selection, _i, _j, _len, _len1;
@@ -12135,7 +12133,7 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 
 Ember.TEMPLATES['collection_panel']=Ember.Handlebars.compile("{{#each item in view.collection.modelData}}\n\t<article class=\"collection-panel\">\n\t\t{{view Tent.CollectionPanelContentContainerView \n\t\t\titemBinding=\"item\" \n\t\t\tcontentViewTypeBinding=\"view.contentViewType\" \n\t\t\tcollectionBinding=\"view.collection\"\n\t\t\tselectableBinding=\"view.selectable\"\n\t\t\tselectionBinding=\"view.selection\"\n\t\t}}\n\t</article>\n{{/each}}");
 
-Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t \n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
+Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\" class=\"item-selector\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t \n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
 
 (function() {
 /**
@@ -12178,10 +12176,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     },
     selectionDidChange: (function() {
       return console.log('selection changed');
-    }).observes('selection', 'selection.@each'),
-    isVisibleDidChange: (function() {
-      return console.log('changed visibility');
-    }).observes('isVisible')
+    }).observes('selection', 'selection.@each')
   });
 
   Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend({
@@ -12189,7 +12184,6 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     contentViewType: null,
     collection: null,
     selectable: false,
-    selection: Ember.A(),
     childViews: ['contentView'],
     contentView: (function() {
       if (this.get('contentViewType') != null) {
@@ -12201,6 +12195,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
         });
       }
     }).property('item'),
+    selectionDidChange: (function() {
+      console.log('selection changed');
+      return this.set('contentView.selection', this.get('selection'));
+    }).observes('selection', 'selection.@each'),
     selectedDidChange: function(isSelected) {
       if (isSelected) {
         return this.addToSelection();
@@ -12214,11 +12212,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       }
     },
     removeFromSelection: function() {
-      var myItem;
-      myItem = this.get('item');
-      return this.set('selection', this.get('selection').filter(function(item) {
-        return item !== myItem;
-      }));
+      return this.get('selection').removeObject(this.get('item'));
     }
   });
 
@@ -12238,10 +12232,13 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     didInsertElement: function() {
       return this.$().parents('.collection-panel:first').css('opacity', '1');
     },
+    selectionDidChange: (function() {
+      return console.log('selection changed');
+    }).observes('selection', 'selection.@each'),
     selected: (function() {
       var _ref;
       return (_ref = this.get('selection')) != null ? _ref.contains(this.get('content')) : void 0;
-    }).property('selection.@each'),
+    }).property('selection', 'selection.@each'),
     /**
     * @method getLabelForField Returns a translated label for the given field name of a collections columns
     * @param {String} fieldName the field name of the column to be returned
@@ -12271,6 +12268,13 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
         });
       } else {
         return value;
+      }
+    },
+    click: function(e) {
+      var checked;
+      if ($(e.target).is('.item-selector')) {
+        checked = $(e.target).is(':checked');
+        return this.get('parentView').selectedDidChange(checked);
       }
     }
   });

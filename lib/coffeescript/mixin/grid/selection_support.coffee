@@ -41,10 +41,7 @@ Tent.Grid.SelectionSupport = Ember.Mixin.create
     @removeItemFromSelection(itemId)
 
   removeItemFromSelection: (id)->
-    @set('selection', @get('selection').filter((item, index)->
-          item.get('id') != parseInt(id)
-      )
-    )
+    @get('selection').removeObject(@getItemFromModel(id))
 
   ######## Select All ########
   didSelectAll: (rowIds, status) ->
