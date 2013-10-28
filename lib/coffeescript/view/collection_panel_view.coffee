@@ -17,109 +17,113 @@ require '../template/collection_panel_content'
 ###
 
 Tent.CollectionPanelView = Ember.View.extend
-	templateName: 'collection_panel'
-	classNames: ['collection-panel-container']
-	selectable: false
-	selection: null
+  templateName: 'collection_panel'
+  classNames: ['collection-panel-container']
+  selectable: false
+  selection: null
 
-	###*
-	* @property {Object} collection The colleciton which contains the items for display.
-	###
-	collection: null
+  ###*
+  * @property {Object} collection The colleciton which contains the items for display.
+  ###
+  collection: null
 
-	###*
-	* @property {String} contentViewType The name of a view class which will render the contents of each panel.
-	* This view will have its 'content' populated with the model for that panel
-	###
-	contentViewType: null
+  ###*
+  * @property {String} contentViewType The name of a view class which will render the contents of each panel.
+  * This view will have its 'content' populated with the model for that panel
+  ###
+  contentViewType: null
 
-	didInsertElement: ->
-		@get('collection').update()
-		@set('selection', Ember.A()) if not @get('selection')?
+  didInsertElement: ->
+    @get('collection').update()
+    @set('selection', Ember.A()) if not @get('selection')?
 
-	selectionDidChange: (->
-		console.log 'selection changed'
-	).observes('selection','selection.@each')
+  selectionDidChange: (->
+    console.log 'selection changed'
+  ).observes('selection','selection.@each')
+
+  isVisibleDidChange: (->
+    console.log('changed visibility')
+  ).observes('isVisible')
 
 
 Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
-	item: null
-	contentViewType: null
-	collection: null
-	selectable: false
-	selection: Ember.A()
-	childViews: ['contentView']
-	contentView: (->
-		if @get('contentViewType')?
-			eval(@get('contentViewType')).create
-				content: @get('item')
-				collection: @get('collection')
-				selectable: @get('selectable')
-				selection: @get('selection')
+  item: null
+  contentViewType: null
+  collection: null
+  selectable: false
+  selection: Ember.A()
+  childViews: ['contentView']
+  contentView: (->
+    if @get('contentViewType')?
+      eval(@get('contentViewType')).create
+        content: @get('item')
+        collection: @get('collection')
+        selectable: @get('selectable')
+        selection: @get('selection')
 
-	).property('item')
+  ).property('item')
 
-	selectedDidChange: (isSelected)->
-		if isSelected
-			@addToSelection()
-		else
-			@removeFromSelection()
+  selectedDidChange: (isSelected)->
+    if isSelected
+      @addToSelection()
+    else
+      @removeFromSelection()
 
-	addToSelection: ->
-		@get('selection').pushObject(@get('item')) if not @get('selection').contains(@get('item'))
-		
-	removeFromSelection: ->
-		myItem = @get('item')
-		@set('selection', @get('selection').filter((item)->
-			item != myItem
-		))
+  addToSelection: ->
+    @get('selection').pushObject(@get('item')) if not @get('selection').contains(@get('item'))
+    
+  removeFromSelection: ->
+    myItem = @get('item')
+    @set('selection', @get('selection').filter((item)->
+      item != myItem
+    ))
 
 
 ###*
-*	@class Tent.CollectionPanelContentView
-*	This class should be extended to provide the content for a {@link #Tent.CollectionPanelView}
+* @class Tent.CollectionPanelContentView
+* This class should be extended to provide the content for a {@link #Tent.CollectionPanelView}
 ###
 Tent.CollectionPanelContentView = Ember.View.extend
-	templateName: null
-	classNames: ['collection-panel-content']
-	classNameBindings: ['selected']
-	content: null
-	selectable: false
-	selection: []
+  templateName: null
+  classNames: ['collection-panel-content']
+  classNameBindings: ['selected']
+  content: null
+  selectable: false
+  selection: []
 
-	didInsertElement: ->
-		@$().parents('.collection-panel:first').css('opacity', '1')
+  didInsertElement: ->
+    @$().parents('.collection-panel:first').css('opacity', '1')
 
-	selected: (->
-		@get('selection')?.contains(@get('content'))
-	).property('selection.@each')
+  selected: (->
+    @get('selection')?.contains(@get('content'))
+  ).property('selection.@each')
 
-	###*
-	* @method getLabelForField Returns a translated label for the given field name of a collections columns
-	* @param {String} fieldName the field name of the column to be returned
-	* @return {String} the translated label for the field
-	###
-	getLabelForField: (fieldName)->
-		column = @get('collection')?.getColumnByField(fieldName)
-		Tent.I18n.loc(column?['title'])
+  ###*
+  * @method getLabelForField Returns a translated label for the given field name of a collections columns
+  * @param {String} fieldName the field name of the column to be returned
+  * @return {String} the translated label for the field
+  ###
+  getLabelForField: (fieldName)->
+    column = @get('collection')?.getColumnByField(fieldName)
+    Tent.I18n.loc(column?['title'])
 
-	###*
-	* @method formattedValue Formats a given value using the formatter associated with a collection column definition.
-	* @param {String} fieldName the field name of the column which is used to locate the formatter
-	* @param {Object} value the value to be formatted
-	* @return {String} the formatted value
-	###
-	formattedValue: (fieldName, value) ->
-		column = @get('collection')?.getColumnByField(fieldName)
-		if column['formatter']?
-			$.fn.fmatter[column['formatter']](value, {colModel: {formatOptions: column['formatoptions']}})
-		else
-			value
+  ###*
+  * @method formattedValue Formats a given value using the formatter associated with a collection column definition.
+  * @param {String} fieldName the field name of the column which is used to locate the formatter
+  * @param {Object} value the value to be formatted
+  * @return {String} the formatted value
+  ###
+  formattedValue: (fieldName, value) ->
+    column = @get('collection')?.getColumnByField(fieldName)
+    if column['formatter']?
+      $.fn.fmatter[column['formatter']](value, {colModel: {formatOptions: column['formatoptions']}})
+    else
+      value
 
-	#selectedDidChange: (->
-		#@set('selected', @get('selected'))
-	#	@get('parentView').selectedDidChange(@get('selected'))
-	#).observes('selected')
+  #selectedDidChange: (->
+    #@set('selected', @get('selected'))
+  # @get('parentView').selectedDidChange(@get('selected'))
+  #).observes('selected')
 
 
 

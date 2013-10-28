@@ -5666,7 +5666,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       var widget;
       widget = this;
       if (this.get('showMaximizeButton')) {
-        this.$(".grid-header .left").prepend('<div class="button"><a class="maximize"><i class="ui-icon ui-icon-arrow-4-diag"></i></a></div>');
+        this.$(".grid-header .right").append('<div class="button"><a class="maximize"><i class="icon-resize-full"></i></a></div>');
         return this.$('a.maximize').click(function() {
           return widget.toggleFullScreen(this);
         });
@@ -5717,8 +5717,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         }, {
           duration: _this.get('resizeSpeed'),
           complete: function() {
-            $('span', widget).removeClass('ui-icon-arrow-4-diag');
-            $('span', widget).addClass('ui-icon-arrow-1-se');
+            $('span', widget).removeClass('icon-resize-full');
+            $('span', widget).addClass('icon-resize-small');
             _this.set('fullScreen', true);
             _this.resizeToContainer();
             if (!_this.get('resizeGridSteps')) {
@@ -5749,8 +5749,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }, {
         duration: this.get('resizeSpeed'),
         complete: function() {
-          _this.$('.maximize > span').removeClass('ui-icon-arrow-1-se');
-          _this.$('.maximize > span').addClass('ui-icon-arrow-4-diag');
+          _this.$('.maximize > span').removeClass('icon-resize-small');
+          _this.$('.maximize > span').addClass('icon-resize-full');
           _this.set('fullScreen', false);
           _this.$().css('height', '');
           _this.$().css('width', '');
@@ -7986,7 +7986,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
+Ember.TEMPLATES['grid/multiview_buttons']=Ember.Handlebars.compile("<div class=\"btn-group\" data-toggle=\"buttons-radio\">\n  <button type=\"button\" class=\"btn active\" {{bindAttr title=\"tent.jqGrid.multiviewList\"}} data-view=\"list\" ><i class=\"icon-list\"></i></button>\n  <button type=\"button\" class=\"btn\" {{bindAttr title=\"tent.jqGrid.multiviewCard\"}} data-view=\"card\"><i class=\"icon-th\"></i></button>\n</div>");
 
 (function() {
 Tent.Grid.MultiviewButtons = Ember.View.extend({
@@ -12160,13 +12160,13 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     selectable: false,
     selection: null,
     /**
-    	* @property {Object} collection The colleciton which contains the items for display.
+    * @property {Object} collection The colleciton which contains the items for display.
     */
 
     collection: null,
     /**
-    	* @property {String} contentViewType The name of a view class which will render the contents of each panel.
-    	* This view will have its 'content' populated with the model for that panel
+    * @property {String} contentViewType The name of a view class which will render the contents of each panel.
+    * This view will have its 'content' populated with the model for that panel
     */
 
     contentViewType: null,
@@ -12178,7 +12178,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     },
     selectionDidChange: (function() {
       return console.log('selection changed');
-    }).observes('selection', 'selection.@each')
+    }).observes('selection', 'selection.@each'),
+    isVisibleDidChange: (function() {
+      return console.log('changed visibility');
+    }).observes('isVisible')
   });
 
   Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend({
@@ -12220,8 +12223,8 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
   });
 
   /**
-  *	@class Tent.CollectionPanelContentView
-  *	This class should be extended to provide the content for a {@link #Tent.CollectionPanelView}
+  * @class Tent.CollectionPanelContentView
+  * This class should be extended to provide the content for a {@link #Tent.CollectionPanelView}
   */
 
 
@@ -12240,9 +12243,9 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       return (_ref = this.get('selection')) != null ? _ref.contains(this.get('content')) : void 0;
     }).property('selection.@each'),
     /**
-    	* @method getLabelForField Returns a translated label for the given field name of a collections columns
-    	* @param {String} fieldName the field name of the column to be returned
-    	* @return {String} the translated label for the field
+    * @method getLabelForField Returns a translated label for the given field name of a collections columns
+    * @param {String} fieldName the field name of the column to be returned
+    * @return {String} the translated label for the field
     */
 
     getLabelForField: function(fieldName) {
@@ -12251,10 +12254,10 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       return Tent.I18n.loc(column != null ? column['title'] : void 0);
     },
     /**
-    	* @method formattedValue Formats a given value using the formatter associated with a collection column definition.
-    	* @param {String} fieldName the field name of the column which is used to locate the formatter
-    	* @param {Object} value the value to be formatted
-    	* @return {String} the formatted value
+    * @method formattedValue Formats a given value using the formatter associated with a collection column definition.
+    * @param {String} fieldName the field name of the column which is used to locate the formatter
+    * @param {Object} value the value to be formatted
+    * @return {String} the formatted value
     */
 
     formattedValue: function(fieldName, value) {

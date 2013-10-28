@@ -453,7 +453,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   border: 1px solid #eee;
 }
 .tent-jqgrid .grid-header .header-buttons > .button > a i {
-  margin-top: -1px;
+  margin-top: 0px;
 }
 .tent-jqgrid .ui-jqgrid {
   position: absolute;
