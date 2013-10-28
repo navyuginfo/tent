@@ -166,6 +166,8 @@ test 'selectedIds should track selection', ->
 	grid = Tent.JqGrid.create
 		selection: selection
 		columns: []
+		content: @row_data
+
 	grid.isRowCurrentlyEditing = ->
 		return false
 
@@ -174,8 +176,14 @@ test 'selectedIds should track selection', ->
 	equal grid.get('selection').length, 0, "Selection should be empty"
 	equal grid.get('selectedIds').length, 0, "selectedids should be empty"
 
-	grid.get('selection').pushObject(Ember.Object.create(id: 52,title: 't2'))
+	obj = Ember.Object.create(id: 52,title: "Task 2")
+	grid.get('selection').pushObject(obj)
+	
 	equal grid.get('selectedIds').length, 1, "selectedids should have one entry"
+
+	grid.getItemFromModel = ->
+		obj
+
 	grid.deselectItem('52')
 	equal grid.get('selectedIds').length, 0, "selectedids should be empty"
 
@@ -200,13 +208,13 @@ test 'Insert into dom. Single-select, non-paged', ->
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          contentBinding="row_data"
-	          selectionBinding="selection"
-	          multiSelect=false
-	          required=true
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						contentBinding="row_data"
+						selectionBinding="selection"
+						multiSelect=false
+						required=true
+			}}'
 		row_data: row_data
 		columns: column_data
 		selection: selection
@@ -224,12 +232,12 @@ test 'Insert into dom. Single-select, non-paged', ->
 test 'Select Row', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          contentBinding="row_data"
-	          multiSelect=false
-	          required=true
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						contentBinding="row_data"
+						multiSelect=false
+						required=true
+			}}'
 		row_data: row_data
 		columns: column_data
 	
@@ -254,12 +262,12 @@ test 'Select Row', ->
 test 'ClearAction, and set selection to empty', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          contentBinding="row_data"
-	          multiSelect=false
-	          required=true
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						contentBinding="row_data"
+						multiSelect=false
+						required=true
+			}}'
 		row_data: row_data
 		columns: column_data
 
@@ -280,13 +288,13 @@ test 'ClearAction, and set selection to empty', ->
 test 'Multiselect', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          contentBinding="row_data"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						contentBinding="row_data"
+						multiSelect=true
+						required=true
+						selection=selection
+			}}'
 		row_data: row_data
 		columns: column_data
 		selection: []
@@ -348,13 +356,13 @@ test 'Paging data collection binding', ->
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          collectionBinding="collection"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						collectionBinding="collection"
+						multiSelect=true
+						required=true
+						selection=selection
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -368,15 +376,15 @@ test 'Paging data collection binding', ->
 test 'Paging data collection binding: no data on collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          collectionBinding="collection"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						collectionBinding="collection"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -390,15 +398,15 @@ test 'Paging data collection binding: no data on collection', ->
 test 'Sorting data collection binding', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          collectionBinding="collection"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						collectionBinding="collection"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -415,15 +423,15 @@ test 'Column info bound to collection', ->
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          collectionBinding="collection"
-	          columnsBinding="columns"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						collectionBinding="collection"
+						columnsBinding="columns"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -458,15 +466,15 @@ These are tests for client-side grouping
 test 'Grouping info bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          columnsBinding="columns"
-	          collectionBinding="collection"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						columnsBinding="columns"
+						collectionBinding="collection"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -499,15 +507,15 @@ test 'Grouping info bound to collection', ->
 test 'Column Width info bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          collectionBinding="collection"
-	          columnsBinding="columns"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						collectionBinding="collection"
+						columnsBinding="columns"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -529,15 +537,15 @@ test 'Column Width info bound to collection', ->
 test 'Column Ordering bound to collection', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          collectionBinding="collection"
-	          columnsBinding="columns"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          paged=true
-              pageSize=6
-	    }}'
+						label="Tasks"
+						collectionBinding="collection"
+						columnsBinding="columns"
+						multiSelect=true
+						required=true
+						selection=selection
+						paged=true
+							pageSize=6
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -569,14 +577,14 @@ test 'Column Ordering bound to collection', ->
 test 'horizontal scrolling', ->
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGrid
-	          label="Tasks"
-	          collectionBinding="collection"
-	          columnsBinding="columns"
-	          multiSelect=true
-	          required=true
-	          selection=selection
-	          horizontalScrolling=true
-	    }}'
+						label="Tasks"
+						collectionBinding="collection"
+						columnsBinding="columns"
+						multiSelect=true
+						required=true
+						selection=selection
+						horizontalScrolling=true
+			}}'
 		collection: collection
 		columns: column_data
 		selection: []
@@ -614,5 +622,4 @@ test 'columnNames', ->
 	equal names[1], 'china', 'china'
 	
 
-	
 	

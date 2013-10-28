@@ -115,6 +115,12 @@
           "export": 'Export'
         },
         pagerViewing: 'VIEWING',
+        paging: {
+          next: 'Next page',
+          prev: 'Previous page',
+          first: 'First page',
+          last: 'Last page'
+        },
         saveUi: {
           defaultName: 'No Customization',
           "default": 'No Customization',
@@ -4103,7 +4109,7 @@ Tent.Table = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n\t<div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n            }} \n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n    \t   <table class=\"grid-table\"></table>\n           <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n\t{{#unless view.content.isLoaded}}\n\t\t{{view Tent.WaitIcon}}\n  \t{{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n\t{{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n\t<div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n            }} \n            {{view Tent.Pager collectionBinding=\"view.collection\"}}\n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n    \t   <table class=\"grid-table\"></table>\n           <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n\t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
 
 (function() {
 
@@ -12196,7 +12202,6 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       }
     }).property('item'),
     selectionDidChange: (function() {
-      console.log('selection changed');
       return this.set('contentView.selection', this.get('selection'));
     }).observes('selection', 'selection.@each'),
     selectedDidChange: function(isSelected) {
@@ -12232,9 +12237,6 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     didInsertElement: function() {
       return this.$().parents('.collection-panel:first').css('opacity', '1');
     },
-    selectionDidChange: (function() {
-      return console.log('selection changed');
-    }).observes('selection', 'selection.@each'),
     selected: (function() {
       var _ref;
       return (_ref = this.get('selection')) != null ? _ref.contains(this.get('content')) : void 0;
@@ -12276,6 +12278,40 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
         checked = $(e.target).is(':checked');
         return this.get('parentView').selectedDidChange(checked);
       }
+    }
+  });
+
+}).call(this);
+
+
+Ember.TEMPLATES['pager']=Ember.Handlebars.compile("<div class=\"tent-pager\">\n  <span class=\"centering\">\n    <span class=\"left\">\n      <a {{action prev target=\"view\"}} href=\"#\" {{bindAttr title=\"view.prevTitle\"}}><i class=\"icon-chevron-left\"></i></a>\n    </span>\n    <span class=\"middle summary\">\n      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}\n    </span>\n    <span class=\"right\">\n      <a {{action next target=\"view\"}} href=\"#\" {{bindAttr title=\"view.nextTitle\"}}><i class=\"icon-chevron-right\"></i></a>     \n    </span>\n  </span>\n</div>\n\n ");
+
+(function() {
+Tent.Pager = Ember.View.extend({
+    templateName: 'pager',
+    prevTitle: Tent.I18n.loc('tent.jqGrid.paging.prev'),
+    nextTitle: Tent.I18n.loc('tent.jqGrid.paging.next'),
+    firstTitle: Tent.I18n.loc('tent.jqGrid.paging.first'),
+    lastTitle: Tent.I18n.loc('tent.jqGrid.paging.last'),
+    first: function() {
+      this.get('collection').goToPage(1);
+      return console.log('first');
+    },
+    prev: function() {
+      if (this.get('collection.pagingInfo.page') > 1) {
+        return this.get('collection').prevPage();
+      }
+    },
+    next: function() {
+      if (this.get('collection.pagingInfo.page') < this.get('collection.pagingInfo.totalPages')) {
+        return this.get('collection').nextPage();
+      }
+    },
+    last: function() {
+      return this.get('collection').goToPage(this.get('collection.pagingInfo.totalPages'));
+    },
+    getPage: function() {
+      return this.get('collection.pagingInfo.page');
     }
   });
 

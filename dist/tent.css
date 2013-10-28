@@ -892,6 +892,20 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   display: table-cell;
 }
 
+/* Tent Pager Widget*/
+.tent-pager {
+  position: absolute;
+  bottom: 0px;
+  display: table;
+  text-align: center;
+  height: 32px;
+  width: 100%;
+}
+.tent-pager .centering {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 /* Standard Panel, with expandable */
 .tent-panel .panel-header {
   position: relative;
@@ -1410,6 +1424,10 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   top: 20px;
   bottom: 0px;
   overflow: auto;
+}
+
+.fixed-header.paged .collection-panel-container {
+  bottom: 32px;
 }
 
 .collection-panel {

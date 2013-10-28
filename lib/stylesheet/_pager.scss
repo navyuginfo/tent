@@ -1,0 +1,13 @@
+/* Tent Pager Widget*/
+.tent-pager {
+  position: absolute;
+  bottom: 0px;
+  display: table;
+  text-align: center;
+  height: $pagerHeight;
+  width: 100%;
+  .centering {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}

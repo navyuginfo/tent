@@ -20,6 +20,7 @@
                 selectable=true
                 isVisibleBinding="view.showCardView"
             }} 
+            {{view Tent.Pager collectionBinding="view.collection"}}
         {{/if}}
         <div {{bindAttr class=":visibility-wrapper view.showCardView:hidden"}}>
     	   <table class="grid-table"></table>

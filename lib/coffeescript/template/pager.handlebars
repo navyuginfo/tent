@@ -1,0 +1,15 @@
+<div class="tent-pager">
+  <span class="centering">
+    <span class="left">
+      <a {{action prev target="view"}} href="#" {{bindAttr title="view.prevTitle"}}><i class="icon-chevron-left"></i></a>
+    </span>
+    <span class="middle summary">
+      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}
+    </span>
+    <span class="right">
+      <a {{action next target="view"}} href="#" {{bindAttr title="view.nextTitle"}}><i class="icon-chevron-right"></i></a>     
+    </span>
+  </span>
+</div>
+
+ 
