@@ -24,8 +24,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend
 		)
 		# Clone the columns so that they don't get changed by the filtering.
 		filterableCols.map((item) ->
-        	Ember.copy(item,true)
-      	)
+			Ember.copy(item,true)
+		)
 	).property('collection.columnsDescriptor')
 
 
@@ -84,36 +84,24 @@ Tent.FilterPanelView = Ember.View.extend
 Tent.FilterFieldController = Ember.ObjectController.extend
 	selectedColumn: null
 	content: null
-	lockedBinding: 'content.locked'
-	usageContext: null
-	
+	#lockedBinding: 'content.locked'
+	usageContext: null	
 
 	deleteField: ->
 		@get('parentController').deleteFilterField(@get('content'))
 
-	toggleLock: ->
-		if @get('lockIsEnabled')
-			@toggleProperty('locked')
-
-	lockIsEnabled: (->
-		@get('usageContext')? and @get('usageContext') != 'view'
-	).property('usageContext')
-
-	# field should be disabled if it is locked and in view mode
-	isDisabled: (->
-		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
-	).property('locked','usageContext')
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
 	classNames: ['filter-field']
-	classNameBindings: ['controller.locked', 'duplicateField']
+	classNameBindings: ['locked', 'duplicateField']
 	parentControllerBinding: 'parentView.parentView.controller'
-	collectionBinding: 'parentView.parentView.collection'
+	collectionBinding: 'parentView.parentView.collection'	
 	content: null
 	usageContext: null
 	isValid: true
 	operatorsIsValid: true
+	lockedBinding: 'content.locked'
 
 	init: ->
 		@_super()
@@ -164,17 +152,30 @@ Tent.FilterFieldView = Ember.View.extend
 		false
 	).property('content.field')
 
+	# field should be disabled if it is locked and in view mode
+	isDisabled: (->
+		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
+	).property('locked','usageContext')
+
+	toggleLock: ->
+		if @get('lockIsEnabled')
+			@toggleProperty('locked')
+
 	showLockIcon: (->
 		# Show icon if not in view mode, or if in view mode but also locked
-		@get('controller.locked') or (@get('usageContext') != 'view' and @get('usageContext')?)
-	).property('usageContext', 'controller.locked')
+		@get('locked') or (@get('usageContext') != 'view' and @get('usageContext')?)
+	).property('usageContext', 'locked')
 
 	lockIsSelected: (->
-		@get('controller.locked') and @get('controller.lockIsEnabled')
-	).property('controller.locked', 'controller.lockIsEnabled')
+		@get('locked') and @get('lockIsEnabled')
+	).property('locked', 'lockIsEnabled')
+
+	lockIsEnabled: (->
+		@get('usageContext')? and @get('usageContext') != 'view'
+	).property('usageContext')
 
 	showTrashIcon: (->
-		not (@get('usageContext') == 'view' and @get('controller.locked'))
+		not (@get('usageContext') == 'view' and @get('locked'))
 	).property('usageContext')
 
 	isValidDidChange: (->

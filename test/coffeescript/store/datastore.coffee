@@ -20,6 +20,12 @@ Pad.DataStore = Ember.Object.extend
 		#rowId = id.slice(0, id.indexOf('_'))
 		#$(elem).val($(this).getCell(rowId,3))
 
+  fetchPersonalizationsWithQuery: ->
+    Ember.Object.create
+      isLoaded: true
+      toArray: ->
+        []
+
 	fetchPersonalizations: ->
 		Ember.Object.create
 			isLoaded: true
