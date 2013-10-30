@@ -13283,6 +13283,7 @@ grouping: {
     },
     personalizations: [],
     personalizationType: null,
+    personalizationGroup: null,
     personalizationSubCategory: (function() {
       var type;
       type = this.get('personalizationType');
@@ -13332,7 +13333,7 @@ grouping: {
       var newRecord, reportName, settings;
       reportName = report.get('name');
       settings = $.extend(true, {}, report.get('settings'), this.gatherGridData(reportName));
-      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback);
+      return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback, report.get('group'));
     },
     removeExistingCustomization: function(name) {
       var index, p, _i, _len, _ref;
@@ -13363,7 +13364,11 @@ grouping: {
       });
     },
     fetchPersonalizations: function() {
-      return this.get('store').fetchPersonalizations(this.get('personalizationCategory'), this.get('personalizationSubCategory'));
+      return this.get('store').fetchPersonalizationsWithQuery({
+        category: this.get('personalizationCategory'),
+        subcategory: this.get('personalizationSubCategory').toString(),
+        group: this.get('personalizationGroup')
+      });
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');

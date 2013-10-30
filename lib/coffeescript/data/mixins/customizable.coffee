@@ -73,6 +73,8 @@ Tent.Data.Customizable = Ember.Mixin.create
     }
   personalizations: []
   personalizationType: null
+  personalizationGroup: null
+
   personalizationSubCategory: (->
     type = @get('personalizationType')
     if type? then type else @get('dataType')
@@ -114,7 +116,7 @@ Tent.Data.Customizable = Ember.Mixin.create
     reportName = report.get('name')
     settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
     # 'callback' accepts the createdRecord as a parameter, and any lifecycle listeners should be defined in the callback.
-    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback)
+    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback, report.get('group'))
     
   removeExistingCustomization: (name)->
     for p, index in @get('personalizations')
@@ -140,7 +142,11 @@ Tent.Data.Customizable = Ember.Mixin.create
     )
 
   fetchPersonalizations: ->
-    @get('store').fetchPersonalizations(@get('personalizationCategory'),  @get('personalizationSubCategory'))
+    @get('store').fetchPersonalizationsWithQuery(
+      category: @get('personalizationCategory')
+      subcategory: @get('personalizationSubCategory').toString()
+      group: @get('personalizationGroup')
+    )
 
   isShowingDefault: (->
     return @get('customizationName') == @get('defaultName')
