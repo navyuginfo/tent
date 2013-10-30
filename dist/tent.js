@@ -10524,9 +10524,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     focusOut: function() {
       var field, today;
-      field = this.$().val();
-      today = this.format(new Date());
+      field = this.$('input').val();
       if (!field || field === '') {
+        today = this.format(new Date());
         this.$('input').val(today);
         this.set('formattedValue', today);
       }
