@@ -808,7 +808,7 @@ $.fn.jqGrid = function( pin ) {
           $("#rs_m"+$.jgrid.jqID(p.id)).css("display","none");
 
           /*
-            PR: Test that there is not a min-width calculated due to nowrap associated with the cell
+            PR: Test that there is not a min-width calculated due to nowrap associated with the cell.
            */
           this.cols[idx].style.width = nw+"px";
           this.cols[idx].style.minWidth = nw+"px";
@@ -934,7 +934,7 @@ $.fn.jqGrid = function( pin ) {
         var scroller = e || grid.bDiv;
         var scrollTop = scroller.scrollTop;
         var rowHeight = grid.getRowHeight();
-        var newPageNum = grid.findPageNumberAtScrollPosition(scrollTop, rowHeight, p.pageSize);    
+        var newPageNum = grid.findPageNumberAtScrollPosition(scrollTop, rowHeight, p.pageSize);  
 
         if (p.page != newPageNum) {
           p.page = newPageNum;
@@ -1897,6 +1897,13 @@ $.fn.jqGrid = function( pin ) {
       }
     },
     populate = function (npage) {
+
+      /* PR: For infinite scrolling, we want later requests to be override previous ones,
+        so don't block this code if already loading. */
+      if (ts.grid.hDiv.loading == true) {
+        ts.grid.hDiv.loading = false;
+      };
+
       if(!ts.grid.hDiv.loading) {
         var pvis = ts.p.scroll && npage === false,
         prm = {}, dt, dstr, pN=ts.p.prmNames;
