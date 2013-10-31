@@ -88,10 +88,10 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 
 	# Focusing out of a date field will auto-fill the current date to avoid multiple validation errors
 	focusOut: ->
-		field = @$('input').val()
+		field = @$('input.primary-class').val()
 		if !field or field == ''
       			today = @format(new Date())
-      			@.$('input').val(today)
+      			@.$('input.primary-class').val(today)
       			@set('formattedValue', today)
 		@validateField()
 
