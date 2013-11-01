@@ -105,6 +105,8 @@ Tent.FilterFieldView = Ember.View.extend
 
 	init: ->
 		@_super()
+		# For some reason, IE8 will not reliably set the locked property initially
+		@set('locked', @get('content.locked')) if Tent.Browsers.isIE()
 		@set('controller', @createController())
 		@initializeSelection()
 
