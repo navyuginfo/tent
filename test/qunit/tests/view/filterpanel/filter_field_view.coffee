@@ -25,7 +25,6 @@ test 'toggleLock', ->
 	view.set('usageContext', 'report')
 	ok not view.get('content.locked'), 'locked is false to start'
 	view.toggleLock()
-	dump('enabled = ' + view.get('lockIsEnabled'))
 	ok view.get('locked'), 'locked should toggle to true for a report'
 	view.toggleLock()
 	ok not view.get('locked'), 'locked should toggle back to false for a report'

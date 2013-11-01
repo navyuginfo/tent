@@ -57,3 +57,19 @@ test 'personalizations are saved correctly', ->
 
   mock.verify()
   expect(0)
+
+test 'filter gets saved when customization gets saved', ->
+	customizable = Customizable.create
+		selectedFilter: "filter1"
+		updateCurrentFilter: ->
+			@set('selectedFilter', "filter2")
+		store: 
+			savePersonalization: ->
+
+	report = Ember.Object.create
+		name:'report1'
+	equal customizable.get('selectedFilter'), "filter1"
+	customizable.saveReport(report)
+	equal customizable.get('selectedFilter'), "filter2"
+
+
