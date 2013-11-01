@@ -114,6 +114,7 @@ Tent.Data.Customizable = Ember.Mixin.create
 
   saveReport: (report, callback)->
     reportName = report.get('name')
+    @updateCurrentFilter(@get('selectedFilter'))
     settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
     # 'callback' accepts the createdRecord as a parameter, and any lifecycle listeners should be defined in the callback.
     newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback, report.get('group'))

@@ -7749,6 +7749,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     lockedBinding: 'content.locked',
     init: function() {
       this._super();
+      if (Tent.Browsers.isIE()) {
+        this.set('locked', this.get('content.locked'));
+      }
       this.set('controller', this.createController());
       return this.initializeSelection();
     },
@@ -13093,7 +13096,12 @@ GridController
     }).property('columnsDescriptor'),
     saveFilter: function(filterDef) {
       this.updateCurrentFilter(filterDef);
-      return this.saveUIState();
+      this.saveUIState();
+      return {
+        filterDidChange: (function() {
+          return this.updateCurrentFilter(this.get('selectedFilter'));
+        }).observes('selectedFilter.values.@each')
+      };
     },
     addNewFilter: function(filter) {
       filter.name = filter.name || filter.label.split(" ").join('');
@@ -13332,6 +13340,7 @@ grouping: {
     saveReport: function(report, callback) {
       var newRecord, reportName, settings;
       reportName = report.get('name');
+      this.updateCurrentFilter(this.get('selectedFilter'));
       settings = $.extend(true, {}, report.get('settings'), this.gatherGridData(reportName));
       return newRecord = this.get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback, report.get('group'));
     },

@@ -20,11 +20,11 @@ Pad.DataStore = Ember.Object.extend
 		#rowId = id.slice(0, id.indexOf('_'))
 		#$(elem).val($(this).getCell(rowId,3))
 
-  fetchPersonalizationsWithQuery: ->
-    Ember.Object.create
-      isLoaded: true
-      toArray: ->
-        []
+	fetchPersonalizationsWithQuery: ->
+		Ember.Object.create
+			isLoaded: true
+			toArray: ->
+				[]
 
 	fetchPersonalizations: ->
 		Ember.Object.create
@@ -33,46 +33,46 @@ Pad.DataStore = Ember.Object.extend
 				[]
 		###customizationName:'Default'
 		paging: {
-		  pageSize: 12
+			pageSize: 12
 		}
 		sorting: {
-		  field: 'effortdriven'
-		  asc: 'desc'
+			field: 'effortdriven'
+			asc: 'desc'
 		}
 		column: {
-		  titles: {
-		    duration: 'Time Elapsed'
-		    title: 'My New Title'
-		  }
-		  widths: {
-		    id: 5
-		    title: 35
-		    duration: 10
-		    percentcomplete: 10
-		    effortdriven: 10
-		    start: 10
-		    finish: 10
-		    completed: 3
-		  }
-		  order: {
-		    id: 1
-		    title: 3
-		    duration: 2
-		    percentcomplete: 5
-		    effortdriven: 4
-		    start: 6
-		    finish: 7
-		    completed: 8
-		  }
-		  hidden: {
-		    start: true
-		    finish: true
-		    duration: true
-		  }
+			titles: {
+				duration: 'Time Elapsed'
+				title: 'My New Title'
+			}
+			widths: {
+				id: 5
+				title: 35
+				duration: 10
+				percentcomplete: 10
+				effortdriven: 10
+				start: 10
+				finish: 10
+				completed: 3
+			}
+			order: {
+				id: 1
+				title: 3
+				duration: 2
+				percentcomplete: 5
+				effortdriven: 4
+				start: 6
+				finish: 7
+				completed: 8
+			}
+			hidden: {
+				start: true
+				finish: true
+				duration: true
+			}
 		}
 		grouping: {
-		  #columnName: 'percentcomplete'
-		  #type: 'exact'
+			#columnName: 'percentcomplete'
+			#type: 'exact'
 		} 
 		filtering: {
 			selectedFilter: 'default'
