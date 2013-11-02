@@ -10824,9 +10824,7 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
       return this.set('inputIdentifier', this.$('textarea').attr('id'));
     },
     focusOut: function() {},
-    change: function() {
-      return this.validateField();
-    }
+    change: function() {}
   });
 
   Tent.TextareaInput = Ember.TextArea.extend(Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport);
