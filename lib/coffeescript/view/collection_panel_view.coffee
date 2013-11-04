@@ -21,6 +21,8 @@ Tent.CollectionPanelView = Ember.View.extend
   classNames: ['collection-panel-container']
   selectable: false
   selection: null
+  scrollTimeout: 200
+  currentPage: 1
 
   ###*
   * @property {Object} collection The colleciton which contains the items for display.
@@ -36,10 +38,85 @@ Tent.CollectionPanelView = Ember.View.extend
   didInsertElement: ->
     @get('collection').update()
     @set('selection', Ember.A()) if not @get('selection')?
+    @setupScrolledPaging() if @get('scroll')
 
-  selectionDidChange: (->
-    console.log 'selection changed'
-  ).observes('selection','selection.@each')
+  contentDidChange: (->
+    if @$()? and @get('collection.modelData.isLoaded')
+      Ember.run.next =>
+        @positionScrollbar()
+  ).observes('collection.modelData', 'collection.modelData.isLoaded', 'isVisible')
+
+
+  setupScrolledPaging: ->
+    @$().unbind('scroll').bind('scroll', =>
+      @scrollGrid()
+    )
+
+  scrollGrid: ->
+    clearTimeout(@get('scrollTimer')) if @get('scrollTimer')?
+    @set('scrollTimer', setTimeout( => 
+          @scrollCollection()
+        , @get('scrollTimeout'))
+    )
+
+  scrollCollection: ->
+    scroller = @$()
+    scrollTop = scroller.get(0).scrollTop
+    rowHeight = @getCardHeight()
+    cardsPerRow = @cardsPerRow()
+    newPageNum = @findPageNumberAtScrollPosition(scrollTop, rowHeight, cardsPerRow);    
+    if @get('currentPage') != newPageNum
+      @set('currentPage', newPageNum)
+      console.log('.... scrolling ...: page = ' + newPageNum)
+      @get('collection').goToPage(newPageNum)
+   
+
+  findPageNumberAtScrollPosition: (scrollTop, rowHeight, cardsPerRow) ->
+    pageSize = @get('collection.pagingInfo.pageSize')
+    cardsAbove = parseInt(scrollTop/@getCardHeight(), 10) * cardsPerRow
+    parseInt(cardsAbove / pageSize, 10) + 1
+
+    #totalRows = @get('collection.pagingInfo.totalRows')
+    #mod = totalRows % cardsPerRow
+    #totalHeight = ((totalRows/cardsPerRow)+(if mod then 1 else 0)) * rowHeight
+
+  positionScrollbar: ->
+    page = @get('collection.pagingInfo.page')
+    pageSize = @get('collection.pagingInfo.pageSize')
+    #cardCount = (pageSize * (page-1)) + @get('collection.modelData').length 
+    totalCards = @get('collection.pagingInfo.totalRows')
+    
+    rowHeight = @getCardHeight()
+    totalRowsToShow = @rowsInGrid(totalCards)
+
+    #numberOfPaddingPages = @get('currentPage' - 1)
+    #if numberOfPaddingPages < 0 then numberOfPaddingPages = 0
+    paddingHeight = @rowsOfPadding() * rowHeight
+    totalHeightForAllRows = totalRowsToShow * rowHeight
+    @$(".scroller").css({height : totalHeightForAllRows}).children("div:first").css('height', paddingHeight)
+    #ts.grid.bDiv.scrollLeft = ts.grid.hDiv.scrollLeft;
+
+  getCardHeight: ->
+    panel = @$('.collection-panel:first')
+    if panel?
+      panel.outerHeight()
+
+  cardsPerRow: ->
+    panel = @$('.collection-panel:first')
+    panelWidth = panel.outerWidth()
+    panelsPerRow = parseInt(@$().innerWidth()/panelWidth, 10)
+
+  rowsInGrid: (cardCount) ->
+    mod = cardCount % @cardsPerRow()
+    addition = if mod > 0 then 1 else 0
+    rows = parseInt(cardCount / @cardsPerRow(), 10) + addition
+
+  rowsOfPadding: ->
+    pageSize = @get('collection.pagingInfo.pageSize')
+    mod = pageSize % @cardsPerRow()
+    addition = if mod > 0 then 1 else 0
+    rowsPerPage = parseInt(pageSize / @cardsPerRow(), 10) + addition
+    rowsPerPage * (@get('currentPage') - 1)
 
 
 Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend

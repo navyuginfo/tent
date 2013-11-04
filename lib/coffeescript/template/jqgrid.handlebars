@@ -19,8 +19,13 @@
                 selectionBinding="view.selection"
                 selectable=true
                 isVisibleBinding="view.showCardView"
+                scrollBinding="view.scroll"
             }} 
-            {{view Tent.Pager collectionBinding="view.collection"}}
+            {{#if view.paged}}
+              {{#unless view.scroll}}
+                {{view Tent.Pager collectionBinding="view.collection"}}
+              {{/unless}}
+            {{/if}}
         {{/if}}
         <div {{bindAttr class=":visibility-wrapper view.showCardView:hidden"}}>
     	   <table class="grid-table"></table>

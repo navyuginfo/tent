@@ -1,11 +1,30 @@
-{{#each item in view.collection.modelData}}
-	<article class="collection-panel">
-		{{view Tent.CollectionPanelContentContainerView 
-			itemBinding="item" 
-			contentViewTypeBinding="view.contentViewType" 
-			collectionBinding="view.collection"
-			selectableBinding="view.selectable"
-			selectionBinding="view.selection"
-		}}
-	</article>
-{{/each}}
+{{#if view.scroll}}
+  <div class="scroller">
+    <div class="offset"></div>
+    <div class="panel-content">
+      {{#each item in view.collection.modelData}}
+        <article class="collection-panel">
+          {{view Tent.CollectionPanelContentContainerView 
+            itemBinding="item" 
+            contentViewTypeBinding="view.contentViewType" 
+            collectionBinding="view.collection"
+            selectableBinding="view.selectable"
+            selectionBinding="view.selection"
+          }}
+        </article>
+      {{/each}}
+    </div>
+  </div>
+{{else}}
+  {{#each item in view.collection.modelData}}
+    <article class="collection-panel">
+      {{view Tent.CollectionPanelContentContainerView 
+        itemBinding="item" 
+        contentViewTypeBinding="view.contentViewType" 
+        collectionBinding="view.collection"
+        selectableBinding="view.selectable"
+        selectionBinding="view.selection"
+      }}
+    </article>
+  {{/each}}
+{{/if}}
