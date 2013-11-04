@@ -1,3 +1,7 @@
+{{#unless view.collection.modelData.isLoaded}}
+	{{view Tent.WaitIcon}}
+{{/unless}}
+
 {{#if view.scroll}}
   <div class="scroller">
     <div class="offset"></div>
