@@ -412,9 +412,9 @@ $headerHeight: 20px;
 			bottom: 0px;
 		}
 
-		&.paged .ui-jqgrid {
-			bottom: $pagerHeight;
-		}
+		//&.paged .ui-jqgrid {
+		//	bottom: $pagerHeight;
+		//}
 
 		.ui-jqgrid-titlebar {
 			height: $headerHeight;	

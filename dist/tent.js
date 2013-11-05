@@ -4109,7 +4109,7 @@ Tent.Table = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n  {{#unless view.content.isLoaded}}\n    {{view Tent.WaitIcon}}\n  {{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n  {{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n  <div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n                scrollBinding=\"view.scroll\"\n            }} \n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n          <table class=\"grid-table\"></table>\n        </div>\n        {{#if view.paged}}\n          {{#unless view.scroll}}\n            {{view Tent.Pager collectionBinding=\"view.collection\"}}\n          {{/unless}}\n        {{/if}}\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n  <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n  {{#unless view.content.isLoaded}}\n    {{view Tent.WaitIcon}}\n  {{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n  {{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n  <div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n                scrollBinding=\"view.scroll\" \n            }} \n            {{#if view.paged}}\n              {{#unless view.scroll}}\n                {{view Tent.Pager collectionBinding=\"view.collection\"}}\n              {{/unless}}\n            {{/if}}\n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n          <table class=\"grid-table\"></table>\n          <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n  <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
 
 (function() {
 
@@ -6271,6 +6271,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         toppager: false,
         cloneToTop: false,
         editurl: 'clientArray',
+        pager: this.get('paged') ? this.getPagerId() : void 0,
         toolbar: [false, "top"],
         grouping: this.get('grouping'),
         footerrow: this.get('footerRow'),
@@ -12368,7 +12369,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
 }).call(this);
 
 
-Ember.TEMPLATES['pager']=Ember.Handlebars.compile("<div class=\"tent-pager control-strip\">\n\t<div class=\"wrapper middle\">\n\t\t<div class=\"button-wrapper\">\n\t\t\t\t<span>\n\t\t      <a {{action prev target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.prevTitle\"}}><i class=\"icon-chevron-left\"></i></a>\n\t\t    </span>\n\t\t    <span class=\"summary\">\n\t\t      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}\n\t\t    </span>\n\t\t    <span>\n\t\t      <a {{action next target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.nextTitle\"}}><i class=\"icon-chevron-right\"></i></a>     \n\t\t    </span>\n\t\t</div>\n\t</div>\n\t{{#if view.collection.totalRows}}\n\t\t<div class=\"wrapper right\">\n\t\t\t<div class=\"button-wrapper\">\n\t\t\t\tView {{view.collection.startRow}} - {{view.collection.endRow}} of {{view.collection.totalRows}}\n\t\t\t</div>\n\t\t</div>\n\t{{/if}}\n</div>\n\n ");
+Ember.TEMPLATES['pager']=Ember.Handlebars.compile("<div class=\"tent-pager control-strip\">\n\t<div class=\"wrapper middle\">\n\t\t<div class=\"button-wrapper\">\n\t\t\t\t<span>\n\t\t      <a {{action first target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.firstTitle\"}}><i class=\"icon-double-angle-left\"></i></a>\n\t\t    </span>\n\t\t\t\t<span>\n\t\t      <a {{action prev target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.prevTitle\"}}><i class=\"icon-angle-left\"></i></a>\n\t\t    </span>\n\t\t    <span class=\"summary\">\n\t\t      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}\n\t\t    </span>\n\t\t    <span>\n\t\t      <a {{action next target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.nextTitle\"}}><i class=\"icon-angle-right\"></i></a>     \n\t\t    </span>\n\t\t    <span>\n\t\t      <a {{action last target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.lastTitle\"}}><i class=\"icon-double-angle-right\"></i></a>\n\t\t    </span>\n\t\t</div>\n\t</div>\n\t{{#if view.collection.totalRows}}\n\t\t<div class=\"wrapper right\">\n\t\t\t<div class=\"button-wrapper\">\n\t\t\t\tView {{view.collection.startRow}} - {{view.collection.endRow}} of {{view.collection.totalRows}}\n\t\t\t</div>\n\t\t</div>\n\t{{/if}}\n</div>\n\n ");
 
 (function() {
 Tent.Pager = Ember.View.extend({
@@ -12396,13 +12397,7 @@ Tent.Pager = Ember.View.extend({
     },
     getPage: function() {
       return this.get('collection.pagingInfo.page');
-    },
-    startRow: (function() {
-      return this.get('collection.startRow');
-    }).property(''),
-    endRow: (function() {
-      return this.get('collection.endRow');
-    }).property('')
+    }
   });
 
 }).call(this);

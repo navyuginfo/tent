@@ -21,15 +21,18 @@
                 isVisibleBinding="view.showCardView"
                 scrollBinding="view.scroll"
             }} 
+           	{{#if view.showCardView}}
+	            {{#if view.paged}}
+	              {{#unless view.scroll}}
+	                {{view Tent.Pager collectionBinding="view.collection"}}
+	              {{/unless}}
+	            {{/if}}
+	          {{/if}}
         {{/if}}
         <div {{bindAttr class=":visibility-wrapper view.showCardView:hidden"}}>
           <table class="grid-table"></table>
+          <div class="gridpager"></div>
         </div>
-        {{#if view.paged}}
-          {{#unless view.scroll}}
-            {{view Tent.Pager collectionBinding="view.collection"}}
-          {{/unless}}
-        {{/if}}
     </div>
 </div>
 

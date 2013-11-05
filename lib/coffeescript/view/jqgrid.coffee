@@ -252,7 +252,7 @@ Tent.JqGrid = Ember.View.extend Tent.ValidationSupport, Tent.MandatorySupport, T
 			#cellsubmit: 'clientArray',
 			editurl: 'clientArray',
 			#scroll: true,
-			#pager: @getPagerId() if @get('paged'),
+			pager: @getPagerId() if @get('paged'),
 			toolbar: [false,"top"],
 			grouping: @get('grouping'),
 			footerrow: @get('footerRow'),

@@ -41,10 +41,11 @@ Make sure to include content in an aligned-wrapper, which can be left, middle or
 }
 .control-strip .wrapper.left {
   position: absolute;
+  left: 5px;
 }
 .control-strip .wrapper.right {
   position: absolute;
-  right: 0px;
+  right: 5px;
   top: 0px;
 }
 .control-strip .button-wrapper {
@@ -725,9 +726,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   position: absolute;
   top: 20px;
   bottom: 0px;
-}
-.tent-jqgrid.fixed-header.paged .ui-jqgrid {
-  bottom: 32px;
 }
 .tent-jqgrid.fixed-header .ui-jqgrid-titlebar {
   height: 20px;

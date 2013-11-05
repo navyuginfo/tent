@@ -2,13 +2,19 @@
 	<div class="wrapper middle">
 		<div class="button-wrapper">
 				<span>
-		      <a {{action prev target="view"}} class="button-control" href="#" {{bindAttr title="view.prevTitle"}}><i class="icon-chevron-left"></i></a>
+		      <a {{action first target="view"}} class="button-control" href="#" {{bindAttr title="view.firstTitle"}}><i class="icon-double-angle-left"></i></a>
+		    </span>
+				<span>
+		      <a {{action prev target="view"}} class="button-control" href="#" {{bindAttr title="view.prevTitle"}}><i class="icon-angle-left"></i></a>
 		    </span>
 		    <span class="summary">
 		      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}
 		    </span>
 		    <span>
-		      <a {{action next target="view"}} class="button-control" href="#" {{bindAttr title="view.nextTitle"}}><i class="icon-chevron-right"></i></a>     
+		      <a {{action next target="view"}} class="button-control" href="#" {{bindAttr title="view.nextTitle"}}><i class="icon-angle-right"></i></a>     
+		    </span>
+		    <span>
+		      <a {{action last target="view"}} class="button-control" href="#" {{bindAttr title="view.lastTitle"}}><i class="icon-double-angle-right"></i></a>
 		    </span>
 		</div>
 	</div>
