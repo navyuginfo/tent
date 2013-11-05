@@ -10,7 +10,7 @@ module 'Tent.JqGridHeaderView', setup, teardown
 test 'showAutofitButton property', ->
 	grid = Ember.Object.create
 		horizontalScrolling: true
-		showAutofitButton: true
+		showAutofitButtonProp: true
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGridHeaderView gridBinding="view.grid"}}'
@@ -24,7 +24,7 @@ test 'showAutofitButton property', ->
 test 'showAutofitButton property', ->
 	grid = Ember.Object.create
 		horizontalScrolling: true
-		showAutofitButton: false
+		showAutofitButtonProp: false
 
 	view = Ember.View.create
 		template: Ember.Handlebars.compile '{{view Tent.JqGridHeaderView gridBinding="view.grid"}}'

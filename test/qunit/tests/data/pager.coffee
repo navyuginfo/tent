@@ -5,6 +5,7 @@ setup = ->
 		REQUEST_TYPE: {}
 
 	@pager = Pager.create()
+
 teardown = ->
 	@pager = null
 	Pager = null
@@ -32,6 +33,26 @@ test 'Current page', ->
 
 	pager.set('currentPage', 2)
 	equal pager.get('_page'), 2, 'Move to page 2'
+
+test 'Start Row', ->
+	pager.set('data', [1,2,3,4,5,6,7,8])
+	pager.set('pageSize', 3)
+	pager.set('_totalRows', 8)
+	equal pager.get('startRow'), 1, 'Start row'
+	pager.goToPage(2)
+	equal pager.get('startRow'), 4, 'Page 2'
+	pager.goToPage(3)
+	equal pager.get('startRow'), 7, 'Page 3'
+
+test 'End Row', ->
+	pager.set('data', [1,2,3,4,5,6,7,8])
+	pager.set('pageSize', 3)
+	pager.set('_totalRows', 8)
+	equal pager.get('endRow'), 3, 'End row'
+	pager.goToPage(2)
+	equal pager.get('endRow'), 6, 'End row page 2'
+	pager.goToPage(3)
+	equal pager.get('endRow'), 8, 'End row page 3'
 
 test 'GotoPage', ->
 	pager.set('pageSize', 4)

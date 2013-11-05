@@ -35,6 +35,17 @@ Tent.Data.Pager = Ember.Mixin.create
 		@get('_totalRows') || @get('_totalPages') * @get('pagesize') || 1
 	).property('_totalRows', '_totalPages', 'pageSize')
 
+	startRow: (->
+		((@get('currentPage') - 1) * @get('pageSize')) + 1
+	).property('currentPage', 'pageSize')
+
+	endRow: (->
+		if (@get('totalRows') - @get('startRow')) < @get('pageSize')
+			@get('totalRows')
+		else
+			@get('currentPage') * @get('pageSize')
+	).property('startRow', 'currentPage', 'totalRows', 'pageSize')
+
 	goToPage: (page) ->
 		@set('currentPage', page)
 		if @get('isShowingGroupsList')

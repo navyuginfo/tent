@@ -799,23 +799,21 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   transition: all 0.2s ease;
-  border-top: 1px solid transparent;
+  /*border-top: 1px solid transparent;
   border-left: 1px solid transparent;
   margin-top: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button:hover {
-  border-color: #CCC;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button.active {
-  border-color: #CCC;
-  background: #eee;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button i {
-  margin-left: 3px;
-  padding: 1px;
+  @include border-radius(2px);
+  &:hover {
+  	border-color: #CCC;
+  }
+  &.active{
+  	border-color: #CCC;
+  	background: #eee;
+  }
+  i {
+  	margin-left: 3px;
+  	padding: 1px;
+  }*/
 }
 .tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-view {
   height: auto;

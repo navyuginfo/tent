@@ -22,3 +22,4 @@ Tent.Pager = Ember.View.extend
 
     getPage: ->
       @get('collection.pagingInfo.page')
+

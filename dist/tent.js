@@ -7528,10 +7528,10 @@ Tent.JqGridHeaderView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['grid/autofit_button']=Ember.Handlebars.compile("<a {{bindAttr title=\"view.title\"}} {{bindAttr class=\":horizontal-scroll-button view.active:active\"}}>\n\t<i class=\"icon-resize-horizontal\"></i>\n</a>");
-
 (function() {
-Tent.Grid.AutofitButton = Ember.View.extend({
+
+  Tent.Grid.AutofitButton = Ember.View.extend({
+    classNames: ['tent-autofit'],
     template: Ember.Handlebars.compile('<a {{bindAttr title="view.title"}} {{bindAttr class=":horizontal-scroll-button :button-control view.active:active"}}><i class="icon-resize-horizontal"></i></a>'),
     title: Tent.I18n.loc("tent.jqGrid.horizontalScroll"),
     grid: null,
@@ -12368,7 +12368,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
 }).call(this);
 
 
-Ember.TEMPLATES['pager']=Ember.Handlebars.compile("<div class=\"tent-pager control-strip\">\n\t<div class=\"wrapper middle\">\n\t\t<div class=\"button-wrapper\">\n\t\t\t\t<span>\n\t\t      <a {{action prev target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.prevTitle\"}}><i class=\"icon-chevron-left\"></i></a>\n\t\t    </span>\n\t\t    <span class=\"summary\">\n\t\t      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}\n\t\t    </span>\n\t\t    <span>\n\t\t      <a {{action next target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.nextTitle\"}}><i class=\"icon-chevron-right\"></i></a>     \n\t\t    </span>\n\t\t\t</div>\n\t\t</div>\n</div>\n\n ");
+Ember.TEMPLATES['pager']=Ember.Handlebars.compile("<div class=\"tent-pager control-strip\">\n\t<div class=\"wrapper middle\">\n\t\t<div class=\"button-wrapper\">\n\t\t\t\t<span>\n\t\t      <a {{action prev target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.prevTitle\"}}><i class=\"icon-chevron-left\"></i></a>\n\t\t    </span>\n\t\t    <span class=\"summary\">\n\t\t      Page: {{view.collection.pagingInfo.page}} of {{view.collection.pagingInfo.totalPages}}\n\t\t    </span>\n\t\t    <span>\n\t\t      <a {{action next target=\"view\"}} class=\"button-control\" href=\"#\" {{bindAttr title=\"view.nextTitle\"}}><i class=\"icon-chevron-right\"></i></a>     \n\t\t    </span>\n\t\t</div>\n\t</div>\n\t{{#if view.collection.totalRows}}\n\t\t<div class=\"wrapper right\">\n\t\t\t<div class=\"button-wrapper\">\n\t\t\t\tView {{view.collection.startRow}} - {{view.collection.endRow}} of {{view.collection.totalRows}}\n\t\t\t</div>\n\t\t</div>\n\t{{/if}}\n</div>\n\n ");
 
 (function() {
 Tent.Pager = Ember.View.extend({
@@ -12396,7 +12396,13 @@ Tent.Pager = Ember.View.extend({
     },
     getPage: function() {
       return this.get('collection.pagingInfo.page');
-    }
+    },
+    startRow: (function() {
+      return this.get('collection.startRow');
+    }).property(''),
+    endRow: (function() {
+      return this.get('collection.endRow');
+    }).property('')
   });
 
 }).call(this);
@@ -12945,6 +12951,16 @@ GridController
     totalRows: (function() {
       return this.get('_totalRows') || this.get('_totalPages') * this.get('pagesize') || 1;
     }).property('_totalRows', '_totalPages', 'pageSize'),
+    startRow: (function() {
+      return ((this.get('currentPage') - 1) * this.get('pageSize')) + 1;
+    }).property('currentPage', 'pageSize'),
+    endRow: (function() {
+      if ((this.get('totalRows') - this.get('startRow')) < this.get('pageSize')) {
+        return this.get('totalRows');
+      } else {
+        return this.get('currentPage') * this.get('pageSize');
+      }
+    }).property('startRow', 'currentPage', 'totalRows', 'pageSize'),
     goToPage: function(page) {
       this.set('currentPage', page);
       if (this.get('isShowingGroupsList')) {

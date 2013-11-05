@@ -10,8 +10,15 @@
 		    <span>
 		      <a {{action next target="view"}} class="button-control" href="#" {{bindAttr title="view.nextTitle"}}><i class="icon-chevron-right"></i></a>     
 		    </span>
+		</div>
+	</div>
+	{{#if view.collection.totalRows}}
+		<div class="wrapper right">
+			<div class="button-wrapper">
+				View {{view.collection.startRow}} - {{view.collection.endRow}} of {{view.collection.totalRows}}
 			</div>
 		</div>
+	{{/if}}
 </div>
 
  

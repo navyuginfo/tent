@@ -30,10 +30,11 @@ Make sure to include content in an aligned-wrapper, which can be left, middle or
 		}
 		&.left {
 			position: absolute;
+			left: 5px;
 		}
 		&.right {
 			position: absolute;
-			right: 0px;
+			right: 5px;
 			top: 0px;
 		}
 	}
