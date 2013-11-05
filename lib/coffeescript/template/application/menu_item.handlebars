@@ -1,5 +1,4 @@
 {{#if view.isEntitled}}
-	<li>
 		<a {{bindAttr class="view.hasAction:menu-link view.isDisabled:ui-state-disabled"}} href="#" {{action menuClicked target="view"}}>
 			{{#if view.hasChildren}}<i class="icon-chevron-left"></i>{{/if}}
 			<i {{bindAttr class=":menu-icon view.icon"}} {{bindAttr data-title="view.title"}} data-placement="right" data-animation="false"></i>
@@ -14,5 +13,4 @@
 				</ul>
 			</div>
 		{{/if}}
-	</li>
 {{/if}}

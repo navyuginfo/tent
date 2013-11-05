@@ -6,7 +6,7 @@ Tent.Application.PanelToggleView = Ember.View.extend
   template: Ember.Handlebars.compile('<a><i class="icon-reorder"></i></a>')
   attributeBindings: ['rel']
   rel: 'popover'
-  targets: ['sci-main-menu']
+  targets: ['main-menu']
 
   didInsertElement: ->
     @_super()

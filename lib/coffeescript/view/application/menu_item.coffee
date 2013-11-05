@@ -3,6 +3,7 @@ Tent.Application = Tent.Application or Em.Namespace.create()
 require '../../template/application/menu_item'
 
 Tent.Application.MenuItemView = Ember.View.extend
+	tagName: 'li'
 	classNames: ['menu-item']
 	layoutName: 'application/menu_item'
 	collapsed: false

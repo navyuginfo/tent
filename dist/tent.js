@@ -12414,17 +12414,14 @@ Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"s
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
-    classNames: ['main-menu', 'mp-level'],
+    classNames: ['main-menu', 'mp-level', 'selected'],
     didInsertElement: function() {
       this._super();
       this.applyMenuPlugin();
+      $('.dashboard-toggle a').click();
       return this.selectItemFromUrl();
     },
-    applyMenuPlugin: function() {
-      return this.set('menuPlugin', new mlPushMenu(document.getElementById('mp-menu'), document.getElementById('dashboard-toggle'), {
-        type: 'cover'
-      }));
-    },
+    applyMenuPlugin: function() {},
     selectedItemDidChange: (function() {
       if (this.get('controller.selectedItem') != null) {
         return this.addHighlightToMenuItem(this.get('controller.selectedItem'));
@@ -12503,12 +12500,13 @@ Tent.Application.MainMenuView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t<li>\n\t\t\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} href=\"#\" {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-angle-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\"view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<a class=\"mp-back\" href=\"#\">back</a>\n\t\t\t\t<h2><i {{bindAttr class=\"view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n\t</li>\n{{/if}}");
+Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} href=\"#\" {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-chevron-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\":menu-icon view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2><i {{bindAttr class=\":menu-icon view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\" href=\"#\">Back <i class=\"icon-chevron-right\"></i></a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n{{/if}}");
 
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MenuItemView = Ember.View.extend({
+    tagName: 'li',
     classNames: ['menu-item'],
     layoutName: 'application/menu_item',
     collapsed: false,
@@ -12575,7 +12573,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     template: Ember.Handlebars.compile('<a><i class="icon-reorder"></i></a>'),
     attributeBindings: ['rel'],
     rel: 'popover',
-    targets: ['sci-main-menu'],
+    targets: ['main-menu'],
     didInsertElement: function() {
       return this._super();
     },

@@ -4,7 +4,7 @@ require '../../template/application/main_menu'
 
 Tent.Application.MainMenuView = Ember.View.extend
   templateName: 'application/main_menu'
-  classNames: ['main-menu', 'mp-level']
+  classNames: ['main-menu', 'mp-level', 'selected']
 
   didInsertElement: ->
     @_super()
@@ -14,9 +14,8 @@ Tent.Application.MainMenuView = Ember.View.extend
     #@$('a i, button i').tooltip('enable')
 
   applyMenuPlugin: ->
-    @set('menuPlugin', new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'dashboard-toggle' ), {
-          type : 'cover'
-        }))
+    #@set('menuPlugin', new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'dashboard-toggle' ), {}))
+
 
   selectedItemDidChange: (->
     @addHighlightToMenuItem(@get('controller.selectedItem')) if @get('controller.selectedItem')?

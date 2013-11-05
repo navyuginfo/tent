@@ -115,10 +115,15 @@
 				ev.stopPropagation();
 				ev.preventDefault();
 				if( self.open ) {
-					self._resetMenu();
+					self._hideMenu();
 				}
 				else {
-					self._openMenu();
+					if (self.lastTransformOffset !== undefined) {
+						self._showMenu();
+					} else {
+						self._openMenu();
+					}
+					
 					// the menu should close if clicking somewhere on the body (excluding clicks on the menu)
 					$(document).bind( self.eventtype, function( ev ) {
 						if( self.open && !hasParent( ev.target, self.el.id ) ) {
@@ -218,6 +223,15 @@
 			//this._toggleLevels();
 			this.open = false;
 		},
+
+		_showMenu: function() {
+			this._setTransform('translate3d('+this.lastTransformOffset+',0,0)');
+		},
+
+		_hideMenu: function(){
+			this._setTransform('translate3d(0,0,0)');
+		},
+
 		// close sub menus
 		_closeMenu : function() {
 			var translateVal = this.options.type === 'overlap' ? this.el.offsetWidth + ( this.level - 1 ) * this.options.levelSpacing : this.el.offsetWidth;
@@ -226,6 +240,7 @@
 		},
 		// translate the el
 		_setTransform : function( val, el ) {
+			this.lastTransformOffset = val;
 			el = el || this.wrapper;
 			el.style.WebkitTransform = val;
 			el.style.MozTransform = val;
