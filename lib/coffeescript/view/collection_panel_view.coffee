@@ -76,25 +76,17 @@ Tent.CollectionPanelView = Ember.View.extend
     cardsAbove = parseInt(scrollTop/@getCardHeight(), 10) * cardsPerRow
     parseInt(cardsAbove / pageSize, 10) + 1
 
-    #totalRows = @get('collection.pagingInfo.totalRows')
-    #mod = totalRows % cardsPerRow
-    #totalHeight = ((totalRows/cardsPerRow)+(if mod then 1 else 0)) * rowHeight
-
   positionScrollbar: ->
     page = @get('collection.pagingInfo.page')
     pageSize = @get('collection.pagingInfo.pageSize')
-    #cardCount = (pageSize * (page-1)) + @get('collection.modelData').length 
     totalCards = @get('collection.pagingInfo.totalRows')
     
     rowHeight = @getCardHeight()
     totalRowsToShow = @rowsInGrid(totalCards)
 
-    #numberOfPaddingPages = @get('currentPage' - 1)
-    #if numberOfPaddingPages < 0 then numberOfPaddingPages = 0
     paddingHeight = @rowsOfPadding() * rowHeight
     totalHeightForAllRows = totalRowsToShow * rowHeight
     @$(".scroller").css({height : totalHeightForAllRows}).children("div:first").css('height', paddingHeight)
-    #ts.grid.bDiv.scrollLeft = ts.grid.hDiv.scrollLeft;
 
   getCardHeight: ->
     panel = @$('.collection-panel:first')
