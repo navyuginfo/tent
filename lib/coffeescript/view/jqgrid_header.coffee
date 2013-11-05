@@ -2,7 +2,7 @@ require '../template/jqgrid_header'
 require '../template/jqgrid_export'
 
 Tent.JqGridHeaderView = Ember.View.extend
-  classNames: ['grid-header', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix']
+  classNames: ['grid-header', 'control-strip', 'ui-jqgrid-titlebar', 'ui-widget-header', 'ui-helper-clearfix']
   templateName: 'jqgrid_header'
   grid: null
 
@@ -12,7 +12,7 @@ Tent.JqGridHeaderView = Ember.View.extend
   ).property()
 
   exportView: Ember.View.extend
-    classNames: ['export button']
+    classNames: ['export button-wrapper']
     templateName: 'jqgrid_export'
     csv: 'csv'
     json: 'json'

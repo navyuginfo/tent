@@ -19,7 +19,7 @@ Tent.Grid.Maximize = Ember.Mixin.create
 	renderMaximizeButton: ->
 		widget = @
 		if @get('showMaximizeButton')
-			@$(".grid-header .right").append('<div class="button"><a class="maximize"><i class="icon-resize-full"></i></a></div>')
+			@$(".grid-header .right").append('<div class="button-wrapper"><a class="maximize button-control"><i class="icon-resize-full"></i></a></div>')
 			
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)

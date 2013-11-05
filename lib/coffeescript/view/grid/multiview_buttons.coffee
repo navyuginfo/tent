@@ -2,7 +2,6 @@ require '../../template/grid/multiview_buttons'
 
 Tent.Grid.MultiviewButtons = Ember.View.extend
 	templateName: 'grid/multiview_buttons'
-	classNames: ['button']
 	showCardView: false
 	showListView: true
 

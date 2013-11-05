@@ -2,7 +2,6 @@
 
 $headerHeight: 20px;
 
-
 .tent-section.filterpanel {
 	height: 300px;
 	float: none;
@@ -86,38 +85,6 @@ $headerHeight: 20px;
 
 	.grid-header {
 		position: relative; // To allow a mask for expansion
-		.header-buttons {
-			height: 24px;
-			display: table;
-			border: 1px solid transparent;
-			&.middle {
-				margin-left: auto;
-				margin-right: auto;
-			}
-			&.left {
-				position: absolute;
-			}
-			&.right {
-				position: absolute;
-				right: 0px;
-				top: 0px;
-			}
-			> .button {
-				display: table-cell!important;
-				vertical-align: middle;
-				> a {
-					display: inline-block;
-					margin: 4px 3px;
-					cursor: pointer;
-					border: 1px solid #eee;
-					i {
-						margin-top: 0px;
-					}
-				}
-			}
-			
-			
-		}
 	}
 
 	.ui-jqgrid {
@@ -445,6 +412,10 @@ $headerHeight: 20px;
 			bottom: 0px;
 		}
 
+		&.paged .ui-jqgrid {
+			bottom: $pagerHeight;
+		}
+
 		.ui-jqgrid-titlebar {
 			height: $headerHeight;	
 		}
@@ -529,7 +500,7 @@ $headerHeight: 20px;
 
 		.horizontal-scroll-button {
 			@include transition(all 0.2s ease);
-			border-top: 1px solid transparent;
+			/*border-top: 1px solid transparent;
 			border-left: 1px solid transparent;
 			margin-top: 2px;
 			@include border-radius(2px);
@@ -543,7 +514,7 @@ $headerHeight: 20px;
 			i {
 				margin-left: 3px;
 				padding: 1px;
-			}
+			}*/
 		}
 
 	}

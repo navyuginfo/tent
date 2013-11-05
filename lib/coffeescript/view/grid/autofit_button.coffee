@@ -1,8 +1,7 @@
 require '../../template/grid/autofit_button'
 
 Tent.Grid.AutofitButton = Ember.View.extend
-    classNames: ['button']
-    template: Ember.Handlebars.compile('<a {{bindAttr title="view.title"}} {{bindAttr class=":horizontal-scroll-button view.active:active"}}><i class="icon-resize-horizontal"></i></a>')
+    template: Ember.Handlebars.compile('<a {{bindAttr title="view.title"}} {{bindAttr class=":horizontal-scroll-button :button-control view.active:active"}}><i class="icon-resize-horizontal"></i></a>')
     title: Tent.I18n.loc("tent.jqGrid.horizontalScroll")
     grid: null
 

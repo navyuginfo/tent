@@ -1,0 +1,57 @@
+
+/*  
+
+** C o n t r o l    S t r i p **
+
+A horizontal container of controls, usually containing buttons. 
+e.g. 
+ - grid header
+ - grid pager row
+
+The following html structure should be used:
+
+		<div .wrapper left|right|middle>
+			<div .button-wrapper>
+				<a .button-control></a>
+			</div>
+		</div>
+
+Make sure to include content in an aligned-wrapper, which can be left, middle or right aligned. 
+
+*/
+@mixin control-strip() {
+	.wrapper {
+		height: 24px;
+		display: table;
+		border: 1px solid transparent;
+		&.middle {
+			margin-left: auto;
+			margin-right: auto;
+		}
+		&.left {
+			position: absolute;
+		}
+		&.right {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+		}
+	}
+	.button-wrapper {
+			display: table-cell!important;
+			vertical-align: middle;
+	}
+	.button-control {
+		display: inline-block;
+		margin: 4px 3px;
+		cursor: pointer;
+		border: 1px solid #eee;
+		i {
+			margin-top: 0px;
+		}
+	}
+}
+
+.control-strip {
+	@include control-strip();
+}
