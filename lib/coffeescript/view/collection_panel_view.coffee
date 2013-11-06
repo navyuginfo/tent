@@ -37,7 +37,7 @@ Tent.CollectionPanelView = Ember.View.extend
 
   didInsertElement: ->
     @get('collection').update()
-    @set('selection', Ember.A()) if not @get('selection')?
+    @set('selection', Ember.A()) unless @get('selection')?
     @setupScrolledPaging() if @get('scroll')
 
   contentDidChange: (->
@@ -67,7 +67,6 @@ Tent.CollectionPanelView = Ember.View.extend
     newPageNum = @findPageNumberAtScrollPosition(scrollTop, rowHeight, cardsPerRow);    
     if @get('currentPage') != newPageNum
       @set('currentPage', newPageNum)
-      console.log('.... scrolling ...: page = ' + newPageNum)
       @get('collection').goToPage(newPageNum)
    
 

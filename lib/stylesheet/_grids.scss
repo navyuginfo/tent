@@ -412,9 +412,14 @@ $headerHeight: 20px;
 			bottom: 0px;
 		}
 
-		//&.paged .ui-jqgrid {
-		//	bottom: $pagerHeight;
-		//}
+    /* 
+      This should be enabled when grids in list mode use the new tent pager.
+      Since tent is shared on the scicustomer master, we comment out for now.
+      
+    &.paged .ui-jqgrid {
+		  bottom: $pagerHeight;
+		}
+    */
 
 		.ui-jqgrid-titlebar {
 			height: $headerHeight;	
