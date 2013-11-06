@@ -30,7 +30,7 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         watch: {
             emberTemplates: {
-              files: '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
+              files: '<%= yeoman.lib %>/coffeescript/**/*.handlebars',
               tasks: ['emberTemplates', 'livereload']
             },
             coffee: {
@@ -57,7 +57,7 @@ module.exports = function (grunt) {
             karma_qunit: {
                 files: [
                     '<%= yeoman.lib %>/coffeescript/**/*.coffee',
-                    '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
+                    '<%= yeoman.lib %>/coffeescript/**/*.handlebars',
                     '<%= yeoman.test %>/qunit/**/*.coffee'
                 ],
                 tasks: ['karma-watch-qunit-test']
@@ -65,7 +65,7 @@ module.exports = function (grunt) {
             karma_mocha: {
                 files: [
                     '<%= yeoman.lib %>/coffeescript/**/*.coffee',
-                    '<%= yeoman.lib %>/coffeescript/template/**/*.handlebars',
+                    '<%= yeoman.lib %>/coffeescript/**/*.handlebars',
                     '<%= yeoman.test %>/mocha/**/*.coffee',
                     '<%= yeoman.test %>/mocha/**/*.js'
                 ],
@@ -482,9 +482,9 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('karma-watch-qunit-test', [
-        'coffee:test',
-        'coffee:tent',
-        'emberTemplates',
+        'newer:coffee:test',
+        'newer:coffee:tent',
+        'any-newer:emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:unit_qunit_watch:run'
@@ -511,7 +511,7 @@ module.exports = function (grunt) {
         'emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
-        'karma:unit_mocha_watch:run'
+        //'karma:unit_mocha_watch:run'
     ]);
 
     //
@@ -519,12 +519,11 @@ module.exports = function (grunt) {
     // 
 
     grunt.registerTask('karma-qunit-ci', [
-        'clean:test',
         'concat:jq',
         'concat:vendor',
-        'coffee:test',
-        'coffee:tent',
-        'emberTemplates',
+        'newer:coffee:test',
+        'newer:coffee:tent',
+        'any-newer:emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:qunit_continuous'
@@ -536,12 +535,11 @@ module.exports = function (grunt) {
     // 
 
     grunt.registerTask('karma-mocha-ci', [
-        'clean:test',
         'concat:jq',
         'concat:vendor',
-        'coffee:test',
-        'coffee:tent',
-        'emberTemplates',
+        'newer:coffee:test',
+        'newer:coffee:tent',
+        'any-newer:emberTemplates',
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:mocha_continuous'
