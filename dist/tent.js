@@ -10530,10 +10530,10 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     focusOut: function() {
       var field, today;
-      field = this.$('input').val();
+      field = this.$('input.primary-class').val();
       if (!field || field === '') {
         today = this.format(new Date());
-        this.$('input').val(today);
+        this.$('input.primary-class').val(today);
         this.set('formattedValue', today);
       }
       return this.validateField();
@@ -13096,12 +13096,7 @@ GridController
     }).property('columnsDescriptor'),
     saveFilter: function(filterDef) {
       this.updateCurrentFilter(filterDef);
-      this.saveUIState();
-      return {
-        filterDidChange: (function() {
-          return this.updateCurrentFilter(this.get('selectedFilter'));
-        }).observes('selectedFilter.values.@each')
-      };
+      return this.saveUIState();
     },
     addNewFilter: function(filter) {
       filter.name = filter.name || filter.label.split(" ").join('');
