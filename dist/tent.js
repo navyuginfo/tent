@@ -12407,7 +12407,7 @@ Tent.Pager = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n</ul>");
+Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\n</ul>");
 
 (function() {
 
@@ -12670,35 +12670,44 @@ Tent.Application.MenuItemView = Ember.View.extend({
       return depth;
     },
     click: function(e) {
-      var mpLevel, target;
+      var target;
       target = $(e.target);
-      if (this.isBackButton(target)) {
-        mpLevel = this.getMpLevelElement(this.get('currentLevel'));
-        this.removeSelectedClass(mpLevel);
-        return this.goBack();
-      } else {
+      if (this.isBackButton(target) || this.isOverlapArea(target)) {
+        this.goBack();
         if (this.isOverlapArea(target)) {
-          mpLevel = this.getMpLevelElement(this.get('currentLevel'));
-          this.removeSelectedClass(mpLevel);
-          this.goBack();
           return this.showLevelIcons();
+        }
+      } else {
+        if (this.isLevelHeader(target)) {
+          return;
+        }
+        if (this.hasChildLevel(target) && !this.isDisabled(target)) {
+          return this.navigateToNewLevel(e);
         } else {
-          if (this.isLevelHeader(target)) {
-            return;
-          }
-          if (this.hasChildLevel(target) && !this.isDisabled(target)) {
-            this.set('currentLevel', this.findLevel($(e.target)) + 1);
-            $(e.target).parents('.mp-level:first').find('ul:first .mp-level').removeClass('selected');
-            $(e.target).parents('li:first').find('.mp-level').addClass('selected');
-            return this.redraw();
-          } else {
-            return this.hideMenu();
-          }
+          return this.hideMenu();
         }
       }
     },
+    isBackButton: function(target) {
+      return target.hasClass('mp-back') || target.hasClass('mp-level') || target.parents('a:first').hasClass('mp-back');
+    },
+    isOverlapArea: function(target) {
+      return parseInt(target.parents('.mp-level').attr('data-level')) !== this.get('currentLevel');
+    },
+    isLevelHeader: function(target) {
+      return target.is('h2') || target.parent().is('h2');
+    },
     goBack: function() {
+      var mpLevel;
+      mpLevel = this.getMpLevelElement(this.get('currentLevel'));
+      this.removeSelectedClass(mpLevel);
       this.set('currentLevel', this.get('currentLevel') - 1);
+      return this.redraw();
+    },
+    navigateToNewLevel: function(e) {
+      this.set('currentLevel', this.findLevel($(e.target)) + 1);
+      $(e.target).parents('.mp-level:first').find('ul:first .mp-level').removeClass('selected');
+      $(e.target).parents('li:first').find('.mp-level').addClass('selected');
       return this.redraw();
     },
     getMpLevelElement: function(level) {
@@ -12713,15 +12722,6 @@ Tent.Application.MenuItemView = Ember.View.extend({
     },
     findLevel: function(target) {
       return parseInt(target.parents('.mp-level:first').attr('data-level'));
-    },
-    isBackButton: function(target) {
-      return target.hasClass('mp-back') || target.hasClass('mp-level') || target.parents('a:first').hasClass('mp-back');
-    },
-    isOverlapArea: function(target) {
-      return parseInt(target.parents('.mp-level').attr('data-level')) !== this.get('currentLevel');
-    },
-    isLevelHeader: function(target) {
-      return target.is('h2') || target.parent().is('h2');
     },
     hasChildLevel: function(target) {
       return target.parents('.menu-item:first').children('.mp-level').length === 1;
