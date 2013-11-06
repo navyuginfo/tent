@@ -3600,27 +3600,10 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
       return this.trimValue(this.get('value'));
     }).property('value'),
     focusOut: function() {
-<<<<<<< HEAD
-<<<<<<< HEAD
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
       if (fieldValue === '') {
         return this.validateField();
-=======
-=======
-    change: function() {
->>>>>>> Implemented restructuring of menus and multi-level push menu.
-=======
->>>>>>> latest tent
-      var unformatted;
-      this._super(arguments);
-      this.set('isValid', this.validate());
-      if (this.get('isValid')) {
-        unformatted = this.unFormat(this.get('formattedValue'));
-        this.set('value', unformatted);
-        this.set('formattedValue', this.format(unformatted));
-        return this.validateWarnings();
->>>>>>> Implemented restructuring of menus and multi-level push menu.
       }
     },
     change: function() {
