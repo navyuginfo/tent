@@ -12407,7 +12407,7 @@ Tent.Pager = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\n</ul>");
+Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n</ul>");
 
 (function() {
 
@@ -12594,6 +12594,206 @@ Tent.Application.MenuItemView = Ember.View.extend({
     },
     getViewForTarget: function(target) {
       return Ember.View.views[$('.' + target).attr('id')];
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+
+  Tent.MLPushMenuView = Tent.Application.MainMenuView.extend({
+    classNames: ['tent-push-menu'],
+    currentLevel: 1,
+    maxDepth: 0,
+    levelOffset: 40,
+    didInsertElement: function() {
+      this.set('expandWidth', $('#mp-menu').width());
+      this.annotateLevels();
+      this._super();
+      return this.redraw();
+    },
+    showMenu: function() {
+      var width;
+      width = this.get('expandWidth') + ((this.get('currentLevel') - 1) * this.get('levelOffset'));
+      this.translate(width, $('.mp-pusher'));
+      return this.set('collapsed', false);
+    },
+    hideMenu: function() {
+      var width;
+      width = 0;
+      this.translate(width, $('.mp-pusher'));
+      return this.set('collapsed', true);
+    },
+    showMenuLevel: function(menu, level) {
+      var width;
+      width = this.get('expandWidth') + ((level - 1) * this.get('levelOffset'));
+      return menu.css('margin-left', "-" + width + "px");
+    },
+    hideMenuLevel: function(menu, level) {
+      var width;
+      width = this.get('expandWidth') * level;
+      return menu.css('margin-left', "-" + width + "px");
+    },
+    toggleCollapse: function() {
+      if (this.get('collapsed')) {
+        return this.showMenu();
+      } else {
+        return this.hideMenu();
+      }
+    },
+    translate: function(val, el) {
+      var left, right;
+      if (Tent.Browsers.isIE()) {
+        left = val - this.get('expandWidth');
+        right = val;
+        el.css('margin-left', "" + left + "px");
+        return el.css('margin-right', "-" + right + "px");
+      } else {
+        el.css('margin-left', "" + val + "px");
+        return el.css('margin-right', "-" + val + "px");
+      }
+    },
+    annotateLevels: function() {
+      var _this = this;
+      this.$().attr('data-level', 1).addClass('selected current root');
+      return this.$('.mp-level').each(function(i, el) {
+        return $(el).attr('data-level', _this.getLevelDepth($(el)));
+      });
+    },
+    getLevelDepth: function(el) {
+      var depth;
+      depth = el.parents('.mp-level').length + 1;
+      if (depth > this.get('maxDepth')) {
+        this.set('maxDepth', depth);
+      }
+      return depth;
+    },
+    click: function(e) {
+      var mpLevel, target;
+      target = $(e.target);
+      if (this.isBackButton(target)) {
+        mpLevel = this.getMpLevelElement(this.get('currentLevel'));
+        this.removeSelectedClass(mpLevel);
+        return this.goBack();
+      } else {
+        if (this.isOverlapArea(target)) {
+          mpLevel = this.getMpLevelElement(this.get('currentLevel'));
+          this.removeSelectedClass(mpLevel);
+          this.goBack();
+          return this.showLevelIcons();
+        } else {
+          if (this.isLevelHeader(target)) {
+            return;
+          }
+          if (this.hasChildLevel(target) && !this.isDisabled(target)) {
+            this.set('currentLevel', this.findLevel($(e.target)) + 1);
+            $(e.target).parents('.mp-level:first').find('ul:first .mp-level').removeClass('selected');
+            $(e.target).parents('li:first').find('.mp-level').addClass('selected');
+            return this.redraw();
+          } else {
+            return this.hideMenu();
+          }
+        }
+      }
+    },
+    goBack: function() {
+      this.set('currentLevel', this.get('currentLevel') - 1);
+      return this.redraw();
+    },
+    getMpLevelElement: function(level) {
+      return $('.selected[data-level="' + level + '"]', '.mp-menu');
+    },
+    removeSelectedClass: function(target) {
+      if (target.hasClass('mp-level')) {
+        return target.removeClass('selected');
+      } else {
+        return target.parents('.mp-level:first').removeClass('selected');
+      }
+    },
+    findLevel: function(target) {
+      return parseInt(target.parents('.mp-level:first').attr('data-level'));
+    },
+    isBackButton: function(target) {
+      return target.hasClass('mp-back') || target.hasClass('mp-level') || target.parents('a:first').hasClass('mp-back');
+    },
+    isOverlapArea: function(target) {
+      return parseInt(target.parents('.mp-level').attr('data-level')) !== this.get('currentLevel');
+    },
+    isLevelHeader: function(target) {
+      return target.is('h2') || target.parent().is('h2');
+    },
+    hasChildLevel: function(target) {
+      return target.parents('.menu-item:first').children('.mp-level').length === 1;
+    },
+    isDisabled: function(target) {
+      return target.hasClass('ui-state-disabled') || target.parents('a:first').hasClass('ui-state-disabled');
+    },
+    redraw: function() {
+      this.hideLowerLevels();
+      this.showSelectedLevels();
+      this.addRemoveCurrentClass();
+      this.showLevelIcons();
+      return this.showMenu();
+    },
+    hideLowerLevels: function() {
+      var level, _i, _ref, _ref1, _results,
+        _this = this;
+      _results = [];
+      for (level = _i = _ref = this.get('currentLevel') + 1, _ref1 = this.get('maxDepth'); _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; level = _ref <= _ref1 ? ++_i : --_i) {
+        _results.push($('[data-level="' + level + '"]', '.mp-menu').each(function(index, menu) {
+          return _this.hideMenuLevel($(menu), level);
+        }));
+      }
+      return _results;
+    },
+    showSelectedLevels: function() {
+      var level, _i, _ref, _results,
+        _this = this;
+      _results = [];
+      for (level = _i = 1, _ref = this.get('currentLevel'); 1 <= _ref ? _i <= _ref : _i >= _ref; level = 1 <= _ref ? ++_i : --_i) {
+        _results.push(this.getMpLevelElement(level).each(function(index, menu) {
+          return _this.showMenuLevel($(menu), level);
+        }));
+      }
+      return _results;
+    },
+    addRemoveCurrentClass: function(menu, level) {
+      var current, _i, _results;
+      current = this.get('currentLevel');
+      _results = [];
+      for (level = _i = 1; 1 <= current ? _i <= current : _i >= current; level = 1 <= current ? ++_i : --_i) {
+        menu = this.getMpLevelElement(level);
+        if (level === this.get('currentLevel')) {
+          _results.push(menu.addClass('current'));
+        } else {
+          _results.push(menu.removeClass('current'));
+        }
+      }
+      return _results;
+    },
+    showLevelIcons: function() {
+      var currentLevel, level, _i, _ref, _results;
+      currentLevel = this.get('currentLevel');
+      this.removeLevelIcon(currentLevel);
+      if (currentLevel !== 1) {
+        _results = [];
+        for (level = _i = 1, _ref = this.get('currentLevel') - 1; 1 <= _ref ? _i <= _ref : _i >= _ref; level = 1 <= _ref ? ++_i : --_i) {
+          _results.push(this.showLevelIcon(level));
+        }
+        return _results;
+      }
+    },
+    showLevelIcon: function(level) {
+      var icon, mpLevel;
+      mpLevel = this.getMpLevelElement(level);
+      icon = mpLevel.find(' > h2 > .menu-icon');
+      return mpLevel.append(icon.clone());
+    },
+    removeLevelIcon: function(level) {
+      return this.getMpLevelElement(level).find('> .menu-icon').hide(500, function() {
+        return $(this).remove();
+      });
     }
   });
 
