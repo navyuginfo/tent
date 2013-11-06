@@ -8,14 +8,11 @@ Tent.Application.MainMenuView = Ember.View.extend
 
   didInsertElement: ->
     @_super()
-    @applyMenuPlugin()
-    $('.dashboard-toggle a').click()
+    @openMenuInitially()
     @selectItemFromUrl()
-    #@$('a i, button i').tooltip('enable')
 
-  applyMenuPlugin: ->
-    #@set('menuPlugin', new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'dashboard-toggle' ), {}))
-
+  openMenuInitially: ->
+    $('.dashboard-toggle a').click()
 
   selectedItemDidChange: (->
     @addHighlightToMenuItem(@get('controller.selectedItem')) if @get('controller.selectedItem')?
@@ -63,9 +60,7 @@ Tent.Application.MainMenuView = Ember.View.extend
     selectedItem.set('isSelected', true)
 
   navigateToCorrectMenuLevel: (selectedItem) ->
-    #level = selectedItem.$().parents('.mp-level:first').get(0)
-    #@get('menuPlugin')._openMenu(level) if @get('menuPlugin')?
-    $('.dashboard-toggle a').click()
+    @openMenuInitially()
     levels = selectedItem.$().parentsUntil('#mp-menu','li')
     reversed = levels.toArray().reverse()
     for item in reversed
