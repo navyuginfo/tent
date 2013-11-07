@@ -336,21 +336,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 
   personalizationWasAdded: (->
-    @initializeFromCollectionPersonalizationName()
-  ).observes('collection.personalizations.@each')
-
-  initializeFromCollectionPersonalizationName: ->
-    if @get('collection')?
-      personalization = @get('collection').getSelectedPersonalization()
-
-      if personalization?
-        settings = personalization.get('settings')
-      else
-        settings = @get('collection.defaultPersonalization')
-        settings.filtering = @get('collection.defaultFiltering')
-        
-      @updateCollectionWithNewPersonalizationValues(@get('collection.customizationName'), settings)
-      @updateGridWitNewPersonalizationValues(settings)
+    @updateGridWitNewPersonalizationValues(@get('collection').getSettings())
+  ).observes('collection.personalizations','collection.personalizations.@each')
 
   getPersonalizationFromName: (name) ->
     matches = @get('collection.personalizations').filter((item)=> item.get('name') ==  name)
@@ -368,14 +355,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         settings = @get('collection.personalizations').objectAt(index).get('settings')
         customizationName = @get('collection.personalizations').objectAt(index).get('name')
 
-    @updateCollectionWithNewPersonalizationValues(customizationName, settings)
+    @get('collection').updateCollectionWithNewPersonalizationValues(customizationName, settings)
     @updateGridWitNewPersonalizationValues(settings)
-
-  updateCollectionWithNewPersonalizationValues: (name, settings) ->
-    @set('collection.customizationName', name)
-    @set('collection.pagingInfo', jQuery.extend(true, {}, settings.paging)) if settings.paging?
-    @set('collection.sortingInfo', jQuery.extend(true, {}, settings.sorting)) if settings.sorting?
-    @set('collection.filteringInfo', jQuery.extend(true, {}, settings.filtering)) if settings.filtering?
 
   updateGridWitNewPersonalizationValues: (settings) ->
     @set('columnInfo', jQuery.extend(true, {}, settings.columns)) if settings.columns?

@@ -92,6 +92,29 @@ Tent.Data.Customizable = Ember.Mixin.create
       @set('personalizations', [])
   ).observes('personalizationsRecord','personalizationsRecord.@each')
 
+  personalizationWasAdded: (->
+    @initializeFromCollectionPersonalizationName()
+  ).observes('personalizations','personalizations.@each')
+
+  initializeFromCollectionPersonalizationName: ->
+    settings = @getSettings()
+    @updateCollectionWithNewPersonalizationValues(@get('customizationName'), settings)
+
+  getSettings: ->
+    personalization = @getSelectedPersonalization()
+    if personalization?
+      settings = personalization.get('settings')
+    else
+      settings = @get('defaultPersonalization')
+      settings.filtering = @get('defaultFiltering')
+    settings
+
+  updateCollectionWithNewPersonalizationValues: (name, settings) ->
+    @set('customizationName', name)
+    @set('pagingInfo', jQuery.extend(true, {}, settings.paging)) if settings.paging?
+    @set('sortingInfo', jQuery.extend(true, {}, settings.sorting)) if settings.sorting?
+    @set('filteringInfo', jQuery.extend(true, {}, settings.filtering)) if settings.filtering?
+
   saveUIState: (name) ->
     if name?
       name=name.trim()
@@ -143,11 +166,12 @@ Tent.Data.Customizable = Ember.Mixin.create
     )
 
   fetchPersonalizations: ->
-    @get('store').fetchPersonalizationsWithQuery(
+    q = 
       category: @get('personalizationCategory')
       subcategory: @get('personalizationSubCategory').toString()
-      group: @get('personalizationGroup')
-    )
+    q.group = @get('personalizationGroup') if @get('personalizationGroup')?
+
+    @get('store').fetchPersonalizationsWithQuery(q)
 
   isShowingDefault: (->
     return @get('customizationName') == @get('defaultName')

@@ -4511,22 +4511,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return sortable && postdata.sidx !== "" && (postdata.sidx !== this.get('sortingInfo.fields.firstObject.field') || postdata.sord !== this.get('sortingInfo.fields.firstObject.sortDir'));
     },
     personalizationWasAdded: (function() {
-      return this.initializeFromCollectionPersonalizationName();
-    }).observes('collection.personalizations.@each'),
-    initializeFromCollectionPersonalizationName: function() {
-      var personalization, settings;
-      if (this.get('collection') != null) {
-        personalization = this.get('collection').getSelectedPersonalization();
-        if (personalization != null) {
-          settings = personalization.get('settings');
-        } else {
-          settings = this.get('collection.defaultPersonalization');
-          settings.filtering = this.get('collection.defaultFiltering');
-        }
-        this.updateCollectionWithNewPersonalizationValues(this.get('collection.customizationName'), settings);
-        return this.updateGridWitNewPersonalizationValues(settings);
-      }
-    },
+      return this.updateGridWitNewPersonalizationValues(this.get('collection').getSettings());
+    }).observes('collection.personalizations', 'collection.personalizations.@each'),
     getPersonalizationFromName: function(name) {
       var matches,
         _this = this;
@@ -4550,20 +4536,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           customizationName = this.get('collection.personalizations').objectAt(index).get('name');
         }
       }
-      this.updateCollectionWithNewPersonalizationValues(customizationName, settings);
+      this.get('collection').updateCollectionWithNewPersonalizationValues(customizationName, settings);
       return this.updateGridWitNewPersonalizationValues(settings);
-    },
-    updateCollectionWithNewPersonalizationValues: function(name, settings) {
-      this.set('collection.customizationName', name);
-      if (settings.paging != null) {
-        this.set('collection.pagingInfo', jQuery.extend(true, {}, settings.paging));
-      }
-      if (settings.sorting != null) {
-        this.set('collection.sortingInfo', jQuery.extend(true, {}, settings.sorting));
-      }
-      if (settings.filtering != null) {
-        return this.set('collection.filteringInfo', jQuery.extend(true, {}, settings.filtering));
-      }
     },
     updateGridWitNewPersonalizationValues: function(settings) {
       if (settings.columns != null) {
@@ -13308,6 +13282,37 @@ grouping: {
         return this.set('personalizations', []);
       }
     }).observes('personalizationsRecord', 'personalizationsRecord.@each'),
+    personalizationWasAdded: (function() {
+      return this.initializeFromCollectionPersonalizationName();
+    }).observes('personalizations', 'personalizations.@each'),
+    initializeFromCollectionPersonalizationName: function() {
+      var settings;
+      settings = this.getSettings();
+      return this.updateCollectionWithNewPersonalizationValues(this.get('customizationName'), settings);
+    },
+    getSettings: function() {
+      var personalization, settings;
+      personalization = this.getSelectedPersonalization();
+      if (personalization != null) {
+        settings = personalization.get('settings');
+      } else {
+        settings = this.get('defaultPersonalization');
+        settings.filtering = this.get('defaultFiltering');
+      }
+      return settings;
+    },
+    updateCollectionWithNewPersonalizationValues: function(name, settings) {
+      this.set('customizationName', name);
+      if (settings.paging != null) {
+        this.set('pagingInfo', jQuery.extend(true, {}, settings.paging));
+      }
+      if (settings.sorting != null) {
+        this.set('sortingInfo', jQuery.extend(true, {}, settings.sorting));
+      }
+      if (settings.filtering != null) {
+        return this.set('filteringInfo', jQuery.extend(true, {}, settings.filtering));
+      }
+    },
     saveUIState: function(name) {
       var uiState;
       if (name != null) {
@@ -13368,11 +13373,15 @@ grouping: {
       });
     },
     fetchPersonalizations: function() {
-      return this.get('store').fetchPersonalizationsWithQuery({
+      var q;
+      q = {
         category: this.get('personalizationCategory'),
-        subcategory: this.get('personalizationSubCategory').toString(),
-        group: this.get('personalizationGroup')
-      });
+        subcategory: this.get('personalizationSubCategory').toString()
+      };
+      if (this.get('personalizationGroup') != null) {
+        q.group = this.get('personalizationGroup');
+      }
+      return this.get('store').fetchPersonalizationsWithQuery(q);
     },
     isShowingDefault: (function() {
       return this.get('customizationName') === this.get('defaultName');
