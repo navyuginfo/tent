@@ -30,6 +30,10 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 		@set('isHorizontalScrolling', false)
 		@modifyGridForAutofit()
 
+	showAutofitButtonProp: (->
+		@get('showAutofitButton') and not @get('showCardView')
+	).property('showAutofitButton', 'showCardView')
+
 	toggleActive: (component)->
 		component = component or @$('.horizontal-scroll-button')
 		if @get('horizontalScrolling')
@@ -135,7 +139,7 @@ Tent.Grid.HorizontalScrollSupport = Ember.Mixin.create
 					@changeFooterWidth(index, finalWidth)
 			)
 			if @get('footerRow')
-          		@getTableDom()[0].grid.sDiv.style.width = "auto"
+				@getTableDom()[0].grid.sDiv.style.width = "auto"
 
 			if @get('autofitIfSpaceAvailable')
 				@ensureColumnsExpandToAvailableSpace(firstRowOfGrid, jqGridCols)

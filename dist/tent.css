@@ -10,6 +10,58 @@
 	Mixin to allow a modal panel to flex in height according to the viewport height .
 	The $margin argument defines the percentage offset from the top and bottom of the viewport.
 */
+/*  
+
+** C o n t r o l    S t r i p **
+
+A horizontal container of controls, usually containing buttons. 
+e.g. 
+ - grid header
+ - grid pager row
+
+The following html structure should be used:
+
+		<div .wrapper left|right|middle>
+			<div .button-wrapper>
+				<a .button-control></a>
+			</div>
+		</div>
+
+Make sure to include content in an aligned-wrapper, which can be left, middle or right aligned. 
+
+*/
+.control-strip .wrapper {
+  height: 24px;
+  display: table;
+  border: 1px solid transparent;
+}
+.control-strip .wrapper.middle {
+  margin-left: auto;
+  margin-right: auto;
+}
+.control-strip .wrapper.left {
+  position: absolute;
+  left: 5px;
+}
+.control-strip .wrapper.right {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+}
+.control-strip .button-wrapper {
+  display: table-cell!important;
+  vertical-align: middle;
+}
+.control-strip .button-control {
+  display: inline-block;
+  margin: 4px 3px;
+  cursor: pointer;
+  border: 1px solid #eee;
+}
+.control-strip .button-control i {
+  margin-top: 0px;
+}
+
 /* Bootstrap Modifications */
 .form-inline .control-group {
   display: inline-block;
@@ -393,6 +445,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 
 	Column Chooser 
 	.column-chooser, .jqgrid-title-button, .btn-filter {
+
 		float: right;
 		margin-right: 30px;
 		cursor: pointer;
@@ -423,36 +476,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .tent-jqgrid .grid-header {
   position: relative;
-}
-.tent-jqgrid .grid-header .header-buttons {
-  height: 24px;
-  display: table;
-  border: 1px solid transparent;
-}
-.tent-jqgrid .grid-header .header-buttons.middle {
-  margin-left: auto;
-  margin-right: auto;
-}
-.tent-jqgrid .grid-header .header-buttons.left {
-  position: absolute;
-}
-.tent-jqgrid .grid-header .header-buttons.right {
-  position: absolute;
-  right: 0px;
-  top: 0px;
-}
-.tent-jqgrid .grid-header .header-buttons > .button {
-  display: table-cell!important;
-  vertical-align: middle;
-}
-.tent-jqgrid .grid-header .header-buttons > .button > a {
-  display: inline-block;
-  margin: 4px 3px;
-  cursor: pointer;
-  border: 1px solid #eee;
-}
-.tent-jqgrid .grid-header .header-buttons > .button > a i {
-  margin-top: -1px;
 }
 .tent-jqgrid .ui-jqgrid {
   position: absolute;
@@ -774,23 +797,21 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   transition: all 0.2s ease;
-  border-top: 1px solid transparent;
+  /*border-top: 1px solid transparent;
   border-left: 1px solid transparent;
   margin-top: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button:hover {
-  border-color: #CCC;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button.active {
-  border-color: #CCC;
-  background: #eee;
-}
-.tent-jqgrid .ui-widget-header .horizontal-scroll-button i {
-  margin-left: 3px;
-  padding: 1px;
+  @include border-radius(2px);
+  &:hover {
+  	border-color: #CCC;
+  }
+  &.active{
+  	border-color: #CCC;
+  	background: #eee;
+  }
+  i {
+  	margin-left: 3px;
+  	padding: 1px;
+  }*/
 }
 .tent-jqgrid.horizontal-scrolling.fixed-header .ui-jqgrid-view {
   height: auto;
@@ -889,6 +910,20 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   color: #666464;
   vertical-align: middle;
   display: table-cell;
+}
+
+/* Tent Pager Widget*/
+.tent-pager {
+  position: absolute;
+  bottom: 0px;
+  display: table;
+  text-align: center;
+  height: 32px;
+  width: 100%;
+}
+.tent-pager .centering {
+  display: table-cell;
+  vertical-align: middle;
 }
 
 /* Standard Panel, with expandable */
@@ -1401,7 +1436,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .collection-panel-container {
+  width: 100%;
   padding-top: 10px;
+  background-color: #fff;
 }
 
 .fixed-header .collection-panel-container {
@@ -1409,6 +1446,10 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   top: 20px;
   bottom: 0px;
   overflow: auto;
+}
+
+.fixed-header.paged .collection-panel-container {
+  bottom: 32px;
 }
 
 .collection-panel {

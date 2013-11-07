@@ -19,7 +19,7 @@ Tent.Grid.Maximize = Ember.Mixin.create
 	renderMaximizeButton: ->
 		widget = @
 		if @get('showMaximizeButton')
-			@$(".grid-header .left").prepend('<div class="button"><a class="maximize"><i class="ui-icon ui-icon-arrow-4-diag"></i></a></div>')
+			@$(".grid-header .right").append('<div class="button-wrapper"><a class="maximize button-control"><i class="icon-resize-full"></i></a></div>')
 			
 			@$('a.maximize').click(() ->
 				widget.toggleFullScreen(@)
@@ -72,8 +72,8 @@ Tent.Grid.Maximize = Ember.Mixin.create
 					{
 						duration: @get('resizeSpeed'),
 						complete: =>
-							$('span', widget).removeClass('ui-icon-arrow-4-diag')
-							$('span', widget).addClass('ui-icon-arrow-1-se')
+							$('span', widget).removeClass('icon-resize-full')
+							$('span', widget).addClass('icon-resize-small')
 							@set('fullScreen', true)
 							@resizeToContainer()
 							if not @get('resizeGridSteps')
@@ -104,8 +104,8 @@ Tent.Grid.Maximize = Ember.Mixin.create
 			{
 				duration: @get('resizeSpeed'),
 				complete: =>
-					@$('.maximize > span').removeClass('ui-icon-arrow-1-se')
-					@$('.maximize > span').addClass('ui-icon-arrow-4-diag')
+					@$('.maximize > span').removeClass('icon-resize-small')
+					@$('.maximize > span').addClass('icon-resize-full')
 					@set('fullScreen', false)
 					@$().css('height', '')
 					@$().css('width', '')

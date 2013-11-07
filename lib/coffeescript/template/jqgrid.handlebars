@@ -1,7 +1,7 @@
 {{#if view.content.isLoadable}}
-	{{#unless view.content.isLoaded}}
-		{{view Tent.WaitIcon}}
-  	{{/unless}}
+  {{#unless view.content.isLoaded}}
+    {{view Tent.WaitIcon}}
+  {{/unless}}
 {{/if}}
 
 <div class="jqgrid-backdrop" class=""></div>
@@ -9,9 +9,9 @@
 {{view Tent.JqGridHeaderView gridBinding="view"}}
 
 <div class="grid-container">
-	{{view Tent.FilterPanelView collectionBinding="view.collection" isPinnedBinding="view.isPinned" showFilterBinding="view.showFilter" usageContextBinding="view.usageContext"}}
+  {{view Tent.FilterPanelView collectionBinding="view.collection" isPinnedBinding="view.isPinned" showFilterBinding="view.showFilter" usageContextBinding="view.usageContext"}}
 
-	<div class="table-container">
+  <div class="table-container">
         {{#if view.showMultiview}}
             {{view Tent.CollectionPanelView 
                 collectionBinding="view.collection"
@@ -19,17 +19,25 @@
                 selectionBinding="view.selection"
                 selectable=true
                 isVisibleBinding="view.showCardView"
+                scrollBinding="view.scroll"
             }} 
+           	{{#if view.showCardView}}
+	            {{#if view.paged}}
+	              {{#unless view.scroll}}
+	                {{view Tent.Pager collectionBinding="view.collection"}}
+	              {{/unless}}
+	            {{/if}}
+	          {{/if}}
         {{/if}}
         <div {{bindAttr class=":visibility-wrapper view.showCardView:hidden"}}>
-    	   <table class="grid-table"></table>
-           <div class="gridpager"></div>
+          <table class="grid-table"></table>
+          <div class="gridpager"></div>
         </div>
     </div>
 </div>
 
 {{#if view.hasErrors}}
-	<span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
+  <span class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>
 {{/if}}
 
 

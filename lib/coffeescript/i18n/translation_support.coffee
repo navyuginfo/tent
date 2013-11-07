@@ -29,15 +29,15 @@ Tent.I18n = Ember.Namespace.create
 	* @param {String|[Array| Object]} [vars] arguments to be interpolated in the translated string
 	###
 	loc: (key, vars) ->
-    if key?
-      string = Ember.get(@language, key) || key
-      idx  = 0
-      vars = [vars] if(typeof vars == 'string')
-      string.replace(/%@([0-9]|[a-zA-Z]+)?/g,(s, argIndex)->
-        argIndex = if(argIndex? and isNaN(argIndex)) then argIndex else (if isNaN(parseInt(argIndex)) then idx++ else parseInt(argIndex)-1)
-        s = vars?[argIndex]
-        if(s?) then s else ''
-      )
+		if key?
+			string = Ember.get(@language, key) || key
+			idx  = 0
+			vars = [vars] if(typeof vars == 'string')
+			string.replace(/%@([0-9]|[a-zA-Z]+)?/g,(s, argIndex)->
+				argIndex = if(argIndex? and isNaN(argIndex)) then argIndex else (if isNaN(parseInt(argIndex)) then idx++ else parseInt(argIndex)-1)
+				s = vars?[argIndex]
+				if(s?) then s else ''
+			)
 
 
 Tent.translate = Tent.I18n.loc
@@ -84,6 +84,12 @@ Tent.I18n.loadTranslations(
 				export: 'Export'
 			}
 			pagerViewing: 'VIEWING'
+			paging: {
+				next: 'Next page'
+				prev: 'Previous page'
+				first: 'First page'
+				last: 'Last page'
+			}
 			saveUi: {
 				defaultName: 'No Customization'
 				default: 'No Customization'
@@ -169,23 +175,23 @@ Tent.I18n.loadTranslations(
 
 	}
 	error: {
-	    generic: 'Error'
-	    required: 'Field is required'
-	    numeric: 'Value must be numbers only'
-	    amount: 'Amount should be positive'
-	    positive: 'Value should be positive'
-	    email: 'Email format error'
-	    date: 'Date format error'
-	    dateBetween: 'Date should be between %@startDate and %@endDate'
-	    dateFuture: 'You provided a date in the future'
-	    maxLength: 'Length must be %@max characters or less'
-	    minLength: 'Length must be %@min characters or more'
-	    invalidCurrency: 'Invalid currency'
-	    regexp: 'Value must pass the regular expression %@regexp'
-	    minValue: 'Value must be greater than or equal to %@min'
-	    maxValue: 'Value must be less than or equal to %@max'
-	    valueBetween: 'Value must be between %@min and %@max'
-	    uniqueValue: '%@item with this %@property already exists'
+			generic: 'Error'
+			required: 'Field is required'
+			numeric: 'Value must be numbers only'
+			amount: 'Amount should be positive'
+			positive: 'Value should be positive'
+			email: 'Email format error'
+			date: 'Date format error'
+			dateBetween: 'Date should be between %@startDate and %@endDate'
+			dateFuture: 'You provided a date in the future'
+			maxLength: 'Length must be %@max characters or less'
+			minLength: 'Length must be %@min characters or more'
+			invalidCurrency: 'Invalid currency'
+			regexp: 'Value must pass the regular expression %@regexp'
+			minValue: 'Value must be greater than or equal to %@min'
+			maxValue: 'Value must be less than or equal to %@max'
+			valueBetween: 'Value must be between %@min and %@max'
+			uniqueValue: '%@item with this %@property already exists'
 	}
  
 )

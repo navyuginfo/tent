@@ -1,11 +1,11 @@
-<div class="header-buttons left">
+<div class="wrapper left">
     {{#if view.grid.showExportButton}}
         {{#if view.someExportsAreAllowed}}
             {{view view.exportView}}
         {{/if}}
     {{/if}}
 </div>
-<div class="header-buttons middle">
+<div class="wrapper middle">
     {{#if view.grid.scroll}}
         <div class="header-pager">
             <p class="title">{{loc tent.jqGrid.pagerViewing}}</p>
@@ -13,20 +13,26 @@
         </div>
     {{/if}}
 </div>
-<div class="header-buttons right">
-    {{#if view.grid.showAutofitButton}}
+<div class="wrapper right">
+    {{#if view.grid.showAutofitButtonProp}}
+    	<div class="button-wrapper">
         {{view Tent.Grid.AutofitButton gridBinding="view.grid"}}
+      </div>
     {{/if}}
     {{#if view.grid.showMultiview}}
+    	<div class="button-wrapper">
         {{view Tent.Grid.MultiviewButtons showCardViewBinding="view.grid.showCardView" showListViewBinding="view.grid.showListView"}}
+      </div>
     {{/if}}
     {{#if view.grid.showColumnChooser}}
+    	<div class="button-wrapper">
         {{view Tent.Grid.ColumnChooserButton gridBinding="view.grid"}}  
+      </div>
     {{/if}}
     {{#if view.grid.collection}}
         {{#if view.grid.filtering}}
-            <div class="button">
-                <a {{action toggleFilter target="view.grid"}} class="btn-filter">
+            <div class="button-wrapper">
+                <a {{action toggleFilter target="view.grid"}} class="btn-filter button-control">
                     {{loc tent.filter.filter}}
                 </a>
             </div>

@@ -43,6 +43,7 @@ require './spinner'
 require './waiticon'
 require './tree'
 require './collection_panel_view'
+require './pager'
 
 require './application/main_menu'
 require './application/menu_item'

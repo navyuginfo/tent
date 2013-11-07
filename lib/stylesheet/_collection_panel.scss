@@ -9,8 +9,11 @@ $collection-panel-header-background-gradient: linear-gradient(#465e8e, #384e77);
 $collection-panel-footer-background-gradient: linear-gradient(#f4f4f4, #e4e4e4); 
 $collection-panel-content-border-color: #b1b1b1;
 
+
 .collection-panel-container {
+	width: 100%;
 	padding-top: 10px;
+  background-color: #fff;
 }
 
 .fixed-header .collection-panel-container {
@@ -18,6 +21,10 @@ $collection-panel-content-border-color: #b1b1b1;
 	top: 20px;
 	bottom: 0px;
 	overflow: auto;
+}
+
+.fixed-header.paged .collection-panel-container {
+  bottom: $pagerHeight;
 }
 
 .collection-panel {
@@ -123,3 +130,4 @@ $collection-panel-content-border-color: #b1b1b1;
 		color: white;
 	}
 }
+

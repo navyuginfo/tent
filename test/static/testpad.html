@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/jquery-ui-1.9.2.custom.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="stylesheet/select2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/testpad.css" type="text/css" media="screen" />
     
     <!-- link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" / -->
 
@@ -29,7 +30,6 @@
     <script src="javascript/blueimp-jquery-fileupload.js"></script>
     <script src="javascript/fancy-tree.js"></script>
     <script src="javascript/select2.js"></script>
-    
     
     <!--[if lte IE 7]>
       <script src="javascript/eventlistener-polyfill.js" type="text/javascript"></script>
@@ -238,7 +238,7 @@
             
 
             {{view Tent.Textarea label="_textArea" valueBinding="Pad.textarea" requiredBinding="Pad.isRequired" readOnlyBinding="Pad.isReadOnly" disabledBinding="Pad.isDisabled" textDisplayBinding="Pad.textDisplay" tooltip="_tooltip" placeholder="_typeHere" 
-            warnings="email"
+            	warnings="email"
             }}
 
             {{#view Tent.Panel span="10" title="Tent Panel" collapsible=true hasChildViews=true}}
@@ -253,6 +253,10 @@
             {{/view}}
 
 
+             <div class="control-group">
+              <label class="control-label"></label>
+              <div class="controls">{{view Tent.Button label="Cancel" validate=false warn=false preventValidation=true}}</div>
+            </div>
             <div class="control-group">
               <label class="control-label"></label>
               <div class="controls">{{view Tent.Button label="Submit" validate=true warn=true}}</div>

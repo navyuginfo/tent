@@ -3,7 +3,7 @@ require '../../mixin/toggle_visibility'
 
 
 Tent.Grid.ColumnChooserButton = Ember.View.extend Tent.ToggleVisibility,
-	classNames: ['button column-chooser']
+	classNames: ['column-chooser']
 	templateName: 'grid/column_chooser_button'
 	#title: Tent.I18n.loc("tent.jqGrid.horizontalScroll")
 	grid: null
