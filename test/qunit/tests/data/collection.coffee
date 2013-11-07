@@ -10,7 +10,7 @@ test 'Total pages', ->
 	collection = Tent.Data.Collection.create
 		dataType: "Pad.Models.TaskModel"
 		store: 
-			fetchPersonalizations: ->
+			fetchPersonalizationsWithQuery: ->
 			getColumnsForType: ->
 				[
 					Ember.Object.create {id: "id", name: "id", type:"number", title: "_hID", field: "id", width:5, sortable: true, hidden: true, formatter: "action", formatoptions: {action: "showInvoiceDetails"}, hideable: true, groupable: false, filterable:true},

@@ -116,9 +116,6 @@ Tent.Data.Filter = Ember.Mixin.create
 			@get('filteringInfo.availableFilters').clear()
 			@get('filteringInfo.availableFilters').pushObjects(filters)
 
-
-			#@set('filteringInfo.availableFilters', filters)
-
 			if not replacedExisting
 				@addNewFilter(currentFilter)
 
@@ -158,7 +155,6 @@ Tent.Data.Filter = Ember.Mixin.create
 			column.filterable != false
 		)
 	).property('columnsDescriptor')
-
 
 	saveFilter: (filterDef) -> 
 		# TODO : check that filter is not duplicated

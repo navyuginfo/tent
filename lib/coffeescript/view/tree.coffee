@@ -36,6 +36,8 @@ Tent.Tree = Ember.View.extend
     """)
   ).property()
 
+  classNames: ['tent-tree']
+
   ###*
   * @property {Boolean} [aria=false] A boolean property which enables/disables WAI-ARIA support.
   ###
@@ -246,6 +248,11 @@ Tent.Tree = Ember.View.extend
     unless @get('hasArrayObservers')
       @addArrayObservers(@get('content')) 
       @set 'hasArrayObservers', true
+    @highlightSelectedNodes()
+
+  highlightSelectedNodes: ->
+    for item in @get('selection')
+      @selectNode(item)
 
   getTreeEvents: ->
     options = {}
@@ -300,6 +307,12 @@ Tent.Tree = Ember.View.extend
   toggleExpand: (-> @getRootNode().visit((node) -> node.toggleExpanded()))
 
   selectAll: (-> @getTree().visit((node) -> node.setSelected(true)))
+
+  selectNode: ((val)-> 
+    @getTree().visit((node) -> 
+      node.setSelected(true) if node.data.value == val
+    )
+  )
 
   deselectAll: (-> @getTree().visit((node) -> node.setSelected(false)))
 

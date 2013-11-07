@@ -73,6 +73,8 @@ Tent.Data.Customizable = Ember.Mixin.create
     }
   personalizations: []
   personalizationType: null
+  personalizationGroup: null
+
   personalizationSubCategory: (->
     type = @get('personalizationType')
     if type? then type else @get('dataType')
@@ -89,6 +91,29 @@ Tent.Data.Customizable = Ember.Mixin.create
     else
       @set('personalizations', [])
   ).observes('personalizationsRecord','personalizationsRecord.@each')
+
+  personalizationWasAdded: (->
+    @initializeFromCollectionPersonalizationName()
+  ).observes('personalizations','personalizations.@each')
+
+  initializeFromCollectionPersonalizationName: ->
+    settings = @getSettings()
+    @updateCollectionWithNewPersonalizationValues(@get('customizationName'), settings)
+
+  getSettings: ->
+    personalization = @getSelectedPersonalization()
+    if personalization?
+      settings = personalization.get('settings')
+    else
+      settings = @get('defaultPersonalization')
+      settings.filtering = @get('defaultFiltering')
+    settings
+
+  updateCollectionWithNewPersonalizationValues: (name, settings) ->
+    @set('customizationName', name)
+    @set('pagingInfo', jQuery.extend(true, {}, settings.paging)) if settings.paging?
+    @set('sortingInfo', jQuery.extend(true, {}, settings.sorting)) if settings.sorting?
+    @set('filteringInfo', jQuery.extend(true, {}, settings.filtering)) if settings.filtering?
 
   saveUIState: (name) ->
     if name?
@@ -110,10 +135,12 @@ Tent.Data.Customizable = Ember.Mixin.create
   addReportToCollection: (report) ->
     @get('personalizations').pushObject(report) 
 
-  saveReport: (report)->
+  saveReport: (report, callback)->
     reportName = report.get('name')
+    @updateCurrentFilter(@get('selectedFilter'))
     settings = $.extend(true, {}, report.get('settings'), @gatherGridData(reportName))
-    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings)
+    # 'callback' accepts the createdRecord as a parameter, and any lifecycle listeners should be defined in the callback.
+    newRecord = @get('store').savePersonalization('report', report.get('subcategory'), reportName, settings, callback, report.get('group'))
     
   removeExistingCustomization: (name)->
     for p, index in @get('personalizations')
@@ -139,7 +166,12 @@ Tent.Data.Customizable = Ember.Mixin.create
     )
 
   fetchPersonalizations: ->
-    @get('store').fetchPersonalizations(@get('personalizationCategory'),  @get('personalizationSubCategory'))
+    q = 
+      category: @get('personalizationCategory')
+      subcategory: @get('personalizationSubCategory').toString()
+    q.group = @get('personalizationGroup') if @get('personalizationGroup')?
+
+    @get('store').fetchPersonalizationsWithQuery(q)
 
   isShowingDefault: (->
     return @get('customizationName') == @get('defaultName')
