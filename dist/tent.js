@@ -12397,6 +12397,7 @@ Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"s
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
+    collapseAutomatically: true,
     classNames: ['main-menu', 'mp-level', 'selected'],
     didInsertElement: function() {
       this._super();
@@ -12667,7 +12668,9 @@ Tent.Application.MenuItemView = Ember.View.extend({
         if (this.hasChildLevel(target) && !this.isDisabled(target)) {
           return this.navigateToNewLevel(e);
         } else {
-          return this.hideMenu();
+          if (this.get('collapseAutomatically')) {
+            return this.hideMenu();
+          }
         }
       }
     },

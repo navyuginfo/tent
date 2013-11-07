@@ -64,7 +64,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
       if @hasChildLevel(target) and not @isDisabled(target)
         @navigateToNewLevel(e)
       else
-        @hideMenu()
+        @hideMenu() if @get('collapseAutomatically')
 
   isBackButton: (target) ->
     target.hasClass('mp-back') or target.hasClass('mp-level') or target.parents('a:first').hasClass('mp-back')

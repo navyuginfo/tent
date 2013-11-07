@@ -4,6 +4,11 @@ require '../../template/application/main_menu'
 
 Tent.Application.MainMenuView = Ember.View.extend
   templateName: 'application/main_menu'
+  ###*
+  * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
+  * item is selected.
+  ###
+  collapseAutomatically: true
   classNames: ['main-menu', 'mp-level', 'selected']
 
   didInsertElement: ->
