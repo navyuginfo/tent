@@ -7,7 +7,6 @@ Tent.Application.MenuItemView = Ember.View.extend
 	classNames: ['menu-item']
 	layoutName: 'application/menu_item'
 	collapsed: false
-	isSelected: false
 	isEnabled: true
 
 	init: ->
@@ -18,6 +17,10 @@ Tent.Application.MenuItemView = Ember.View.extend
 	menuClicked: (e)->
 		if @get('hasAction') and @get('isEnabled')
 			@get('controller').menuClicked(@)
+
+	isSelected: (->
+		@get('controller.selectedItem') == this
+	).property('controller.selectedItem')
 
 	applyHighlight: (->
 		@get('isSelected') && @get('hasAction')

@@ -12412,11 +12412,6 @@ Tent.Application.MainMenuView = Ember.View.extend({
     openMenuInitially: function() {
       return $('.dashboard-toggle a').click();
     },
-    selectedItemDidChange: (function() {
-      if (this.get('controller.selectedItem') != null) {
-        return this.addHighlightToMenuItem(this.get('controller.selectedItem'));
-      }
-    }).observes('controller.selectedItem'),
     selectedActionDidChange: (function() {
       return this.selectItemFromAction(this.get('controller.selectedAction'));
     }).observes('controller.selectedAction'),
@@ -12425,7 +12420,6 @@ Tent.Application.MainMenuView = Ember.View.extend({
       path = path || window.location.pathname;
       that = this;
       if ((this.$() != null)) {
-        this.unhighlightAllItems();
         return this.forAllChildViews(function(view) {
           if (view.get('hasAction')) {
             if (path.indexOf(view.get('route')) !== -1) {
@@ -12440,7 +12434,6 @@ Tent.Application.MainMenuView = Ember.View.extend({
       var that;
       that = this;
       if ((this.$() != null)) {
-        this.unhighlightAllItems();
         return this.forAllChildViews(function(view) {
           if (view.get('hasAction')) {
             if (action === view.get('action')) {
@@ -12462,10 +12455,6 @@ Tent.Application.MainMenuView = Ember.View.extend({
       }
       return _results;
     },
-    addHighlightToMenuItem: function(selectedItem) {
-      this.unhighlightAllItems();
-      return selectedItem.set('isSelected', true);
-    },
     navigateToCorrectMenuLevel: function(selectedItem) {
       var item, levels, reversed, _i, _len, _results;
       this.openMenuInitially();
@@ -12477,13 +12466,6 @@ Tent.Application.MainMenuView = Ember.View.extend({
         _results.push($(item).find('a:first').click());
       }
       return _results;
-    },
-    unhighlightAllItems: function() {
-      return this.forAllChildViews(function(view) {
-        if (view.get('hasAction')) {
-          return view.set('isSelected', false);
-        }
-      });
     }
   });
 
@@ -12500,7 +12482,6 @@ Tent.Application.MenuItemView = Ember.View.extend({
     classNames: ['menu-item'],
     layoutName: 'application/menu_item',
     collapsed: false,
-    isSelected: false,
     isEnabled: true,
     init: function() {
       return this._super();
@@ -12511,6 +12492,9 @@ Tent.Application.MenuItemView = Ember.View.extend({
         return this.get('controller').menuClicked(this);
       }
     },
+    isSelected: (function() {
+      return this.get('controller.selectedItem') === this;
+    }).property('controller.selectedItem'),
     applyHighlight: (function() {
       return this.get('isSelected') && this.get('hasAction');
     }).property('isSelected'),

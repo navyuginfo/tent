@@ -19,10 +19,6 @@ Tent.Application.MainMenuView = Ember.View.extend
   openMenuInitially: ->
     $('.dashboard-toggle a').click()
 
-  selectedItemDidChange: (->
-    @addHighlightToMenuItem(@get('controller.selectedItem')) if @get('controller.selectedItem')?
-  ).observes('controller.selectedItem')
-
   selectedActionDidChange: (->
     @selectItemFromAction(@get('controller.selectedAction'))
   ).observes('controller.selectedAction')
@@ -33,8 +29,6 @@ Tent.Application.MainMenuView = Ember.View.extend
     path = path or window.location.pathname
     that = this
     if (@$()?)
-      @unhighlightAllItems()
-
       @forAllChildViews((view)->
         if view.get('hasAction')
           if path.indexOf(view.get('route')) != -1
@@ -45,8 +39,6 @@ Tent.Application.MainMenuView = Ember.View.extend
   selectItemFromAction: (action)->
     that = this
     if (@$()?)
-      @unhighlightAllItems()
-
       @forAllChildViews((view)->
         if view.get('hasAction')
           if action == view.get('action')
@@ -59,11 +51,6 @@ Tent.Application.MainMenuView = Ember.View.extend
     for childView in view.get('childViews')
       @forAllChildViews(callback, childView)
 
-
-  addHighlightToMenuItem: (selectedItem)->
-    @unhighlightAllItems()
-    selectedItem.set('isSelected', true)
-
   navigateToCorrectMenuLevel: (selectedItem) ->
     @openMenuInitially()
     levels = selectedItem.$().parentsUntil('#mp-menu','li')
@@ -71,8 +58,3 @@ Tent.Application.MainMenuView = Ember.View.extend
     for item in reversed
       $(item).find('a:first').click()
 
-  unhighlightAllItems: ->
-    @forAllChildViews((view)->
-      if view.get('hasAction')
-        view.set('isSelected', false)
-    )
