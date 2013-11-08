@@ -1335,11 +1335,12 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .scroller {
-  overflow-y: auto;
+  overflow-y: visible;
   width: 100%;
   display: inline;
   position: absolute;
   top: 0px;
+  left: 0px;
   height: 100%;
   z-index: 10;
 }
@@ -1363,6 +1364,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 
 .mp-pusher {
   transition: all .4s ease;
+  position: relative;
 }
 
 .mp-menu {

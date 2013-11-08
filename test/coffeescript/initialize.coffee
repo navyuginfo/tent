@@ -9,7 +9,17 @@
 	loader.require('coffeescript/models/paging_adapter')
 	loader.require('coffeescript/models/task_model')
 	loader.require('template/task_collection_filter')
+	loader.require('template/header')
+	loader.require('template/main_menu')
 	loader.require('coffeescript/view/common/collection_panels/task_collection_panel_view')
+	loader.require('coffeescript/mock/endeavour')
+
+	Pad.MainHeaderView = Ember.View.extend
+		templateName: 'header'
+
+	Pad.MainMenuController = Tent.Application.MainMenuController.extend()
+	Pad.MainMenuView = Tent.MLPushMenuView.extend
+		templateName: 'main_menu'
 
 	Pad.initialize()
 
@@ -53,9 +63,9 @@
 	Pad.stateValue = 'GA'
 	Pad.enabledExports=['csv']
 	#Pad.presetRanges = [
-    #	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
-  	#]
-  	#Pad.presets = {specificDate: 'Pick a date'}
+		#	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
+		#]
+		#Pad.presets = {specificDate: 'Pick a date'}
 
 	Pad.modalSubmit = ->
 		console.log("Submit button clicked")
@@ -331,7 +341,7 @@
 	})
 
 	Pad.uploadSuccessFunction = (result, textStatus, jqXHR) ->
-	  alert(textStatus)
+		alert(textStatus)
 
 	Pad.reopen(
 		ready: ->
@@ -363,60 +373,60 @@
 	Pad.NodeSelection = Pad.SelectOptions[1]
 
 	Pad.TreeOptions = Ember.Object.create({
-    activeVisible: true,
-    aria: false,
-    autoActivate: true,
-    autoCollapse: false,
-    autoScroll: false,
-    checkbox: false,
-    disabled: false,
-    icons: false,
-    keyboard: true,
-    tabbable: true,
-    hideDefaults: false,
-    radio: false,
-    defaultCode: (->
-      defaultOptionHash = {
-        activeVisible: true,
-        aria: false,
-        autoActivate: true,
-        autoCollapse: false,
-        autoScroll: false,
-        checkbox: false,
-        disabled: false,
-        icons: false,
-        keyboard: true,
-        tabbable: true,
-        radio: false,
-        nodeSelection: 'multiSelect',
-        folderOnClickShould: 'expandOnDblClick'
-      }
-      optionsString = ""
-      for own option, value of defaultOptionHash
-        selectedValue = @get(option)
-        selectedValue = @get('treeFolderValue') || 'expandOnDblClick' if option is 'folderOnClickShould'
-        selectedValue = @get('treeSelectValue') || 'multiSelect' if option is 'nodeSelection'      	
-        unless value is selectedValue
-          selectedValue = "\"#{selectedValue}\"" if option is 'folderOnClickShould' or option is 'nodeSelection'
-          optionsString += " #{option}=#{selectedValue} \n"
-      return "\n{{view Tent.Tree}}" if optionsString is ""
-      "\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
-    ).property('activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
-      'disabled', 'icons','radio', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
-    handlebarsCode: (->
-      options = ['radio','activeVisible', 'aria', 'autoActivate', 'autoCollapse', 'autoScroll',
-        'checkbox', 'disabled', 'radio','icons', 'keyboard', 'tabbable', 'nodeSelection', 'folderOnClickShould']
-      optionsString = ""
-      for option in  options
-        value = @get(option)
-        if option is 'folderOnClickShould'
-          value = "\"#{@get('treeFolderValue') || 'expandOnDblClick'}\""
-        if option is 'nodeSelection'
-        	value = "\"#{@get('treeSelectValue') || 'multiSelect'}\""
-        optionsString += "  #{option}=#{value} \n"
-      "\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
-    ).property('radio','activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
-      'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
+		activeVisible: true,
+		aria: false,
+		autoActivate: true,
+		autoCollapse: false,
+		autoScroll: false,
+		checkbox: false,
+		disabled: false,
+		icons: false,
+		keyboard: true,
+		tabbable: true,
+		hideDefaults: false,
+		radio: false,
+		defaultCode: (->
+			defaultOptionHash = {
+				activeVisible: true,
+				aria: false,
+				autoActivate: true,
+				autoCollapse: false,
+				autoScroll: false,
+				checkbox: false,
+				disabled: false,
+				icons: false,
+				keyboard: true,
+				tabbable: true,
+				radio: false,
+				nodeSelection: 'multiSelect',
+				folderOnClickShould: 'expandOnDblClick'
+			}
+			optionsString = ""
+			for own option, value of defaultOptionHash
+				selectedValue = @get(option)
+				selectedValue = @get('treeFolderValue') || 'expandOnDblClick' if option is 'folderOnClickShould'
+				selectedValue = @get('treeSelectValue') || 'multiSelect' if option is 'nodeSelection'      	
+				unless value is selectedValue
+					selectedValue = "\"#{selectedValue}\"" if option is 'folderOnClickShould' or option is 'nodeSelection'
+					optionsString += " #{option}=#{selectedValue} \n"
+			return "\n{{view Tent.Tree}}" if optionsString is ""
+			"\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
+		).property('activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
+			'disabled', 'icons','radio', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
+		handlebarsCode: (->
+			options = ['radio','activeVisible', 'aria', 'autoActivate', 'autoCollapse', 'autoScroll',
+				'checkbox', 'disabled', 'radio','icons', 'keyboard', 'tabbable', 'nodeSelection', 'folderOnClickShould']
+			optionsString = ""
+			for option in  options
+				value = @get(option)
+				if option is 'folderOnClickShould'
+					value = "\"#{@get('treeFolderValue') || 'expandOnDblClick'}\""
+				if option is 'nodeSelection'
+					value = "\"#{@get('treeSelectValue') || 'multiSelect'}\""
+				optionsString += "  #{option}=#{value} \n"
+			"\n{{view Tent.Tree \n#{optionsString[..-2]}\n}}"
+		).property('radio','activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
+			'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
 	})
 
 	Pad.treeTarget = Em.Object.create({
@@ -462,44 +472,44 @@
 
 	Pad.TreeData = [
 		{
-		  title: "RBS"
-		  tooltip: "Look, a tool tip!"
-		  folder: true
-		  children: [
-		  	{title: 'Node', tooltip: 'Just a plain normal node with a tooltip', value: 'tooltip'},
-		  ]
+			title: "RBS"
+			tooltip: "Look, a tool tip!"
+			folder: true
+			children: [
+				{title: 'Node', tooltip: 'Just a plain normal node with a tooltip', value: 'tooltip'},
+			]
 		},
 		{
-		  title: "Jabil"
-		  tooltip: "Look, a tool tip!"
-		  folder: true
-		  expanded: true
-		  children: [
-		  	{title: 'Jabil Committed(SU)', value: 'Jabil Committed(SU)'},
-		  	{title: '<span>Some <b>html</b> using <code>span</code> tag</span>', value: 'node with html'}
-		  ]
+			title: "Jabil"
+			tooltip: "Look, a tool tip!"
+			folder: true
+			expanded: true
+			children: [
+				{title: 'Jabil Committed(SU)', value: 'Jabil Committed(SU)'},
+				{title: '<span>Some <b>html</b> using <code>span</code> tag</span>', value: 'node with html'}
+			]
 		},
 		{
-		  title: "Node at Level-1"
-		  tooltip: "Look, a tool tip!"
-		  folder: true
-		  expanded: true
-		  children: [
-		  	{
-		  		title: 'Node at Level-2'
-		  		folder: true
-		  		children: [
-		  			{
-		  				title: 'Node at Level-3',
-		  				folder: true
-		  				children: [
-		  					{title: 'Leaf Node at Level-4', value: 'leaf node at Level-4'}
-		  				]
-		  			}
-		  		]
-		  	},
-		  	{title: 'Can apply classes to node !', "extraClasses": 'btn-primary', value: 'node with extraClasses'}
-		  ]
+			title: "Node at Level-1"
+			tooltip: "Look, a tool tip!"
+			folder: true
+			expanded: true
+			children: [
+				{
+					title: 'Node at Level-2'
+					folder: true
+					children: [
+						{
+							title: 'Node at Level-3',
+							folder: true
+							children: [
+								{title: 'Leaf Node at Level-4', value: 'leaf node at Level-4'}
+							]
+						}
+					]
+				},
+				{title: 'Can apply classes to node !', "extraClasses": 'btn-primary', value: 'node with extraClasses'}
+			]
 		}
 	]
 

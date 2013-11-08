@@ -8,45 +8,31 @@ Tent.Application.MenuItemView = Ember.View.extend
 	layoutName: 'application/menu_item'
 	collapsed: false
 	isSelected: false
-	isEntitled: true
 	isEnabled: true
 
 	init: ->
 		@_super()
-		@processEntitlements()
 
-	hasAction: (->
-		@get('action')?
-	).property('action')
+	hasAction: Ember.computed.bool('action') 
 
 	menuClicked: (e)->
 		if @get('hasAction') and @get('isEnabled')
 			@get('controller').menuClicked(@)
 
 	applyHighlight: (->
-		if @get('isSelected')
-			link = @$('a:first')
-			link.addClass('active-menu') if link.is('.menu-link')
-		else
-			@$('a:first').removeClass('active-menu')
-	).observes('isSelected')
+		@get('isSelected') && @get('hasAction')
+	).property('isSelected')
 
-	processEntitlements: ->
-		if not @get('operations')? then return true
+	isEntitled: (->
+		return true unless @get('operations')
+		ops = @get('operations').removeWhitespace().split(',')
+		ops.filter((operation) =>
+			@evaluatePolicy(operation)
+		).length > 0
+	).property('operations')
 
-		operationsArr = @get('operations').removeWhitespace().split(',')
-		entitlement = false
-		for operation in operationsArr
-			entitlement = entitlement or @evaluatePolicy(operation)
-		@set('isEntitled', entitlement)
-		
 	evaluatePolicy: (operation)->
-		if operation?
-			return Endeavour.policy(operation)
-		true
-
-	isDisabled: (->
-		not @get('isEnabled')
-	).property('isEnabled')
-
+		return Endeavour.policy(operation)
+		
+	isDisabled: Ember.computed.not("isEnabled")
 

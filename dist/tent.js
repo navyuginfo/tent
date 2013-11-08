@@ -12397,6 +12397,11 @@ Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"s
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
+    /**
+    * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
+    * item is selected.
+    */
+
     collapseAutomatically: true,
     classNames: ['main-menu', 'mp-level', 'selected'],
     didInsertElement: function() {
@@ -12485,7 +12490,7 @@ Tent.Application.MainMenuView = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t\t<a {{bindAttr class=\"view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-chevron-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\":menu-icon view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2><i {{bindAttr class=\":menu-icon view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\">Back <i class=\"icon-chevron-right\"></i></a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n{{/if}}");
+Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t\t<a {{bindAttr class=\"view.applyHighlight:active-menu view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-chevron-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\":menu-icon view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2><i {{bindAttr class=\":menu-icon view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\">Back <i class=\"icon-chevron-right\"></i></a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n{{/if}}");
 
 (function() {
 
@@ -12496,53 +12501,34 @@ Tent.Application.MenuItemView = Ember.View.extend({
     layoutName: 'application/menu_item',
     collapsed: false,
     isSelected: false,
-    isEntitled: true,
     isEnabled: true,
     init: function() {
-      this._super();
-      return this.processEntitlements();
+      return this._super();
     },
-    hasAction: (function() {
-      return this.get('action') != null;
-    }).property('action'),
+    hasAction: Ember.computed.bool('action'),
     menuClicked: function(e) {
       if (this.get('hasAction') && this.get('isEnabled')) {
         return this.get('controller').menuClicked(this);
       }
     },
     applyHighlight: (function() {
-      var link;
-      if (this.get('isSelected')) {
-        link = this.$('a:first');
-        if (link.is('.menu-link')) {
-          return link.addClass('active-menu');
-        }
-      } else {
-        return this.$('a:first').removeClass('active-menu');
-      }
-    }).observes('isSelected'),
-    processEntitlements: function() {
-      var entitlement, operation, operationsArr, _i, _len;
-      if (!(this.get('operations') != null)) {
+      return this.get('isSelected') && this.get('hasAction');
+    }).property('isSelected'),
+    isEntitled: (function() {
+      var ops,
+        _this = this;
+      if (!this.get('operations')) {
         return true;
       }
-      operationsArr = this.get('operations').removeWhitespace().split(',');
-      entitlement = false;
-      for (_i = 0, _len = operationsArr.length; _i < _len; _i++) {
-        operation = operationsArr[_i];
-        entitlement = entitlement || this.evaluatePolicy(operation);
-      }
-      return this.set('isEntitled', entitlement);
-    },
+      ops = this.get('operations').removeWhitespace().split(',');
+      return ops.filter(function(operation) {
+        return _this.evaluatePolicy(operation);
+      }).length > 0;
+    }).property('operations'),
     evaluatePolicy: function(operation) {
-      if (operation != null) {
-        return Endeavour.policy(operation);
-      }
-      return true;
+      return Endeavour.policy(operation);
     },
-    isDisabled: (function() {
-      return !this.get('isEnabled');
-    }).property('isEnabled')
+    isDisabled: Ember.computed.not("isEnabled")
   });
 
 }).call(this);

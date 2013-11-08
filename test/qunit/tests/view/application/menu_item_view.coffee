@@ -20,27 +20,21 @@ test 'processEntitlements', ->
 		route: "/upload_invoice"
 
 	ok menuItem.get('isEntitled'), "Should be entitled by default"
-	menuItem.processEntitlements()
 	ok menuItem.get('isEntitled'), "Entitled if no operations are provided"
 
 	menuItem.set('operations', 'valid-operation')
-	menuItem.processEntitlements()
 	ok menuItem.get('isEntitled'), "valid"	
 
 	menuItem.set('operations', 'invalid-operation')
-	menuItem.processEntitlements()
 	ok not menuItem.get('isEntitled'), "invalid"	
 
 	menuItem.set('operations', 'valid-operation, another-valid-operation')
-	menuItem.processEntitlements()
 	ok menuItem.get('isEntitled'), "valid for second operation"
 
 	menuItem.set('operations', 'invalid-operation, another-valid-operation')
-	menuItem.processEntitlements()
 	ok menuItem.get('isEntitled'), "valid when there is at least 1 valid operation"
 
 	menuItem.set('operations', '  valid-operation  ,    another-valid-operation    ')
-	menuItem.processEntitlements()
 	ok menuItem.get('isEntitled'), "valid with whitespace"
 
 
