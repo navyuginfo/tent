@@ -12163,7 +12163,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     contentViewType: null,
     didInsertElement: function() {
       this.get('collection').update();
-      if (!(this.get('selection') != null)) {
+      if (this.get('selection') == null) {
         this.set('selection', Ember.A());
       }
       if (this.get('scroll')) {
@@ -12202,7 +12202,6 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
       newPageNum = this.findPageNumberAtScrollPosition(scrollTop, rowHeight, cardsPerRow);
       if (this.get('currentPage') !== newPageNum) {
         this.set('currentPage', newPageNum);
-        console.log('.... scrolling ...: page = ' + newPageNum);
         return this.get('collection').goToPage(newPageNum);
       }
     },
