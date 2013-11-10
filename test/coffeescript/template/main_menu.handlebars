@@ -1,0 +1,101 @@
+<h2><i class="menu-icon icon-home"></i></h2>
+<ul>
+  {{#view Tent.Application.MenuItemView title="Upload" icon="icon-cloud-upload" hasChildren=true 
+    isVisibleBinding="controller.isUploadVisible"
+    isEnabledBinding="controller.isUploadEnabled"
+  }}
+     
+    {{view Tent.Application.MenuItemView 
+      title="New Upload"
+      action="showNewUpload"
+      icon="icon-cloud-upload"
+      route="/upload_invoice"
+      operations="scicustomer.uploadInvoices.upload,scicustomer.uploadInvoices.all"
+    }}
+       
+  {{/view}}
+  {{#view Tent.Application.MenuItemView title="Sell" icon="icon-coin" hasChildren=true
+      operations="scicustomer.manualsell.createmanualoffers, scicustomer.manualsell.viewinvoices"}}
+     
+        {{view Tent.Application.MenuItemView 
+          title="Sell Invoices"
+          action="showNewOffer"
+          icon="icon-coin"
+          route="/sell"
+          isEnabledBinding="controller.isSellEnabled"
+        }}
+       
+  {{/view}}
+  {{#view Tent.Application.MenuItemView title="Purchase" icon="icon-shopping-cart" hasChildren=true
+      operations="scicustomer.offer.accept, scicustomer.offer.reverse, scicustomer.offer.view"}}
+     
+      {{view Tent.Application.MenuItemView 
+        title="Purchase Offers"
+        action="showPurchaseOffers"
+        icon="icon-shopping-cart"
+        route="/offers/purchase"
+        operations="scicustomer.offer.accept, scicustomer.offer.view"
+      }}
+      {{view Tent.Application.MenuItemView 
+        title="Reverse Offers"
+        action="showReverseOffers"
+        icon="icon-retweet"
+        route="/offers/reverse"
+        operations="scicustomer.offer.reverse"
+      }}
+       
+  {{/view}}
+  {{#view Tent.Application.MenuItemView title="Reconciliation" icon="icon-money" hasChildren=true}}
+    
+      {{view Tent.Application.MenuItemView 
+        title="Payments from Buyers"
+        action="showNewReconciliation"
+        icon="icon-money"
+        route="/reconciliations"
+        operations="scicustomer.reconciliation.enter,scicustomer.reconciliation.upload,scicustomer.reconciliation.view"
+      }}
+      {{view Tent.Application.MenuItemView 
+        title="Accept or Reject"
+        action="showReviewReconciliations"
+        icon="icon-legal"
+        route="/reconciliations/review"
+        operations="scicustomer.reconciliation.approve"
+      }}
+       
+  {{/view}}
+  {{#view Tent.Application.MenuItemView title="Reports" icon="icon-list" hasChildren=true
+    operations="scicustomer.reports.all, scicustomer.reports.fiRemittanceAdvice.view, 
+        scicustomer.reports.summaryRemittanceAdvice.view, scicustomer.reports.funderOutstandingInvoices.view, 
+        scicustomer.reports.pastDueInvoices.view, scicustomer.reports.repayment.view, 
+        scicustomer.reports.programPortfolio.view, scicustomer.reports.invoiceTransactionHistory.view, 
+        scicustomer.reports.offer.view, scicustomer.reports.sellerOutstandingInvoices.view"
+  }}
+    
+      {{view Tent.Application.MenuItemView 
+        title="Queries"
+        action="showReport"
+        icon="icon-filter"
+        route="/reports"
+      }}
+       
+  {{/view}}
+  {{#view Tent.Application.MenuItemView title="History" icon="icon-time" hasChildren=true  }}
+    
+      {{view Tent.Application.MenuItemView 
+        title="Uploaded Invoices"
+        action="showInvoiceFiles"
+        icon="icon-time"
+        route="/invoiceFilesHistory"
+        operations="scicustomer.uploadInvoices.all, scicustomer.uploadInvoices.upload, scicustomer.uploadInvoices.viewfiles"
+      }}
+      {{view Tent.Application.MenuItemView 
+        title="Uploaded Deposits"
+        action="showDepositFiles"
+        icon="icon-time"
+        route="/depositFilesHistory"
+        operations="scicustomer.reconciliation.viewfiles, scicustomer.uploadInvoices.upload"
+      }}
+       
+  {{/view}}
+
+</ul>

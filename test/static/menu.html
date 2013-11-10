@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="stylesheet/bootstrap.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/ui.jqgrid.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/select2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/tent.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/jquery-ui-1.9.2.custom.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheet/select2.css" type="text/css" media="screen" />
+    
+    <!-- link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css" / -->
+
+    <!-- Begin playing, "The March of the Dependencies!" -->
+    <script src="javascript/minispade.js"></script> 
+    <script src="javascript/jquery.js"></script>
+    <script src="javascript/modernizr.js"></script>
+    <script src="javascript/handlebars.js"></script>
+    <script src="javascript/ember.js"></script>
+    <script src="javascript/ember-data.js"></script>
+    <script src="javascript/jquery-ui.js"></script>
+    <script src="javascript/bootstrap.js"></script>
+    <script src="javascript/jqGrid.js"></script>
+    <script src="javascript/accounting.js"></script>
+    <script src="javascript/date.js"></script>
+    <script src="javascript/date-range.js"></script>
+    <script src="javascript/pubsub.js"></script>
+    <script src="javascript/tent.js"></script>
+    <script src="javascript/tent-tests.js"></script>
+    <script src="javascript/blueimp-jquery-fileupload.js"></script>
+    <script src="javascript/fancy-tree.js"></script>
+    <script src="javascript/select2.js"></script>
+    
+    
+    <!--[if lte IE 7]>
+      <script src="javascript/eventlistener-polyfill.js" type="text/javascript"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <script type="text/x-handlebars" data-template-name="application">
+      <div class="container-fluid flex-container ">
+        <div class="row-fluid flex-container">
+          {{#view Tent.Section span="12" vspan="10" }}
+            {{#view Tent.Header class="menu-header"}}
+              {{outlet mainheader}}
+            {{/view}}
+            {{#view Tent.Content class="main-content"}}
+              <div class="mp-container">
+                <!-- Push Wrapper -->
+                <div class="mp-pusher" id="mp-pusher">
+                  <!-- mp-menu -->
+                  <nav id="mp-menu" class="mp-menu">
+                    {{#view Tent.Section span="12" vspan="10" }}
+                      {{#view Tent.Content}}
+                        {{outlet mainmenu}}
+                      {{/view}}
+                    {{/view}}
+                  </nav>
+
+                  <div class="scroller"><!-- this is for emulating position fixed of the nav -->
+                    <div class="scroller-inner">
+                       
+                    </div>
+                  </div>
+                </div><!-- /pusher -->
+              </div><!-- /container -->
+            {{/view}}
+          {{/view}}
+        </div>
+      </div>
+    </script>
+
+    <script>
+      Modernizr.load([
+        {
+          test: Modernizr.history,
+          nope: ['javascript/history.js', 'javascript/html5shiv.js', 'javascript/eventlistener.js'],
+          complete: function(){
+            // IE8 Support
+            if (typeof History != "undefined") {
+              window.history.pushState = History.pushState;
+            }
+
+            minispade.require('tent');
+            minispade.require('coffeescript/initialize');
+          }
+        }
+      ]);
+    </script>
+    
+  </body>
+</html>
