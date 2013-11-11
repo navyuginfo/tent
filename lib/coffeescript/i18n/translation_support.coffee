@@ -59,6 +59,8 @@ Tent.I18n.loadTranslations(
 			proceed: 'Ignore warnings and proceed'
 			dontProceed: 'No, return to page'
 		}
+		dateRange:
+			useFuzzy: 'Use relative date'
 		jqGrid: {
 			hideShowAlt: 'Hide/Show Columns'
 			hideShowCaption: 'Columns'

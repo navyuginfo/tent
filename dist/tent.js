@@ -90,6 +90,9 @@
         proceed: 'Ignore warnings and proceed',
         dontProceed: 'No, return to page'
       },
+      dateRange: {
+        useFuzzy: 'Use relative date'
+      },
       jqGrid: {
         hideShowAlt: 'Hide/Show Columns',
         hideShowCaption: 'Columns',
@@ -7906,6 +7909,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             valueBinding: "parentView.content.data",
             filterOpBinding: "parentView.content.op",
             fuzzyValueBinding: "parentView.content.fuzzyData",
+            allowFuzzyDates: true,
             closeOnSelect: true,
             arrows: true,
             dateFormat: "yy-mm-dd",

@@ -336,7 +336,7 @@
 		if(options.arrows && rangeInput.size()==1){
 			var prevLink = $('<a href="#" class="ui-daterangepicker-prev ui-corner-all" title="'+ options.prevLinkText +'"><span class="ui-icon ui-icon-circle-triangle-w">'+ options.prevLinkText +'</span></a>');
 			var nextLink = $('<a href="#" class="ui-daterangepicker-next ui-corner-all" title="'+ options.nextLinkText +'"><span class="ui-icon ui-icon-circle-triangle-e">'+ options.nextLinkText +'</span></a>');
-			var fuzzyCheckbox = $('<input type="checkbox" class="useFuzzy" />');
+			var fuzzyCheckbox = $('<input type="checkbox" class="useFuzzy" title="'+Tent.I18n.loc('tent.dateRange.useFuzzy')+'"/>');
 			$(this)
 			.addClass('ui-rangepicker-input ui-widget-content')
 			.wrap('<div class="ui-daterangepicker-arrows ui-widget ui-widget-header ui-helper-clearfix ui-corner-all"></div>')
