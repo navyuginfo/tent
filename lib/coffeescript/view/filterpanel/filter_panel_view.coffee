@@ -274,6 +274,7 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					isFilter: true 
 					valueBinding: "parentView.content.data"
 					filterOpBinding: "parentView.content.op"
+					fuzzyValueBinding: "parentView.content.fuzzyData"
 					closeOnSelect:true
 					arrows:true
 					dateFormat: "yy-mm-dd"

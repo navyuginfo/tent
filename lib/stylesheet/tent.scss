@@ -2,6 +2,7 @@
 @import "variables";
 @import "mixins";
 @import "structural_mixins";
+@import "ui.daterangepicker";
 @import "bootstrap_mods";
 @import "widgets";
 @import "grids";  
@@ -15,12 +16,9 @@
 
 /* Tent-Specific */
 
-
 /* Typography */
 
-
 /* Headers */
- 
 
 .grid-header, .pager *{
 	@include box-sizing(border-box);

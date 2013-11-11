@@ -3555,7 +3555,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.fieldClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.fieldClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n      {{#if view.hasParsedValue}}\n        <span class=\"help-inline\">{{view.parsedValue}}</span>\n      {{/if}} \n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -3607,6 +3607,7 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
       }
     },
     change: function() {
+      this._super(arguments);
       return this.validateField();
     },
     fieldClass: (function() {
@@ -7904,6 +7905,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             isFilter: true,
             valueBinding: "parentView.content.data",
             filterOpBinding: "parentView.content.op",
+            fuzzyValueBinding: "parentView.content.fuzzyData",
             closeOnSelect: true,
             arrows: true,
             dateFormat: "yy-mm-dd",
@@ -10428,14 +10430,28 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
 			valueBinding="" 
 			showOtherMonths=true  
 			dateFormat=""
-         }}
+				 }}
 */
 
 
 (function() {
 Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
+    /**
+    	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
+    	* a valid date
+    */
+
+    allowFuzzyDates: false,
+    /**
+    	* @property {String} fuzzyDate This will store the fuzzy date if one is entered by the user.
+    */
+
+    fuzzyDate: null,
+    useFontIcon: true,
+    fontIconClass: 'icon-calendar',
+    hasParsedValue: false,
     uiType: 'datepicker',
-    uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled'],
+    uiOptions: ['dateFormat', 'changeMonth', 'changeYear', 'minDate', 'maxDate', 'showButtonPanel', 'showOtherMonths', 'selectOtherMonths', 'showWeek', 'firstDay', 'numberOfMonths', 'showOn', 'buttonImage', 'buttonImageOnly', 'showAnim', 'disabled', 'constrainInput'],
     classNames: ['tent-date-field'],
     placeholder: (function() {
       return this.get('options').dateFormat;
@@ -10449,7 +10465,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       changeYear: true,
       showOn: "button",
       buttonImage: "stylesheet/images/calendar.gif",
-      buttonImageOnly: true
+      buttonImageOnly: false
     },
     optionDidChange: (function() {
       if (this.get('disabled') || this.get('isReadOnly') || this.get('readOnly')) {
@@ -10459,28 +10475,66 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       }
     }).observes('disabled', 'readOnly', 'isReadOnly'),
     init: function() {
-      return this._super();
+      this._super();
+      if (this.get('allowFuzzyDates') && this.isFuzzyDate(this.get('fuzzyValue'))) {
+        this.set('formattedValue', this.get('fuzzyValue'));
+        return this.change();
+      }
+    },
+    change: function() {
+      this.set('hasParsedValue', false);
+      this.set('fuzzyValue', null);
+      return this.validateField();
     },
     didInsertElement: function() {
       this._super(arguments);
-      return this.$('input').datepicker(this.get('options'));
+      if (this.get('allowFuzzyDates')) {
+        this.set('options.constrainInput', false);
+      }
+      this.$('input').datepicker(this.get('options'));
+      if (this.get('useFontIcon')) {
+        return this.$('.ui-datepicker-trigger').html('<i class="' + this.get('fontIconClass') + '"></i>');
+      }
     },
     validate: function() {
       var isValid, isValidDate;
       isValid = this._super();
-      isValidDate = true;
-      try {
-        isValidDate = (this.get("formattedValue") === "") || $.datepicker.parseDate(this.get('options').dateFormat, this.get("formattedValue"));
-      } catch (e) {
-        isValidDate = false;
-      }
+      isValidDate = this.isDateValid(this.get("formattedValue")) || this.convertFuzzyDate(this.get("formattedValue"));
       if (!isValidDate) {
         this.addValidationError(Tent.messages.DATE_FORMAT_ERROR);
       }
-      if (isValid && isValidDate) {
+      if (isValid) {
         this.validateWarnings();
       }
       return isValid && isValidDate;
+    },
+    isDateValid: function(dateString) {
+      var valid;
+      valid = true;
+      try {
+        $.datepicker.parseDate(this.get('dateFormat'), dateString);
+      } catch (e) {
+        valid = false;
+      }
+      return valid || (dateString === "");
+    },
+    convertFuzzyDate: function(date) {
+      if (this.isFuzzyDate(date)) {
+        this.set('formattedValue', this.format(this.parseFuzzyDate(date)));
+        this.set('fuzzyValue', date);
+        this.set('hasParsedValue', true);
+        this.set('parsedValue', date);
+        return true;
+      } else {
+        this.set('hasParsedValue', false);
+        return false;
+      }
+    },
+    isFuzzyDate: function(date) {
+      return !!this.parseFuzzyDate(date);
+    },
+    parseFuzzyDate: function(date) {
+      return Date.parse(date);
     },
     validateWarnings: function() {
       return this._super();
@@ -10490,7 +10544,11 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     unFormat: function(value) {
       try {
-        return Tent.Formatting.date.unformat(value, this.get('dateFormat'));
+        if (this.isDateValid(value)) {
+          return Tent.Formatting.date.unformat(value, this.get('dateFormat'));
+        } else {
+          return Tent.Formatting.date.unformat(this.parseFuzzyDate(value), this.get('dateFormat'));
+        }
       } catch (error) {
         return null;
       }
@@ -10503,9 +10561,6 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
         this.$('input.primary-class').val(today);
         this.set('formattedValue', today);
       }
-      return this.validateField();
-    },
-    change: function() {
       return this.validateField();
     }
   });
@@ -10533,13 +10588,14 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 			endDateBinding=""
 			showOtherMonths=true  
 			dateFormat=""
-         }}
+				 }}
 */
 
 
 (function() {
 Tent.DateRangeField = Tent.TextField.extend({
     classNames: ['tent-date-range-field'],
+    classNameBindings: ['allowFuzzyDates'],
     /**
     	* @property {Array} presetRanges Array of objects to be made into menu range presets. 
     	* 
@@ -10606,6 +10662,18 @@ Tent.DateRangeField = Tent.TextField.extend({
     dateFormat: Tent.Formatting.date.getFormat(),
     hasOwnRangeDisplay: true,
     operators: null,
+    /**
+    	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
+    	* a valid date
+    */
+
+    allowFuzzyDates: false,
+    /**
+    	* @property {String} fuzzyValue This will store the fuzzy date if one is entered by the user.
+    */
+
+    fuzzyValue: null,
+    useFuzzyDates: false,
     init: function() {
       return this._super();
     },
@@ -10613,8 +10681,8 @@ Tent.DateRangeField = Tent.TextField.extend({
       var widget;
       this._super(arguments);
       widget = this;
-      this.initializeWithStartAndEndDates();
-      this.$('input').daterangepicker({
+      this.set('plugin', this.$('input').daterangepicker({
+        appendTo: "#" + (this.get('elementId')),
         presetRanges: this.get('presetRanges') != null ? this.get('presetRanges') : void 0,
         presets: this.get('presets') != null ? this.get('presets') : void 0,
         rangeSplitter: this.get('rangeSplitter') != null ? this.get('rangeSplitter') : void 0,
@@ -10623,13 +10691,17 @@ Tent.DateRangeField = Tent.TextField.extend({
         latestDate: this.get('latestDate') != null ? this.get('latestDate') : void 0,
         closeOnSelect: this.get('closeOnSelect'),
         arrows: this.get('arrows'),
+        allowFuzzyDates: this.get('allowFuzzyDates'),
         datepickerOptions: {
           dateFormat: this.get('dateFormat')
         },
         onChange: function() {
           return widget.change();
         }
-      });
+      }));
+      this.initializeWithStartAndEndDates();
+      this.listenForFuzzyCheckboxChanges();
+      this.listenForFuzzyDropdownChanges();
       this.handleReadonly();
       this.handleDisabled();
       return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
@@ -10645,8 +10717,8 @@ Tent.DateRangeField = Tent.TextField.extend({
     */
 
     getValue: function() {
-      if (this.$('input') != null) {
-        return this.$('input').val();
+      if (this.$('.ui-rangepicker-input') != null) {
+        return this.$('.ui-rangepicker-input').val();
       }
     },
     /**
@@ -10655,25 +10727,61 @@ Tent.DateRangeField = Tent.TextField.extend({
     */
 
     setValue: function(value) {
-      return this.$('input').val(value);
+      return this.$('.ui-rangepicker-input').val(value);
     },
     initializeWithStartAndEndDates: function() {
-      var end, start;
-      if (!(this.get('value') != null)) {
+      var dateRange, end, start;
+      if (!(this.get('value') != null) && !(this.get('fuzzyValue') != null)) {
         if (this.get('startDate') != null) {
           start = Tent.Formatting.date.format(this.get('startDate'), this.get('dateFormat'));
         }
         if (this.get('endDate') != null) {
           end = Tent.Formatting.date.format(this.get('endDate'), this.get('dateFormat'));
         }
-        return this.setValue(start + this.get('rangeSplitter') + " " + end);
+        this.setValue(start + this.get('rangeSplitter') + " " + end);
+      }
+      if (this.get('fuzzyValue') != null) {
+        this.set('fuzzyValueTemp', this.get('fuzzyValue'));
+        this.set('useFuzzyDates', true);
+        this.setFuzzyCheck(true);
+        dateRange = this.getDateFromFuzzyValue(this.get('fuzzyValue'));
+        this.setValue(dateRange);
+        this.set('value', dateRange);
+        return this.set('dateValue', dateRange);
+      } else {
+        return this.setFuzzyCheck(false);
+      }
+    },
+    setFuzzyCheck: function(isChecked) {
+      return this.$('.useFuzzy').prop('checked', isChecked);
+    },
+    getDateFromFuzzyValue: function(fuzzy) {
+      var end, formattedEnd, formattedStart, preset, presetArr, ranges, start,
+        _this = this;
+      ranges = this.get('plugin.options.presetRanges');
+      presetArr = ranges.filter(function(item) {
+        return item.text.replace(/\ /g, "") === fuzzy;
+      });
+      if (presetArr.length > 0) {
+        preset = presetArr[0];
+        start = typeof preset.dateStart === 'string' ? Date.parse(preset.dateStart) : preset.dateStart();
+        formattedStart = Tent.Formatting.date.format(start, this.get('dateFormat'));
+        end = typeof preset.dateEnd === 'string' ? Date.parse(preset.dateEnd) : preset.dateEnd();
+        formattedEnd = Tent.Formatting.date.format(end, this.get('dateFormat'));
+        return formattedStart + this.get('rangeSplitter') + " " + formattedEnd;
+      } else {
+        return fuzzy;
       }
     },
     placeholder: (function() {
       return this.get('dateFormat') + this.get('rangeSplitter') + " " + this.get('dateFormat');
     }).property('dateFormat'),
-    change: function() {
+    change: function(e) {
       var unformatted;
+      if ((e != null) && !$(e.originalTarget).is('.useFuzzy')) {
+        return;
+      }
+      this.set('dateValue', this.getValue());
       this.set("formattedValue", this.format(this.getValue()));
       this.set('isValid', this.validate());
       if (this.get('isValid')) {
@@ -10682,6 +10790,45 @@ Tent.DateRangeField = Tent.TextField.extend({
         return this.set('value', this.convertSingleDateToDateRange(unformatted));
       }
     },
+    listenForFuzzyDropdownChanges: function() {
+      var _this = this;
+      return this.$('.ui-daterangepickercontain li').click(function(e) {
+        return _this.setFuzzyValueFromSelectedPreset(e);
+      });
+    },
+    setFuzzyValueFromSelectedPreset: function(e) {
+      var classes, fValue, presetArr;
+      if (this.get('allowFuzzyDates')) {
+        classes = $(e.currentTarget).attr('class').split(' ');
+        presetArr = classes.find(function(item) {
+          if (item.split('ui-daterangepicker-').length > 1) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        fValue = presetArr.split('ui-daterangepicker-')[1];
+        return this.set('fuzzyValueTemp', fValue);
+      } else {
+        return this.set('fuzzyValue', null);
+      }
+    },
+    listenForFuzzyCheckboxChanges: function() {
+      var _this;
+      _this = this;
+      return this.$('.useFuzzy').click(function(e) {
+        return _this.toggleProperty('useFuzzyDates');
+      });
+    },
+    fuzzyValueDidChange: (function() {
+      if (this.get('allowFuzzyDates') && this.get('useFuzzyDates')) {
+        this.set('fuzzyValue', this.get('fuzzyValueTemp'));
+        return this.set('formattedValue', this.get('fuzzyValueTemp'));
+      } else {
+        this.set('fuzzyValue', null);
+        return this.set('formattedValue', this.getDateFromFuzzyValue(this.get('dateValue')));
+      }
+    }).observes('fuzzyValueTemp', 'useFuzzyDates'),
     focusOut: function() {},
     convertSingleDateToDateRange: function(date) {
       if (date.indexOf(",") === -1) {
@@ -10742,10 +10889,10 @@ Tent.DateRangeField = Tent.TextField.extend({
     },
     handleReadonly: (function() {
       if ((this.get('readOnly') != null) && this.get('readOnly')) {
-        this.$('input').bind('click', this.get('readOnlyHandler'));
+        this.$('.ui-rangepicker-input').bind('click', this.get('readOnlyHandler'));
         return this.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden");
       } else {
-        this.$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', this.get('readOnlyHandler'));
+        this.$('.ui-rangepicker-input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', this.get('readOnlyHandler'));
         return this.$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible");
       }
     }).observes('readOnly'),
@@ -10800,264 +10947,6 @@ Tent.Textarea = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Ten
   });
 
   Tent.TextareaInput = Ember.TextArea.extend(Tent.AriaSupport, Tent.Html5Support, Tent.ReadonlySupport, Tent.DisabledSupport);
-
-}).call(this);
-
-
-Ember.TEMPLATES['collection_filter']=Ember.Handlebars.compile("<div class=\"btn-group jqgrid-title-button filter\">\n\t<a class=\"open-dropdown\" href=\"#\">\n\t\t<i class=\"icon-filter\"></i>\n\t\t{{loc tent.filter.filter}}\n\t\t<span class=\"caret\"></span>\n\t</a>\n\n\t<ul class=\"dropdown-menu filter-panel\">\n\t\t{{#if view.showFilterFields}}\n\t\t\t<li>\n\t\t\t\t<div class=\"filter-details clearfix\">\n\t\t\t\t\t{{view Tent.FilterFieldsView collectionBinding=\"view.collection\"}}\t\n\t\t\t\t\t\t<div class=\"form-inline buttons\">\n\t\t\t\t\t\t   \t{{view Tent.Button label=\"tent.filter.clear\" type=\"secondary\" action=\"clearFilter\" targetBinding=\"view\" class=\"clear-filter pull-left\"}}\n\t\t\t\t\t    \t{{view Tent.Button label=\"tent.filter.filter\" type=\"primary\" action=\"filter\" targetBinding=\"view\" class=\"close-panel pull-right\"}}\n\t\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</li>\n\t\t{{/if}}\n\t</ul>\n</div>\n\n\n\n\n\n");
-
-(function() {
-/**
-  * @class Tent.CollectionFilter
-  *
-  * Displays a filter panel which will apply the filter choices to a collection.
-  *
-  *
-  * ##Usage
-  *
-  *               {{view Tent.CollectionFilter 
-                    collectionBinding="Pad.remoteCollection"
-                   }}
-  */
-
-
-  Tent.CollectionFilter = Ember.View.extend(Tent.ToggleVisibility, {
-    /**   
-    * @property {Tent.Collection} collection The collection which is to be filtered
-    */
-
-    collection: null,
-    templateName: 'collection_filter',
-    classNames: ['tent-filter'],
-    availableFiltersBinding: 'collection.filteringInfo.availableFilters',
-    fieldsHaveRendered: false,
-    currentFilter: {
-      name: "",
-      label: "",
-      description: "",
-      values: []
-    },
-    init: function() {
-      this._super();
-      return this.populateFilterFromCollection();
-    },
-    didInsertElement: function() {
-      this.set('grid', this.get('parentView.grid'));
-      return this.setupToggling();
-    },
-    setupToggling: function() {
-      var widget;
-      widget = this;
-      this.bindToggleVisibility(this.$(".open-dropdown"), this.$(".dropdown-menu"));
-      return this.$(".filter-panel .close-panel .btn").click(function() {
-        return widget.closeFilterPanel();
-      });
-    },
-    toggleVisibility: function() {
-      var component, source;
-      component = this.$(".dropdown-menu");
-      source = this.$(".open-dropdown");
-      if (component.css('display') === 'none') {
-        this.set('isShowing', true);
-        component.css('display', 'block');
-        return source.addClass('active');
-      } else {
-        this.set('isShowing', false);
-        component.css('display', 'none');
-        return source.removeClass('active');
-      }
-    },
-    filteringInfoDidChange: (function() {
-      return this.populateFilterFromCollection();
-    }).observes('collection.filteringInfo'),
-    populateFilterFromCollection: function() {
-      var filter, selectedFilter, _i, _len, _ref, _results;
-      if ((this.get('collection.filteringInfo') != null) && (this.get('collection.filteringInfo.selectedFilter') != null)) {
-        _ref = this.get('collection.filteringInfo.availableFilters');
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          filter = _ref[_i];
-          if (filter.name === this.get('collection.filteringInfo.selectedFilter')) {
-            selectedFilter = filter;
-            this.set('currentFilter.name', selectedFilter.name);
-            this.set('currentFilter.label', selectedFilter.label);
-            this.set('currentFilter.description', selectedFilter.description);
-            this.set('currentFilter.values', selectedFilter.values);
-            _results.push(this.ensureAllFieldsRepresented());
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      }
-    },
-    ensureAllFieldsRepresented: function() {
-      var column, filter, _i, _len, _ref, _results;
-      filter = this.get('currentFilter');
-      _ref = this.get('collection.columnsDescriptor');
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        column = _ref[_i];
-        if (!(column.filterable === false && !this.get('collection').getFilterValueForColumn(column.name))) {
-          _results.push(this.get('collection').createBlankFilterFieldValue(column.name));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    },
-    clearFilter: function() {
-      return this.clearView(this);
-    },
-    clearView: function(parentView) {
-      var view, _i, _len, _ref, _results;
-      _ref = parentView.get('childViews');
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        view = _ref[_i];
-        if (view.clear != null) {
-          view.clear();
-        }
-        if (view.get('childViews') != null) {
-          _results.push(this.clearView(view));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    },
-    filter: function() {
-      this.stopGroupingOnGrid();
-      this.get('collection').doFilter(this.get('currentFilter'));
-      return this.closeFilterPanel();
-    },
-    closeFilterPanel: function() {
-      return this.toggleVisibility();
-    },
-    showFilterFields: (function() {
-      return this.get('fieldsHaveRendered') || this.get('isShowing');
-    }).property('fieldsHaveRendered', 'isShowing'),
-    stopGroupingOnGrid: function() {
-      if (this.get('grid') != null) {
-        return this.get('grid').clearAllGrouping();
-      }
-    },
-    saveFilter: function() {
-      this.get('collection').saveFilter(this.get('currentFilter'));
-      this.set('dropdownSelection', {
-        name: this.get('currentFilter').name,
-        label: this.get('currentFilter').label
-      });
-      return true;
-    },
-    newFilter: function() {
-      return this.clearFilter();
-    },
-    collapsiblePanel: (function() {
-      return "#" + this.get('elementId') + ' .filter-details';
-    }).property(),
-    doSearch: function() {
-      return this.get('collection').search(this.get('searchValue'));
-    }
-  });
-
-  Tent.FilterDefinition = Ember.Object.extend({
-    name: "",
-    label: "",
-    description: "",
-    values: []
-  });
-
-  Tent.FilterFieldsView = Ember.ContainerView.extend({
-    classNames: ['form-horizontal'],
-    collection: null,
-    collectionFilterBinding: 'parentView',
-    fieldsHaveRendered: false,
-    init: function() {
-      this._super();
-      this.set('collectionFilter', this.get('parentView'));
-      return this.populateContainer();
-    },
-    populateContainer: function() {
-      var column, _i, _len, _ref, _results,
-        _this = this;
-      if (this.get('collection.columnsDescriptor') != null) {
-        _ref = this.get('collection.columnsDescriptor');
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          column = _ref[_i];
-          _results.push((function() {
-            var col;
-            col = column;
-            return setTimeout(function() {
-              var fieldView;
-              if (col.filterable !== false) {
-                fieldView = _this.generateField(col);
-                if (fieldView != null) {
-                  _this.get('childViews').pushObject(fieldView);
-                }
-                return _this.set('fieldsHaveRendered');
-              }
-            }, 10);
-          })());
-        }
-        return _results;
-      }
-    },
-    fieldsHaveRenderedDidChange: (function() {
-      return this.get('collectionFilter').set('fieldsHaveRendered', true);
-    }).observes('fieldsHaveRendered'),
-    generateField: function(column) {
-      var fieldView;
-      fieldView = null;
-      switch (column.type) {
-        case "string":
-          fieldView = Tent.TextField.create({
-            label: Tent.I18n.loc(column.title),
-            isFilter: true,
-            valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-            filterBinding: "parentView.collectionFilter.currentFilter",
-            field: column.name
-          });
-          break;
-        case "date":
-        case "utcdate":
-          fieldView = Tent.DateRangeField.create({
-            label: Tent.I18n.loc(column.title),
-            isFilter: true,
-            valueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-            closeOnSelect: true,
-            arrows: true,
-            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-            dateFormat: "yy-mm-dd"
-          });
-          break;
-        case "number":
-        case "amount":
-          fieldView = Tent.NumericTextField.create({
-            label: Tent.I18n.loc(column.title),
-            isFilter: true,
-            serializer: Tent.Formatting.number.serializer,
-            rangeValueBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-            filterBinding: "parentView.collectionFilter.currentFilter",
-            field: column.name
-          });
-          break;
-        case "boolean":
-          fieldView = Tent.Checkbox.create({
-            label: Tent.I18n.loc(column.title),
-            isFilter: true,
-            checkedBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".data",
-            filterOpBinding: "parentView.collectionFilter.currentFilter.values." + column.name + ".op",
-            filterBinding: "parentView.collectionFilter.currentFilter",
-            field: column.name
-          });
-      }
-      return fieldView;
-    }
-  });
 
 }).call(this);
 

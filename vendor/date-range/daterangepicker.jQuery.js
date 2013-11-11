@@ -40,28 +40,28 @@
 				allDatesBefore: 'All Dates Before',
 				allDatesAfter: 'All Dates After',
 				dateRange: 'Date Range'
-		},
-		rangeStartTitle: 'Start date',
-		rangeEndTitle: 'End date',
-		nextLinkText: 'Next',
-		prevLinkText: 'Prev',
-		target: rangeInput,
-		doneButtonText: 'Done',
-		earliestDate: Date.parse('-15years'), //earliest date allowed 
-		latestDate: Date.parse('+15years'), //latest date allowed 
-		constrainDates: false,
-		rangeSplitter: '-', //string to use between dates in single input
-		dateFormat: 'm/d/yy', // date formatting. Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
-		closeOnSelect: true, //if a complete selection is made, close the menu
-		arrows: false,
-		appendTo: 'body',
-		onClose: function(){},
-		onOpen: function(){},
-		onChange: function(){},
-		datepickerOptions: null //object containing native UI datepicker API options
-	}, settings);
+			},
+			rangeStartTitle: 'Start date',
+			rangeEndTitle: 'End date',
+			nextLinkText: 'Next',
+			prevLinkText: 'Prev',
+			target: rangeInput,
+			doneButtonText: 'Done',
+			earliestDate: Date.parse('-15years'), //earliest date allowed 
+			latestDate: Date.parse('+15years'), //latest date allowed 
+			constrainDates: false,
+			rangeSplitter: '-', //string to use between dates in single input
+			dateFormat: 'm/d/yy', // date formatting. Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
+			closeOnSelect: true, //if a complete selection is made, close the menu
+			arrows: false,
+			appendTo: 'body',
+			onClose: function(){},
+			onOpen: function(){},
+			onChange: function(){},
+			datepickerOptions: null //object containing native UI datepicker API options
+		}, settings);
 	
-	
+		this.options = options;
 
 	//custom datepicker options, extended by options
 	var datepickerOptions = {
@@ -336,7 +336,7 @@
 		if(options.arrows && rangeInput.size()==1){
 			var prevLink = $('<a href="#" class="ui-daterangepicker-prev ui-corner-all" title="'+ options.prevLinkText +'"><span class="ui-icon ui-icon-circle-triangle-w">'+ options.prevLinkText +'</span></a>');
 			var nextLink = $('<a href="#" class="ui-daterangepicker-next ui-corner-all" title="'+ options.nextLinkText +'"><span class="ui-icon ui-icon-circle-triangle-e">'+ options.nextLinkText +'</span></a>');
-
+			var fuzzyCheckbox = $('<input type="checkbox" class="useFuzzy" />');
 			$(this)
 			.addClass('ui-rangepicker-input ui-widget-content')
 			.wrap('<div class="ui-daterangepicker-arrows ui-widget ui-widget-header ui-helper-clearfix ui-corner-all"></div>')
@@ -361,7 +361,11 @@
 				},
 				function(){
 					$(this).removeClass('ui-state-hover');
-				});
+				}
+			);
+			if (options.allowFuzzyDates) {
+				$(this).before( fuzzyCheckbox);
+			}
 
 			var riContain = rangeInput.parent();
 		}

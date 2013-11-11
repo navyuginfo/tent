@@ -111,13 +111,27 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 .ui-daterangepicker-arrows {
 	width: 218px;
 	input.ui-rangepicker-input {
-		width: 170px;
+		width: 160px;
 		font-size: .8em;
 		height: 1.2em;
 		display: inline-block!important;
 	}
 	.ui-daterangepicker-prev, .ui-daterangepicker-next {
 		top: 4px;
+	}
+}
+
+.allow-fuzzy-dates {
+	.ui-daterangepicker-arrows {
+		width: 218px;
+		input.ui-rangepicker-input {
+			margin-left: 32px;
+		}
+	}
+	input.useFuzzy {
+		position: absolute;	
+		left: 17px;
+		width: 15px;
 	}
 }
 

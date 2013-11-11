@@ -17,7 +17,7 @@
 			endDateBinding=""
 			showOtherMonths=true  
 			dateFormat=""
-         }}
+				 }}
 ###
 
 require '../template/text_field'
@@ -26,6 +26,7 @@ require '../mixin/constants'
 
 Tent.DateRangeField = Tent.TextField.extend
 	classNames: ['tent-date-range-field']
+	classNameBindings: ['allowFuzzyDates']
 	###*
 	* @property {Array} presetRanges Array of objects to be made into menu range presets. 
 	* 
@@ -95,28 +96,47 @@ Tent.DateRangeField = Tent.TextField.extend
 
 	operators: null # We don't need operators with a date range
 
+	###*
+	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
+	* a valid date
+	###
+	allowFuzzyDates: false
+
+	###*
+	* @property {String} fuzzyValue This will store the fuzzy date if one is entered by the user.
+	###
+	fuzzyValue: null
+
+	useFuzzyDates: false
+
 	init: ->		 
 		@_super()
 	
 	didInsertElement: ->
 		@_super(arguments)
 		widget = @
+		
+		@set('plugin', @$('input').daterangepicker({
+				appendTo: "##{@get('elementId')}"
+				presetRanges: @get('presetRanges') if @get('presetRanges')?
+				presets: @get('presets') if @get('presets')?
+				rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
+				dateFormat: @get('dateFormat')
+				earliestDate: @get('earliestDate') if @get('earliestDate')?
+				latestDate: @get('latestDate') if @get('latestDate')?
+				closeOnSelect: @get('closeOnSelect')
+				arrows: @get('arrows')
+				allowFuzzyDates: @get('allowFuzzyDates')
+				datepickerOptions: {
+					dateFormat : @get('dateFormat')
+				}
+				onChange: ->
+					widget.change()
+			})
+		)
 		@initializeWithStartAndEndDates()
-		@$('input').daterangepicker({
-			presetRanges: @get('presetRanges') if @get('presetRanges')?
-			presets: @get('presets') if @get('presets')?
-			rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
-			dateFormat: @get('dateFormat')
-			earliestDate: @get('earliestDate') if @get('earliestDate')?
-			latestDate: @get('latestDate') if @get('latestDate')?
-			closeOnSelect: @get('closeOnSelect')
-			arrows: @get('arrows')
-			datepickerOptions: {
-				dateFormat : @get('dateFormat')
-			}
-			onChange: ->
-				widget.change()
-		})
+		@listenForFuzzyCheckboxChanges()
+		@listenForFuzzyDropdownChanges()
 		@handleReadonly()
 		@handleDisabled()
 		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
@@ -130,28 +150,66 @@ Tent.DateRangeField = Tent.TextField.extend
 	* @return {String}
 	###
 	getValue: ->
-		@$('input').val() if @$('input')?
+		@$('.ui-rangepicker-input').val() if @$('.ui-rangepicker-input')?
 
 	###*
 	* @method setValue Set the value of the input field
 	* @param {String} value
 	###
 	setValue: (value)->
-		@$('input').val(value)
+		@$('.ui-rangepicker-input').val(value)
 
 	initializeWithStartAndEndDates: ->
-		if not @get('value')?
+		if not @get('value')? and not @get('fuzzyValue')?
 			if @get('startDate')?
 				start = Tent.Formatting.date.format(@get('startDate'), @get('dateFormat'))
 			if @get('endDate')?
 				end = Tent.Formatting.date.format(@get('endDate'), @get('dateFormat'))
 			@setValue(start + @get('rangeSplitter') + " " + end)
 
+		if @get('fuzzyValue')?
+			@set('fuzzyValueTemp', @get('fuzzyValue'))
+			@set('useFuzzyDates', true)
+			@setFuzzyCheck(true)
+			dateRange = @getDateFromFuzzyValue(@get('fuzzyValue'))
+			@setValue(dateRange)
+			@set('value', dateRange)
+			@set('dateValue', dateRange)
+		else
+			@setFuzzyCheck(false)
+
+	setFuzzyCheck: (isChecked)->
+		@$('.useFuzzy').prop('checked', isChecked)
+
+	getDateFromFuzzyValue: (fuzzy)->
+		# get presets
+		# find the one that applies
+		# evaluate start and end date and copy to value
+
+		ranges = @get('plugin.options.presetRanges')
+
+		presetArr = ranges.filter (item) =>
+			item.text.replace(/\ /g, "") == fuzzy
+
+		if presetArr.length > 0
+			preset = presetArr[0]
+			start = if typeof preset.dateStart == 'string' then Date.parse(preset.dateStart) else preset.dateStart()
+			formattedStart = Tent.Formatting.date.format(start, @get('dateFormat'))
+			end = if typeof preset.dateEnd == 'string' then Date.parse(preset.dateEnd) else preset.dateEnd()
+			formattedEnd = Tent.Formatting.date.format(end, @get('dateFormat'))
+			(formattedStart + @get('rangeSplitter') + " " + formattedEnd)
+		else
+			# If not a fuzzy value, just return the original value, which may be a valid date range
+			fuzzy
+
 	placeholder: (->
 		@get('dateFormat') + @get('rangeSplitter') + " " + @get('dateFormat')
 	).property('dateFormat')
 
-	change: ->
+	change: (e)->
+		if e? and not $(e.originalTarget).is('.useFuzzy')
+			return
+		@set('dateValue', @getValue())
 		@set("formattedValue", @format(@getValue()))
 		@set('isValid', @validate())
 		if @get('isValid')
@@ -159,14 +217,46 @@ Tent.DateRangeField = Tent.TextField.extend
 			@set('formattedValue', @format(unformatted))
 			@set('value', @convertSingleDateToDateRange(unformatted))
 
+	listenForFuzzyDropdownChanges: ->
+		@$('.ui-daterangepickercontain li').click (e) =>
+			@setFuzzyValueFromSelectedPreset(e)
+
+	setFuzzyValueFromSelectedPreset: (e) ->
+		if @get('allowFuzzyDates')
+			classes = $(e.currentTarget).attr('class').split(' ')
+			presetArr = classes.find((item)->
+				if item.split('ui-daterangepicker-').length > 1 then true else false
+			)
+			fValue = presetArr.split('ui-daterangepicker-')[1]
+			@set('fuzzyValueTemp', fValue)
+		else
+			@set('fuzzyValue', null)
+
+	listenForFuzzyCheckboxChanges: ->
+		_this = this;
+		@$('.useFuzzy').click (e) ->
+			#$(this).prop('checked', (i, val) ->
+			#	return !val
+			#)
+			_this.toggleProperty('useFuzzyDates')
+
+	fuzzyValueDidChange: (->
+		if @get('allowFuzzyDates') and @get('useFuzzyDates')
+			@set('fuzzyValue', @get('fuzzyValueTemp'))
+			@set('formattedValue', @get('fuzzyValueTemp'))
+		else
+			@set('fuzzyValue', null)
+			@set('formattedValue', @getDateFromFuzzyValue(@get('dateValue')))
+	).observes('fuzzyValueTemp','useFuzzyDates')
+
 	focusOut: ->
 		# override the default behavior for textfields, since we do not want to validate
 		# for just interacting with the dropdown.
 
 	convertSingleDateToDateRange: (date)->
-    if (date.indexOf(",") == -1)
-      date += ",#{date}"
-    date
+		if (date.indexOf(",") == -1)
+			date += ",#{date}"
+		date
 
 	validate: ->
 		isValid = @_super()
@@ -183,15 +273,15 @@ Tent.DateRangeField = Tent.TextField.extend
 
 			endString = @getValue().split(@get('rangeSplitter'))[1]
 			if endString?
-			  try
-			   endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
-			   @set('endDate', endDate)
-			  catch e
-			   isValidEndDate = false
-			   @set('endDate', null)
+				try
+				 endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
+				 @set('endDate', endDate)
+				catch e
+				 isValidEndDate = false
+				 @set('endDate', null)
 			else
-			  @set('endDate', @get('startDate'))
-			  
+				@set('endDate', @get('startDate'))
+				
 
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless (isValidStartDate and isValidEndDate)
 		@validateWarnings() if (isValid and isValidStartDate and isValidEndDate)
@@ -216,10 +306,10 @@ Tent.DateRangeField = Tent.TextField.extend
 	
 	handleReadonly: (->
 		if @get('readOnly')? && @get('readOnly')
-			@$('input').bind('click', @get('readOnlyHandler'))
+			@$('.ui-rangepicker-input').bind('click', @get('readOnlyHandler'))
 			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "hidden")
 		else 
-			@$('input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
+			@$('.ui-rangepicker-input, .ui-daterangepicker-prev, .ui-daterangepicker-next').unbind('click', @get('readOnlyHandler'))
 			@$('.ui-daterangepicker-prev, .ui-daterangepicker-next').css("visibility", "visible")
 	).observes('readOnly')
 

@@ -46,6 +46,7 @@
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
 	Pad.fuzzyDate = 'yesterday'
+	Pad.rangeFuzzyDate = 'Tomorrow'
 	Pad.spinner = 27	 
 	Pad.startDate = new Date("12/6/2012")
 	Pad.endDate = new Date("12/21/2012")
