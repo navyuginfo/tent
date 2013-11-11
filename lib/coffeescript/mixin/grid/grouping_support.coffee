@@ -3,43 +3,7 @@
 * Adds grouping support to a grid
 ###
 Tent.Grid.GroupingSupport = Ember.Mixin.create
-  remoteGrouping: false
-
-  ###*
-   * @property {Boolean} showGroupTitle Show the title of the group in each grouping row along with the group data.
-  ###
-  showGroupTitle: true
-
-  # Determines whether groups or items are shown in the grid
   showingGroups: false
-
-
-  # Called when a user selects a grouping option from the dropdown menu
-  newGroupSelected: (groupType, columnName)->
-    if @remoteGrouping
-      @doRemoteGrouping(groupType, columnName)
-    else
-      @doLocalGrouping(groupType, columnName)
-
-  doLocalGrouping: (groupType, columnName)->
-    if groupType == 'none'
-      @getTableDom().jqGrid('groupingRemove', true)
-    else
-      columnType = @getColumnType(columnName)
-
-      lastSort = @getTableDom()[0].p.sortname
-      for columnDef in @get('columns')
-        if columnDef.name == columnName and columnDef.sortable? and columnDef.sortable
-          if (not lastSort?) or not (lastSort == columnName)
-            @getTableDom().sortGrid(columnName)
-
-      comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType)
-      this.getTableDom().groupingGroupBy(columnName, {
-          groupText : ['<b>' + @getColumnTitle(columnName) + ':  {0}</b>']
-          range: comparator
-        }
-      )
-      this.gridDataDidChange()
 
   getColumnType: (columnName)->
     columnType = 'string'
@@ -47,34 +11,34 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
       if col.name == columnName then columnType= col.type
     columnType
 
-  doRemoteGrouping: (groupType, columnName) ->
-    @clearAllGrouping()
+  newGroupSelected: (groupType, columnName) ->
+    console.log 'starting multi grouping', groupType, columnName
     if groupType == 'none'
-      @get('collection').goToPage(1)
+      @clearAllGrouping()
     else
-      groupData =
+      @set('showingGroups', true)
+      @get('collection').groupingStart
         columnName: columnName
         type: groupType
         columnType: @getColumnType(columnName)
-      @setShowingGroupsListState(true)
-      @get('collection').goToGroupPage(1, groupData)
 
-  # A group was row was selected from the grid
-  didSelectGroup: (itemId, status, e)->
-    @selectRemoteGroup(itemId)
-
-  selectRemoteGroup: (id)->
-    @setShowingGroupsListState(false)
-    @set('currentGroup', @getSelectedGroup(id))
-    @showGroupHeader(id, @get('currentGroup'))
-    @get('collection').setCurrentGroupId(id)
-    @get('collection').goToPage(1)
-
-  getSelectedGroup: (id)->
-    for item in @get('content').toArray()
-      if item.get('id') == parseInt(id,10)
-        selectedGroup = item
-    return selectedGroup
+  updateGroupFormatting: ->
+    table = @getTableDom()
+    #sel = $('tr', table)
+    #sel.removeClass('group-row')
+    #sel.removeClass('group-expanded')
+    #sel.removeClass('group-collapsed')
+    if table?
+      for row in @get('content')
+        if row.get('rowcnt')
+          table.jqGrid('setRowData', row.get('id'), false, 'group-row')
+          labelData = table.jqGrid('getCell', row.get('id'), 0)
+          if row.get('expanded')
+            table.jqGrid('setRowData', row.get('id'), false, 'group-expanded')
+            table.jqGrid('setCell', row.get('id'), 0, "<span class='group-arrow'>&#x25BC;</span> #{labelData}")
+          else
+            table.jqGrid('setRowData', row.get('id'), false, 'group-collapsed')
+            table.jqGrid('setCell', row.get('id'), 0, "<span class='group-arrow'>&#x25BA;</span> #{labelData}")
 
   showGroupHeader: (id, selectedGroup)->
     widget = this
@@ -129,13 +93,10 @@ Tent.Grid.GroupingSupport = Ember.Mixin.create
     @get('collection').goToGroupPage()
 
   clearAllGrouping: ->
+    @set('showingGroups', false)
     @get('collection').clearGrouping()
-    @hideGroupHeader()
-    @setShowingGroupsListState(false)
 
-  setShowingGroupsListState: (isShowing) ->
-    @set('showingGroups', isShowing)
-    @set('collection.isShowingGroupsList', isShowing)
+  didSelectGroup: (id, status, e) ->
+    @get('collection').didSelectGroup(id, status, e)
 
-  isShowingValidGroups: ->
-    @get('showingGroups') and @get('groupingInfo.columnName')?
+  isGroupRow: (id) -> @get('collection').isGroupRow(id)

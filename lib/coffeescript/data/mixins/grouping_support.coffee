@@ -1,35 +1,35 @@
 Tent.Data.GroupingSupport = Ember.Mixin.create
-	groupingInfo: {}
-	currentGroupPage: 1
-	currentGroupId: null
-	isShowingGroupsList: false
+  groupingInfo: {}
+  currentGroupPage: 1
+  currentGroupId: null
+  isShowingGroupsList: false
 
-	init: ->
-		@_super()
-		@REQUEST_TYPE.GROUP = 'group'
+  init: ->
+    @_super()
+    @REQUEST_TYPE.GROUP = 'group'
 
-	goToGroupPage: (page, groupingInfo) ->
-		if groupingInfo?
-			@set('groupingInfo', groupingInfo)
+  goToGroupPage: (page, groupingInfo) ->
+    if groupingInfo?
+      @set('groupingInfo', groupingInfo)
 
-		if page?
-			@set('groupingInfo.page', page)
-			@set('currentGroupPage', page)
-		
-		@set('groupingInfo.currentGroupId', null)
-		@update(@REQUEST_TYPE.GROUP)
+    if page?
+      @set('groupingInfo.page', page)
+      @set('currentGroupPage', page)
 
-	setCurrentGroupId: (id) ->
-		@set('currentGroupId', id)
-		@set('groupingInfo.currentGroupId', id)
+    @set('groupingInfo.currentGroupId', null)
+    @update(@REQUEST_TYPE.GROUP)
 
-	getGroupingInfo: ->
-		@get('groupingInfo')
+  setCurrentGroupId: (id) ->
+    @set('currentGroupId', id)
+    @set('groupingInfo.currentGroupId', id)
 
-	clearGrouping: ->
-		@set('groupingInfo', 
-			columnName: null
-			type: null
-		)
+  getGroupingInfo: ->
+    @get('groupingInfo')
+
+  clearGrouping: ->
+    @set('groupingInfo', 
+      columnName: null
+      type: null
+    )
 
 

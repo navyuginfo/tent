@@ -4492,6 +4492,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
               }
             ]
           });
+        } else if (this.get('showingGroups')) {
+          return this.get('collection').goToGroupPage(postdata.page);
         } else {
           if (!(this.get('collection.personalizationsRecord') && !this.get('collection.personalizationsRecord.isLoaded'))) {
             return this.get('collection').goToPage(postdata.page);
@@ -4777,37 +4779,30 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.get('fixedRows.length');
     }).property('fixedRows'),
     gridData: (function() {
-      var cell, column, grid, item, model, models, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+      var cell, column, grid, item, model, models, _i, _j, _len, _len1, _ref, _ref1, _ref2;
       grid = [];
       if (this.get('content') != null) {
         models = this.get('content').toArray();
-        if (this.isShowingValidGroups()) {
-          for (_i = 0, _len = models.length; _i < _len; _i++) {
-            model = models[_i];
-            grid.push(model);
+        for (_i = 0, _len = models.length; _i < _len; _i++) {
+          model = models[_i];
+          item = {
+            "id": model.get('id')
+          };
+          if (this.get('selectedIds').contains(model.get('id'))) {
+            item.sel = true;
           }
-        } else {
-          for (_j = 0, _len1 = models.length; _j < _len1; _j++) {
-            model = models[_j];
-            item = {
-              "id": model.get('id')
-            };
-            if (this.get('selectedIds').contains(model.get('id'))) {
-              item.sel = true;
-            }
-            cell = [];
-            _ref = this.get('columnModel');
-            for (_k = 0, _len2 = _ref.length; _k < _len2; _k++) {
-              column = _ref[_k];
-              cell.push(model.get(column.name));
-            }
-            item.cell = cell;
-            if (model.get("presentationType") === "summary") {
-              grid;
+          cell = [];
+          _ref = this.get('columnModel');
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            column = _ref[_j];
+            cell.push(model.get(column.name));
+          }
+          item.cell = cell;
+          if (model.get("presentationType") === "summary") {
+            grid;
 
-            } else {
-              grid.push(item);
-            }
+          } else {
+            grid.push(item);
           }
         }
       }
@@ -4821,7 +4816,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return grid;
     }).property('content', 'content.isLoaded', 'content.@each'),
     gridDataDidChange: (function() {
-      var data, grid, _ref;
+      var data, _ref;
       if (!(this.getTableDom() != null)) {
         return;
       }
@@ -4829,8 +4824,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       if (this.get('content.isLoaded')) {
         this.getTableDom().jqGrid('clearGridData');
         /*
-        			* As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
-        			* calculate whether there are any records or not using the reccount attribute
+              * As soon as the required data is loaded set viewrecords attribute of jqGrid to true, and let it 
+              * calculate whether there are any records or not using the reccount attribute
         */
 
         this.getTableDom()[0].p.viewrecords = true;
@@ -4841,27 +4836,13 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         records: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo.totalRows') : void 0,
         page: this.get('collection.pagingInfo') != null ? this.get('collection.pagingInfo').page : void 0,
         userdata: this.get('fixedRows'),
-        remoteGrouping: this.isShowingValidGroups(),
         columns: this.get('columnModel')
       };
-      this.resetGrouping();
-      if (this.isShowingValidGroups()) {
-        data.columnName = this.get('groupingInfo.columnName');
-        data.columnType = this.get('groupingInfo.columnType');
-        data.groupType = this.get('groupingInfo.type');
-        data.columnTitle = this.getColumnTitle(data.columnName);
-        data.showGroupTitle = this.get('showGroupTitle');
-        grid = this.getTableDom()[0];
-        this.updatePagingForGroups(grid, data);
-        if (grid != null) {
-          grid.addGroupingData(data);
-        }
-      } else {
-        if ((_ref = this.getTableDom()[0]) != null) {
-          _ref.addJSONData(data, this.get('rcnt'));
-        }
+      if ((_ref = this.getTableDom()[0]) != null) {
+        _ref.addJSONData(data, this.get('rcnt'));
       }
-      return this.updateGrid();
+      this.updateGrid();
+      return this.updateGroupFormatting();
     }).observes('content', 'content.isLoaded', 'content.@each', 'pagingInfo'),
     gridIsEmpty: (function() {
       if (this.get('content.isLoaded') && !this.get('content.content.length')) {
@@ -5227,44 +5208,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
 (function() {
 
   Tent.Grid.GroupingSupport = Ember.Mixin.create({
-    remoteGrouping: false,
-    /**
-     * @property {Boolean} showGroupTitle Show the title of the group in each grouping row along with the group data.
-    */
-
-    showGroupTitle: true,
     showingGroups: false,
-    newGroupSelected: function(groupType, columnName) {
-      if (this.remoteGrouping) {
-        return this.doRemoteGrouping(groupType, columnName);
-      } else {
-        return this.doLocalGrouping(groupType, columnName);
-      }
-    },
-    doLocalGrouping: function(groupType, columnName) {
-      var columnDef, columnType, comparator, lastSort, _i, _len, _ref;
-      if (groupType === 'none') {
-        return this.getTableDom().jqGrid('groupingRemove', true);
-      } else {
-        columnType = this.getColumnType(columnName);
-        lastSort = this.getTableDom()[0].p.sortname;
-        _ref = this.get('columns');
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          columnDef = _ref[_i];
-          if (columnDef.name === columnName && (columnDef.sortable != null) && columnDef.sortable) {
-            if ((!(lastSort != null)) || !(lastSort === columnName)) {
-              this.getTableDom().sortGrid(columnName);
-            }
-          }
-        }
-        comparator = Tent.JqGrid.Grouping.getComparator(columnType, groupType);
-        this.getTableDom().groupingGroupBy(columnName, {
-          groupText: ['<b>' + this.getColumnTitle(columnName) + ':  {0}</b>'],
-          range: comparator
-        });
-        return this.gridDataDidChange();
-      }
-    },
     getColumnType: function(columnName) {
       var col, columnType, _i, _len, _ref;
       columnType = 'string';
@@ -5277,41 +5221,43 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       }
       return columnType;
     },
-    doRemoteGrouping: function(groupType, columnName) {
-      var groupData;
-      this.clearAllGrouping();
+    newGroupSelected: function(groupType, columnName) {
+      console.log('starting multi grouping', groupType, columnName);
       if (groupType === 'none') {
-        return this.get('collection').goToPage(1);
+        return this.clearAllGrouping();
       } else {
-        groupData = {
+        this.set('showingGroups', true);
+        return this.get('collection').groupingStart({
           columnName: columnName,
           type: groupType,
           columnType: this.getColumnType(columnName)
-        };
-        this.setShowingGroupsListState(true);
-        return this.get('collection').goToGroupPage(1, groupData);
+        });
       }
     },
-    didSelectGroup: function(itemId, status, e) {
-      return this.selectRemoteGroup(itemId);
-    },
-    selectRemoteGroup: function(id) {
-      this.setShowingGroupsListState(false);
-      this.set('currentGroup', this.getSelectedGroup(id));
-      this.showGroupHeader(id, this.get('currentGroup'));
-      this.get('collection').setCurrentGroupId(id);
-      return this.get('collection').goToPage(1);
-    },
-    getSelectedGroup: function(id) {
-      var item, selectedGroup, _i, _len, _ref;
-      _ref = this.get('content').toArray();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        item = _ref[_i];
-        if (item.get('id') === parseInt(id, 10)) {
-          selectedGroup = item;
+    updateGroupFormatting: function() {
+      var labelData, row, table, _i, _len, _ref, _results;
+      table = this.getTableDom();
+      if (table != null) {
+        _ref = this.get('content');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          row = _ref[_i];
+          if (row.get('rowcnt')) {
+            table.jqGrid('setRowData', row.get('id'), false, 'group-row');
+            labelData = table.jqGrid('getCell', row.get('id'), 0);
+            if (row.get('expanded')) {
+              table.jqGrid('setRowData', row.get('id'), false, 'group-expanded');
+              _results.push(table.jqGrid('setCell', row.get('id'), 0, "<span class='group-arrow'>&#x25BC;</span> " + labelData));
+            } else {
+              table.jqGrid('setRowData', row.get('id'), false, 'group-collapsed');
+              _results.push(table.jqGrid('setCell', row.get('id'), 0, "<span class='group-arrow'>&#x25BA;</span> " + labelData));
+            }
+          } else {
+            _results.push(void 0);
+          }
         }
+        return _results;
       }
-      return selectedGroup;
     },
     showGroupHeader: function(id, selectedGroup) {
       var aggregateColumns, columnName, columnTitle, columnType, comparator, content, groupType, headerRow, startValue, widget;
@@ -5371,16 +5317,14 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.get('collection').goToGroupPage();
     },
     clearAllGrouping: function() {
-      this.get('collection').clearGrouping();
-      this.hideGroupHeader();
-      return this.setShowingGroupsListState(false);
+      this.set('showingGroups', false);
+      return this.get('collection').clearGrouping();
     },
-    setShowingGroupsListState: function(isShowing) {
-      this.set('showingGroups', isShowing);
-      return this.set('collection.isShowingGroupsList', isShowing);
+    didSelectGroup: function(id, status, e) {
+      return this.get('collection').didSelectGroup(id, status, e);
     },
-    isShowingValidGroups: function() {
-      return this.get('showingGroups') && (this.get('groupingInfo.columnName') != null);
+    isGroupRow: function(id) {
+      return this.get('collection').isGroupRow(id);
     }
   });
 
@@ -5442,37 +5386,37 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
           column.sortable = !((column.sortable != null) && column.sortable === false);
           if (column.groupable || column.renamable || column.sortable) {
             template = Handlebars.compile('\
-						 	<ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">\
-								{{#if column.sortable}}\
-									<li class="sort dropdown-submenu">\
-										<a tabindex="-1">{{sort}}</a>\
-											<ul class="dropdown-menu">\
-												<li><a tabindex="-1" class="ascending">{{ascending}}</a></li>\
-												<li><a tabindex="-1" class="descending">{{descending}}</a></li>\
-											</ul>\
-									</li>\
-								{{/if}}\
-								{{#if column.groupable}}\
-									<li class="group dropdown-submenu">\
-										<a tabindex="-1">{{group}}</a>\
-											<ul class="dropdown-menu">\
-												<li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>\
-												{{#each groupType}}\
-													<li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>\
-												{{/each}}\
-											</ul>\
-									</li>\
-								{{/if}}\
-								{{#if column.renamable}}\
-									<li class="rename dropdown-submenu">\
-										<a tabindex="-1">{{rename}}</a>\
-											<ul class="dropdown-menu wide">\
-												<li><input type="text" value="{{title}}" class="input-medium"/></li>\
-												<li><a tabindex="-1" class="revert">{{revert}}</a></li>\
-											</ul>\
-									</li>\
-								{{/if}}\
-							</ul>');
+               <ul class="dropdown-menu column-dropdown" data-column="{{column.name}}" data-last-title="{{title}}" data-orig-title="{{title}}">\
+                {{#if column.sortable}}\
+                  <li class="sort dropdown-submenu">\
+                    <a tabindex="-1">{{sort}}</a>\
+                      <ul class="dropdown-menu">\
+                        <li><a tabindex="-1" class="ascending">{{ascending}}</a></li>\
+                        <li><a tabindex="-1" class="descending">{{descending}}</a></li>\
+                      </ul>\
+                  </li>\
+                {{/if}}\
+                {{#if column.groupable}}\
+                  <li class="group dropdown-submenu">\
+                    <a tabindex="-1">{{group}}</a>\
+                      <ul class="dropdown-menu">\
+                        <li data-grouptype="none"><a tabindex="-1">{{none}}</a></li>\
+                        {{#each groupType}}\
+                          <li data-grouptype="{{name}}"><a class="revert" tabindex="-1">{{title}}</a></li>\
+                        {{/each}}\
+                      </ul>\
+                  </li>\
+                {{/if}}\
+                {{#if column.renamable}}\
+                  <li class="rename dropdown-submenu">\
+                    <a tabindex="-1">{{rename}}</a>\
+                      <ul class="dropdown-menu wide">\
+                        <li><input type="text" value="{{title}}" class="input-medium"/></li>\
+                        <li><a tabindex="-1" class="revert">{{revert}}</a></li>\
+                      </ul>\
+                  </li>\
+                {{/if}}\
+              </ul>');
             if (column.type != null) {
               groupType = Tent.JqGrid.Grouping.ranges.get(column.type)();
             }
@@ -6044,7 +5988,7 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
   * Create a jqGrid view which displays the data provided by its content property
   *
   * ##Usage
-  *		{{view Tent.JqGrid
+  *    {{view Tent.JqGrid
                     label="Tasks"
                     collectionBinding="Pad.collection"
                     selectionBinding="Pad.selectedTasks"
@@ -6065,79 +6009,79 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     classNames: ['tent-jqgrid'],
     classNameBindings: ['fixedHeader', 'hasErrors:error', 'paged', 'horizontalScrolling', 'footerRow', 'showFilter', 'isPinned', 'filterCoversGrid'],
     /**
-    	* @property {String} title The title caption to appear above the table
+    * @property {String} title The title caption to appear above the table
     */
 
     title: null,
     /**
-    	* @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
+    * @property {Boolean} multiSelect Boolean indicating that the list is a multi-select list
     */
 
     multiSelect: false,
     /**
-    	* @property {Boolean} fixedHeader Boolean indicating that the header remains in view when the content is scrolled.
+    * @property {Boolean} fixedHeader Boolean indicating that the header remains in view when the content is scrolled.
     */
 
     fixedHeader: false,
     /**
-    	* @property	{Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
+    * @property  {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
     */
 
     scroll: false,
     /**
-    	* @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
+    * @property {Boolean} filtering A boolean to indicate that the grid can be filtered.
     */
 
     filtering: false,
     /**
-    	* @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
+    * @property {Boolean} grouping A boolean to indicate that the grid can be grouped.
     */
 
     grouping: true,
     /**
-    	* @property {String} groupField The name of the field by which to group the grid
+    * @property {String} groupField The name of the field by which to group the grid
     */
 
     groupField: null,
     /** 
-    	* @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields.
+    * @property {Boolean} clearAction Set this property to true to deselect all the selected items and restore all the editable fields.
     */
 
     clearAction: null,
     fullScreen: false,
     /**
-    	 * @property {Boolean} footerRow Displays a row at the foot of the table for summary information
+     * @property {Boolean} footerRow Displays a row at the foot of the table for summary information
     */
 
     footerRow: false,
     /**
-    	 * @property {Integer} fixedRowsCount Displays rows count at the foot of the table for summary information
+     * @property {Integer} fixedRowsCount Displays rows count at the foot of the table for summary information
     */
 
     fixedRowsCount: 1,
     /**
-    	* @property {Array} content The array of items to display in the grid.
-    	* By default this will be retrieved from the collection, if provided
+    * @property {Array} content The array of items to display in the grid.
+    * By default this will be retrieved from the collection, if provided
     */
 
     contentBinding: 'collection',
     /**
-    	* @property {Array} columns The array of column descriptors used to represent the data. 
-    	* By default this will be retrieved from the collection, if provided
+    * @property {Array} columns The array of column descriptors used to represent the data. 
+    * By default this will be retrieved from the collection, if provided
     */
 
     /**
-    	* @property {Array} selection The array of items selected in the list. This can be used as a setter
-    	* and a getter.
+    * @property {Array} selection The array of items selected in the list. This can be used as a setter
+    * and a getter.
     */
 
     selection: [],
     /**
-    	* @property {String} usageContext The environment into which this grid is to be placed.
-    	* The behavior and presentation of the grid and its components may differ in different usage
-    	* contexts. e.g. Filter panel may default to opened when in the 'report' context.
-    	*
-    	* Current allowed values are 'view' and 'report'
+    * @property {String} usageContext The environment into which this grid is to be placed.
+    * The behavior and presentation of the grid and its components may differ in different usage
+    * contexts. e.g. Filter panel may default to opened when in the 'report' context.
+    *
+    * Current allowed values are 'view' and 'report'
     */
 
     usageContext: null,
@@ -6178,7 +6122,6 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       this.setupColumnWidthProperties();
       this.setupColumnVisibilityProperties();
       this.buildGrid();
-      this.gridDataDidChange();
       this.addNavigationBar();
       this.setupColumnGroupingProperties();
       this.setupColumnOrderingProperties();
@@ -6264,10 +6207,11 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
         footerrow: this.get('footerRow'),
         userDataOnFooter: true,
         onSelectRow: function(itemId, status, e) {
-          return widget.didSelectRow(itemId, status, e);
-        },
-        onSelectGroup: function(itemId, status, e) {
-          return widget.didSelectGroup(itemId, status, e);
+          if (widget.get('showingGroups') && widget.isGroupRow(itemId)) {
+            return widget.didSelectGroup(itemId, status, e);
+          } else {
+            return widget.didSelectRow(itemId, status, e);
+          }
         },
         onSelectAll: function(rowIds, status) {
           return widget.didSelectAll(rowIds, status);
@@ -6296,9 +6240,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
     },
     setInitialViewRecordsAttribute: function() {
       /*
-      	    * Set initial value of viewrecords to be false so that the text "no records to view" does not
-      	    * appear when page is refreshed or is first visited, this was not possible in initial definition
-      	    * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
+            * Set initial value of viewrecords to be false so that the text "no records to view" does not
+            * appear when page is refreshed or is first visited, this was not possible in initial definition
+            * of jqGrid as jqGrid never shows viewrecords if it is set false in first call to jqGrid
       */
       return this.getTableDom()[0].p.viewrecords = false;
     },
@@ -6331,8 +6275,8 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return this.getTableDom().find('#' + rowId).children().eq(iCell);
     },
     /**
-    	* @method sendAction send an action to the router. This is called from the 'action' formatter,
-    	* which displays cell content as a link
+    * @method sendAction send an action to the router. This is called from the 'action' formatter,
+    * which displays cell content as a link
     */
 
     sendAction: function(action, element, rowId, colName) {
@@ -13133,6 +13077,153 @@ GridController
 }).call(this);
 
 
+(function() {
+
+  Tent.Data.GroupPager = Ember.Mixin.create({
+    groupRows: [],
+    groupPage: 1,
+    groupPageSize: 40,
+    expandGroup: function(id) {
+      var args, items, row;
+      id = parseInt(id);
+      console.log("expanding group " + id);
+      row = this.groupRow(id);
+      items = this.createEmptyGroupItems(row.rowcnt, row);
+      args = [id + 1, 0].concat(items);
+      Array.prototype.splice.apply(this.get('groupRows'), args);
+      row.set('expanded', true);
+      return this.fetchItems(id);
+    },
+    collapseGroup: function(id) {
+      var row;
+      id = parseInt(id);
+      row = this.groupRow(id);
+      console.log("collapsing group " + id, row.rowcnt);
+      this.get('groupRows').splice(id + 1, row.rowcnt);
+      console.log("rows after collapsing splice", this.get('groupRows'));
+      row.set('expanded', false);
+      return this.groupRowsChanged();
+    },
+    didSelectGroup: function(id, status, e) {
+      var row;
+      console.log("selected group row " + id);
+      row = this.groupRow(id);
+      if (!row.expanded) {
+        return this.expandGroup(id);
+      } else {
+        return this.collapseGroup(id);
+      }
+    },
+    isGroupRow: function(id) {
+      var _ref;
+      return ((_ref = this.groupRow(id)) != null ? _ref.rowcnt : void 0) != null;
+    },
+    fetchItems: function(startingRowId) {
+      var endingRowId, group, i, row, _i, _results;
+      console.log('fetching items for row id', startingRowId);
+      endingRowId = startingRowId + this.get('groupPageSize');
+      _results = [];
+      for (i = _i = startingRowId; startingRowId <= endingRowId ? _i <= endingRowId : _i >= endingRowId; i = startingRowId <= endingRowId ? ++_i : --_i) {
+        row = this.groupRow(i);
+        if ((row != null) && !row.loaded && row.group !== group) {
+          group = row.group;
+          console.log('fetching group', group);
+          _results.push(this.fetchGroupItems(group, i, row.itemId, row.itemId + this.get('groupPageSize')));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    },
+    onGroupRowsLoaded: function(index, rows) {
+      var args, i, items, row, _i, _len;
+      console.log('rows loaded, index:', index, 'rows:', rows);
+      if (index === 0) {
+        items = this.createEmptyGroupItems(rows.totalRows - 1);
+        args = [0, items.length].concat(items);
+        Array.prototype.splice.apply(this.get('groupRows'), args);
+      }
+      for (i = _i = 0, _len = rows.length; _i < _len; i = ++_i) {
+        row = rows[i];
+        row.loaded = true;
+        $.extend(this.groupRow(index + i), row);
+      }
+      return this.notifyPropertyChange('groupRows');
+    },
+    groupPageObserver: (function() {
+      console.log('group page changed', this.get('groupPageStart'));
+      this.fetchItems(this.get('groupPageStart'));
+      return this.groupRowsChanged();
+    }).observes('groupPage', 'groupPageStart', 'groupPageEnd'),
+    groupRowsChanged: (function() {
+      var i, row, rows, _i, _len;
+      console.log("group rows changed", this.get('groupRows'));
+      rows = this.get('groupRows').slice(this.get('groupPageStart'), this.get('groupPageEnd'));
+      for (i = _i = 0, _len = rows.length; _i < _len; i = ++_i) {
+        row = rows[i];
+        row.set('id', i + this.get('groupPageStart'));
+      }
+      console.log('new rows are', rows);
+      rows.set('totalRows', this.get('groupRows.length'));
+      rows.set('isLoaded', true);
+      return this.set('modelData', rows);
+    }).observes('groupRows'),
+    groupPageStart: (function() {
+      console.log("new group page start");
+      return (this.get('groupPage') - 1) * this.get('groupPageSize');
+    }).property('groupPage', 'groupPageSize'),
+    groupPageEnd: (function() {
+      console.log("new group page end");
+      return this.get('groupPage') * this.get('groupPageSize');
+    }).property('groupPage', 'groupPageSize'),
+    fetchFirstGroup: function() {
+      return this.fetchGroupItems(null, 0, 0, this.get('groupPageSize'));
+    },
+    groupingStart: function(settings) {
+      console.log('starting grouping with settings:', settings);
+      this.set('groupRows', []);
+      if (this.get('groupSettings') == null) {
+        this.set('groupSettings', {
+          groupBy: [],
+          types: []
+        });
+      }
+      if (this.get('groupSettings.groupBy.length') < 2) {
+        this.get('groupSettings.groupBy').pushObject(settings.columnName.decamelize());
+        this.get('groupSettings.types').pushObject(settings.type);
+      }
+      return this.fetchFirstGroup();
+    },
+    clearGrouping: function() {
+      return this.set('groupSettings', null);
+    },
+    goToGroupPage: function(page) {
+      console.log("setting groupPage", page);
+      this.set('currentPage', page);
+      return this.set('groupPage', page);
+    },
+    groupRow: function(id) {
+      return this.get('groupRows')[id];
+    },
+    createEmptyGroupItems: function(rowcnt, group) {
+      var i, _i, _ref, _results;
+      console.log("creating items for group", group, "with rowcnt", rowcnt);
+      _results = [];
+      for (i = _i = 0, _ref = rowcnt - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        _results.push(Ember.Object.create({
+          group: group,
+          itemId: i,
+          loaded: false,
+          expanded: false
+        }));
+      }
+      return _results;
+    }
+  });
+
+}).call(this);
+
+
 
 /**
 * @class Tent.Data.SearchSupport
@@ -13379,7 +13470,7 @@ grouping: {
   */
 
 
-  Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.Filter, Tent.Data.ExportSupport, Tent.Data.Customizable, Tent.Data.SearchSupport, Tent.Data.ExportSupport, Tent.Data.GroupingSupport, {
+  Tent.Data.Collection = Ember.ArrayController.extend(Tent.Data.Pager, Tent.Data.GroupPager, Tent.Data.Sorter, Tent.Data.ColumnInfo, Tent.Data.Filter, Tent.Data.ExportSupport, Tent.Data.Customizable, Tent.Data.SearchSupport, Tent.Data.ExportSupport, {
     content: null,
     dataType: null,
     data: [],
@@ -13444,8 +13535,8 @@ grouping: {
       return this.get('store').getColumnsForType(this.get('dataType'));
     }).property('dataType'),
     /**
-    	*	@method getColumnByField Return a column given a fieldName
-    	* 	@param {String} fieldName the field name of the column to be returned
+    *  @method getColumnByField Return a column given a fieldName
+    *   @param {String} fieldName the field name of the column to be returned
     */
 
     getColumnByField: function(fieldName) {

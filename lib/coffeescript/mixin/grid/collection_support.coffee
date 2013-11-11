@@ -47,7 +47,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   * @property {Number} pageSize The number of items in each page
   ###
   pageSize: null
-  
+
   pagingInfoBinding: 'collection.pagingInfo'
   sortingInfoBinding: 'collection.sortingInfo'
   columnInfoBinding: 'collection.columnInfo'
@@ -57,7 +57,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
   * @property {Boolean} scroll A boolean indicating that the grid should scroll vertically rather than paging
   ###
   scroll: false
-   
+
   init: ->
     @_super(arguments)
     if @get('collection')?
@@ -318,6 +318,8 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
         @getTableDom().jqGrid('groupingRemove', true)
         @get('collection').sort
           fields: [{sortDir: postdata.sord, field: postdata.sidx}]
+      else if @get('showingGroups')
+        @get('collection').goToGroupPage(postdata.page)
       else
         unless @get('collection.personalizationsRecord') and not @get('collection.personalizationsRecord.isLoaded')
           @get('collection').goToPage(postdata.page)
