@@ -466,8 +466,6 @@ module.exports = function (grunt) {
         'concat:dist'
     ]);
 
-
-
     //
     // Start watching all tent and test coffeescript files. 
     // On modification, build all Tent with tests and execute qUnit test suite.
@@ -490,30 +488,6 @@ module.exports = function (grunt) {
         'karma:unit_qunit_watch:run'
     ]);
 
-
-    //
-    // Start watching all tent and test coffeescript files. 
-    // On modification, build all Tent with tests and execute mocha test suite.
-    //       
-
-    grunt.registerTask('karma-watch-mocha', [
-        'clean:test_all',
-        'concat:jq',
-        'concat:vendor',
-        'karma:unit_mocha_watch',
-        'watch:karma_mocha'
-    ]);
-
-    grunt.registerTask('karma-watch-mocha-test', [
-        'clean:test',
-        'coffee:test',
-        'coffee:tent',
-        'emberTemplates',
-        'neuterall:tent',
-        'neuterall:qunit_test',
-        //'karma:unit_mocha_watch:run'
-    ]);
-
     //
     // Immediately build all Tent and test files and execute qUnit test suite
     // 
@@ -527,22 +501,6 @@ module.exports = function (grunt) {
         'neuterall:tent',
         'neuterall:qunit_test',
         'karma:qunit_continuous'
-    ]);
-
-
-    //
-    // Immediately build all Tent and test files and execute Mocha test suite
-    // 
-
-    grunt.registerTask('karma-mocha-ci', [
-        'concat:jq',
-        'concat:vendor',
-        'newer:coffee:test',
-        'newer:coffee:tent',
-        'any-newer:emberTemplates',
-        'neuterall:tent',
-        'neuterall:qunit_test',
-        'karma:mocha_continuous'
     ]);
 
 };

@@ -1,8 +1,16 @@
 {{#if view.isEntitled}}
-	{{#if item.entitled}}
-    	<a href="#" class="menu-link" {{bindAttr data-route="item.route"}} {{bindAttr data-action="item.action"}} {{action menuClicked target="view"}}>
-			<i {{bindAttr class="item.icon"}} {{bindAttr data-title="view.title"}} data-placement="right" data-animation="false"></i>
-			<span class="content">{{loc item.title}}</span>
-      	</a>
-	{{/if}}
+		<a {{bindAttr class="view.applyHighlight:active-menu view.hasAction:menu-link view.isDisabled:ui-state-disabled"}} {{action menuClicked target="view"}}>
+			{{#if view.hasChildren}}<i class="icon-chevron-left"></i>{{/if}}
+			<i {{bindAttr class=":menu-icon view.icon"}} {{bindAttr data-title="view.title"}} data-placement="right" data-animation="false"></i>
+			<span class="content">{{loc view.title}}</span>
+		</a>
+		{{#if view.hasChildren}}
+			<div class="mp-level">
+				<h2><i {{bindAttr class=":menu-icon view.icon"}}></i> {{loc view.title}}</h2>
+				<a class="mp-back">Back <i class="icon-chevron-right"></i></a>
+				<ul>
+					{{yield}}
+				</ul>
+			</div>
+		{{/if}}
 {{/if}}

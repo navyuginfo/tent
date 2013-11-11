@@ -4,92 +4,57 @@ require '../../template/application/main_menu'
 
 Tent.Application.MainMenuView = Ember.View.extend
   templateName: 'application/main_menu'
-  classNames: ['sci-main-menu']
-  collapsedDashboard: false
-
   ###*
-  * @property {Boolean} collapseAutomatically Defines whether the menu should collapse when the content area recieves focus.
+  * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
+  * item is selected.
   ###
   collapseAutomatically: true
-
-  ###*
-  * @property {Boolean} isFlattened Render all menu items in a single hierarchy, ignoring grouping.
-  ###
-  isFlattened: false
+  classNames: ['main-menu', 'mp-level', 'selected']
 
   didInsertElement: ->
     @_super()
-    @highlightSelectedItem()
+    @openMenuInitially()
+    @selectItemFromUrl()
 
-    @$('.nav-tabs .menu-link').click((e)=>
-      @switchMenu(e)
-      return true
-    )
+  openMenuInitially: ->
+    $('.dashboard-toggle a').click()
 
-  highlightSelectedItem: (path)->
+  selectedActionDidChange: (->
+    @selectItemFromAction(@get('controller.selectedAction'))
+  ).observes('controller.selectedAction')
+
+  # Read the URL and find the menuItem which corresponds to that route
+  selectItemFromUrl: (path)->
     #set the default selection on the basis of hitted url
     path = path or window.location.pathname
-
+    that = this
     if (@$()?)
-      @$(".active-menu").removeClass('active-menu')
-
-      @$("[data-route],[data-route-exact]").each(->
-        if path.indexOf($(this).attr('data-route')) != -1
-          $(this).addClass('active-menu')
-        if path == $(this).attr('data-route-exact')
-          $(this).addClass('active-menu')
+      @forAllChildViews((view)->
+        if view.get('hasAction')
+          if path.indexOf(view.get('route')) != -1
+            that.set('controller.selectedItem', view)
+            @navigateToCorrectMenuLevel(view)
+      )
+  
+  selectItemFromAction: (action)->
+    that = this
+    if (@$()?)
+      @forAllChildViews((view)->
+        if view.get('hasAction')
+          if action == view.get('action')
+            that.set('controller.selectedItem', view)
       )
 
-      current = null
-      @$("active-menu").each(->
-        if not current?
-          current = $(this)
-        else
-          if $(this).attr('data-route').length > current.attr('data-route').length
-            current.removeClass('active-menu')
-            current = $(this)
-      )
+  forAllChildViews: (callback, view)->
+    view = view || @
+    callback.call(@, view)
+    for childView in view.get('childViews')
+      @forAllChildViews(callback, childView)
 
-  menuClicked: (e)->
-    action = $(e.target).attr('data-action') or $(e.target).parents('[data-action]:first').attr('data-action')
-    @get('controller').menuClicked(action)
+  navigateToCorrectMenuLevel: (selectedItem) ->
+    @openMenuInitially()
+    levels = selectedItem.$().parentsUntil('#mp-menu','li')
+    reversed = levels.toArray().reverse()
+    for item in reversed
+      $(item).find('a:first').click()
 
-  switchMenu: (event)->
-    target = event.target
-    selected = @$('.active-menu')
-    $(selected).removeClass('active-menu') if selected isnt `undefined`
-    if $(target).is('.menu-link')
-      $(target).addClass('active-menu')
-    else 
-      $(target).parents('.menu-link:first').addClass('active-menu')
-    @collapseDashboard() if @get('collapseAutomatically')
-
-  collapseDashboard: ->
-    if not @get('collapsedDashboard')
-      mainPanel = @getMainPanel()
-      mainPanel.removeClass('expanded')
-      @set('collapsedDashboard', true)
-      @$("span[rel=tooltip]").tooltip('enable');
-      @$('.tent-panel.collapsible').each(->
-        view = Ember.View.views[$(this).attr('id')]
-        if view.get('collapsed')
-          elem = $(".pull-right", $(this))
-          if elem.length > 0
-            elem.removeClass "collapsed"
-          view.show()
-      )
-    @$('a i, button i').tooltip('enable')
-
-
-  expandDashboard: ->
-    if @get('collapsedDashboard')
-      mainPanel = @getMainPanel()
-      mainPanel.addClass('expanded')
-      @set('collapsedDashboard', false)
-    @$('a i, button i').tooltip('disable')
-
-  toggleCollapse: ->
-    if @get('collapsedDashboard') then @expandDashboard() else @collapseDashboard()
-
-  getMainPanel: ->
-    $('.main-content')

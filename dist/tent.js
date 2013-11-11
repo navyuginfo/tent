@@ -1788,6 +1788,10 @@
     };
   }
 
+  String.prototype.removeWhitespace = function() {
+    return this.replace(/\s+/g, '');
+  };
+
 }).call(this);
 
 
@@ -9725,42 +9729,6 @@ Tent.ModalPane = Ember.View.extend({
 
 
 
-/**
-* @class Tent.ProgressBar
-* 
-* Usage
-* 		{{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
-*/
-
-
-(function() {
-
-  Tent.ProgressBar = Ember.View.extend({
-    classNames: ['tent-progress-bar', 'progress'],
-    classNameBindings: ['isStriped:progress-striped', 'isAnimated:active'],
-    template: Ember.Handlebars.compile('<div class="bar" {{bindAttr style="view.style"}}></div>'),
-    /**
-    * @property {Boolean} isAnimated Boolean to indicate if the bar should be rendered with a progress animation.
-    */
-
-    isAnimated: false,
-    /**
-    * @property {Boolean} isStriped Boolean to indicate if the bar should be rendered with stripes
-    */
-
-    isStriped: false,
-    /**
-    * @property {Number} progress The progress to be displayed, as a percentage between 0 and 100
-    */
-
-    progress: 0,
-    style: Ember.computed(function() {
-      return "width:" + this.get('progress') + "%;";
-    }).property('progress')
-  });
-
-}).call(this);
-
 
 Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          viewName=\"warningPanel\"\n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n\n{{#if view.shouldConfirm}}\n\n  {{#view Tent.ModalPane \n          viewName=\"confirmationPanel\"\n          autoLaunch=false\n          headerBinding=\"view.confirmationTitle\" \n          primaryLabelBinding=\"view.confirmationYes\" \n          secondaryLabelBinding=\"view.confirmationNo\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"confirmAction\"\n          primaryTargetBinding=\"view\"\n          closeAction=\"view.confirmationNo\"\n    }}\n\n      {{loc view.parentView.confirmationMessage}}\n      \n       \n  {{/view}}\n{{/if}}");
 
@@ -12386,149 +12354,129 @@ Tent.Pager = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\t{{#each menugroup in content}}\n\t\t{{#if menugroup.entitled}}\n\t\t\t<li>\n\t\t\t\t{{#if view.isFlattened}}\n\t\t\t\t\t{{#each item in menugroup.items}}\n\t\t\t\t\t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{else}}\n\t\t\t\t\t{{#view Tent.Panel collapsible=true collapsedBinding=\"menugroup.collapsed\" hasChildViews=true}}\n\t\t\t\t        {{#view Tent.PanelHead}}\n\t\t\t\t          <h4><i {{bindAttr class=\"menugroup.icon\"}}></i> {{loc menugroup.title}}</h4>  \n\t\t\t\t        {{/view}}\n\t\t\t\t        {{#view Tent.PanelBody}}\n\t\t\t\t        \t{{#each item in menugroup.items}}\n\t\t\t\t        \t\t{{view Tent.Application.MenuItemView contentBinding=\"item\"}}\n\t\t\t\t\t        {{/each}}\n\t\t\t\t        {{/view}}\n\t\t\t\t    {{/view}}\n\t\t\t\t{{/if}}\n\t\t\t</li>\n\t\t{{/if}}\n\t{{/each}}\n</ul>");
+Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\n</ul>");
 
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MainMenuView = Ember.View.extend({
     templateName: 'application/main_menu',
-    classNames: ['sci-main-menu'],
-    collapsedDashboard: false,
     /**
-    * @property {Boolean} collapseAutomatically Defines whether the menu should collapse when the content area recieves focus.
+    * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
+    * item is selected.
     */
 
     collapseAutomatically: true,
-    /**
-    * @property {Boolean} isFlattened Render all menu items in a single hierarchy, ignoring grouping.
-    */
-
-    isFlattened: false,
+    classNames: ['main-menu', 'mp-level', 'selected'],
     didInsertElement: function() {
-      var _this = this;
       this._super();
-      this.highlightSelectedItem();
-      return this.$('.nav-tabs .menu-link').click(function(e) {
-        _this.switchMenu(e);
-        return true;
-      });
+      this.openMenuInitially();
+      return this.selectItemFromUrl();
     },
-    highlightSelectedItem: function(path) {
-      var current;
+    openMenuInitially: function() {
+      return $('.dashboard-toggle a').click();
+    },
+    selectedActionDidChange: (function() {
+      return this.selectItemFromAction(this.get('controller.selectedAction'));
+    }).observes('controller.selectedAction'),
+    selectItemFromUrl: function(path) {
+      var that;
       path = path || window.location.pathname;
+      that = this;
       if ((this.$() != null)) {
-        this.$(".active-menu").removeClass('active-menu');
-        this.$("[data-route],[data-route-exact]").each(function() {
-          if (path.indexOf($(this).attr('data-route')) !== -1) {
-            $(this).addClass('active-menu');
-          }
-          if (path === $(this).attr('data-route-exact')) {
-            return $(this).addClass('active-menu');
-          }
-        });
-        current = null;
-        return this.$("active-menu").each(function() {
-          if (!(current != null)) {
-            return current = $(this);
-          } else {
-            if ($(this).attr('data-route').length > current.attr('data-route').length) {
-              current.removeClass('active-menu');
-              return current = $(this);
+        return this.forAllChildViews(function(view) {
+          if (view.get('hasAction')) {
+            if (path.indexOf(view.get('route')) !== -1) {
+              that.set('controller.selectedItem', view);
+              return this.navigateToCorrectMenuLevel(view);
             }
           }
         });
       }
     },
-    menuClicked: function(e) {
-      var action;
-      action = $(e.target).attr('data-action') || $(e.target).parents('[data-action]:first').attr('data-action');
-      return this.get('controller').menuClicked(action);
-    },
-    switchMenu: function(event) {
-      var selected, target;
-      target = event.target;
-      selected = this.$('.active-menu');
-      if (selected !== undefined) {
-        $(selected).removeClass('active-menu');
-      }
-      if ($(target).is('.menu-link')) {
-        $(target).addClass('active-menu');
-      } else {
-        $(target).parents('.menu-link:first').addClass('active-menu');
-      }
-      if (this.get('collapseAutomatically')) {
-        return this.collapseDashboard();
-      }
-    },
-    collapseDashboard: function() {
-      var mainPanel;
-      if (!this.get('collapsedDashboard')) {
-        mainPanel = this.getMainPanel();
-        mainPanel.removeClass('expanded');
-        this.set('collapsedDashboard', true);
-        this.$("span[rel=tooltip]").tooltip('enable');
-        this.$('.tent-panel.collapsible').each(function() {
-          var elem, view;
-          view = Ember.View.views[$(this).attr('id')];
-          if (view.get('collapsed')) {
-            elem = $(".pull-right", $(this));
-            if (elem.length > 0) {
-              elem.removeClass("collapsed");
+    selectItemFromAction: function(action) {
+      var that;
+      that = this;
+      if ((this.$() != null)) {
+        return this.forAllChildViews(function(view) {
+          if (view.get('hasAction')) {
+            if (action === view.get('action')) {
+              return that.set('controller.selectedItem', view);
             }
-            return view.show();
           }
         });
       }
-      return this.$('a i, button i').tooltip('enable');
     },
-    expandDashboard: function() {
-      var mainPanel;
-      if (this.get('collapsedDashboard')) {
-        mainPanel = this.getMainPanel();
-        mainPanel.addClass('expanded');
-        this.set('collapsedDashboard', false);
+    forAllChildViews: function(callback, view) {
+      var childView, _i, _len, _ref, _results;
+      view = view || this;
+      callback.call(this, view);
+      _ref = view.get('childViews');
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        childView = _ref[_i];
+        _results.push(this.forAllChildViews(callback, childView));
       }
-      return this.$('a i, button i').tooltip('disable');
+      return _results;
     },
-    toggleCollapse: function() {
-      if (this.get('collapsedDashboard')) {
-        return this.expandDashboard();
-      } else {
-        return this.collapseDashboard();
+    navigateToCorrectMenuLevel: function(selectedItem) {
+      var item, levels, reversed, _i, _len, _results;
+      this.openMenuInitially();
+      levels = selectedItem.$().parentsUntil('#mp-menu', 'li');
+      reversed = levels.toArray().reverse();
+      _results = [];
+      for (_i = 0, _len = reversed.length; _i < _len; _i++) {
+        item = reversed[_i];
+        _results.push($(item).find('a:first').click());
       }
-    },
-    getMainPanel: function() {
-      return $('.main-content');
+      return _results;
     }
   });
 
 }).call(this);
 
 
-Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t{{#if item.entitled}}\n    \t<a href=\"#\" class=\"menu-link\" {{bindAttr data-route=\"item.route\"}} {{bindAttr data-action=\"item.action\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t<i {{bindAttr class=\"item.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc item.title}}</span>\n      \t</a>\n\t{{/if}}\n{{/if}}");
+Ember.TEMPLATES['application/menu_item']=Ember.Handlebars.compile("{{#if view.isEntitled}}\n\t\t<a {{bindAttr class=\"view.applyHighlight:active-menu view.hasAction:menu-link view.isDisabled:ui-state-disabled\"}} {{action menuClicked target=\"view\"}}>\n\t\t\t{{#if view.hasChildren}}<i class=\"icon-chevron-left\"></i>{{/if}}\n\t\t\t<i {{bindAttr class=\":menu-icon view.icon\"}} {{bindAttr data-title=\"view.title\"}} data-placement=\"right\" data-animation=\"false\"></i>\n\t\t\t<span class=\"content\">{{loc view.title}}</span>\n\t\t</a>\n\t\t{{#if view.hasChildren}}\n\t\t\t<div class=\"mp-level\">\n\t\t\t\t<h2><i {{bindAttr class=\":menu-icon view.icon\"}}></i> {{loc view.title}}</h2>\n\t\t\t\t<a class=\"mp-back\">Back <i class=\"icon-chevron-right\"></i></a>\n\t\t\t\t<ul>\n\t\t\t\t\t{{yield}}\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t{{/if}}\n{{/if}}");
 
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
 Tent.Application.MenuItemView = Ember.View.extend({
-    isEntitled: function() {
-      return true;
-    },
-    templateName: 'application/menu_item',
+    tagName: 'li',
+    classNames: ['menu-item'],
+    layoutName: 'application/menu_item',
     collapsed: false,
-    title: (function() {
-      return Tent.I18n.loc(this.get('content.title'));
-    }).property(),
     isEnabled: true,
-    isDisabled: (function() {
-      return !this.get('content.isEnabled');
-    }).property('isEnabled'),
+    init: function() {
+      return this._super();
+    },
+    hasAction: Ember.computed.bool('action'),
     menuClicked: function(e) {
-      var action;
-      action = $(e.target).attr('data-action') || $(e.target).parents('[data-action]').attr('data-action');
-      return this.get('controller').menuClicked(action);
-    }
+      if (this.get('hasAction') && this.get('isEnabled')) {
+        return this.get('controller').menuClicked(this);
+      }
+    },
+    isSelected: (function() {
+      return this.get('controller.selectedItem') === this;
+    }).property('controller.selectedItem'),
+    applyHighlight: (function() {
+      return this.get('isSelected') && this.get('hasAction');
+    }).property('isSelected'),
+    isEntitled: (function() {
+      var ops,
+        _this = this;
+      if (!this.get('operations')) {
+        return true;
+      }
+      ops = this.get('operations').removeWhitespace().split(',');
+      return ops.filter(function(operation) {
+        return _this.evaluatePolicy(operation);
+      }).length > 0;
+    }).property('operations'),
+    evaluatePolicy: function(operation) {
+      return Endeavour.policy(operation);
+    },
+    isDisabled: Ember.computed.not("isEnabled")
   });
 
 }).call(this);
@@ -12544,7 +12492,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     template: Ember.Handlebars.compile('<a><i class="icon-reorder"></i></a>'),
     attributeBindings: ['rel'],
     rel: 'popover',
-    targets: ['sci-main-menu'],
+    targets: ['main-menu'],
     didInsertElement: function() {
       return this._super();
     },
@@ -12564,6 +12512,208 @@ Tent.Application.MenuItemView = Ember.View.extend({
     },
     getViewForTarget: function(target) {
       return Ember.View.views[$('.' + target).attr('id')];
+    }
+  });
+
+}).call(this);
+
+
+(function() {
+
+  Tent.MLPushMenuView = Tent.Application.MainMenuView.extend({
+    classNames: ['tent-push-menu'],
+    currentLevel: 1,
+    maxDepth: 0,
+    levelOffset: 40,
+    didInsertElement: function() {
+      this.set('expandWidth', $('#mp-menu').width());
+      this.annotateLevels();
+      this._super();
+      return this.redraw();
+    },
+    showMenu: function() {
+      var width;
+      width = this.get('expandWidth') + ((this.get('currentLevel') - 1) * this.get('levelOffset'));
+      this.translate(width, $('.mp-pusher'));
+      return this.set('collapsed', false);
+    },
+    hideMenu: function() {
+      var width;
+      width = 0;
+      this.translate(width, $('.mp-pusher'));
+      return this.set('collapsed', true);
+    },
+    showMenuLevel: function(menu, level) {
+      var width;
+      width = this.get('expandWidth') + ((level - 1) * this.get('levelOffset'));
+      return menu.css('margin-left', "-" + width + "px");
+    },
+    hideMenuLevel: function(menu, level) {
+      var width;
+      width = this.get('expandWidth') * level;
+      return menu.css('margin-left', "-" + width + "px");
+    },
+    toggleCollapse: function() {
+      if (this.get('collapsed')) {
+        return this.showMenu();
+      } else {
+        return this.hideMenu();
+      }
+    },
+    translate: function(val, el) {
+      var left, right;
+      if (Tent.Browsers.isIE()) {
+        left = val - this.get('expandWidth');
+        right = val;
+        el.css('margin-left', "" + left + "px");
+        return el.css('margin-right', "-" + right + "px");
+      } else {
+        el.css('margin-left', "" + val + "px");
+        return el.css('margin-right', "-" + val + "px");
+      }
+    },
+    annotateLevels: function() {
+      var _this = this;
+      this.$().attr('data-level', 1).addClass('selected current root');
+      return this.$('.mp-level').each(function(i, el) {
+        return $(el).attr('data-level', _this.getLevelDepth($(el)));
+      });
+    },
+    getLevelDepth: function(el) {
+      var depth;
+      depth = el.parents('.mp-level').length + 1;
+      if (depth > this.get('maxDepth')) {
+        this.set('maxDepth', depth);
+      }
+      return depth;
+    },
+    click: function(e) {
+      var target;
+      target = $(e.target);
+      if (this.isBackButton(target) || this.isOverlapArea(target)) {
+        this.goBack();
+        if (this.isOverlapArea(target)) {
+          return this.showLevelIcons();
+        }
+      } else {
+        if (this.isLevelHeader(target)) {
+          return;
+        }
+        if (this.hasChildLevel(target) && !this.isDisabled(target) && !target.is('ul')) {
+          return this.navigateToNewLevel(e);
+        } else {
+          if (this.get('collapseAutomatically')) {
+            return this.hideMenu();
+          }
+        }
+      }
+    },
+    isBackButton: function(target) {
+      return target.hasClass('mp-back') || target.hasClass('mp-level') || target.parents('a:first').hasClass('mp-back');
+    },
+    isOverlapArea: function(target) {
+      return parseInt(target.parents('.mp-level').attr('data-level')) !== this.get('currentLevel');
+    },
+    isLevelHeader: function(target) {
+      return target.is('h2') || target.parent().is('h2');
+    },
+    goBack: function() {
+      var mpLevel;
+      mpLevel = this.getMpLevelElement(this.get('currentLevel'));
+      this.removeSelectedClass(mpLevel);
+      this.set('currentLevel', this.get('currentLevel') - 1);
+      return this.redraw();
+    },
+    navigateToNewLevel: function(e) {
+      this.set('currentLevel', this.findLevel($(e.target)) + 1);
+      $(e.target).parents('.mp-level:first').find('ul:first .mp-level').removeClass('selected');
+      $(e.target).parents('li:first').find('.mp-level').addClass('selected');
+      return this.redraw();
+    },
+    getMpLevelElement: function(level) {
+      return $('.selected[data-level="' + level + '"]', '.mp-menu');
+    },
+    removeSelectedClass: function(target) {
+      if (target.hasClass('mp-level')) {
+        return target.removeClass('selected');
+      } else {
+        return target.parents('.mp-level:first').removeClass('selected');
+      }
+    },
+    findLevel: function(target) {
+      return parseInt(target.parents('.mp-level:first').attr('data-level'));
+    },
+    hasChildLevel: function(target) {
+      return target.parents('.menu-item:first').children('.mp-level').length === 1;
+    },
+    isDisabled: function(target) {
+      return target.hasClass('ui-state-disabled') || target.parents('a:first').hasClass('ui-state-disabled');
+    },
+    redraw: function() {
+      this.hideLowerLevels();
+      this.showSelectedLevels();
+      this.addRemoveCurrentClass();
+      this.showLevelIcons();
+      return this.showMenu();
+    },
+    hideLowerLevels: function() {
+      var level, _i, _ref, _ref1, _results,
+        _this = this;
+      _results = [];
+      for (level = _i = _ref = this.get('currentLevel') + 1, _ref1 = this.get('maxDepth'); _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; level = _ref <= _ref1 ? ++_i : --_i) {
+        _results.push($('[data-level="' + level + '"]', '.mp-menu').each(function(index, menu) {
+          return _this.hideMenuLevel($(menu), level);
+        }));
+      }
+      return _results;
+    },
+    showSelectedLevels: function() {
+      var level, _i, _ref, _results,
+        _this = this;
+      _results = [];
+      for (level = _i = 1, _ref = this.get('currentLevel'); 1 <= _ref ? _i <= _ref : _i >= _ref; level = 1 <= _ref ? ++_i : --_i) {
+        _results.push(this.getMpLevelElement(level).each(function(index, menu) {
+          return _this.showMenuLevel($(menu), level);
+        }));
+      }
+      return _results;
+    },
+    addRemoveCurrentClass: function(menu, level) {
+      var current, _i, _results;
+      current = this.get('currentLevel');
+      _results = [];
+      for (level = _i = 1; 1 <= current ? _i <= current : _i >= current; level = 1 <= current ? ++_i : --_i) {
+        menu = this.getMpLevelElement(level);
+        if (level === this.get('currentLevel')) {
+          _results.push(menu.addClass('current'));
+        } else {
+          _results.push(menu.removeClass('current'));
+        }
+      }
+      return _results;
+    },
+    showLevelIcons: function() {
+      var currentLevel, level, _i, _ref, _results;
+      currentLevel = this.get('currentLevel');
+      this.removeLevelIcon(currentLevel);
+      if (currentLevel !== 1) {
+        _results = [];
+        for (level = _i = 1, _ref = this.get('currentLevel') - 1; 1 <= _ref ? _i <= _ref : _i >= _ref; level = 1 <= _ref ? ++_i : --_i) {
+          _results.push(this.showLevelIcon(level));
+        }
+        return _results;
+      }
+    },
+    showLevelIcon: function(level) {
+      var icon, mpLevel;
+      mpLevel = this.getMpLevelElement(level);
+      icon = mpLevel.find(' > h2 > .menu-icon');
+      return mpLevel.append(icon.clone());
+    },
+    removeLevelIcon: function(level) {
+      return this.getMpLevelElement(level).find('> .menu-icon').hide(500, function() {
+        return $(this).remove();
+      });
     }
   });
 
@@ -12684,58 +12834,19 @@ GridController
   Tent.Application = Tent.Application || Em.Namespace.create;
 
   Tent.Application.MainMenuController = Ember.Controller.extend({
-    content: [],
-    init: function() {
-      return this.applyEntitlements();
+    selectedItem: null,
+    selectedAction: null,
+    menuClicked: function(menuItem) {
+      return this.set('selectedItem', menuItem);
     },
-    applyEntitlements: function() {
-      var hasAnyEntitlements, item, menuGroup, parentEntitled, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.get('content');
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        menuGroup = _ref[_i];
-        parentEntitled = false;
-        _ref1 = menuGroup.items;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          item = _ref1[_j];
-          hasAnyEntitlements = this.processItemEntitlements(item);
-          if (hasAnyEntitlements) {
-            parentEntitled = true;
-          }
-        }
-        _results.push(menuGroup.entitled = this.processItemEntitlements(menuGroup) && parentEntitled);
-      }
-      return _results;
-    },
-    processItemEntitlements: function(item) {
-      var entitlement, hasEntitlement, operation, _i, _len, _ref;
-      item.entitled = true;
-      if (!(item.operations != null)) {
-        return true;
-      }
-      hasEntitlement = false;
-      if (Object.prototype.toString.call(item.operations) === '[object Array]') {
-        entitlement = false;
-        _ref = item.operations;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          operation = _ref[_i];
-          entitlement = entitlement || this.isEntitled(operation);
-        }
-        if (entitlement) {
-          hasEntitlement = entitlement;
-        }
-        item.entitled = entitlement;
-      }
-      return hasEntitlement;
-    },
-    isEntitled: function(operation) {
-      if (operation != null) {
-        return Endeavour.policy(operation);
-      }
-      return true;
-    },
-    menuClicked: function(action) {
+    selectedItemDidChange: (function() {
+      return this.executeAction(this.get('selectedItem').get('action'));
+    }).observes('selectedItem'),
+    executeAction: function(action) {
       return this.get('target').send(action);
+    },
+    menuTransition: function(action) {
+      return this.set('selectedAction', action);
     }
   });
 

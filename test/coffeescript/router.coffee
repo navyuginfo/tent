@@ -18,5 +18,8 @@ Pad.Router = Ember.Router.extend
     content: Ember.Route.create
       route: '/testpad.html'
       title: 'state.content'
+      connectOutlets: (router) ->
+        router.get('applicationController').connectOutlet('mainheader', 'mainHeader')
+        router.get('applicationController').connectOutlet('mainmenu', 'mainMenu')
        
    

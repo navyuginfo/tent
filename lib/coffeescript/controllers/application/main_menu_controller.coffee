@@ -1,35 +1,23 @@
 Tent.Application = Tent.Application or Em.Namespace.create
 
+
 Tent.Application.MainMenuController = Ember.Controller.extend
-	content: []
-	init: ->
-		@applyEntitlements()
+	selectedItem: null
+	selectedAction: null
 
-	applyEntitlements: ->
-		for menuGroup in @get('content')
-			parentEntitled = false
-			for item in menuGroup.items
-				hasAnyEntitlements = @processItemEntitlements(item)
-				if hasAnyEntitlements then parentEntitled = true
-			menuGroup.entitled =  @processItemEntitlements(menuGroup) and parentEntitled
+	menuClicked: (menuItem)->
+		@set('selectedItem', menuItem)
 
-	processItemEntitlements: (item) ->
-		item.entitled = true
-		if not item.operations? then return true
+	selectedItemDidChange: (->
+		@executeAction(@get('selectedItem').get('action'))
+	).observes('selectedItem')
 
-		hasEntitlement = false
-		if Object.prototype.toString.call(item.operations) is '[object Array]'
-			entitlement = false
-			for operation in item.operations
-				entitlement = entitlement or @isEntitled(operation)
-			if entitlement then hasEntitlement = entitlement
-			item.entitled = entitlement
-		return hasEntitlement
-
-	isEntitled: (operation)->
-		if operation?
-			return Endeavour.policy(operation)
-		true
-
-	menuClicked: (action)->
+	executeAction: (action)->
 		@get('target').send(action)
+
+	#This method is defined for the case when some routing action should happen on a button click or 
+	# on some other action rather than clicking on menu item (which usually happens)
+	# By setting the action, the view will determine which menuitem should be selected
+	menuTransition: (action)->
+		@set('selectedAction', action)
+
