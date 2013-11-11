@@ -61,7 +61,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
       @showLevelIcons() if @isOverlapArea(target)
     else
       if @isLevelHeader(target) then return
-      if @hasChildLevel(target) and not @isDisabled(target)
+      if @hasChildLevel(target) and not @isDisabled(target) and not target.is('ul')
         @navigateToNewLevel(e)
       else
         @hideMenu() if @get('collapseAutomatically')
