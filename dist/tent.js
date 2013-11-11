@@ -12568,8 +12568,9 @@ Tent.Application.MenuItemView = Ember.View.extend({
         el.css('margin-left', "" + left + "px");
         return el.css('margin-right', "-" + right + "px");
       } else {
-        el.css('margin-left', "" + val + "px");
-        return el.css('margin-right', "-" + val + "px");
+        el.css('WebkitTransform', 'translate3d(' + val + 'px,0,0)');
+        el.css('MozTransform', 'translate3d(' + val + 'px,0,0)');
+        return el.css('transform', 'translate3d(' + val + 'px,0,0)');
       }
     },
     annotateLevels: function() {
