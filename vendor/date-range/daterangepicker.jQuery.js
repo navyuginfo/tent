@@ -364,7 +364,7 @@
 				}
 			);
 			if (options.allowFuzzyDates) {
-				$(this).before( fuzzyCheckbox);
+				$(this).before(fuzzyCheckbox);
 			}
 
 			var riContain = rangeInput.parent();

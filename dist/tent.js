@@ -10797,28 +10797,55 @@ Tent.DateRangeField = Tent.TextField.extend({
       });
     },
     setFuzzyValueFromSelectedPreset: function(e) {
-      var classes, fValue, presetArr;
+      var classes, fValue, li, presetArr;
       if (this.get('allowFuzzyDates')) {
-        classes = $(e.currentTarget).attr('class').split(' ');
-        presetArr = classes.find(function(item) {
-          if (item.split('ui-daterangepicker-').length > 1) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        fValue = presetArr.split('ui-daterangepicker-')[1];
-        return this.set('fuzzyValueTemp', fValue);
+        li = $(e.currentTarget);
+        if (this.presetIsFuzzy(li)) {
+          this.enableCheckbox();
+          classes = li.attr('class').split(' ');
+          presetArr = classes.find(function(item) {
+            if (item.split('ui-daterangepicker-').length > 1) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          fValue = presetArr.split('ui-daterangepicker-')[1];
+          return this.set('fuzzyValueTemp', fValue);
+        } else {
+          this.disableCheckbox();
+          this.setCheckValue(false);
+          return this.set('useFuzzyDates', false);
+        }
       } else {
         return this.set('fuzzyValue', null);
       }
     },
+    presetIsFuzzy: function(li) {
+      return li.attr('class').indexOf('preset_') === -1;
+    },
     listenForFuzzyCheckboxChanges: function() {
-      var _this;
+      var _this = this;
       _this = this;
       return this.$('.useFuzzy').click(function(e) {
-        return _this.toggleProperty('useFuzzyDates');
+        return _this.checkWasClicked();
       });
+    },
+    setCheckValue: function(value) {
+      return this.$('.useFuzzy').prop('checked', value);
+    },
+    enableCheckbox: function() {
+      return this.$('.useFuzzy').prop('disabled', false);
+    },
+    disableCheckbox: function() {
+      return this.$('.useFuzzy').prop('disabled', true);
+    },
+    checkWasClicked: function() {
+      if (this.get('useFuzzyDates')) {
+        return this.set('useFuzzyDates', false);
+      } else {
+        return this.set('useFuzzyDates', true);
+      }
     },
     fuzzyValueDidChange: (function() {
       if (this.get('allowFuzzyDates') && this.get('useFuzzyDates')) {

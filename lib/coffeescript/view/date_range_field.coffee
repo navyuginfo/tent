@@ -216,29 +216,52 @@ Tent.DateRangeField = Tent.TextField.extend
 			unformatted = @unFormat(@get('formattedValue'))
 			@set('formattedValue', @format(unformatted))
 			@set('value', @convertSingleDateToDateRange(unformatted))
-
+ 
 	listenForFuzzyDropdownChanges: ->
 		@$('.ui-daterangepickercontain li').click (e) =>
 			@setFuzzyValueFromSelectedPreset(e)
 
 	setFuzzyValueFromSelectedPreset: (e) ->
 		if @get('allowFuzzyDates')
-			classes = $(e.currentTarget).attr('class').split(' ')
-			presetArr = classes.find((item)->
-				if item.split('ui-daterangepicker-').length > 1 then true else false
-			)
-			fValue = presetArr.split('ui-daterangepicker-')[1]
-			@set('fuzzyValueTemp', fValue)
+			li = $(e.currentTarget)
+			if @presetIsFuzzy(li)
+				@enableCheckbox()
+				classes = li.attr('class').split(' ')
+				presetArr = classes.find((item)->
+					if item.split('ui-daterangepicker-').length > 1 then true else false
+				)
+				fValue = presetArr.split('ui-daterangepicker-')[1]
+				@set('fuzzyValueTemp', fValue)
+			else
+				@disableCheckbox()
+				@setCheckValue(false)
+				@set('useFuzzyDates', false)
 		else
 			@set('fuzzyValue', null)
 
+	presetIsFuzzy: (li)->
+		li.attr('class').indexOf('preset_') == -1
+
 	listenForFuzzyCheckboxChanges: ->
 		_this = this;
-		@$('.useFuzzy').click (e) ->
-			#$(this).prop('checked', (i, val) ->
-			#	return !val
-			#)
-			_this.toggleProperty('useFuzzyDates')
+		@$('.useFuzzy').click (e) =>
+			@checkWasClicked()
+
+	setCheckValue: (value) ->
+		@$('.useFuzzy').prop('checked', value)
+
+	enableCheckbox: ->
+		@$('.useFuzzy').prop('disabled', false)
+
+	disableCheckbox: ->
+		@$('.useFuzzy').prop('disabled', true)
+
+	checkWasClicked: ->
+		#Using toggleProperty causes issues with rendering of the checkbox for some reason
+		if @get('useFuzzyDates')
+			@set('useFuzzyDates', false)
+		else
+			@set('useFuzzyDates', true)
 
 	fuzzyValueDidChange: (->
 		if @get('allowFuzzyDates') and @get('useFuzzyDates')
