@@ -38,8 +38,9 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
         el.css('margin-left', "#{left}px")
         el.css('margin-right', "-#{right}px")
     else
-      el.css('margin-left', "#{val}px")
-      el.css('margin-right', "-#{val}px")
+      el.css('WebkitTransform', 'translate3d(' + val + 'px,0,0)')
+      el.css('MozTransform', 'translate3d(' + val + 'px,0,0)')
+      el.css('transform', 'translate3d(' + val + 'px,0,0)')
 
   # Add attributes to allow the levels to be easily identified
   annotateLevels: ->
