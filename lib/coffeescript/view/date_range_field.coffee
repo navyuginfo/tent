@@ -168,13 +168,14 @@ Tent.DateRangeField = Tent.TextField.extend
 			@setValue(start + @get('rangeSplitter') + " " + end)
 
 		if @get('fuzzyValue')?
-			@set('fuzzyValueTemp', @get('fuzzyValue'))
-			@set('useFuzzyDates', true)
-			@setFuzzyCheck(true)
 			dateRange = @getDateFromFuzzyValue(@get('fuzzyValue'))
-			@setValue(dateRange)
 			@set('value', dateRange)
 			@set('dateValue', dateRange)
+			@setFuzzyCheck(true)
+			originalFuzzyValue = @get('fuzzyValue')
+			@set('useFuzzyDates', true)
+			@set('fuzzyValueTemp', originalFuzzyValue)
+			@set('formattedValue', @get('fuzzyValueTemp'))
 		else
 			@setFuzzyCheck(false)
 

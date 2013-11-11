@@ -10730,7 +10730,7 @@ Tent.DateRangeField = Tent.TextField.extend({
       return this.$('.ui-rangepicker-input').val(value);
     },
     initializeWithStartAndEndDates: function() {
-      var dateRange, end, start;
+      var dateRange, end, originalFuzzyValue, start;
       if (!(this.get('value') != null) && !(this.get('fuzzyValue') != null)) {
         if (this.get('startDate') != null) {
           start = Tent.Formatting.date.format(this.get('startDate'), this.get('dateFormat'));
@@ -10741,13 +10741,14 @@ Tent.DateRangeField = Tent.TextField.extend({
         this.setValue(start + this.get('rangeSplitter') + " " + end);
       }
       if (this.get('fuzzyValue') != null) {
-        this.set('fuzzyValueTemp', this.get('fuzzyValue'));
-        this.set('useFuzzyDates', true);
-        this.setFuzzyCheck(true);
         dateRange = this.getDateFromFuzzyValue(this.get('fuzzyValue'));
-        this.setValue(dateRange);
         this.set('value', dateRange);
-        return this.set('dateValue', dateRange);
+        this.set('dateValue', dateRange);
+        this.setFuzzyCheck(true);
+        originalFuzzyValue = this.get('fuzzyValue');
+        this.set('useFuzzyDates', true);
+        this.set('fuzzyValueTemp', originalFuzzyValue);
+        return this.set('formattedValue', this.get('fuzzyValueTemp'));
       } else {
         return this.setFuzzyCheck(false);
       }
