@@ -1,7 +1,7 @@
 <header>
 	<div class="header-border vertical-align-with-header">
 		<h1>
-			{{#if view.selectable}}
+			{{#if view.multiSelect}}
 				{{view Ember.Checkbox checkedBinding="view.selected" class="item-selector"}}
 			{{/if}}
 			{{view.content.title}}</h1>
