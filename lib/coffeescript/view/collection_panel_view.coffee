@@ -19,7 +19,7 @@ require '../template/collection_panel_content'
 Tent.CollectionPanelView = Ember.View.extend
   templateName: 'collection_panel'
   classNames: ['collection-panel-container']
-  selectable: false
+  multiSelect: false
   selection: null
   scrollTimeout: 200
   currentPage: 1
@@ -114,7 +114,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
   item: null
   contentViewType: null
   collection: null
-  selectable: false
+  multiSelect: false
    
   childViews: ['contentView']
   contentView: (->
@@ -122,7 +122,7 @@ Tent.CollectionPanelContentContainerView = Ember.ContainerView.extend
       eval(@get('contentViewType')).create
         content: @get('item')
         collection: @get('collection')
-        selectable: @get('selectable')
+        multiSelect: @get('multiSelect')
         selection: @get('selection')
   ).property('item')
 
@@ -152,7 +152,7 @@ Tent.CollectionPanelContentView = Ember.View.extend
   classNames: ['collection-panel-content']
   classNameBindings: ['selected']
   content: null
-  selectable: false
+  multiSelect: false
   selection: []
 
   didInsertElement: ->

@@ -4101,7 +4101,7 @@ Tent.Table = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n  {{#unless view.content.isLoaded}}\n    {{view Tent.WaitIcon}}\n  {{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n  {{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n  <div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                selectable=true\n                isVisibleBinding=\"view.showCardView\"\n                scrollBinding=\"view.scroll\"\n            }} \n           \t{{#if view.showCardView}}\n\t            {{#if view.paged}}\n\t              {{#unless view.scroll}}\n\t                {{view Tent.Pager collectionBinding=\"view.collection\"}}\n\t              {{/unless}}\n\t            {{/if}}\n\t          {{/if}}\n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n          <table class=\"grid-table\"></table>\n          <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n  <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
+Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadable}}\n  {{#unless view.content.isLoaded}}\n    {{view Tent.WaitIcon}}\n  {{/unless}}\n{{/if}}\n\n<div class=\"jqgrid-backdrop\" class=\"\"></div>\n\n{{view Tent.JqGridHeaderView gridBinding=\"view\"}}\n\n<div class=\"grid-container\">\n  {{view Tent.FilterPanelView collectionBinding=\"view.collection\" isPinnedBinding=\"view.isPinned\" showFilterBinding=\"view.showFilter\" usageContextBinding=\"view.usageContext\"}}\n\n  <div class=\"table-container\">\n        {{#if view.showMultiview}}\n            {{view Tent.CollectionPanelView \n                collectionBinding=\"view.collection\"\n                contentViewTypeBinding=\"view.cardViewType\"\n                selectionBinding=\"view.selection\"\n                multiSelectBinding=\"view.multiSelect\"\n                isVisibleBinding=\"view.showCardView\"\n                scrollBinding=\"view.scroll\"\n            }} \n           \t{{#if view.showCardView}}\n\t            {{#if view.paged}}\n\t              {{#unless view.scroll}}\n\t                {{view Tent.Pager collectionBinding=\"view.collection\"}}\n\t              {{/unless}}\n\t            {{/if}}\n\t          {{/if}}\n        {{/if}}\n        <div {{bindAttr class=\":visibility-wrapper view.showCardView:hidden\"}}>\n          <table class=\"grid-table\"></table>\n          <div class=\"gridpager\"></div>\n        </div>\n    </div>\n</div>\n\n{{#if view.hasErrors}}\n  <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{loc error}}{{/each}}</span>\n{{/if}}\n\n\n\n \n\n");
 
 (function() {
 
@@ -12090,9 +12090,9 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
-Ember.TEMPLATES['collection_panel']=Ember.Handlebars.compile("{{#unless view.collection.modelData.isLoaded}}\n\t{{view Tent.WaitIcon}}\n{{/unless}}\n\n{{#if view.scroll}}\n  <div class=\"scroller\">\n    <div class=\"offset\"></div>\n    <div class=\"panel-content\">\n      {{#each item in view.collection.modelData}}\n        <article class=\"collection-panel\">\n          {{view Tent.CollectionPanelContentContainerView \n            itemBinding=\"item\" \n            contentViewTypeBinding=\"view.contentViewType\" \n            collectionBinding=\"view.collection\"\n            selectableBinding=\"view.selectable\"\n            selectionBinding=\"view.selection\"\n          }}\n        </article>\n      {{/each}}\n    </div>\n  </div>\n{{else}}\n  {{#each item in view.collection.modelData}}\n    <article class=\"collection-panel\">\n      {{view Tent.CollectionPanelContentContainerView \n        itemBinding=\"item\" \n        contentViewTypeBinding=\"view.contentViewType\" \n        collectionBinding=\"view.collection\"\n        selectableBinding=\"view.selectable\"\n        selectionBinding=\"view.selection\"\n      }}\n    </article>\n  {{/each}}\n{{/if}}");
+Ember.TEMPLATES['collection_panel']=Ember.Handlebars.compile("{{#unless view.collection.modelData.isLoaded}}\n\t{{view Tent.WaitIcon}}\n{{/unless}}\n\n{{#if view.scroll}}\n  <div class=\"scroller\">\n    <div class=\"offset\"></div>\n    <div class=\"panel-content\">\n      {{#each item in view.collection.modelData}}\n        <article class=\"collection-panel\">\n          {{view Tent.CollectionPanelContentContainerView \n            itemBinding=\"item\" \n            contentViewTypeBinding=\"view.contentViewType\" \n            collectionBinding=\"view.collection\"\n            multiSelectBinding=\"view.multiSelect\"\n            selectionBinding=\"view.selection\"\n          }}\n        </article>\n      {{/each}}\n    </div>\n  </div>\n{{else}}\n  {{#each item in view.collection.modelData}}\n    <article class=\"collection-panel\">\n      {{view Tent.CollectionPanelContentContainerView \n        itemBinding=\"item\" \n        contentViewTypeBinding=\"view.contentViewType\" \n        collectionBinding=\"view.collection\"\n        multiSelectBinding=\"view.multiSelect\"\n        selectionBinding=\"view.selection\"\n      }}\n    </article>\n  {{/each}}\n{{/if}}");
 
-Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.selectable}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\" class=\"item-selector\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t \n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
+Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n\t<div class=\"header-border vertical-align-with-header\">\n\t\t<h1>\n\t\t\t{{#if view.multiSelect}}\n\t\t\t\t{{view Ember.Checkbox checkedBinding=\"view.selected\" class=\"item-selector\"}}\n\t\t\t{{/if}}\n\t\t\t{{view.content.title}}</h1>\n\t\t<a {{action delete this}} title=\"Delete\"><i class=\"icon-trash\"></i></a>\n\t</div>\n</header>\n<div class=\"content\">\n\t<div class=\"section\">\n\t\t<label>Program</label>\n\t\t<p class=\"text-med\">Rugged Bicycles LLC Pgm</p>\n\t\t<p class=\"text-large\">$2,395,204</p>\n\t\t<label>Projected Settlement</label>\n\t</div>\n\t<div class=\"section\">\n\t\t<label>Date :</label>\n\t\t<p>Jun 24, 2013</p>\n\t\t<label>{{view.durationLabel}}</label>\n\t\t<p>{{view.durationValue}}</p>\n\t\t<label>Seller :</label>\n\t\t<p>Rugged Bicycles LLC</p>\n\t\t<label>{{view.finishLabel}}</label>\n\t\t<p>{{view.finishValue}}</p>\n\t\t \n\t</div>\n</div>\n<footer>\n\t<div class=\"footer-border vertical-align-with-table\">\n\t\t<a {{action reconcile this}}>Reconcile <i class=\"icon-caret-right\"></i></a>\n\t</div>\n</footer>\t\n");
 
 (function() {
 /**
@@ -12114,7 +12114,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
   Tent.CollectionPanelView = Ember.View.extend({
     templateName: 'collection_panel',
     classNames: ['collection-panel-container'],
-    selectable: false,
+    multiSelect: false,
     selection: null,
     scrollTimeout: 200,
     currentPage: 1,
@@ -12225,14 +12225,14 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     item: null,
     contentViewType: null,
     collection: null,
-    selectable: false,
+    multiSelect: false,
     childViews: ['contentView'],
     contentView: (function() {
       if (this.get('contentViewType') != null) {
         return eval(this.get('contentViewType')).create({
           content: this.get('item'),
           collection: this.get('collection'),
-          selectable: this.get('selectable'),
+          multiSelect: this.get('multiSelect'),
           selection: this.get('selection')
         });
       }
@@ -12268,7 +12268,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     classNames: ['collection-panel-content'],
     classNameBindings: ['selected'],
     content: null,
-    selectable: false,
+    multiSelect: false,
     selection: [],
     didInsertElement: function() {
       return this.$().parents('.collection-panel:first').css('opacity', '1');
