@@ -21,7 +21,13 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
     @set('collapsed', true)
 
   showMenuLevel: (menu, level)->
-    width = @get('expandWidth') + ((level-1) * @get('levelOffset'))
+    if Tent.Browsers.isIE()
+      if level == 1
+        width = @get('expandWidth') + ((level - 1) * @get('levelOffset'))
+      else
+        width = (level - 1) * @get('levelOffset')
+    else 
+      width = @get('expandWidth') + ((level-1) * @get('levelOffset'))
     menu.css('margin-left', "-#{width}px")
 
   hideMenuLevel: (menu, level)->
@@ -33,7 +39,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
 
   translate: (val, el) ->
     if Tent.Browsers.isIE()
-        left = val - @get('expandWidth')
+        left = val
         right = val
         el.css('margin-left', "#{left}px")
         el.css('margin-right', "-#{right}px")
