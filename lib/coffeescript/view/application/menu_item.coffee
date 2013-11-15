@@ -8,6 +8,7 @@ Tent.Application.MenuItemView = Ember.View.extend
 	layoutName: 'application/menu_item'
 	collapsed: false
 	isEnabled: true
+	anyChildEntitled: true
 
 	init: ->
 		@_super()
@@ -26,13 +27,26 @@ Tent.Application.MenuItemView = Ember.View.extend
 		@get('isSelected') && @get('hasAction')
 	).property('isSelected')
 
-	isEntitled: (->
+	isEntitled: (->		
+		@get('anyChildEntitled') and @evaluateEntitlements()
+	).property('operations','anyChildEntitled')
+
+	evaluateEntitlements: ->
 		return true unless @get('operations')
 		ops = @get('operations').removeWhitespace().split(',')
 		ops.filter((operation) =>
 			@evaluatePolicy(operation)
 		).length > 0
-	).property('operations')
+
+	# If I am a nested menu item, ensure that my parent calls checkChildEntitlements().
+	# This is called after the menu tree is rendered
+	checkParentEntitlements: ->
+		@get('parentView').checkChildEntitlements() if @get('parentView').checkChildEntitlements?
+
+	# If all of my child menu items are not entitled, then neither am I
+	checkChildEntitlements: ->
+		if @get('childViews').filterProperty('isEntitled', true).length == 0
+			@set('anyChildEntitled', false)
 
 	evaluatePolicy: (operation)->
 		return Endeavour.policy(operation)

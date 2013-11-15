@@ -9729,6 +9729,42 @@ Tent.ModalPane = Ember.View.extend({
 
 
 
+/**
+* @class Tent.ProgressBar
+* 
+* Usage
+* 		{{view Tent.ProgressBar isStriped=true progress="50" isAnimated=true}}
+*/
+
+
+(function() {
+
+  Tent.ProgressBar = Ember.View.extend({
+    classNames: ['tent-progress-bar', 'progress'],
+    classNameBindings: ['isStriped:progress-striped', 'isAnimated:active'],
+    template: Ember.Handlebars.compile('<div class="bar" {{bindAttr style="view.style"}}></div>'),
+    /**
+    * @property {Boolean} isAnimated Boolean to indicate if the bar should be rendered with a progress animation.
+    */
+
+    isAnimated: false,
+    /**
+    * @property {Boolean} isStriped Boolean to indicate if the bar should be rendered with stripes
+    */
+
+    isStriped: false,
+    /**
+    * @property {Number} progress The progress to be displayed, as a percentage between 0 and 100
+    */
+
+    progress: 0,
+    style: Ember.computed(function() {
+      return "width:" + this.get('progress') + "%;";
+    }).property('progress')
+  });
+
+}).call(this);
+
 
 Ember.TEMPLATES['button']=Ember.Handlebars.compile("<div \t{{bindAttr class=\"view.classes view.buttonClass\"}}\n\t\t{{action triggerAction target=\"view\"}}\n\t\t{{bindAttr data-toggle=\"view.dataToggle\"}}\n    {{bindAttr disabled=\"view.isDisabled\"}}\n    {{bindAttr title=\"view.localizedTitle\"}}\n\t\trole=\"button\"\n\t\t>\n  <i {{bindAttr class=\"view.iconClass\"}}></i> {{view.localizedLabel}}\n  {{#if view.hasOptions}}\n  \t <span class=\"caret\"></span>\n  {{/if}}\n</div>\n{{#if view.hasOptions}}\n\t{{collection contentBinding=\"view._options\" tagName=\"ul\" classNames=\"dropdown-menu\" itemViewClass=\"Tent.ButtonOptions\"}}\n{{/if}}\n\n{{#if view.warn}}\n\n\t{{#view Tent.ModalPane \n          viewName=\"warningPanel\"\n          autoLaunch=false\n          header=\"tent.warning.header\" \n          primaryLabel=\"tent.button.proceed\" \n          secondaryLabel=\"tent.button.dontProceed\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"ignoreWarnings\"\n          primaryTargetBinding=\"view\"\n    }}\n    \t{{loc tent.warning.warningsOnPage}}\n    \t \n  \t\t{{#each view.parentView.messagePanel.warning}}\n  \t\t\t\t<div class=\"alert\">\n  \t\t\t\t\t<strong>{{loc label}}:</strong>  {{messages}}\n  \t\t\t\t</div>\n  \t\t{{/each}}\n\t\t\t \n    {{/view}}\n{{/if}}\n\n{{#if view.shouldConfirm}}\n\n  {{#view Tent.ModalPane \n          viewName=\"confirmationPanel\"\n          autoLaunch=false\n          headerBinding=\"view.confirmationTitle\" \n          primaryLabelBinding=\"view.confirmationYes\" \n          secondaryLabelBinding=\"view.confirmationNo\"\n          primaryType=\"warning\"\n          primaryIcon=\"icon-ok icon-white\"\n          secondaryIcon=\"icon-remove\"\n          primaryAction=\"confirmAction\"\n          primaryTargetBinding=\"view\"\n          closeAction=\"view.confirmationNo\"\n    }}\n\n      {{loc view.parentView.confirmationMessage}}\n      \n       \n  {{/view}}\n{{/if}}");
 
@@ -12354,13 +12390,11 @@ Tent.Pager = Ember.View.extend({
 }).call(this);
 
 
-Ember.TEMPLATES['application/main_menu']=Ember.Handlebars.compile("<ul class=\"sci-main-menu nav-tabs\">\n\n</ul>");
-
 (function() {
 
   Tent.Application = Tent.Application || Em.Namespace.create();
-Tent.Application.MainMenuView = Ember.View.extend({
-    templateName: 'application/main_menu',
+
+  Tent.Application.MainMenuView = Ember.View.extend({
     /**
     * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
     * item is selected.
@@ -12370,6 +12404,7 @@ Tent.Application.MainMenuView = Ember.View.extend({
     classNames: ['main-menu', 'mp-level', 'selected'],
     didInsertElement: function() {
       this._super();
+      this.hideMenusWithNoValidChildren();
       this.openMenuInitially();
       return this.selectItemFromUrl();
     },
@@ -12407,17 +12442,23 @@ Tent.Application.MainMenuView = Ember.View.extend({
         });
       }
     },
-    forAllChildViews: function(callback, view) {
-      var childView, _i, _len, _ref, _results;
+    forAllChildViews: function(callback, bottomUp, view) {
+      var childView, _i, _len, _ref;
+      if (bottomUp == null) {
+        bottomUp = false;
+      }
       view = view || this;
-      callback.call(this, view);
+      if (!bottomUp) {
+        callback.call(this, view);
+      }
       _ref = view.get('childViews');
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         childView = _ref[_i];
-        _results.push(this.forAllChildViews(callback, childView));
+        this.forAllChildViews(callback, bottomUp, childView);
       }
-      return _results;
+      if (bottomUp) {
+        return callback.call(this, view);
+      }
     },
     navigateToCorrectMenuLevel: function(selectedItem) {
       var item, levels, reversed, _i, _len, _results;
@@ -12430,6 +12471,13 @@ Tent.Application.MainMenuView = Ember.View.extend({
         _results.push($(item).find('a:first').click());
       }
       return _results;
+    },
+    hideMenusWithNoValidChildren: function() {
+      return this.forAllChildViews(function(view) {
+        if (view.checkParentEntitlements != null) {
+          return view.checkParentEntitlements();
+        }
+      }, true);
     }
   });
 
@@ -12447,6 +12495,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     layoutName: 'application/menu_item',
     collapsed: false,
     isEnabled: true,
+    anyChildEntitled: true,
     init: function() {
       return this._super();
     },
@@ -12463,6 +12512,9 @@ Tent.Application.MenuItemView = Ember.View.extend({
       return this.get('isSelected') && this.get('hasAction');
     }).property('isSelected'),
     isEntitled: (function() {
+      return this.get('anyChildEntitled') && this.evaluateEntitlements();
+    }).property('operations', 'anyChildEntitled'),
+    evaluateEntitlements: function() {
       var ops,
         _this = this;
       if (!this.get('operations')) {
@@ -12472,7 +12524,17 @@ Tent.Application.MenuItemView = Ember.View.extend({
       return ops.filter(function(operation) {
         return _this.evaluatePolicy(operation);
       }).length > 0;
-    }).property('operations'),
+    },
+    checkParentEntitlements: function() {
+      if (this.get('parentView').checkChildEntitlements != null) {
+        return this.get('parentView').checkChildEntitlements();
+      }
+    },
+    checkChildEntitlements: function() {
+      if (this.get('childViews').filterProperty('isEntitled', true).length === 0) {
+        return this.set('anyChildEntitled', false);
+      }
+    },
     evaluatePolicy: function(operation) {
       return Endeavour.policy(operation);
     },

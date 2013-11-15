@@ -5,7 +5,7 @@ teardown = ->
 
 module 'Tent.Application.MenuItemView', setup, teardown
 
-test 'processEntitlements', ->
+test 'isEntitled', ->
 
 	cachedPolicy = Tent.Application.MenuItemView.evaluatePolicy
 
@@ -37,6 +37,8 @@ test 'processEntitlements', ->
 	menuItem.set('operations', '  valid-operation  ,    another-valid-operation    ')
 	ok menuItem.get('isEntitled'), "valid with whitespace"
 
+	menuItem.set('anyChildEntitled', false)
+	ok not menuItem.get('isEntitled'), "no child is valid"
 
 	Tent.Application.MenuItemView.reopen
 		evaluatePolicy: cachedPolicy

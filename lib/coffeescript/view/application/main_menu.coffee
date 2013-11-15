@@ -1,9 +1,7 @@
 Tent.Application = Tent.Application or Em.Namespace.create()
 
-require '../../template/application/main_menu'
-
 Tent.Application.MainMenuView = Ember.View.extend
-  templateName: 'application/main_menu'
+  
   ###*
   * @property {Boolean} collapseAutomatically If set to true, the menu will collapse when an actionable
   * item is selected.
@@ -13,6 +11,7 @@ Tent.Application.MainMenuView = Ember.View.extend
 
   didInsertElement: ->
     @_super()
+    @hideMenusWithNoValidChildren()
     @openMenuInitially()
     @selectItemFromUrl()
 
@@ -45,11 +44,15 @@ Tent.Application.MainMenuView = Ember.View.extend
             that.set('controller.selectedItem', view)
       )
 
-  forAllChildViews: (callback, view)->
+  # Navigate through the child items
+  # bottomUp determines whether to start navigation from the top level
+  # or the deepest levels.
+  forAllChildViews: (callback, bottomUp=false, view)->
     view = view || @
-    callback.call(@, view)
+    callback.call(@, view) unless bottomUp
     for childView in view.get('childViews')
-      @forAllChildViews(callback, childView)
+      @forAllChildViews(callback, bottomUp, childView)
+    callback.call(@, view) if bottomUp
 
   navigateToCorrectMenuLevel: (selectedItem) ->
     @openMenuInitially()
@@ -57,4 +60,10 @@ Tent.Application.MainMenuView = Ember.View.extend
     reversed = levels.toArray().reverse()
     for item in reversed
       $(item).find('a:first').click()
+
+  hideMenusWithNoValidChildren: ->
+    @forAllChildViews((view)->
+        view.checkParentEntitlements() if view.checkParentEntitlements?
+      , true
+    )
 
