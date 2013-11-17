@@ -5,6 +5,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
   levelOffset: 40
 
   didInsertElement: ->
+    @set('treatIEDifferently', Tent.Browsers.getIEVersion()==8 or Tent.Browsers.getIEVersion()==9)
     @set('expandWidth', $('#mp-menu').width())
     @annotateLevels()
     @_super()
@@ -21,7 +22,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
     @set('collapsed', true)
 
   showMenuLevel: (menu, level)->
-    if Tent.Browsers.isIE()
+    if @get('treatIEDifferently')
       if level == 1
         width = @get('expandWidth') + ((level - 1) * @get('levelOffset'))
       else
@@ -33,12 +34,12 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
   hideMenuLevel: (menu, level)->
     width = @get('expandWidth') * level
     menu.css('margin-left', "-#{width}px")
-
+ 
   toggleCollapse: ->
     if @get('collapsed') then @showMenu() else @hideMenu()
 
   translate: (val, el) ->
-    if Tent.Browsers.isIE()
+    if @get('treatIEDifferently')
         left = val
         right = val
         el.css('margin-left', "#{left}px")

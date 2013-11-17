@@ -1363,6 +1363,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .mp-pusher {
+  height: 100%;
   transition: all .4s ease;
   position: relative;
 }
@@ -1403,11 +1404,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .mp-menu.mp-cover h2 {
   text-transform: none;
-}
-
-.no-csstransforms3d .mp-pusher,
-.no-js .mp-pusher {
-  padding-left: 270px;
 }
 
 .mp-level {
