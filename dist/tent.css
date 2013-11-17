@@ -1406,11 +1406,6 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   text-transform: none;
 }
 
-.no-csstransforms3d .mp-pusher,
-.no-js .mp-pusher {
-  padding-left: 270px;
-}
-
 .mp-level {
   display: block;
   position: absolute;

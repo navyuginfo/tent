@@ -12608,7 +12608,15 @@ Tent.Application.MenuItemView = Ember.View.extend({
     },
     showMenuLevel: function(menu, level) {
       var width;
-      width = this.get('expandWidth') + ((level - 1) * this.get('levelOffset'));
+      if (this.get('treatIEDifferently')) {
+        if (level === 1) {
+          width = this.get('expandWidth') + ((level - 1) * this.get('levelOffset'));
+        } else {
+          width = (level - 1) * this.get('levelOffset');
+        }
+      } else {
+        width = this.get('expandWidth') + ((level - 1) * this.get('levelOffset'));
+      }
       return menu.css('margin-left', "-" + width + "px");
     },
     hideMenuLevel: function(menu, level) {
@@ -12626,7 +12634,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     translate: function(val, el) {
       var left, right;
       if (this.get('treatIEDifferently')) {
-        left = val - this.get('expandWidth');
+        left = val;
         right = val;
         el.css('margin-left', "" + left + "px");
         return el.css('margin-right', "-" + right + "px");

@@ -22,7 +22,7 @@ Tent.MLPushMenuView = Tent.Application.MainMenuView.extend
     @set('collapsed', true)
 
   showMenuLevel: (menu, level)->
-    if Tent.Browsers.isIE()
+    if @get('treatIEDifferently')
       if level == 1
         width = @get('expandWidth') + ((level - 1) * @get('levelOffset'))
       else
