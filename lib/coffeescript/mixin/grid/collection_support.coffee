@@ -336,7 +336,7 @@ Tent.Grid.CollectionSupport = Ember.Mixin.create
 
 
   personalizationWasAdded: (->
-    @updateGridWitNewPersonalizationValues(@get('collection').getSettings())
+    @updateGridWitNewPersonalizationValues(@get('collection').getSettings()) if @get('collection')?
   ).observes('collection.personalizations','collection.personalizations.@each')
 
   getPersonalizationFromName: (name) ->

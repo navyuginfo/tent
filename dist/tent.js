@@ -4521,7 +4521,9 @@ Ember.TEMPLATES['jqgrid']=Ember.Handlebars.compile("{{#if view.content.isLoadabl
       return sortable && postdata.sidx !== "" && (postdata.sidx !== this.get('sortingInfo.fields.firstObject.field') || postdata.sord !== this.get('sortingInfo.fields.firstObject.sortDir'));
     },
     personalizationWasAdded: (function() {
-      return this.updateGridWitNewPersonalizationValues(this.get('collection').getSettings());
+      if (this.get('collection') != null) {
+        return this.updateGridWitNewPersonalizationValues(this.get('collection').getSettings());
+      }
     }).observes('collection.personalizations', 'collection.personalizations.@each'),
     getPersonalizationFromName: function(name) {
       var matches,
