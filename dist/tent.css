@@ -1363,6 +1363,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 
 .mp-pusher {
+  height: 100%;
   transition: all .4s ease;
   position: relative;
 }

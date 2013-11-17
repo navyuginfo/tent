@@ -12588,6 +12588,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     maxDepth: 0,
     levelOffset: 40,
     didInsertElement: function() {
+      this.set('treatIEDifferently', Tent.Browsers.getIEVersion() === 8 || Tent.Browsers.getIEVersion() === 9);
       this.set('expandWidth', $('#mp-menu').width());
       this.annotateLevels();
       this._super();
@@ -12624,7 +12625,7 @@ Tent.Application.MenuItemView = Ember.View.extend({
     },
     translate: function(val, el) {
       var left, right;
-      if (Tent.Browsers.isIE()) {
+      if (this.get('treatIEDifferently')) {
         left = val - this.get('expandWidth');
         right = val;
         el.css('margin-left', "" + left + "px");
