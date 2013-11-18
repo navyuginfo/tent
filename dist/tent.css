@@ -459,7 +459,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
 }
 .allow-fuzzy-dates .ui-daterangepicker-arrows input.ui-rangepicker-input {
   margin-left: 24px;
-  width: 14em;
+  width: 178px;
 }
 .allow-fuzzy-dates input.useFuzzy {
   position: absolute;
