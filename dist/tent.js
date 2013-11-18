@@ -10582,6 +10582,168 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+(function() {
+
+  Tent.FuzzyDateSupport = Ember.Mixin.create({
+    /**
+    	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
+    	* a valid date
+    */
+
+    allowFuzzyDates: false,
+    /**
+    	* @property {String} fuzzyValue This will store the fuzzy date if one is entered by the user.
+    */
+
+    fuzzyValue: null,
+    useFuzzyDates: false,
+    initializeFromFuzzyValue: function() {
+      var dateRange, originalFuzzyValue;
+      dateRange = this.getDateStringFromFuzzyValue(this.get('fuzzyValue'));
+      this.set('value', dateRange);
+      this.set('dateValue', dateRange);
+      this.setFuzzyCheckBox(true);
+      originalFuzzyValue = this.get('fuzzyValue');
+      this.set('useFuzzyDates', true);
+      return this.set('fuzzyValueTemp', originalFuzzyValue);
+    },
+    resetFuzzyValue: function() {
+      this.setFuzzyCheckBox(false);
+      this.set('dateValue', this.get('value'));
+      return this.set('fuzzyValueTemp', this.get('value'));
+    },
+    setFuzzyCheckBox: function(isChecked) {
+      return this.$('.useFuzzy').prop('checked', isChecked);
+    },
+    getDateStringFromFuzzyValue: function(fuzzy) {
+      var end, formattedEnd, formattedStart, preset, start;
+      preset = this.getPresetRangeWhichMatchesString(fuzzy);
+      if (preset != null) {
+        start = typeof preset.dateStart === 'string' ? Date.parse(preset.dateStart) : preset.dateStart();
+        formattedStart = Tent.Formatting.date.format(start, this.get('dateFormat'));
+        end = typeof preset.dateEnd === 'string' ? Date.parse(preset.dateEnd) : preset.dateEnd();
+        formattedEnd = Tent.Formatting.date.format(end, this.get('dateFormat'));
+        return formattedStart + this.get('rangeSplitter') + " " + formattedEnd;
+      } else {
+        return fuzzy;
+      }
+    },
+    getPresetRangeWhichMatchesString: function(fDate) {
+      var rangesFromPlugin, selectedPresetRangeArr,
+        _this = this;
+      rangesFromPlugin = this.get('plugin.options.presetRanges');
+      selectedPresetRangeArr = rangesFromPlugin.filter(function(item) {
+        return item.text.replace(/\ /g, "") === fDate;
+      });
+      if (selectedPresetRangeArr.length > 0) {
+        return selectedPresetRangeArr[0];
+      }
+    },
+    fuzzyValueDidChange: (function() {
+      if (this.get('allowFuzzyDates') && this.get('useFuzzyDates')) {
+        if (this.isFuzzyDateInPresetsList(this.get('fuzzyValueTemp'))) {
+          this.set('fuzzyValue', this.get('fuzzyValueTemp'));
+          return this.set('formattedValue', Tent.I18n.loc("tent.dateRange.presetRanges." + this.get('fuzzyValueTemp')));
+        }
+      } else {
+        this.set('fuzzyValue', null);
+        return this.set('formattedValue', this.getDateStringFromFuzzyValue(this.get('dateValue')));
+      }
+    }).observes('fuzzyValueTemp', 'useFuzzyDates'),
+    isConventionalDate: function(date) {
+      return Tent.Formatting.date.unformat(date.trim(), this.get('dateFormat')) != null;
+    },
+    isFuzzyDate: function(date) {
+      var conventional;
+      conventional = false;
+      try {
+        conventional = this.isConventionalDate(date);
+      } catch (e) {
+        conventional = false;
+      }
+      return this.isFuzzyDateValid(date) && !conventional;
+    },
+    isFuzzyDateValid: function(date) {
+      return !!this.parseFuzzyDate(date);
+    },
+    parseFuzzyDate: function(date) {
+      return Date.parse(date);
+    },
+    listenForFuzzyDropdownChanges: function() {
+      var _this = this;
+      return $("#" + this.get('dropdownId') + " li").click(function(e) {
+        return _this.setFuzzyValueFromSelectedPreset(e);
+      });
+    },
+    setFuzzyValueFromSelectedPreset: function(e) {
+      var classes, fValue, li, presetArr;
+      if (this.get('allowFuzzyDates')) {
+        li = $(e.currentTarget);
+        if (this.presetIsFuzzy(li)) {
+          this.enableCheckbox();
+          classes = li.attr('class').split(' ');
+          presetArr = classes.find(function(item) {
+            if (item.split('ui-daterangepicker-').length > 1) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          fValue = presetArr.split('ui-daterangepicker-')[1];
+          return this.set('fuzzyValueTemp', fValue);
+        } else {
+          this.disableCheckbox();
+          this.setCheckValue(false);
+          return this.set('useFuzzyDates', false);
+        }
+      } else {
+        return this.set('fuzzyValue', null);
+      }
+    },
+    isFuzzyDateInPresetsList: function(date) {
+      var ranges;
+      if (!(date != null)) {
+        return false;
+      }
+      ranges = this.get('plugin.options.presetRanges');
+      return ranges.filter(function(item) {
+        return item.text.replace(/\ /g, "") === date;
+      }).length > 0;
+    },
+    presetIsFuzzy: function(li) {
+      return li.attr('class').indexOf('preset_') === -1;
+    },
+    listenForFuzzyCheckboxChanges: function() {
+      var _this = this;
+      _this = this;
+      return this.$('.useFuzzy').click(function(e) {
+        return _this.checkWasClicked();
+      });
+    },
+    setCheckValue: function(value) {
+      return this.$('.useFuzzy').prop('checked', value);
+    },
+    isChecked: function() {
+      return !!this.$('.useFuzzy').prop('checked');
+    },
+    enableCheckbox: function() {
+      return this.$('.useFuzzy').prop('disabled', false);
+    },
+    disableCheckbox: function() {
+      return this.$('.useFuzzy').prop('disabled', true);
+    },
+    checkWasClicked: function() {
+      if (this.get('useFuzzyDates')) {
+        return this.set('useFuzzyDates', false);
+      } else {
+        return this.set('useFuzzyDates', true);
+      }
+    }
+  });
+
+}).call(this);
+
+
 
 /**
 * @class Tent.DateRangeField
@@ -10607,7 +10769,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 
 
 (function() {
-Tent.DateRangeField = Tent.TextField.extend({
+Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
     classNames: ['tent-date-range-field'],
     classNameBindings: ['allowFuzzyDates'],
     /**
@@ -10676,18 +10838,6 @@ Tent.DateRangeField = Tent.TextField.extend({
     dateFormat: Tent.Formatting.date.getFormat(),
     hasOwnRangeDisplay: true,
     operators: null,
-    /**
-    	* @property {Boolean} allowFuzzyDates The date input will accept free-form text and will attempt to parse that into
-    	* a valid date
-    */
-
-    allowFuzzyDates: false,
-    /**
-    	* @property {String} fuzzyValue This will store the fuzzy date if one is entered by the user.
-    */
-
-    fuzzyValue: null,
-    useFuzzyDates: false,
     init: function() {
       return this._super();
     },
@@ -10764,48 +10914,6 @@ Tent.DateRangeField = Tent.TextField.extend({
       }
       return start + this.get('rangeSplitter') + " " + end;
     },
-    initializeFromFuzzyValue: function() {
-      var dateRange, originalFuzzyValue;
-      dateRange = this.getDateStringFromFuzzyValue(this.get('fuzzyValue'));
-      this.set('value', dateRange);
-      this.set('dateValue', dateRange);
-      this.setFuzzyCheckBox(true);
-      originalFuzzyValue = this.get('fuzzyValue');
-      this.set('useFuzzyDates', true);
-      return this.set('fuzzyValueTemp', originalFuzzyValue);
-    },
-    resetFuzzyValue: function() {
-      this.setFuzzyCheckBox(false);
-      this.set('dateValue', this.get('value'));
-      return this.set('fuzzyValueTemp', this.get('value'));
-    },
-    setFuzzyCheckBox: function(isChecked) {
-      return this.$('.useFuzzy').prop('checked', isChecked);
-    },
-    getDateStringFromFuzzyValue: function(fuzzy) {
-      var end, formattedEnd, formattedStart, preset, start;
-      preset = this.getPresetRangeWhichMatchesString(fuzzy);
-      if (preset != null) {
-        start = typeof preset.dateStart === 'string' ? Date.parse(preset.dateStart) : preset.dateStart();
-        formattedStart = Tent.Formatting.date.format(start, this.get('dateFormat'));
-        end = typeof preset.dateEnd === 'string' ? Date.parse(preset.dateEnd) : preset.dateEnd();
-        formattedEnd = Tent.Formatting.date.format(end, this.get('dateFormat'));
-        return formattedStart + this.get('rangeSplitter') + " " + formattedEnd;
-      } else {
-        return fuzzy;
-      }
-    },
-    getPresetRangeWhichMatchesString: function(fDate) {
-      var rangesFromPlugin, selectedPresetRangeArr,
-        _this = this;
-      rangesFromPlugin = this.get('plugin.options.presetRanges');
-      selectedPresetRangeArr = rangesFromPlugin.filter(function(item) {
-        return item.text.replace(/\ /g, "") === fDate;
-      });
-      if (selectedPresetRangeArr.length > 0) {
-        return selectedPresetRangeArr[0];
-      }
-    },
     placeholder: (function() {
       return this.get('dateFormat') + this.get('rangeSplitter') + " " + this.get('dateFormat');
     }).property('dateFormat'),
@@ -10826,87 +10934,6 @@ Tent.DateRangeField = Tent.TextField.extend({
         return this.set('value', this.convertSingleDateToDateRange(unformatted));
       }
     },
-    listenForFuzzyDropdownChanges: function() {
-      var _this = this;
-      return $("#" + this.get('dropdownId') + " li").click(function(e) {
-        return _this.setFuzzyValueFromSelectedPreset(e);
-      });
-    },
-    setFuzzyValueFromSelectedPreset: function(e) {
-      var classes, fValue, li, presetArr;
-      if (this.get('allowFuzzyDates')) {
-        li = $(e.currentTarget);
-        if (this.presetIsFuzzy(li)) {
-          this.enableCheckbox();
-          classes = li.attr('class').split(' ');
-          presetArr = classes.find(function(item) {
-            if (item.split('ui-daterangepicker-').length > 1) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-          fValue = presetArr.split('ui-daterangepicker-')[1];
-          return this.set('fuzzyValueTemp', fValue);
-        } else {
-          this.disableCheckbox();
-          this.setCheckValue(false);
-          return this.set('useFuzzyDates', false);
-        }
-      } else {
-        return this.set('fuzzyValue', null);
-      }
-    },
-    isFuzzyDateInPresetsList: function(date) {
-      var ranges;
-      if (!(date != null)) {
-        return false;
-      }
-      ranges = this.get('plugin.options.presetRanges');
-      return ranges.filter(function(item) {
-        return item.text.replace(/\ /g, "") === date;
-      }).length > 0;
-    },
-    presetIsFuzzy: function(li) {
-      return li.attr('class').indexOf('preset_') === -1;
-    },
-    listenForFuzzyCheckboxChanges: function() {
-      var _this = this;
-      _this = this;
-      return this.$('.useFuzzy').click(function(e) {
-        return _this.checkWasClicked();
-      });
-    },
-    setCheckValue: function(value) {
-      return this.$('.useFuzzy').prop('checked', value);
-    },
-    isChecked: function() {
-      return !!this.$('.useFuzzy').prop('checked');
-    },
-    enableCheckbox: function() {
-      return this.$('.useFuzzy').prop('disabled', false);
-    },
-    disableCheckbox: function() {
-      return this.$('.useFuzzy').prop('disabled', true);
-    },
-    checkWasClicked: function() {
-      if (this.get('useFuzzyDates')) {
-        return this.set('useFuzzyDates', false);
-      } else {
-        return this.set('useFuzzyDates', true);
-      }
-    },
-    fuzzyValueDidChange: (function() {
-      if (this.get('allowFuzzyDates') && this.get('useFuzzyDates')) {
-        if (this.isFuzzyDateInPresetsList(this.get('fuzzyValueTemp'))) {
-          this.set('fuzzyValue', this.get('fuzzyValueTemp'));
-          return this.set('formattedValue', Tent.I18n.loc("tent.dateRange.presetRanges." + this.get('fuzzyValueTemp')));
-        }
-      } else {
-        this.set('fuzzyValue', null);
-        return this.set('formattedValue', this.getDateStringFromFuzzyValue(this.get('dateValue')));
-      }
-    }).observes('fuzzyValueTemp', 'useFuzzyDates'),
     focusOut: function() {},
     convertSingleDateToDateRange: function(date) {
       if (this.isFuzzyDate(date)) {
@@ -10961,25 +10988,6 @@ Tent.DateRangeField = Tent.TextField.extend({
     },
     validateWarnings: function() {
       return this._super();
-    },
-    isConventionalDate: function(date) {
-      return Tent.Formatting.date.unformat(date.trim(), this.get('dateFormat')) != null;
-    },
-    isFuzzyDate: function(date) {
-      var conventional;
-      conventional = false;
-      try {
-        conventional = this.isConventionalDate(date);
-      } catch (e) {
-        conventional = false;
-      }
-      return this.isFuzzyDateValid(date) && !conventional;
-    },
-    isFuzzyDateValid: function(date) {
-      return !!this.parseFuzzyDate(date);
-    },
-    parseFuzzyDate: function(date) {
-      return Date.parse(date);
     },
     format: function(value) {
       return value;

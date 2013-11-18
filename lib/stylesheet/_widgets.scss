@@ -123,16 +123,21 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 
 .allow-fuzzy-dates {
 	.ui-daterangepicker-arrows {
-		width: 218px;
+		width: 210px;
+		background: none;
+		a {
+			display: none;
+		}
 		input.ui-rangepicker-input {
-			margin-left: 32px;
+			margin-left: 24px;
+			width: 178px;
 		}
 	}
 	input.useFuzzy {
 		position: absolute;	
-		left: 17px;
+		left: 5px;
 		width: 15px;
-    margin: 0 0 0 1;
+    margin: -1 0 0 0;
 	}
 }
 
