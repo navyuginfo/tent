@@ -80,8 +80,6 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	validate: ->
 		isValid = @_super()
 		isValidDate = @isDateValid(@get("formattedValue")) or @convertFuzzyDate(@get("formattedValue"))
-		#isValidDate = isValidDate or @parseFuzzyDate()
-
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless isValidDate
 		@validateWarnings() if isValid 
 		isValid && isValidDate

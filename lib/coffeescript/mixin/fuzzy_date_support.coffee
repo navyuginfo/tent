@@ -17,9 +17,8 @@ Tent.FuzzyDateSupport = Ember.Mixin.create
 		@set('value', dateRange)
 		@set('dateValue', dateRange)
 		@setFuzzyCheckBox(true)
-		originalFuzzyValue = @get('fuzzyValue')
 		@set('useFuzzyDates', true)
-		@set('fuzzyValueTemp', originalFuzzyValue)
+		@set('fuzzyValueTemp', @get('fuzzyValue'))
 
 	resetFuzzyValue: () ->
 		@setFuzzyCheckBox(false)
@@ -87,6 +86,8 @@ Tent.FuzzyDateSupport = Ember.Mixin.create
 			li = $(e.currentTarget)
 			if @presetIsFuzzy(li)
 				@enableCheckbox()
+				# The actual fuzzy value is stored in the class attribute of the selected dropdown item
+				# as 'ui-daterangepicker-fuzzyname'
 				classes = li.attr('class').split(' ')
 				presetArr = classes.find((item)->
 					if item.split('ui-daterangepicker-').length > 1 then true else false
@@ -107,7 +108,7 @@ Tent.FuzzyDateSupport = Ember.Mixin.create
 			item.text.replace(/\ /g, "") == date
 		).length >0
 
-	presetIsFuzzy: (li)->
+	presetIsFuzzy: (li) ->
 		li.attr('class').indexOf('preset_') == -1
 
 	listenForFuzzyCheckboxChanges: ->
