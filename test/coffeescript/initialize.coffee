@@ -64,6 +64,8 @@
 	Pad.changingCurrency = 'XXX'
 	Pad.stateValue = 'GA'
 	Pad.enabledExports=['csv']
+	Pad.dateRangeFuzzy='Tomorrow'
+	
 	#Pad.presetRanges = [
 		#	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
 		#]

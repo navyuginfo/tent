@@ -175,9 +175,9 @@ Tent.DateRangeField = Tent.TextField.extend
 			originalFuzzyValue = @get('fuzzyValue')
 			@set('useFuzzyDates', true)
 			@set('fuzzyValueTemp', originalFuzzyValue)
-			@set('formattedValue', @get('fuzzyValueTemp'))
 		else
 			@setFuzzyCheck(false)
+			@set('dateValue', @get('value'))
 
 	setFuzzyCheck: (isChecked)->
 		@$('.useFuzzy').prop('checked', isChecked)
@@ -210,12 +210,16 @@ Tent.DateRangeField = Tent.TextField.extend
 	change: (e)->
 		if e? and not $(e.originalTarget).is('.useFuzzy')
 			return
-		@set('dateValue', @getValue())
-		@set("formattedValue", @format(@getValue()))
+
+		if not @isFuzzyDate(@getValue())
+			@set('dateValue', @getValue())
+		else 
+			@set('dateValue', @getDateFromFuzzyValue(@getValue()))
+
+		@set("fuzzyValueTemp", @getValue())
 		@set('isValid', @validate())
 		if @get('isValid')
-			unformatted = @unFormat(@get('formattedValue'))
-			@set('formattedValue', @format(unformatted))
+			unformatted = @unFormat(@get('dateValue'))
 			@set('value', @convertSingleDateToDateRange(unformatted))
  
 	listenForFuzzyDropdownChanges: ->
@@ -239,6 +243,13 @@ Tent.DateRangeField = Tent.TextField.extend
 				@set('useFuzzyDates', false)
 		else
 			@set('fuzzyValue', null)
+
+	isFuzzyDateInPresetsList: (date) ->
+		return false if not date?
+		ranges = @get('plugin.options.presetRanges')
+		ranges.filter((item) ->
+			item.text.replace(/\ /g, "") == date
+		).length >0
 
 	presetIsFuzzy: (li)->
 		li.attr('class').indexOf('preset_') == -1
@@ -266,8 +277,9 @@ Tent.DateRangeField = Tent.TextField.extend
 
 	fuzzyValueDidChange: (->
 		if @get('allowFuzzyDates') and @get('useFuzzyDates')
-			@set('fuzzyValue', @get('fuzzyValueTemp'))
-			@set('formattedValue', @get('fuzzyValueTemp'))
+			if @isFuzzyDateInPresetsList(@get('fuzzyValueTemp'))
+				@set('fuzzyValue', @get('fuzzyValueTemp'))
+				@set('formattedValue', Tent.I18n.loc("tent.dateRange.presetRanges." + @get('fuzzyValueTemp')))
 		else
 			@set('fuzzyValue', null)
 			@set('formattedValue', @getDateFromFuzzyValue(@get('dateValue')))
@@ -287,8 +299,8 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('formattedValue')? and @get('formattedValue') != "" and @getValue()?
-			startString = @getValue().split(@get('rangeSplitter'))[0]
+		if @get('dateValue')? and @get('dateValue') != "" and @getValue()?
+			startString = @get('dateValue').split(@get('rangeSplitter'))[0]
 			if startString?
 				try 
 					startDate = Tent.Formatting.date.unformat(startString.trim(), @get('dateFormat'))
@@ -297,7 +309,7 @@ Tent.DateRangeField = Tent.TextField.extend
 					isValidStartDate = false
 					@set('startDate', null)
 
-			endString = @getValue().split(@get('rangeSplitter'))[1]
+			endString = @get('dateValue').split(@get('rangeSplitter'))[1]
 			if endString?
 				try
 				 endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
@@ -308,9 +320,9 @@ Tent.DateRangeField = Tent.TextField.extend
 			else
 				@set('endDate', @get('startDate'))
 				
-		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless ((isValidStartDate and isValidEndDate) or @isFuzzyDateValid(@get('formattedValue')))
-		@validateWarnings() if (@isFuzzyDateValid(@get('formattedValue')) or (isValid and isValidStartDate and isValidEndDate))
-		@isFuzzyDateValid(@get('formattedValue')) || (isValid && isValidStartDate && isValidEndDate)
+		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless ((isValidStartDate and isValidEndDate) or @isFuzzyDateValid(@get('formattedValueTemp')))
+		@validateWarnings() if (@isFuzzyDateValid(@get('formattedValueTemp')) or (isValid and isValidStartDate and isValidEndDate))
+		@isFuzzyDateValid(@get('formattedValueTemp')) || (isValid && isValidStartDate && isValidEndDate)
 
 	validateWarnings: ->
 		@_super()
@@ -320,7 +332,12 @@ Tent.DateRangeField = Tent.TextField.extend
 
 	# A fuzzy date and not a conventional date
 	isFuzzyDate: (date) ->
-		@isFuzzyDateValid(@get('formattedValue')) and not @isConventionalDate(date)	
+		conventional = false
+		try 
+			conventional = @isConventionalDate(date)
+		catch e
+			conventional = false
+		@isFuzzyDateValid(date) and not conventional
 
 	# It is a valid date or fuzzy date
 	isFuzzyDateValid: (date) ->
