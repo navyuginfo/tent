@@ -150,14 +150,14 @@ Tent.DateRangeField = Tent.TextField.extend
 	* @return {String}
 	###
 	getValue: ->
-		@$('.ui-rangepicker-input').val() if @$('.ui-rangepicker-input')?
+		@$('.ember-text-field').val() if @$('.ember-text-field')?
 
 	###*
 	* @method setValue Set the value of the input field
 	* @param {String} value
 	###
 	setValue: (value)->
-		@$('.ui-rangepicker-input').val(value)
+		@$('.ember-text-field').val(value)
 
 	initializeWithStartAndEndDates: ->
 		if not @get('value')? and not @get('fuzzyValue')?
@@ -178,6 +178,7 @@ Tent.DateRangeField = Tent.TextField.extend
 		else
 			@setFuzzyCheck(false)
 			@set('dateValue', @get('value'))
+			@set('fuzzyValueTemp', @get('value'))
 
 	setFuzzyCheck: (isChecked)->
 		@$('.useFuzzy').prop('checked', isChecked)
@@ -299,7 +300,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	validate: ->
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
-		if @get('dateValue')? and @get('dateValue') != "" and @getValue()?
+		if @get('dateValue')? and @get('dateValue') != ""
 			startString = @get('dateValue').split(@get('rangeSplitter'))[0]
 			if startString?
 				try 

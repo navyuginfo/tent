@@ -10732,8 +10732,8 @@ Tent.DateRangeField = Tent.TextField.extend({
     */
 
     getValue: function() {
-      if (this.$('.ui-rangepicker-input') != null) {
-        return this.$('.ui-rangepicker-input').val();
+      if (this.$('.ember-text-field') != null) {
+        return this.$('.ember-text-field').val();
       }
     },
     /**
@@ -10742,7 +10742,7 @@ Tent.DateRangeField = Tent.TextField.extend({
     */
 
     setValue: function(value) {
-      return this.$('.ui-rangepicker-input').val(value);
+      return this.$('.ember-text-field').val(value);
     },
     initializeWithStartAndEndDates: function() {
       var dateRange, end, originalFuzzyValue, start;
@@ -10765,7 +10765,8 @@ Tent.DateRangeField = Tent.TextField.extend({
         return this.set('fuzzyValueTemp', originalFuzzyValue);
       } else {
         this.setFuzzyCheck(false);
-        return this.set('dateValue', this.get('value'));
+        this.set('dateValue', this.get('value'));
+        return this.set('fuzzyValueTemp', this.get('value'));
       }
     },
     setFuzzyCheck: function(isChecked) {
@@ -10901,7 +10902,7 @@ Tent.DateRangeField = Tent.TextField.extend({
       var endDate, endString, isValid, isValidEndDate, isValidStartDate, startDate, startString;
       isValid = this._super();
       isValidStartDate = isValidEndDate = true;
-      if ((this.get('dateValue') != null) && this.get('dateValue') !== "" && (this.getValue() != null)) {
+      if ((this.get('dateValue') != null) && this.get('dateValue') !== "") {
         startString = this.get('dateValue').split(this.get('rangeSplitter'))[0];
         if (startString != null) {
           try {

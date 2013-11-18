@@ -7,7 +7,7 @@
 			valueBinding="" 
 			showOtherMonths=true  
 			dateFormat=""
-         }}
+				 }}
 ###
 
 require '../template/text_field'
@@ -68,7 +68,7 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	change: ->
 		@set('hasParsedValue', false)
 		@set('fuzzyValue', null)
-		@doValidations()
+		@validateField()
 
 	didInsertElement: ->
 		@_super(arguments)
@@ -132,12 +132,8 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 	focusOut: ->
 		field = @$('input.primary-class').val()
 		if !field or field == '' or field == @get('translatedPlaceholder')
-      			today = @format(new Date())
-      			@.$('input.primary-class').val(today)
-      			@set('formattedValue', today)
+			today = @format(new Date())
+			@.$('input.primary-class').val(today)
+			@set('formattedValue', today)
 		@validateField()
-
-	change: ->
-	    @validateField()
-
 		 
