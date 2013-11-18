@@ -74,7 +74,7 @@ Tent.DateRangeField = Tent.TextField.extend
 	###*
 	* @property {Boolean} arrows will add date range advancing arrows to input.
 	###
-	arrows: false
+	arrows: true
 
 	###*
 	* @property {Date} startDate The selected start date in the range
@@ -134,7 +134,7 @@ Tent.DateRangeField = Tent.TextField.extend
 					widget.change()
 			})
 		)
-		@initializeWithStartAndEndDates()
+		@initializeValue()
 		@listenForFuzzyCheckboxChanges()
 		@listenForFuzzyDropdownChanges()
 		@handleReadonly()
@@ -159,50 +159,56 @@ Tent.DateRangeField = Tent.TextField.extend
 	setValue: (value)->
 		@$('.ember-text-field').val(value)
 
-	initializeWithStartAndEndDates: ->
+	initializeValue: ->
 		if not @get('value')? and not @get('fuzzyValue')?
-			if @get('startDate')?
-				start = Tent.Formatting.date.format(@get('startDate'), @get('dateFormat'))
-			if @get('endDate')?
-				end = Tent.Formatting.date.format(@get('endDate'), @get('dateFormat'))
-			@setValue(start + @get('rangeSplitter') + " " + end)
-
+			@setValue(@getDateStringFromStartAndEndDates())
 		if @get('fuzzyValue')?
-			dateRange = @getDateFromFuzzyValue(@get('fuzzyValue'))
-			@set('value', dateRange)
-			@set('dateValue', dateRange)
-			@setFuzzyCheck(true)
-			originalFuzzyValue = @get('fuzzyValue')
-			@set('useFuzzyDates', true)
-			@set('fuzzyValueTemp', originalFuzzyValue)
+			@initializeFromFuzzyValue()
 		else
-			@setFuzzyCheck(false)
-			@set('dateValue', @get('value'))
-			@set('fuzzyValueTemp', @get('value'))
+			@resetFuzzyValue()
+			
+	getDateStringFromStartAndEndDates: ->
+		if @get('startDate')?
+			start = Tent.Formatting.date.format(@get('startDate'), @get('dateFormat'))
+		if @get('endDate')?
+			end = Tent.Formatting.date.format(@get('endDate'), @get('dateFormat'))
+		start + @get('rangeSplitter') + " " + end
 
-	setFuzzyCheck: (isChecked)->
+	initializeFromFuzzyValue: () ->
+		dateRange = @getDateStringFromFuzzyValue(@get('fuzzyValue'))
+		@set('value', dateRange)
+		@set('dateValue', dateRange)
+		@setFuzzyCheckBox(true)
+		originalFuzzyValue = @get('fuzzyValue')
+		@set('useFuzzyDates', true)
+		@set('fuzzyValueTemp', originalFuzzyValue)
+
+	resetFuzzyValue: () ->
+		@setFuzzyCheckBox(false)
+		@set('dateValue', @get('value'))
+		@set('fuzzyValueTemp', @get('value'))
+
+	setFuzzyCheckBox: (isChecked)->
 		@$('.useFuzzy').prop('checked', isChecked)
 
-	getDateFromFuzzyValue: (fuzzy)->
-		# get presets
-		# find the one that applies
-		# evaluate start and end date and copy to value
-
-		ranges = @get('plugin.options.presetRanges')
-
-		presetArr = ranges.filter (item) =>
-			item.text.replace(/\ /g, "") == fuzzy
-
-		if presetArr.length > 0
-			preset = presetArr[0]
+	getDateStringFromFuzzyValue: (fuzzy) ->
+		preset = @getPresetRangeWhichMatchesString(fuzzy)
+		if preset?
 			start = if typeof preset.dateStart == 'string' then Date.parse(preset.dateStart) else preset.dateStart()
 			formattedStart = Tent.Formatting.date.format(start, @get('dateFormat'))
 			end = if typeof preset.dateEnd == 'string' then Date.parse(preset.dateEnd) else preset.dateEnd()
 			formattedEnd = Tent.Formatting.date.format(end, @get('dateFormat'))
 			(formattedStart + @get('rangeSplitter') + " " + formattedEnd)
 		else
-			# If not a fuzzy value, just return the original value, which may be a valid date range
-			fuzzy
+			fuzzy # If not a fuzzy value, just return the original value, which may be a valid date range
+
+	# The plugin defines a collection of pre-calculated ranges.
+	# Here we select the range which corresponds to the selected fuzzy value
+	getPresetRangeWhichMatchesString: (fDate) ->
+		rangesFromPlugin = @get('plugin.options.presetRanges')
+		selectedPresetRangeArr = rangesFromPlugin.filter (item) =>
+			item.text.replace(/\ /g, "") == fDate
+		selectedPresetRangeArr[0] if selectedPresetRangeArr.length > 0
 
 	placeholder: (->
 		@get('dateFormat') + @get('rangeSplitter') + " " + @get('dateFormat')
@@ -215,7 +221,7 @@ Tent.DateRangeField = Tent.TextField.extend
 		if not @isFuzzyDate(@getValue())
 			@set('dateValue', @getValue())
 		else 
-			@set('dateValue', @getDateFromFuzzyValue(@getValue()))
+			@set('dateValue', @getDateStringFromFuzzyValue(@getValue()))
 
 		@set("fuzzyValueTemp", @getValue())
 		@set('isValid', @validate())
@@ -263,6 +269,9 @@ Tent.DateRangeField = Tent.TextField.extend
 	setCheckValue: (value) ->
 		@$('.useFuzzy').prop('checked', value)
 
+	isChecked: ->
+		!!@$('.useFuzzy').prop('checked')
+
 	enableCheckbox: ->
 		@$('.useFuzzy').prop('disabled', false)
 
@@ -283,7 +292,7 @@ Tent.DateRangeField = Tent.TextField.extend
 				@set('formattedValue', Tent.I18n.loc("tent.dateRange.presetRanges." + @get('fuzzyValueTemp')))
 		else
 			@set('fuzzyValue', null)
-			@set('formattedValue', @getDateFromFuzzyValue(@get('dateValue')))
+			@set('formattedValue', @getDateStringFromFuzzyValue(@get('dateValue')))
 	).observes('fuzzyValueTemp','useFuzzyDates')
 
 	focusOut: ->
@@ -301,7 +310,7 @@ Tent.DateRangeField = Tent.TextField.extend
 		isValid = @_super()
 		isValidStartDate = isValidEndDate = true
 		if @get('dateValue')? and @get('dateValue') != ""
-			startString = @get('dateValue').split(@get('rangeSplitter'))[0]
+			startString = @getStartFromDate(@get('dateValue'))
 			if startString?
 				try 
 					startDate = Tent.Formatting.date.unformat(startString.trim(), @get('dateFormat'))
@@ -310,7 +319,7 @@ Tent.DateRangeField = Tent.TextField.extend
 					isValidStartDate = false
 					@set('startDate', null)
 
-			endString = @get('dateValue').split(@get('rangeSplitter'))[1]
+			endString = @getEndFromDate(@get('dateValue'))
 			if endString?
 				try
 				 endDate = Tent.Formatting.date.unformat(endString.trim(), @get('dateFormat'))
@@ -324,6 +333,12 @@ Tent.DateRangeField = Tent.TextField.extend
 		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless ((isValidStartDate and isValidEndDate) or @isFuzzyDateValid(@get('formattedValueTemp')))
 		@validateWarnings() if (@isFuzzyDateValid(@get('formattedValueTemp')) or (isValid and isValidStartDate and isValidEndDate))
 		@isFuzzyDateValid(@get('formattedValueTemp')) || (isValid && isValidStartDate && isValidEndDate)
+
+	getStartFromDate: (date) ->
+		date.split(@get('rangeSplitter'))[0]
+
+	getEndFromDate: (date) ->
+		date.split(@get('rangeSplitter'))[1]
 
 	validateWarnings: ->
 		@_super()
