@@ -10685,8 +10685,9 @@ Tent.DateRangeField = Tent.TextField.extend({
       var widget;
       this._super(arguments);
       widget = this;
+      this.set('dropdownId', this.get('elementId') + "dropdown");
       this.set('plugin', this.$('input').daterangepicker({
-        appendTo: "#" + (this.get('elementId')),
+        id: this.get('dropdownId'),
         presetRanges: this.get('presetRanges') != null ? this.get('presetRanges') : void 0,
         presets: this.get('presets') != null ? this.get('presets') : void 0,
         rangeSplitter: this.get('rangeSplitter') != null ? this.get('rangeSplitter') : void 0,
@@ -10797,7 +10798,7 @@ Tent.DateRangeField = Tent.TextField.extend({
     },
     listenForFuzzyDropdownChanges: function() {
       var _this = this;
-      return this.$('.ui-daterangepickercontain li').click(function(e) {
+      return $("#" + this.get('dropdownId') + " li").click(function(e) {
         return _this.setFuzzyValueFromSelectedPreset(e);
       });
     },
@@ -10863,6 +10864,9 @@ Tent.DateRangeField = Tent.TextField.extend({
     }).observes('fuzzyValueTemp', 'useFuzzyDates'),
     focusOut: function() {},
     convertSingleDateToDateRange: function(date) {
+      if (this.isFuzzyDate(date)) {
+        return date;
+      }
       if (date.indexOf(",") === -1) {
         date += "," + date;
       }
@@ -10896,16 +10900,28 @@ Tent.DateRangeField = Tent.TextField.extend({
           this.set('endDate', this.get('startDate'));
         }
       }
-      if (!(isValidStartDate && isValidEndDate)) {
+      if (!((isValidStartDate && isValidEndDate) || this.isFuzzyDateValid(this.get('formattedValue')))) {
         this.addValidationError(Tent.messages.DATE_FORMAT_ERROR);
       }
-      if (isValid && isValidStartDate && isValidEndDate) {
+      if (this.isFuzzyDateValid(this.get('formattedValue')) || (isValid && isValidStartDate && isValidEndDate)) {
         this.validateWarnings();
       }
-      return isValid && isValidStartDate && isValidEndDate;
+      return this.isFuzzyDateValid(this.get('formattedValue')) || (isValid && isValidStartDate && isValidEndDate);
     },
     validateWarnings: function() {
       return this._super();
+    },
+    isConventionalDate: function(date) {
+      return Tent.Formatting.date.unformat(date.trim(), this.get('dateFormat')) != null;
+    },
+    isFuzzyDate: function(date) {
+      return this.isFuzzyDateValid(this.get('formattedValue')) && !this.isConventionalDate(date);
+    },
+    isFuzzyDateValid: function(date) {
+      return !!this.parseFuzzyDate(date);
+    },
+    parseFuzzyDate: function(date) {
+      return Date.parse(date);
     },
     format: function(value) {
       return value;

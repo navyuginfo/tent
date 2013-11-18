@@ -115,9 +115,9 @@ Tent.DateRangeField = Tent.TextField.extend
 	didInsertElement: ->
 		@_super(arguments)
 		widget = @
-		
+		@set('dropdownId', @get('elementId') + "dropdown")
 		@set('plugin', @$('input').daterangepicker({
-				appendTo: "##{@get('elementId')}"
+				id: @get('dropdownId')
 				presetRanges: @get('presetRanges') if @get('presetRanges')?
 				presets: @get('presets') if @get('presets')?
 				rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
@@ -219,7 +219,7 @@ Tent.DateRangeField = Tent.TextField.extend
 			@set('value', @convertSingleDateToDateRange(unformatted))
  
 	listenForFuzzyDropdownChanges: ->
-		@$('.ui-daterangepickercontain li').click (e) =>
+		$("#" + @get('dropdownId') + " li").click (e) =>
 			@setFuzzyValueFromSelectedPreset(e)
 
 	setFuzzyValueFromSelectedPreset: (e) ->
@@ -278,6 +278,8 @@ Tent.DateRangeField = Tent.TextField.extend
 		# for just interacting with the dropdown.
 
 	convertSingleDateToDateRange: (date)->
+		if @isFuzzyDate(date)
+			return date
 		if (date.indexOf(",") == -1)
 			date += ",#{date}"
 		date
@@ -306,13 +308,26 @@ Tent.DateRangeField = Tent.TextField.extend
 			else
 				@set('endDate', @get('startDate'))
 				
-
-		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless (isValidStartDate and isValidEndDate)
-		@validateWarnings() if (isValid and isValidStartDate and isValidEndDate)
-		isValid && isValidStartDate && isValidEndDate
+		@addValidationError(Tent.messages.DATE_FORMAT_ERROR) unless ((isValidStartDate and isValidEndDate) or @isFuzzyDateValid(@get('formattedValue')))
+		@validateWarnings() if (@isFuzzyDateValid(@get('formattedValue')) or (isValid and isValidStartDate and isValidEndDate))
+		@isFuzzyDateValid(@get('formattedValue')) || (isValid && isValidStartDate && isValidEndDate)
 
 	validateWarnings: ->
 		@_super()
+
+	isConventionalDate: (date) ->
+		Tent.Formatting.date.unformat(date.trim(), @get('dateFormat'))?
+
+	# A fuzzy date and not a conventional date
+	isFuzzyDate: (date) ->
+		@isFuzzyDateValid(@get('formattedValue')) and not @isConventionalDate(date)	
+
+	# It is a valid date or fuzzy date
+	isFuzzyDateValid: (date) ->
+		!!@parseFuzzyDate(date)
+
+	parseFuzzyDate: (date) ->
+		Date.parse(date)
 
 	#Format for display
 	format: (value)->

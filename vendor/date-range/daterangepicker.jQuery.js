@@ -330,7 +330,7 @@
 		$(options.appendTo).append(rp);
 
 		//wrap and position
-		rp.wrap('<div class="ui-daterangepickercontain"></div>');
+		rp.wrap('<div class="ui-daterangepickercontain" id="'+ options.id +'"></div>');
 
 		//add arrows (only available on one input)
 		if(options.arrows && rangeInput.size()==1){

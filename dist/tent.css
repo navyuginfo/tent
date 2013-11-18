@@ -460,6 +460,7 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   position: absolute;
   left: 17px;
   width: 15px;
+  margin: 0 0 0 1;
 }
 
 .tent-date-range-field input {
