@@ -3602,7 +3602,7 @@ Tent.TextField = Ember.View.extend(Tent.FormattingSupport, Tent.FieldSupport, Te
     focusOut: function() {
       var fieldValue;
       fieldValue = $('#' + this.get('inputIdentifier')).val();
-      if (fieldValue === '') {
+      if (fieldValue === '' || fieldValue === this.get('translatedPlaceholder')) {
         return this.validateField();
       }
     },
@@ -3842,15 +3842,6 @@ Tent.AmountField = Tent.TextField.extend(Tent.CurrencySupport, Tent.FilteringRan
         return '...';
       }
     }).property('currency'),
-    tooltipT: (function() {
-      var toolTip;
-      toolTip = Tent.I18n.loc(this.get('tooltip'));
-      if (Tent.Browsers.isIE()) {
-        return toolTip + ' - ' + this.get('placeholder');
-      } else {
-        return toolTip;
-      }
-    }).property('tooltip', 'placeholder'),
     validate: function() {
       var didOtherValidationPass, formattedValue, isValidCurrency;
       this.set('formattedValue', Tent.Formatting.amount.cleanup(this.get('formattedValue')));
@@ -10452,15 +10443,6 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),
-    tooltipT: (function() {
-      var toolTip;
-      toolTip = Tent.I18n.loc(this.get('tooltip'));
-      if (Tent.Browsers.isIE()) {
-        return toolTip + ' - ' + this.get('placeholder');
-      } else {
-        return toolTip;
-      }
-    }).property('tooltip', 'placeholder'),
     defaultOptions: {
       dateFormat: Tent.Formatting.date.getFormat(),
       changeMonth: true,
@@ -10516,7 +10498,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     focusOut: function() {
       var field, today;
       field = this.$('input.primary-class').val();
-      if (!field || field === '') {
+      if (!field || field === '' || field === this.get('translatedPlaceholder')) {
         today = this.format(new Date());
         this.$('input.primary-class').val(today);
         this.set('formattedValue', today);
