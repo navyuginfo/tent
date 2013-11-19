@@ -10877,7 +10877,9 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
     */
 
     getValue: function() {
-      return this.get('formattedValue');
+      if (this.$('.ember-text-field') != null) {
+        return this.$('.ember-text-field').val();
+      }
     },
     /**
     	* @method setValue Set the value of the input field
