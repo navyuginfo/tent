@@ -59,6 +59,17 @@ Tent.I18n.loadTranslations(
 			proceed: 'Ignore warnings and proceed'
 			dontProceed: 'No, return to page'
 		}
+		dateRange:
+			useFuzzy: 'Use relative date'
+			presetRanges:
+				Today: 'Today'
+				Tomorrow: 'Tomorrow'
+				Last7days: 'Last 7 Days'
+				Monthtodate: 'Month to date'
+				Yeartodate: 'Year to date'
+				ThepreviousMonth: 'The previous Month'
+				Last30Days: 'Last 30 Days'
+				Next30Days: 'Next 30 days'
 		jqGrid: {
 			hideShowAlt: 'Hide/Show Columns'
 			hideShowCaption: 'Columns'

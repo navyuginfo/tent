@@ -45,6 +45,8 @@
 	Pad.numeric = "qwe"
 	Pad.dateFormat= "dd/mm/yy"
 	Pad.date = new Date()
+	Pad.fuzzyDate = 'yesterday'
+	Pad.rangeFuzzyDate = 'Tomorrow'
 	Pad.spinner = 27	 
 	Pad.startDate = new Date("12/6/2012")
 	Pad.endDate = new Date("12/21/2012")
@@ -62,6 +64,8 @@
 	Pad.changingCurrency = 'XXX'
 	Pad.stateValue = 'GA'
 	Pad.enabledExports=['csv']
+	Pad.dateRangeFuzzy='Tomorrow'
+	
 	#Pad.presetRanges = [
 		#	{text: 'My Range', dateStart: '03/07/08', dateEnd: 'Today' }
 		#]

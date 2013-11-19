@@ -88,6 +88,18 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 
 }
 
+/* Date Field */
+
+
+.tent-date-field {
+	.ui-datepicker-trigger {
+		border: 0px;
+		background: none;
+		img {
+			display: none;
+		}
+	}
+}
 
 /* Date Range Picker */
 
@@ -99,13 +111,33 @@ body>.modal-backdrop, body>.modal-backdrop.fade.in {
 .ui-daterangepicker-arrows {
 	width: 218px;
 	input.ui-rangepicker-input {
-		width: 170px;
+		width: 160px;
 		font-size: .8em;
 		height: 1.2em;
 		display: inline-block!important;
 	}
 	.ui-daterangepicker-prev, .ui-daterangepicker-next {
 		top: 4px;
+	}
+}
+
+.allow-fuzzy-dates {
+	.ui-daterangepicker-arrows {
+		width: 210px;
+		background: none;
+		a {
+			display: none;
+		}
+		input.ui-rangepicker-input {
+			margin-left: 24px;
+			width: 178px;
+		}
+	}
+	input.useFuzzy {
+		position: absolute;	
+		left: 5px;
+		width: 15px;
+    margin: -1 0 0 0;
 	}
 }
 

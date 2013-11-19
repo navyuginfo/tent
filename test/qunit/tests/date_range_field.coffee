@@ -86,4 +86,94 @@ test 'convertSingleDateToDateRange', ->
 	equal dateArr.length, 2, 'Contains 2 items'
 
 
+test 'initialize with value (fuzzy turned off)', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
+			value="11/11/2011 - 12/11/2011"
+			rangeSplitter="-"
+			allowFuzzyDates=true
+		}}'
+
+	appendView()	
+	#rangeWidget.validate()
+	rangeWidget = Ember.View.views[view.$('.tent-date-range-field').attr('id')]
+	equal rangeWidget.getValue(), '11/11/2011 - 12/11/2011', 'initial value'
+	equal rangeWidget.get('value'), '11/11/2011 - 12/11/2011', 'Set value'
+	equal rangeWidget.get('dateValue'), '11/11/2011 - 12/11/2011', 'Set dateValue'
+	equal rangeWidget.get('fuzzyValueTemp'), '11/11/2011 - 12/11/2011', 'Set fuzzyValueTemp'
+	ok not rangeWidget.isChecked(), 'Checkbox is off'
+	
+
+test 'initialize with fuzzy value)', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
+			value="11/11/2011 - 11/11/2011"
+			fuzzyValue="Today"
+			rangeSplitter="-"
+			allowFuzzyDates=true
+			arrows=true
+		}}'
+
+	appendView()	
+
+	rangeWidget = Ember.View.views[view.$('.tent-date-range-field').attr('id')]
+
+	equal rangeWidget.getValue(), 'Today', 'initial value'
+	notEqual rangeWidget.get('value'), '11/11/2011 - 11/11/2011', 'Set value'
+
+	ok rangeWidget.isConventionalDate(rangeWidget.getStartFromDate(rangeWidget.get('value'))), 'Value has valid fuzzy start date'
+	ok rangeWidget.isConventionalDate(rangeWidget.getEndFromDate(rangeWidget.get('value'))), 'Value has valid fuzzy end date'	
+
+	notEqual rangeWidget.get('dateValue'), '11/11/2011 - 12/11/2011', 'Set dateValue'
+	ok rangeWidget.get('useFuzzyDates'), 'useFuzzyDates is true'
+	equal rangeWidget.get('fuzzyValueTemp'), 'Today', 'Set fuzzyValueTemp'
+	equal rangeWidget.get('formattedValue'), 'Today', 'formattedValue'
+	ok rangeWidget.isChecked(), 'Checkbox is on'
+
+test 'get date from fuzzy value)', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
+			value="11/11/2011 - 11/11/2011"
+			fuzzyValue="Today"
+			rangeSplitter="-"
+			allowFuzzyDates=true
+			arrows=true
+		}}'
+
+	appendView()	
+	rangeWidget = Ember.View.views[view.$('.tent-date-range-field').attr('id')]
+
+	equal rangeWidget.getDateStringFromFuzzyValue('invalidFuzzyDate'), 'invalidFuzzyDate', "invalid date"
+	today = rangeWidget.getDateStringFromFuzzyValue('Today')
+	ok rangeWidget.isConventionalDate(rangeWidget.getStartFromDate(today)), 'Value has valid fuzzy start date'
+	ok rangeWidget.isConventionalDate(rangeWidget.getEndFromDate(today)), 'Value has valid fuzzy end date'	
+	 
+
+test 'change with fuzzy dates', ->
+	view = Ember.View.create
+		template: Ember.Handlebars.compile '{{view Tent.DateRangeField required=true
+			 
+			fuzzyValue="Today"
+			rangeSplitter="-"
+			allowFuzzyDates=true
+			arrows=true
+		}}'
+
+	appendView()	
+	rangeWidget = Ember.View.views[view.$('.tent-date-range-field').attr('id')]
+
+	#While in fuzzy mode
+	rangeWidget.setValue('Tomorrow')
+	equal rangeWidget.getValue(), 'Tomorrow', 'Input field has the correct value displayed'
+	ok rangeWidget.isConventionalDate(rangeWidget.getStartFromDate(rangeWidget.get('value'))), 'Value has valid fuzzy start date'
+	ok rangeWidget.isChecked(), 'Checkbox is on'
+
+	# Toggle fuzzy mode, 
+	Ember.run ->
+		rangeWidget.set('useFuzzyDates', false)
+	ok rangeWidget.isConventionalDate(rangeWidget.getStartFromDate(rangeWidget.getValue())), 'Toggle fuzzy mode, onscreen display should change. Value has valid fuzzy start date'
+	ok rangeWidget.isConventionalDate(rangeWidget.getEndFromDate(rangeWidget.getValue())), 'Toggle fuzzy mode, onscreen display should change. Value has valid fuzzy end date'	
+	
+
+
 
