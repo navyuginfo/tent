@@ -60,7 +60,7 @@ Tent.TextField = Ember.View.extend Tent.FormattingSupport, Tent.FieldSupport, Te
   # Only validate if it is empty, otherwise validation will occur on change.
   focusOut: ->  
     fieldValue = $('#' + @get('inputIdentifier')).val()
-    if fieldValue == ''
+    if fieldValue == '' or fieldValue == @get('translatedPlaceholder')
         @validateField()
  
   # Validate on change

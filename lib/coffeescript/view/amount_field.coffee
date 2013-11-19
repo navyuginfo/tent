@@ -40,14 +40,6 @@ Tent.AmountField = Tent.TextField.extend Tent.CurrencySupport, Tent.FilteringRan
   prefix: (->
     if @get('currency') then Tent.I18n.loc(this.get('currency')) else '...'
   ).property('currency')
-
-  tooltipT: (->
-    toolTip = Tent.I18n.loc(@get('tooltip'))
-    if Tent.Browsers.isIE()
-      toolTip + ' - ' + @get('placeholder')
-    else
-      toolTip
-  ).property('tooltip', 'placeholder')
  
   validate: -> 
     @set('formattedValue', Tent.Formatting.amount.cleanup(@get('formattedValue')))
