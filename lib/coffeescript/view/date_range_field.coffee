@@ -171,12 +171,12 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 		if e? and not $(e.originalTarget).is('.useFuzzy')
 			return
 
-		if not @isFuzzyDate(@getValue())
-			@set('dateValue', @getValue())
+		if not @isFuzzyDate(@get("formattedValue"))
+			@set('dateValue', @get("formattedValue"))
 		else 
-			@set('dateValue', @getDateStringFromFuzzyValue(@getValue()))
+			@set('dateValue', @getDateStringFromFuzzyValue(@get("formattedValue")))
 
-		@set("fuzzyValueTemp", @getValue())
+		@set("fuzzyValueTemp", @get("formattedValue"))
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('dateValue'))

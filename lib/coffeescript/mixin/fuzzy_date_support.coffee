@@ -43,9 +43,8 @@ Tent.FuzzyDateSupport = Ember.Mixin.create
 	# Here we select the range which corresponds to the selected fuzzy value
 	getPresetRangeWhichMatchesString: (fDate) ->
 		rangesFromPlugin = @get('plugin.options.presetRanges')
-		selectedPresetRangeArr = rangesFromPlugin.filter (item) =>
-			item.text.replace(/\ /g, "") == fDate
-		selectedPresetRangeArr[0] if selectedPresetRangeArr.length > 0
+		rangesFromPlugin.find (item) ->
+			item.text.removeWhitespace() == fDate
 
 	fuzzyValueDidChange: (->
 		if @get('allowFuzzyDates') and @get('useFuzzyDates')
@@ -104,9 +103,9 @@ Tent.FuzzyDateSupport = Ember.Mixin.create
 	isFuzzyDateInPresetsList: (date) ->
 		return false if not date?
 		ranges = @get('plugin.options.presetRanges')
-		ranges.filter((item) ->
-			item.text.replace(/\ /g, "") == date
-		).length >0
+		ranges.find((item) ->
+			item.text.removeWhitespace() == date
+		)?
 
 	presetIsFuzzy: (li) ->
 		li.attr('class').indexOf('preset_') == -1

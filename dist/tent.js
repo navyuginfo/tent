@@ -10598,14 +10598,13 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     fuzzyValue: null,
     useFuzzyDates: false,
     initializeFromFuzzyValue: function() {
-      var dateRange, originalFuzzyValue;
+      var dateRange;
       dateRange = this.getDateStringFromFuzzyValue(this.get('fuzzyValue'));
       this.set('value', dateRange);
       this.set('dateValue', dateRange);
       this.setFuzzyCheckBox(true);
-      originalFuzzyValue = this.get('fuzzyValue');
       this.set('useFuzzyDates', true);
-      return this.set('fuzzyValueTemp', originalFuzzyValue);
+      return this.set('fuzzyValueTemp', this.get('fuzzyValue'));
     },
     resetFuzzyValue: function() {
       this.setFuzzyCheckBox(false);
@@ -10629,15 +10628,11 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       }
     },
     getPresetRangeWhichMatchesString: function(fDate) {
-      var rangesFromPlugin, selectedPresetRangeArr,
-        _this = this;
+      var rangesFromPlugin;
       rangesFromPlugin = this.get('plugin.options.presetRanges');
-      selectedPresetRangeArr = rangesFromPlugin.filter(function(item) {
-        return item.text.replace(/\ /g, "") === fDate;
+      return rangesFromPlugin.find(function(item) {
+        return item.text.removeWhitespace() === fDate;
       });
-      if (selectedPresetRangeArr.length > 0) {
-        return selectedPresetRangeArr[0];
-      }
     },
     fuzzyValueDidChange: (function() {
       if (this.get('allowFuzzyDates') && this.get('useFuzzyDates')) {
@@ -10706,9 +10701,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
         return false;
       }
       ranges = this.get('plugin.options.presetRanges');
-      return ranges.filter(function(item) {
-        return item.text.replace(/\ /g, "") === date;
-      }).length > 0;
+      return ranges.find(function(item) {
+        return item.text.removeWhitespace() === date;
+      }) != null;
     },
     presetIsFuzzy: function(li) {
       return li.attr('class').indexOf('preset_') === -1;
@@ -10882,9 +10877,7 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
     */
 
     getValue: function() {
-      if (this.$('.ember-text-field') != null) {
-        return this.$('.ember-text-field').val();
-      }
+      return this.get('formattedValue');
     },
     /**
     	* @method setValue Set the value of the input field
@@ -10922,12 +10915,12 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
       if ((e != null) && !$(e.originalTarget).is('.useFuzzy')) {
         return;
       }
-      if (!this.isFuzzyDate(this.getValue())) {
-        this.set('dateValue', this.getValue());
+      if (!this.isFuzzyDate(this.get("formattedValue"))) {
+        this.set('dateValue', this.get("formattedValue"));
       } else {
-        this.set('dateValue', this.getDateStringFromFuzzyValue(this.getValue()));
+        this.set('dateValue', this.getDateStringFromFuzzyValue(this.get("formattedValue")));
       }
-      this.set("fuzzyValueTemp", this.getValue());
+      this.set("fuzzyValueTemp", this.get("formattedValue"));
       this.set('isValid', this.validate());
       if (this.get('isValid')) {
         unformatted = this.unFormat(this.get('dateValue'));
