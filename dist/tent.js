@@ -11552,10 +11552,7 @@ Tent.Spinner = Tent.NumericTextField.extend(Tent.JQWidget, {
       }
     }).observes('min', 'max', 'disabled', 'readOnly', 'isReadOnly'),
     change: function(event, ui) {
-      if (isNaN(Number(this.$('input').attr('value')))) {
-        this.$('input').attr('value', null);
-      }
-      return this.set('value', this.$('input').spinner('value'));
+      return this.validateField();
     }
   });
 

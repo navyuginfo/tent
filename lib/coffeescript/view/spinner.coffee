@@ -51,5 +51,4 @@ Tent.Spinner = Tent.NumericTextField.extend Tent.JQWidget,
 	).observes('min','max','disabled', 'readOnly', 'isReadOnly')
 
 	change: (event,ui)->
-		@.$('input').attr('value',null) if isNaN(Number(@.$('input').attr('value')))
-		@set 'value', @.$('input').spinner('value')
+		@validateField()
