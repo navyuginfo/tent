@@ -10564,14 +10564,14 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       var valid;
       valid = true;
       try {
-        $.datepicker.parseDate(this.get('dateFormat'), dateString);
+        $.datepicker.parseDate(this.get('options.dateFormat'), dateString);
       } catch (e) {
         valid = false;
       }
       return valid || (dateString === "");
     },
     convertFuzzyDate: function(date) {
-      if (this.isFuzzyDate(date)) {
+      if (this.get('allowFuzzyDates') && this.isFuzzyDate(date)) {
         this.set('formattedValue', this.format(this.parseFuzzyDate(date)));
         this.set('fuzzyValue', date);
         this.set('hasParsedValue', true);
@@ -10592,14 +10592,14 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       return this._super();
     },
     format: function(value) {
-      return Tent.Formatting.date.format(value, this.get('dateFormat'));
+      return Tent.Formatting.date.format(value, this.get('options.dateFormat'));
     },
     unFormat: function(value) {
       try {
         if (this.isDateValid(value)) {
-          return Tent.Formatting.date.unformat(value, this.get('dateFormat'));
+          return Tent.Formatting.date.unformat(value, this.get('options.dateFormat'));
         } else {
-          return Tent.Formatting.date.unformat(this.parseFuzzyDate(value), this.get('dateFormat'));
+          return Tent.Formatting.date.unformat(this.parseFuzzyDate(value), this.get('options.dateFormat'));
         }
       } catch (error) {
         return null;
