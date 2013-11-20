@@ -7,7 +7,7 @@
       {{view Tent.Select 
         label="tent.filter.operatorLabel"
         listBinding="view.operators" 
-        class="embed no-label operators" 
+        class="embed no-label operators input-medium" 
         optionLabelPath="content.label"
         optionValuePath="content.operator"
         selectionBinding="view.filterSelection"
@@ -18,12 +18,13 @@
         disabledBinding="view.disabled"
         required=true
         isValidBinding="view.operatorsIsValid"
+        textDisplayBinding="view.isTextDisplay"
       }}
     {{/if}}
   {{/if}}
   <div class="input-prepend">
     {{#if view.isTextDisplay}}
-      <span class="text-display">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
+      <span class="text-display-text">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
     {{else}}
       {{#if view.hasPrefix}}  
         <span class="add-on">{{view.prefix}}</span>

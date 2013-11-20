@@ -110,6 +110,7 @@ Tent.I18n.loadTranslations(
 		filter: {
 			filter: 'Filters'
 			filterAction: 'Filter'
+			appliedFilters: 'Applied Filters'
 			add: 'Add Field'
 			bgHint: 'Add Filters'
 			prompt: 'Select a field ...'
@@ -117,6 +118,8 @@ Tent.I18n.loadTranslations(
 			operatorPrompt: 'Select an operator'
 			del: 'Delete Field'
 			lock: 'Lock Field '
+			edit: 'Edit'
+			ok: 'Ok'
 			fieldname: 'Field Name'
 			availableFilters: 'Available Filters'
 			selectedFilter: 'Selected Filter'

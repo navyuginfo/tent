@@ -84,7 +84,8 @@ Tent.FieldSupport = Ember.Mixin.create Tent.SpanSupport, Tent.ValidationSupport,
     'isHidden:hidden',
     'isViewOnly:view-only',
     'hasErrors:error',
-    'spanClass'
+    'spanClass',
+    'textDisplay:text-display-field'
   ]
   
   ###*
