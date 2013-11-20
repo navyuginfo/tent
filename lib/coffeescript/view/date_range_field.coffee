@@ -103,6 +103,13 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 	
 	didInsertElement: ->
 		@_super(arguments)
+		@attachPlugin()
+		@initializeValue()
+		@handleReadonly()
+		@handleDisabled()
+		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
+
+	attachPlugin: ->
 		widget = @
 		@set('dropdownId', @get('elementId') + "dropdown")
 		@set('plugin', @$('input').daterangepicker({
@@ -123,16 +130,21 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 					widget.change()
 			})
 		)
-		@initializeValue()
 		@listenForFuzzyCheckboxChanges()
 		@listenForFuzzyDropdownChanges()
-		@handleReadonly()
-		@handleDisabled()
-		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
 	willDestroyElement: ->
 		if not this.isDestroyed
 			@$('input').remove()
+
+	textDisplayDidChange: (->
+		# When re-displaying the daterange control, we need to re-attach the plugin.
+		if @$()? and not @get('textDisplay')
+			Ember.run.next =>
+				@set('plugin', null)
+				@attachPlugin() 
+	).observes('textDisplay')
+
 
 	###*
 	* @method getValue Return the current value of the input field
@@ -171,12 +183,12 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 		if e? and not $(e.originalTarget).is('.useFuzzy')
 			return
 
-		if not @isFuzzyDate(@get("formattedValue"))
-			@set('dateValue', @get("formattedValue"))
+		if not @isFuzzyDate(@getValue())
+			@set('dateValue', @getValue())
 		else 
-			@set('dateValue', @getDateStringFromFuzzyValue(@get("formattedValue")))
+			@set('dateValue', @getDateStringFromFuzzyValue(@getValue()))
 
-		@set("fuzzyValueTemp", @get("formattedValue"))
+		@set("fuzzyValueTemp", @getValue())
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('dateValue'))

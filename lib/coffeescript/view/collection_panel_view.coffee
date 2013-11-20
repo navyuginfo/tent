@@ -179,7 +179,7 @@ Tent.CollectionPanelContentView = Ember.View.extend
   ###
   formattedValue: (fieldName, value) ->
     column = @get('collection')?.getColumnByField(fieldName)
-    if column['formatter']?
+    if column? and column['formatter']?
       $.fn.fmatter[column['formatter']](value, {colModel: {formatOptions: column['formatoptions']}})
     else
       value

@@ -10865,8 +10865,15 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
       return this._super();
     },
     didInsertElement: function() {
-      var widget;
       this._super(arguments);
+      this.attachPlugin();
+      this.initializeValue();
+      this.handleReadonly();
+      this.handleDisabled();
+      return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
+    },
+    attachPlugin: function() {
+      var widget;
       widget = this;
       this.set('dropdownId', this.get('elementId') + "dropdown");
       this.set('plugin', this.$('input').daterangepicker({
@@ -10887,18 +10894,23 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
           return widget.change();
         }
       }));
-      this.initializeValue();
       this.listenForFuzzyCheckboxChanges();
-      this.listenForFuzzyDropdownChanges();
-      this.handleReadonly();
-      this.handleDisabled();
-      return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
+      return this.listenForFuzzyDropdownChanges();
     },
     willDestroyElement: function() {
       if (!this.isDestroyed) {
         return this.$('input').remove();
       }
     },
+    textDisplayDidChange: (function() {
+      var _this = this;
+      if ((this.$() != null) && !this.get('textDisplay')) {
+        return Ember.run.next(function() {
+          _this.set('plugin', null);
+          return _this.attachPlugin();
+        });
+      }
+    }).observes('textDisplay'),
     /**
     	* @method getValue Return the current value of the input field
     	* @return {String}
@@ -10945,12 +10957,12 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
       if ((e != null) && !$(e.originalTarget).is('.useFuzzy')) {
         return;
       }
-      if (!this.isFuzzyDate(this.get("formattedValue"))) {
-        this.set('dateValue', this.get("formattedValue"));
+      if (!this.isFuzzyDate(this.getValue())) {
+        this.set('dateValue', this.getValue());
       } else {
-        this.set('dateValue', this.getDateStringFromFuzzyValue(this.get("formattedValue")));
+        this.set('dateValue', this.getDateStringFromFuzzyValue(this.getValue()));
       }
-      this.set("fuzzyValueTemp", this.get("formattedValue"));
+      this.set("fuzzyValueTemp", this.getValue());
       this.set('isValid', this.validate());
       if (this.get('isValid')) {
         unformatted = this.unFormat(this.get('dateValue'));
@@ -12341,7 +12353,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     formattedValue: function(fieldName, value) {
       var column, _ref;
       column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
-      if (column['formatter'] != null) {
+      if ((column != null) && (column['formatter'] != null)) {
         return $.fn.fmatter[column['formatter']](value, {
           colModel: {
             formatOptions: column['formatoptions']
