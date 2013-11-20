@@ -45,7 +45,7 @@ test 'Ensure Textarea renders Span if textDisplay=true', ->
 
   appendView()
   
-  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal view.$('span.text-display-text').length, 1, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
   
 
@@ -131,7 +131,7 @@ test 'Test for textDisplay', ->
 
   appendView()
   
-  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal view.$('span.text-display-text').length, 1, 'span gets rendered'
   equal $('.controls span').text(), view.get('name') , 'value is set to span'
 
 

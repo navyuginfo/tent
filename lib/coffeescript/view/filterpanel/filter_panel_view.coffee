@@ -168,8 +168,8 @@ Tent.FilterFieldView = Ember.View.extend
 	).property('locked','usageContext')
 
 	showEditIcon: (->
-		true #@get('textDisplay')
-	).property('textDisplay') 
+		not (@get('locked') and (@get('usageContext') == 'view'))
+	).property('locked', 'usageContext') 
 
 	ensureFieldIsInitiallyEditable: (->
 		@set('textDisplay', false) unless @get('content.field')?

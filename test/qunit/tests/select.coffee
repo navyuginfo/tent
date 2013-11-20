@@ -156,7 +156,7 @@ test 'Test for textDisplay', ->
                           }}'
   appendView()
   
-  equal view.$('span.text-display').length, 1, 'span gets rendered'
+  equal view.$('span.text-display-text').length, 1, 'span gets rendered'
   equal $('.controls span').text(), 'Florida' , 'value is set to florida'
 
 test 'Ensure tooltip gets displayed', ->

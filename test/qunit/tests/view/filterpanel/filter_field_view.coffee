@@ -99,3 +99,14 @@ test 'showTrashIcon', ->
 	ok view.get('showTrashIcon'), 'Show trash when in report mode and locked'
 	view.set('usageContext', null)
 	ok view.get('showTrashIcon'), 'Show trash when in undefined mode and locked'
+
+test 'showEditIcon', ->
+	view = Tent.FilterFieldView.create()
+
+	ok view.get('showEditIcon'), 'show it initially'
+	view.set('locked', true)
+	ok view.get('showEditIcon'), 'show it when locked'
+	view.set('usageContext', 'view')
+	ok not view.get('showEditIcon'), 'hide it when locked and view mode'
+	view.set('locked', false)
+	ok view.get('showEditIcon'), 'show it when in view mode and not locked'
