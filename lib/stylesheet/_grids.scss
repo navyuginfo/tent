@@ -80,8 +80,8 @@ $headerHeight: 20px;
 		&.text-display-filter {
 			// Hide controls when in text mode, unless hovering over field.
 			.filter-controls {
+				filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
 				opacity: 0;
-				filter: alpha(opacity=0);
 			}
 
 			&:hover {
@@ -89,8 +89,8 @@ $headerHeight: 20px;
 				background-color: white;
 
 				.filter-controls {
+					filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 					opacity: 1;
-					filter: alpha(opacity=1);
 				}
 			}
 
@@ -99,8 +99,6 @@ $headerHeight: 20px;
 				color: #C53D4A;
 			}
 		}
-
-
 		
 	}
 

@@ -591,16 +591,16 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   width: auto;
 }
 .filter-container .filter-field.text-display-filter .filter-controls {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
-  filter: alpha(opacity=0);
 }
 .filter-container .filter-field.text-display-filter:hover {
   border-color: #ccc;
   background-color: white;
 }
 .filter-container .filter-field.text-display-filter:hover .filter-controls {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
-  filter: alpha(opacity=1);
 }
 .filter-container .filter-field.text-display-filter.error .text-display-text {
   color: #C53D4A;

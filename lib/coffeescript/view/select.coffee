@@ -177,7 +177,7 @@ Tent.Select = Ember.View.extend Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           labels.push(Tent.I18n.loc(@getLabelForContent({content: item})))
         return labels.join()
       else
-        return Tent.I18n.loc(@getLabelForContent(@))
+        return Tent.I18n.loc(@getLabelForContent({content: content}))
   ).property('selection')
 
   getLabelForContent: (item)->
