@@ -602,6 +602,9 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   opacity: 1;
   filter: alpha(opacity=1);
 }
+.filter-container .filter-field.text-display-filter.error .text-display-text {
+  color: #C53D4A;
+}
 .filter-container .filter-controls {
   display: inline;
   transition: all .2s ease;

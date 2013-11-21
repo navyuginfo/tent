@@ -23,9 +23,9 @@
     {{/if}}
   {{/if}}
   <div class="input-prepend">
-    {{#if view.isTextDisplay}}
-      <span class="text-display-text">{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
-    {{else}}
+  	{{!-- textDisplay is different for dateRange: we show and hide rather than add/remove since we are using a plugin: TODO: use partial to refactor the code re-use below (whe partials are available) --}}
+    <span {{bindAttr class=":text-display-text view.isNotTextDisplay:hidden"}}>{{#if view.hasPrefix}}<span class="prefix">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>
+    <span {{bindAttr class="view.textDisplay:hidden"}}>
       {{#if view.hasPrefix}}  
         <span class="add-on">{{view.prefix}}</span>
       {{/if}} 
@@ -53,7 +53,8 @@
       {{#if view.hasHelpBlock}}
         <span class="help-block" {{bindAttr id="view.helpId"}}>{{loc view.helpBlock}}</span>
       {{/if}}
-    {{/if}}
+    </span>
+
     {{#if view.hasErrors}}
       <ul class="help-inline" {{bindAttr id="view.errorId"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>
     {{/if}}  

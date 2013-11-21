@@ -93,7 +93,14 @@ $headerHeight: 20px;
 					filter: alpha(opacity=1);
 				}
 			}
+
+			// Error highlighting for text-display controls
+			&.error .text-display-text {
+				color: #C53D4A;
+			}
 		}
+
+
 		
 	}
 
