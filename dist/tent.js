@@ -10508,6 +10508,9 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     placeholder: (function() {
       return this.get('options').dateFormat;
     }).property('options.dateFormat'),
+    dateFormatDidChange: (function() {
+      return this.set('options.dateFormat', this.get('dateFormat'));
+    }).observes('dateFormat'),
     valueForMandatoryValidation: (function() {
       return this.get('formattedValue');
     }).property('formattedValue'),

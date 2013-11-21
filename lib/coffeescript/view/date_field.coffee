@@ -39,6 +39,10 @@ Tent.DateField = Tent.TextField.extend Tent.JQWidget,
 		@get('options').dateFormat
 	).property('options.dateFormat')
 
+	dateFormatDidChange: (->
+		@set('options.dateFormat', @get('dateFormat'))
+	).observes('dateFormat')
+
 	valueForMandatoryValidation: (->
 		@get('formattedValue')
 	).property('formattedValue')

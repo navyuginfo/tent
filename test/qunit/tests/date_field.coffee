@@ -89,7 +89,8 @@ test 'Ensure aria attributes are applied ', ->
 
 
 test 'Fuzzy dates', ->
-  view = Tent.DateField.create()
+  view = Tent.DateField.create
+  	allowFuzzyDates: true
   # Override the isFuzzyDate method since date.js methods are not applied to the Date object during 
   # qUnit execution
   view.isFuzzyDate = ->
