@@ -93,13 +93,14 @@ Tent.FilterFieldController = Ember.ObjectController.extend
 
 Tent.FilterFieldView = Ember.View.extend
 	templateName: 'filterpanel/filter_field_view'
-	classNames: ['filter-field']
 	classNameBindings: ['locked', 'duplicateField']
 	parentControllerBinding: 'parentView.parentView.controller'
 	collectionBinding: 'parentView.parentView.collection'	
 	content: null
 	usageContext: null
 	isValid: true
+	textDisplay: true
+	hasErrors: false
 	operatorsIsValid: true
 	lockedBinding: 'content.locked'
 
@@ -107,6 +108,7 @@ Tent.FilterFieldView = Ember.View.extend
 		@_super()
 		# For some reason, IE8 will not reliably set the locked property initially
 		@set('locked', @get('content.locked')) if Tent.Browsers.isIE()
+		@ensureFieldIsInitiallyEditable()
 		@set('controller', @createController())
 		@initializeSelection()
 
@@ -126,10 +128,17 @@ Tent.FilterFieldView = Ember.View.extend
 			)
 			@set('controller.selectedColumn', selectedColumn[0]) if selectedColumn.length == 1
 
-	filterableColumns: (->
+	filterableColumns: (->  
 		filterableCols = @get('parentController.filterableColumns')
 		return filterableCols
 	).property('parentController.filterableColumns')
+
+	position: (->
+		# Used for the index numbering of the filtering fields
+		fields = @get('parentController.content')
+		content = @get('content')
+		fields.indexOf(content) + 1
+	).property('content')
 
 	willDestroyElement: ->
 		# Ensure that the error panel gets cleared of any errors for this field.
@@ -158,6 +167,17 @@ Tent.FilterFieldView = Ember.View.extend
 	isDisabled: (->
 		@get('locked') and (not @get('usageContext')? or @get('usageContext') == 'view')
 	).property('locked','usageContext')
+
+	showEditIcon: (->
+		not (@get('locked') and (@get('usageContext') == 'view'))
+	).property('locked', 'usageContext') 
+
+	ensureFieldIsInitiallyEditable: (->
+		@set('textDisplay', false) unless @get('content.field')?
+	).observes('content', 'content.field')
+	
+	toggleTextDisplay: ->
+		@toggleProperty('textDisplay')
 
 	toggleLock: ->
 		if @get('lockIsEnabled')
@@ -190,6 +210,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 	column: null
 	isDisabled: false
 	isValid: true
+	textDisplay: true
+	hasErrors: false
 	operatorsIsValid: true
 
 	init: ->
@@ -238,6 +260,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							isValidBinding: "parentView.isValid"
 							operatorsIsValidBinding: 'parentView.operatorsIsValid'
 							required: true
+							textDisplayBinding:"parentView.textDisplay"
+							hasErrorsBinding:"parentView.hasErrors"
 
 					if @get('column.editoptions.collection')
 						coll = eval(@get('column.editoptions.collection.name')).fetchCollection()
@@ -255,6 +279,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 							isValidBinding: "parentView.isValid"
 							operatorsIsValidBinding: 'parentView.operatorsIsValid'
 							required: true
+							textDisplayBinding:"parentView.textDisplay"
+							hasErrorsBinding:"parentView.hasErrors"
 				else
 					fieldView = Tent.TextField.create
 						label: Tent.I18n.loc(@get('column.title'))
@@ -267,6 +293,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 						isValidBinding: "parentView.isValid"
 						operatorsIsValidBinding: 'parentView.operatorsIsValid'
 						required: true
+						textDisplayBinding:"parentView.textDisplay"
+						hasErrorsBinding:"parentView.hasErrors"
 
 			when "date", "utcdate"
 				fieldView = Tent.DateRangeField.create
@@ -284,6 +312,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					isValidBinding: "parentView.isValid"
 					operatorsIsValidBinding: 'parentView.operatorsIsValid'
 					required: true
+					textDisplayBinding:"parentView.textDisplay"
+					hasErrorsBinding:"parentView.hasErrors"
 					#field: column.name
 
 			when "number", "amount"
@@ -299,6 +329,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					isValidBinding: "parentView.isValid"
 					operatorsIsValidBinding: 'parentView.operatorsIsValid'
 					required: true
+					textDisplayBinding:"parentView.textDisplay"
+					hasErrorsBinding:"parentView.hasErrors"
 
 			when "boolean"
 				fieldView = Tent.Checkbox.create
@@ -312,6 +344,8 @@ Tent.FilterFieldControlView = Ember.ContainerView.extend
 					isValidBinding: "parentView.isValid"
 					operatorsIsValidBinding: 'parentView.operatorsIsValid'
 					required: true
+					textDisplayBinding:"parentView.textDisplay"
+					hasErrorsBinding:"parentView.hasErrors"
 
 		if fieldView?
 			@set('fieldView', fieldView)

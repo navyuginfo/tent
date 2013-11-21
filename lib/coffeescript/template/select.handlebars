@@ -16,6 +16,7 @@
         prompt="tent.filter.operatorPrompt"
         disabledBinding="view.disabled"
         isValidBinding="view.operatorsIsValid"
+        textDisplayBinding="view.isTextDisplay"
         required=true
       }}
     {{/if}}
@@ -25,7 +26,7 @@
       <div class="wait"><i class="icon-spinner icon-spin"></i></div>
     {{/if}}
     {{#if view.isTextDisplay}}
-      <span class="text-display">{{loc view.currentSelectedLabel}}</span>
+      <span class="text-display-text">{{loc view.currentSelectedLabel}}</span>
     {{else}}
       {{#if view.isRadioGroup}}
         <div class="radio-group">

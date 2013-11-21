@@ -1,21 +1,28 @@
 <section class="animate-in">
-	<div class="filter-controls pull-right">
-		{{#if view.showTrashIcon}}
-			<a {{action deleteFilterField this target="view.parentController"}} title="{{loc tent.filter.del}}"><i class="icon-trash"></i></a>
-		{{/if}}
-		{{#if view.showLockIcon}}
-			<a {{action toggleLock target="view"}} title="{{loc tent.filter.lock}}" {{bindAttr class="view.lockIsSelected:selected view.lockIsEnabled:enabled:disabled :field-lock"}}><i class="icon-lock"></i></a>
-		{{/if}}
-	</div>
-	<div class="filter-field">
-		{{view Tent.Select listBinding="view.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false required=false preselectSingleElement=true class="no-label" prompt="tent.filter.prompt" disabledBinding="view.isDisabled"}}
+	<div {{bindAttr class=":filter-field view.textDisplay:text-display-filter view.hasErrors:error"}}>
+		<span class="position">{{view.position}}.</span>
+		{{view Tent.Select listBinding="view.filterableColumns" selectionBinding="controller.selectedColumn" valueBinding="controller.content.field" label="tent.filter.fieldname" optionLabelPath="content.title" optionValuePath="content.name" multiple=false required=false preselectSingleElement=true class="no-label" prompt="tent.filter.prompt" disabledBinding="view.isDisabled" textDisplayBinding="view.textDisplay"}}
  		{{#if view.typeIsSelected}}
  			{{#if view.duplicateField}}
  				<div class="error">{{loc tent.filter.duplicate}}</div>
  			{{else}}
- 				{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content" isDisabledBinding="view.isDisabled" isValidBinding="view.isValid"}}
+ 				{{view Tent.FilterFieldControlView columnBinding="controller.selectedColumn" contentBinding="controller.content" isDisabledBinding="view.isDisabled" isValidBinding="view.isValid" textDisplayBinding="view.textDisplay" hasErrorsBinding="view.hasErrors"}}
  			{{/if}}
  		{{/if}}
+ 		<div class="filter-controls">
+			{{#if view.showEditIcon}}
+				<a class="edit-button"{{action toggleTextDisplay target="view"}} title="{{loc tent.filter.edit}}">
+					{{#if view.textDisplay}}{{loc tent.filter.edit}}{{/if}}
+					{{#unless view.textDisplay}}{{loc tent.filter.ok}}{{/unless}}
+				</a>
+			{{/if}}
+			{{#if view.showTrashIcon}}
+				<a {{action deleteFilterField this target="view.parentController"}} title="{{loc tent.filter.del}}"><i class="icon-trash"></i></a> 
+			{{/if}}
+			{{#if view.showLockIcon}}
+				<a {{action toggleLock target="view"}} title="{{loc tent.filter.lock}}" {{bindAttr class="view.lockIsSelected:selected view.lockIsEnabled:enabled:disabled :field-lock"}}><i class="icon-lock"></i></a>
+			{{/if}}
+		</div>
  	</div>
 </section>
 

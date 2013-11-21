@@ -28,11 +28,20 @@ $headerHeight: 20px;
 		margin-left: 0px;
 		display: inline-block;
 	}
-	.filterpanel {
-		background-color: white;
-	}
-
+	
 	.filter-field {
+		display: inline-block;
+		border: 1px solid transparent;
+		border-radius: 3px;
+		transition: all .2s ease;
+		font-weight: bold;
+		cursor: pointer;
+		padding: 0 0 0 10;
+
+		.operators {
+			display: inline-block!important; // operators should appear to the left of value fields.
+		}
+
 		.icon-lock {
 			color: #aaa;
 		}
@@ -53,6 +62,50 @@ $headerHeight: 20px;
 				text-shadow: 1px 1px 1px rgb(255, 242, 242);
 			}
 		}
+
+		.position {
+			vertical-align: middle;
+			padding-right: 5px;
+			display: inline-block;
+			font-weight: bold;
+		}
+
+		// Remove width when displayed as text.
+		.text-display-field {
+			&.input-medium {
+				width: auto;
+			}
+		}
+
+		&.text-display-filter {
+			// Hide controls when in text mode, unless hovering over field.
+			.filter-controls {
+				filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+				opacity: 0;
+			}
+
+			&:hover {
+				border-color: #ccc;
+				background-color: white;
+
+				.filter-controls {
+					filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+					opacity: 1;
+				}
+			}
+
+			// Error highlighting for text-display controls
+			&.error .text-display-text {
+				color: #C53D4A;
+			}
+		}
+		
+	}
+
+	.filter-controls {
+		display: inline;
+		transition: all .2s ease;
+		padding-left: 25px;
 	}
 
 	.field-lock {

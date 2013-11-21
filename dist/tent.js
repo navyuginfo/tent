@@ -143,6 +143,7 @@
       filter: {
         filter: 'Filters',
         filterAction: 'Filter',
+        appliedFilters: 'Applied Filters',
         add: 'Add Field',
         bgHint: 'Add Filters',
         prompt: 'Select a field ...',
@@ -150,6 +151,8 @@
         operatorPrompt: 'Select an operator',
         del: 'Delete Field',
         lock: 'Lock Field ',
+        edit: 'Edit',
+        ok: 'Ok',
         fieldname: 'Field Name',
         availableFilters: 'Available Filters',
         selectedFilter: 'Selected Filter',
@@ -167,16 +170,16 @@
         description: 'Description',
         beginsWith: 'begins with',
         contains: 'contains',
-        equal: 'equal',
-        nEqual: 'not equal',
-        before: 'before',
-        after: 'after',
-        beforeInc: 'before incl',
-        afterInc: 'after incl',
-        lThan: 'less than',
-        gThan: 'greater than',
-        lThanEq: 'less than or equal',
-        gThanEq: 'greater than or equal',
+        equal: 'is equal to',
+        nEqual: 'is not equal to',
+        before: 'is before',
+        after: 'is after',
+        beforeInc: 'is before incl',
+        afterInc: 'is after incl',
+        lThan: 'is less than',
+        gThan: 'is greater than',
+        lThanEq: 'is less than or equal to',
+        gThanEq: 'is greater than or equal to ',
         range: 'range',
         search: 'Search',
         clear: 'Clear',
@@ -3219,7 +3222,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
     fieldClass: 'field',
     mixinClasses: 'control-group',
     classNames: ['tent-widget'],
-    classNameBindings: ['mixinClasses', 'requiredAsBoolean:required', 'isHidden:hidden', 'isViewOnly:view-only', 'hasErrors:error', 'spanClass'],
+    classNameBindings: ['mixinClasses', 'requiredAsBoolean:required', 'isHidden:hidden', 'isViewOnly:view-only', 'hasErrors:error', 'spanClass', 'textDisplay:text-display-field'],
     /**
     * @property {Boolean} [isEditable=true] A boolean value indicating whether the field is editable
     */
@@ -3568,7 +3571,7 @@ Tent.FieldSupport = Ember.Mixin.create(Tent.SpanSupport, Tent.ValidationSupport,
 }).call(this);
 
 
-Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.fieldClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n      {{#if view.hasParsedValue}}\n        <span class=\"help-inline\">{{view.parsedValue}}</span>\n      {{/if}} \n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+Ember.TEMPLATES['text_field']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators input-medium\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        showPrompt=false\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n        textDisplayBinding=\"view.isTextDisplay\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display-text\">{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    {{else}}\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.fieldClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n      {{#if view.hasParsedValue}}\n        <span class=\"help-inline\">{{view.parsedValue}}</span>\n      {{/if}} \n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
 
 
 /**
@@ -7627,9 +7630,9 @@ Tent.Grid.ColumnChooserButton = Ember.View.extend(Tent.ToggleVisibility, {
 }).call(this);
 
 
-Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("\n<div class=\"filter-container slide-from-left\">\n\t\t<div>\n\t\t\t<h3>Filter</h3>\n\t\t\t<a {{action togglePin target=\"view\"}} {{bindAttr class=\":pin-button :pull-right view.isPinned:selected\"}}><i class=\"icon-pushpin\"></i></a>\n\t\t</div>\n\t\t{{#view Tent.Form formStyle=\"vertical\"}}\n\t\t\t<div class=\"filterpanel\">\n\t\t\t\t<header>\n\t\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\n\t\t\t\t\t{{view Tent.Button label=\"tent.filter.filterAction\" type=\"link\" action=\"applyFilter\" targetBinding=\"view.parentView\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.parentView.areAnyFieldsInvalid\" validate=true }}\n\t\t\t\t</header>\n\t\t\t\t<div class=\"content\">\n\t\t\t\t\t<div class=\"background-hint\">{{loc tent.filter.bgHint}}</div>\n\t\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.parentView.usageContext\" }}\n\t\t\t\t\t{{/each}}\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t{{/view}}\n</div>\n");
+Ember.TEMPLATES['filterpanel/filter_panel_view']=Ember.Handlebars.compile("<div class=\"filter-container slide-from-left\">\n\t{{#view Tent.Form formStyle=\"vertical\"}}\n\t\t<div class=\"filterpanel\">\n\t\t\t<header>\n\t\t\t\t<span class=\"title\">{{loc tent.filter.appliedFilters}}</span>\n\t\t\t\t{{view Tent.Button label=\"tent.filter.filterAction\" type=\"link\" action=\"applyFilter\" targetBinding=\"view.parentView\" class=\"filter-button\" iconClass=\"icon-caret-right\" isDisabledBinding=\"view.parentView.areAnyFieldsInvalid\" validate=true }}\n\t\t\t</header>\n\t\t\t<div class=\"content\">\n\t\t\t\t{{#each view.controller.content}}\n\t\t\t\t\t{{view Tent.FilterFieldView contentBinding=\"this\" usageContextBinding=\"view.parentView.usageContext\" }}\n\t\t\t\t{{/each}}\n\t\t\t\t<a {{action addFilterField target=\"controller\"}} class=\"add-filter-button btn\"><i class=\"icon-plus\"></i>{{loc tent.filter.add}}</a>\n\t\t\t</div>\n\t\t</div>\n\t{{/view}}\n</div>\n");
 
-Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div class=\"filter-controls pull-right\">\n\t\t{{#if view.showTrashIcon}}\n\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a>\n\t\t{{/if}}\n\t\t{{#if view.showLockIcon}}\n\t\t\t<a {{action toggleLock target=\"view\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected view.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t{{/if}}\n\t</div>\n\t<div class=\"filter-field\">\n\t\t{{view Tent.Select listBinding=\"view.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=false preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"view.isDisabled\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{#if view.duplicateField}}\n \t\t\t\t<div class=\"error\">{{loc tent.filter.duplicate}}</div>\n \t\t\t{{else}}\n \t\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"view.isDisabled\" isValidBinding=\"view.isValid\"}}\n \t\t\t{{/if}}\n \t\t{{/if}}\n \t</div>\n</section>\n\n\n \n");
+Ember.TEMPLATES['filterpanel/filter_field_view']=Ember.Handlebars.compile("<section class=\"animate-in\">\n\t<div {{bindAttr class=\":filter-field view.textDisplay:text-display-filter view.hasErrors:error\"}}>\n\t\t<span class=\"position\">{{view.position}}.</span>\n\t\t{{view Tent.Select listBinding=\"view.filterableColumns\" selectionBinding=\"controller.selectedColumn\" valueBinding=\"controller.content.field\" label=\"tent.filter.fieldname\" optionLabelPath=\"content.title\" optionValuePath=\"content.name\" multiple=false required=false preselectSingleElement=true class=\"no-label\" prompt=\"tent.filter.prompt\" disabledBinding=\"view.isDisabled\" textDisplayBinding=\"view.textDisplay\"}}\n \t\t{{#if view.typeIsSelected}}\n \t\t\t{{#if view.duplicateField}}\n \t\t\t\t<div class=\"error\">{{loc tent.filter.duplicate}}</div>\n \t\t\t{{else}}\n \t\t\t\t{{view Tent.FilterFieldControlView columnBinding=\"controller.selectedColumn\" contentBinding=\"controller.content\" isDisabledBinding=\"view.isDisabled\" isValidBinding=\"view.isValid\" textDisplayBinding=\"view.textDisplay\" hasErrorsBinding=\"view.hasErrors\"}}\n \t\t\t{{/if}}\n \t\t{{/if}}\n \t\t<div class=\"filter-controls\">\n\t\t\t{{#if view.showEditIcon}}\n\t\t\t\t<a class=\"edit-button\"{{action toggleTextDisplay target=\"view\"}} title=\"{{loc tent.filter.edit}}\">\n\t\t\t\t\t{{#if view.textDisplay}}{{loc tent.filter.edit}}{{/if}}\n\t\t\t\t\t{{#unless view.textDisplay}}{{loc tent.filter.ok}}{{/unless}}\n\t\t\t\t</a>\n\t\t\t{{/if}}\n\t\t\t{{#if view.showTrashIcon}}\n\t\t\t\t<a {{action deleteFilterField this target=\"view.parentController\"}} title=\"{{loc tent.filter.del}}\"><i class=\"icon-trash\"></i></a> \n\t\t\t{{/if}}\n\t\t\t{{#if view.showLockIcon}}\n\t\t\t\t<a {{action toggleLock target=\"view\"}} title=\"{{loc tent.filter.lock}}\" {{bindAttr class=\"view.lockIsSelected:selected view.lockIsEnabled:enabled:disabled :field-lock\"}}><i class=\"icon-lock\"></i></a>\n\t\t\t{{/if}}\n\t\t</div>\n \t</div>\n</section>\n\n\n \n");
 
 (function() {
 Tent.FilterPanelController = Ember.ArrayController.extend({
@@ -7729,13 +7732,14 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
 
   Tent.FilterFieldView = Ember.View.extend({
     templateName: 'filterpanel/filter_field_view',
-    classNames: ['filter-field'],
     classNameBindings: ['locked', 'duplicateField'],
     parentControllerBinding: 'parentView.parentView.controller',
     collectionBinding: 'parentView.parentView.collection',
     content: null,
     usageContext: null,
     isValid: true,
+    textDisplay: true,
+    hasErrors: false,
     operatorsIsValid: true,
     lockedBinding: 'content.locked',
     init: function() {
@@ -7743,6 +7747,7 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       if (Tent.Browsers.isIE()) {
         this.set('locked', this.get('content.locked'));
       }
+      this.ensureFieldIsInitiallyEditable();
       this.set('controller', this.createController());
       return this.initializeSelection();
     },
@@ -7772,6 +7777,12 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
       filterableCols = this.get('parentController.filterableColumns');
       return filterableCols;
     }).property('parentController.filterableColumns'),
+    position: (function() {
+      var content, fields;
+      fields = this.get('parentController.content');
+      content = this.get('content');
+      return fields.indexOf(content) + 1;
+    }).property('content'),
     willDestroyElement: function() {
       this.set('isValid', true);
       this.set('operatorsIsValid', true);
@@ -7801,6 +7812,17 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     isDisabled: (function() {
       return this.get('locked') && (!(this.get('usageContext') != null) || this.get('usageContext') === 'view');
     }).property('locked', 'usageContext'),
+    showEditIcon: (function() {
+      return !(this.get('locked') && (this.get('usageContext') === 'view'));
+    }).property('locked', 'usageContext'),
+    ensureFieldIsInitiallyEditable: (function() {
+      if (this.get('content.field') == null) {
+        return this.set('textDisplay', false);
+      }
+    }).observes('content', 'content.field'),
+    toggleTextDisplay: function() {
+      return this.toggleProperty('textDisplay');
+    },
     toggleLock: function() {
       if (this.get('lockIsEnabled')) {
         return this.toggleProperty('locked');
@@ -7828,6 +7850,8 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
     column: null,
     isDisabled: false,
     isValid: true,
+    textDisplay: true,
+    hasErrors: false,
     operatorsIsValid: true,
     init: function() {
       this._super();
@@ -7875,7 +7899,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 disabledBinding: "parentView.isDisabled",
                 isValidBinding: "parentView.isValid",
                 operatorsIsValidBinding: 'parentView.operatorsIsValid',
-                required: true
+                required: true,
+                textDisplayBinding: "parentView.textDisplay",
+                hasErrorsBinding: "parentView.hasErrors"
               });
             }
             if (this.get('column.editoptions.collection')) {
@@ -7893,7 +7919,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
                 disabledBinding: "parentView.isDisabled",
                 isValidBinding: "parentView.isValid",
                 operatorsIsValidBinding: 'parentView.operatorsIsValid',
-                required: true
+                required: true,
+                textDisplayBinding: "parentView.textDisplay",
+                hasErrorsBinding: "parentView.hasErrors"
               });
             }
           } else {
@@ -7907,7 +7935,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
               disabledBinding: "parentView.isDisabled",
               isValidBinding: "parentView.isValid",
               operatorsIsValidBinding: 'parentView.operatorsIsValid',
-              required: true
+              required: true,
+              textDisplayBinding: "parentView.textDisplay",
+              hasErrorsBinding: "parentView.hasErrors"
             });
           }
           break;
@@ -7927,7 +7957,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             disabledBinding: "parentView.isDisabled",
             isValidBinding: "parentView.isValid",
             operatorsIsValidBinding: 'parentView.operatorsIsValid',
-            required: true
+            required: true,
+            textDisplayBinding: "parentView.textDisplay",
+            hasErrorsBinding: "parentView.hasErrors"
           });
           break;
         case "number":
@@ -7943,7 +7975,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             disabledBinding: "parentView.isDisabled",
             isValidBinding: "parentView.isValid",
             operatorsIsValidBinding: 'parentView.operatorsIsValid',
-            required: true
+            required: true,
+            textDisplayBinding: "parentView.textDisplay",
+            hasErrorsBinding: "parentView.hasErrors"
           });
           break;
         case "boolean":
@@ -7957,7 +7991,9 @@ Tent.FilterPanelController = Ember.ArrayController.extend({
             disabledBinding: "parentView.isDisabled",
             isValidBinding: "parentView.isValid",
             operatorsIsValidBinding: 'parentView.operatorsIsValid',
-            required: true
+            required: true,
+            textDisplayBinding: "parentView.textDisplay",
+            hasErrorsBinding: "parentView.hasErrors"
           });
       }
       if (fieldView != null) {
@@ -8897,7 +8933,7 @@ Tent.Checkbox = Ember.View.extend(Tent.FieldSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        isValidBinding=\"view.operatorsIsValid\"\n        required=true\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{#if view.listIsLoaded}}\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 classNameBindings=\"view.inputSizeClass\" \n                 class=\"primary-class\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 multipleBinding=\"view.multiple\"\n                 promptBinding = \"view._prompt\"\n                 advancedBinding=\"view.advanced\" \n                 valueBinding = \"view.value\"}} \n        {{/if}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
+Ember.TEMPLATES['select']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n    <span class='tent-required'></span>\n</label>\n\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        prompt=\"tent.filter.operatorPrompt\"\n        disabledBinding=\"view.disabled\"\n        isValidBinding=\"view.operatorsIsValid\"\n        textDisplayBinding=\"view.isTextDisplay\"\n        required=true\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n    {{#if view.showSpinner}}\n      <div class=\"wait\"><i class=\"icon-spinner icon-spin\"></i></div>\n    {{/if}}\n    {{#if view.isTextDisplay}}\n      <span class=\"text-display-text\">{{loc view.currentSelectedLabel}}</span>\n    {{else}}\n      {{#if view.isRadioGroup}}\n        <div class=\"radio-group\">\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 class=\"tent-radio-group\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 valueBinding = \"view.value\"\n                 tagName = \"div\"\n                 templateName = \"radio_group\"\n          }} \n        </div>\n      {{else}}\n        {{#if view.listIsLoaded}}\n          {{view Tent.SelectElement \n                 contentBinding=\"view.list\" \n                 classNameBindings=\"view.inputSizeClass\" \n                 class=\"primary-class\"\n                 optionLabelPathBinding=\"view.optionLabelPath\" \n                 optionValuePathBinding =\"view.optionValuePath\" \n                 selectionBinding=\"view.selection\"\n                 multipleBinding=\"view.multiple\"\n                 promptBinding = \"view._prompt\"\n                 advancedBinding=\"view.advanced\" \n                 valueBinding = \"view.value\"}} \n        {{/if}} \n      {{/if}}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n  \t{{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n  \t{{#if view.hasErrors}}\n      \t<span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}\n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n  </div>\n</div>");
 
 Ember.TEMPLATES['radio_group']=Ember.Handlebars.compile("{{#if view.prompt}}{{loc view.prompt}}{{/if}}\n{{#each view.content}}\n\t<label>{{view Tent.RadioOption contentBinding=\"this\"}}</label>\n{{/each}}");
 
@@ -9080,7 +9116,9 @@ Tent.Select = Ember.View.extend(Tent.FieldSupport, Tent.TooltipSupport, Tent.Fil
           }
           return labels.join();
         } else {
-          return Tent.I18n.loc(this.getLabelForContent(this));
+          return Tent.I18n.loc(this.getLabelForContent({
+            content: content
+          }));
         }
       }
     }).property('selection'),
@@ -10582,6 +10620,8 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 }).call(this);
 
 
+Ember.TEMPLATES['date_range']=Ember.Handlebars.compile("<label class=\"control-label\" {{bindAttr for=\"view.forId\"}}>{{loc view.label}}\n  <span class='tent-required'></span>\n</label>\n<div class=\"controls\">\n  {{#if view.isFilter}}\n    {{#if view.operators}}\n      {{view Tent.Select \n        label=\"tent.filter.operatorLabel\"\n        listBinding=\"view.operators\" \n        class=\"embed no-label operators input-medium\" \n        optionLabelPath=\"content.label\"\n        optionValuePath=\"content.operator\"\n        selectionBinding=\"view.filterSelection\"\n        valueBinding=\"view.filterOp\"\n        selectionBinding=\"view.selectedOperator\"\n        advanced=false\n        showPrompt=false\n        disabledBinding=\"view.disabled\"\n        required=true\n        isValidBinding=\"view.operatorsIsValid\"\n        textDisplayBinding=\"view.isTextDisplay\"\n      }}\n    {{/if}}\n  {{/if}}\n  <div class=\"input-prepend\">\n  \t{{!-- textDisplay is different for dateRange: we show and hide rather than add/remove since we are using a plugin: TODO: use partial to refactor the code re-use below (whe partials are available) --}}\n    <span {{bindAttr class=\":text-display-text view.isNotTextDisplay:hidden\"}}>{{#if view.hasPrefix}}<span class=\"prefix\">{{loc view.prefix}}</span>{{/if}}{{view.formattedValue}}</span>\n    <span {{bindAttr class=\"view.textDisplay:hidden\"}}>\n      {{#if view.hasPrefix}}  \n        <span class=\"add-on\">{{view.prefix}}</span>\n      {{/if}} \n      {{view Tent.TextFieldInput \n        valueBinding=\"view.formattedValue\" \n        placeholderBinding=\"view.translatedPlaceholder\"\n        classBinding=\"view.fieldClass\"\n        typeBinding=\"view.type\"\n      }}\n\n      {{#if view.isRangeOperator}}\n        {{#unless view.hasOwnRangeDisplay}}\n          {{view Tent.TextFieldInput \n            valueBinding=\"view.value2\" \n            placeholderBinding=\"view.translatedPlaceholder\"\n            classBinding=\"view.controlClass\"\n            classNames=\"range-end\"\n            typeBinding=\"view.type\"\n          }}\n        {{/unless}}\n      {{/if}}\n      {{#if view.hasParsedValue}}\n        <span class=\"help-inline\">{{view.parsedValue}}</span>\n      {{/if}} \n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    </span>\n\n    {{#if view.hasErrors}}\n      <ul class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}<li>{{loc error}}</li>{{/each}}</ul>\n    {{/if}}  \n    {{#if view.hasWarnings}}\n      <ul class=\"help-inline warning\" {{bindAttr id=\"view.warningId\"}}>{{#each warning in view.validationWarnings}}<li>{{loc warning}}</li>{{/each}}</ul>\n    {{/if}}  \n\n  </div>\n  {{#if view.tooltip}}\n    <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n  {{/if}}\n\n</div>\n");
+
 (function() {
 
   Tent.FuzzyDateSupport = Ember.Mixin.create({
@@ -10629,7 +10669,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
     },
     getPresetRangeWhichMatchesString: function(fDate) {
       var rangesFromPlugin;
-      rangesFromPlugin = this.get('plugin.options.presetRanges');
+      rangesFromPlugin = this.get('pluginPresetRanges');
       return rangesFromPlugin.find(function(item) {
         return item.text.removeWhitespace() === fDate;
       });
@@ -10700,7 +10740,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
       if (!(date != null)) {
         return false;
       }
-      ranges = this.get('plugin.options.presetRanges');
+      ranges = this.get('pluginPresetRanges');
       return ranges.find(function(item) {
         return item.text.removeWhitespace() === date;
       }) != null;
@@ -10765,6 +10805,7 @@ Tent.DateField = Tent.TextField.extend(Tent.JQWidget, {
 
 (function() {
 Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
+    templateName: 'date_range',
     classNames: ['tent-date-range-field'],
     classNameBindings: ['allowFuzzyDates'],
     /**
@@ -10833,17 +10874,76 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
     dateFormat: Tent.Formatting.date.getFormat(),
     hasOwnRangeDisplay: true,
     operators: null,
+    isNotTextDisplay: Ember.computed.not('textDisplay'),
+    defaultPresetRanges: [
+      {
+        text: 'Today',
+        dateStart: 'today',
+        dateEnd: 'today'
+      }, {
+        text: 'Tomorrow',
+        dateStart: 'Tomorrow',
+        dateEnd: 'Tomorrow'
+      }, {
+        text: 'Last 7 days',
+        dateStart: 'today-7days',
+        dateEnd: 'today'
+      }, {
+        text: 'Month to date',
+        dateStart: function() {
+          return Date.parse('today').moveToFirstDayOfMonth();
+        },
+        dateEnd: 'today'
+      }, {
+        text: 'Year to date',
+        dateStart: function() {
+          var x;
+          x = Date.parse('today');
+          x.setMonth(0);
+          x.setDate(1);
+          return x;
+        },
+        dateEnd: 'today'
+      }, {
+        text: 'The previous Month',
+        dateStart: function() {
+          return Date.parse('1 month ago').moveToFirstDayOfMonth();
+        },
+        dateEnd: function() {
+          return Date.parse('1 month ago').moveToLastDayOfMonth();
+        }
+      }, {
+        text: 'Last 30 Days',
+        dateStart: 'Today-30',
+        dateEnd: 'Today'
+      }, {
+        text: 'Next 30 Days',
+        dateStart: 'Today',
+        dateEnd: 'Today+30'
+      }
+    ],
     init: function() {
       return this._super();
     },
     didInsertElement: function() {
-      var widget;
       this._super(arguments);
+      this.setPresetRanges();
+      this.attachPlugin();
+      this.initializeValue();
+      this.handleReadonly();
+      this.handleDisabled();
+      return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
+    },
+    setPresetRanges: function() {
+      return this.set('pluginPresetRanges', $.merge(this.get('defaultPresetRanges'), this.get('presetRanges') || []));
+    },
+    attachPlugin: function() {
+      var widget;
       widget = this;
       this.set('dropdownId', this.get('elementId') + "dropdown");
       this.set('plugin', this.$('input').daterangepicker({
         id: this.get('dropdownId'),
-        presetRanges: this.get('presetRanges') != null ? this.get('presetRanges') : void 0,
+        presetRanges: this.get('pluginPresetRanges'),
         presets: this.get('presets') != null ? this.get('presets') : void 0,
         rangeSplitter: this.get('rangeSplitter') != null ? this.get('rangeSplitter') : void 0,
         dateFormat: this.get('dateFormat'),
@@ -10859,12 +10959,8 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
           return widget.change();
         }
       }));
-      this.initializeValue();
       this.listenForFuzzyCheckboxChanges();
-      this.listenForFuzzyDropdownChanges();
-      this.handleReadonly();
-      this.handleDisabled();
-      return this.set('filterOp', Tent.Constants.get('OPERATOR_RANGE'));
+      return this.listenForFuzzyDropdownChanges();
     },
     willDestroyElement: function() {
       if (!this.isDestroyed) {
@@ -10917,12 +11013,12 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
       if ((e != null) && !$(e.originalTarget).is('.useFuzzy')) {
         return;
       }
-      if (!this.isFuzzyDate(this.get("formattedValue"))) {
-        this.set('dateValue', this.get("formattedValue"));
+      if (!this.isFuzzyDate(this.getValue())) {
+        this.set('dateValue', this.getValue());
       } else {
-        this.set('dateValue', this.getDateStringFromFuzzyValue(this.get("formattedValue")));
+        this.set('dateValue', this.getDateStringFromFuzzyValue(this.getValue()));
       }
-      this.set("fuzzyValueTemp", this.get("formattedValue"));
+      this.set("fuzzyValueTemp", this.getValue());
       this.set('isValid', this.validate());
       if (this.get('isValid')) {
         unformatted = this.unFormat(this.get('dateValue'));
@@ -11019,7 +11115,7 @@ Tent.DateRangeField = Tent.TextField.extend(Tent.FuzzyDateSupport, {
 }).call(this);
 
 
-Ember.TEMPLATES['textarea']=Ember.Handlebars.compile("<label class=\"control-label\">{{loc view.label}}<span class='tent-required'></span></label>\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.hasPrefix}}  \n      <span class=\"add-on\">{{loc view.prefix}}</span>\n    {{/if}}     \n    {{#if view.textDisplay}}\n      <span class=\"text-display\">{{view.formattedValue}}</span>\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\"view.inputSizeClass\" \n          valueBinding=\"view.formattedValue\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          rowsBinding=\"view.rows\"\n          colsBinding=\"view.cols\"\n      }}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      <span class=\"help-block\">{{loc view.helpBlock}}</span>\n    {{/if}}\n    {{#if view.hasErrors}}\n      <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}  \n  </div>\n\n</div>\n");
+Ember.TEMPLATES['textarea']=Ember.Handlebars.compile("<label class=\"control-label\">{{loc view.label}}<span class='tent-required'></span></label>\n<div class=\"controls\">\n  <div class=\"input-prepend\">\n    {{#if view.hasPrefix}}  \n      <span class=\"add-on\">{{loc view.prefix}}</span>\n    {{/if}}     \n    {{#if view.textDisplay}}\n      <span class=\"text-display-text\">{{view.formattedValue}}</span>\n    {{else}}\n      {{view Tent.TextareaInput \n          classBinding=\"view.inputSizeClass\" \n          valueBinding=\"view.formattedValue\" \n          placeholderBinding=\"view.translatedPlaceholder\"\n          rowsBinding=\"view.rows\"\n          colsBinding=\"view.cols\"\n      }}\n      {{#if view.hasHelpBlock}}\n        <span class=\"help-block\" {{bindAttr id=\"view.helpId\"}}>{{loc view.helpBlock}}</span>\n      {{/if}}\n    {{/if}}\n    {{#if view.tooltip}}\n      <a href=\"#\" rel=\"tooltip\" data-placement=\"right\" {{bindAttr data-original-title=\"view.tooltipT\"}}></a>\n    {{/if}}\n    {{#if view.hasHelpBlock}}\n      <span class=\"help-block\">{{loc view.helpBlock}}</span>\n    {{/if}}\n    {{#if view.hasErrors}}\n      <span class=\"help-inline\" {{bindAttr id=\"view.errorId\"}}>{{#each error in view.validationErrors}}{{error}}{{/each}}</span>\n    {{/if}}  \n  </div>\n\n</div>\n");
 
 
 /**
@@ -12313,7 +12409,7 @@ Ember.TEMPLATES['collection_panel_content']=Ember.Handlebars.compile("<header>\n
     formattedValue: function(fieldName, value) {
       var column, _ref;
       column = (_ref = this.get('collection')) != null ? _ref.getColumnByField(fieldName) : void 0;
-      if (column['formatter'] != null) {
+      if ((column != null) && (column['formatter'] != null)) {
         return $.fn.fmatter[column['formatter']](value, {
           colModel: {
             formatOptions: column['formatoptions']

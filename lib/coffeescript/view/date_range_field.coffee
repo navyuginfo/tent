@@ -20,12 +20,13 @@
 				 }}
 ###
 
-require '../template/text_field'
+require '../template/date_range'
 require '../mixin/fuzzy_date_support'
 require '../mixin/jquery_ui'
 require '../mixin/constants'
 
 Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
+	templateName: 'date_range'
 	classNames: ['tent-date-range-field']
 	classNameBindings: ['allowFuzzyDates']
 	###*
@@ -97,17 +98,80 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 
 	operators: null # We don't need operators with a date range
 
+	isNotTextDisplay: Ember.computed.not('textDisplay')
+
+
+	defaultPresetRanges: [
+		{
+			text: 'Today'
+			dateStart: 'today'
+			dateEnd: 'today'
+		}
+		{
+			text: 'Tomorrow'
+			dateStart: 'Tomorrow'
+			dateEnd: 'Tomorrow' 
+		}
+		{
+			text: 'Last 7 days'
+			dateStart: 'today-7days'
+			dateEnd: 'today'
+		}
+		{
+			text: 'Month to date'
+			dateStart: ->
+				return Date.parse('today').moveToFirstDayOfMonth()
+			dateEnd: 'today' 
+		}
+		{
+			text: 'Year to date'
+			dateStart: ->
+				x = Date.parse('today')
+				x.setMonth(0)
+				x.setDate(1)
+				return x
+			dateEnd: 'today' 
+		}
+		{
+			text: 'The previous Month'
+			dateStart: ->
+				return Date.parse('1 month ago').moveToFirstDayOfMonth()
+			dateEnd: ->
+				return Date.parse('1 month ago').moveToLastDayOfMonth()
+		}
+		{
+			text: 'Last 30 Days'
+			dateStart: 'Today-30'
+			dateEnd: 'Today' 
+		}
+		{	
+			text: 'Next 30 Days'
+			dateStart: 'Today'
+			dateEnd: 'Today+30'
+		}
+	]
 
 	init: ->		 
 		@_super()
 	
 	didInsertElement: ->
 		@_super(arguments)
+		@setPresetRanges()
+		@attachPlugin()
+		@initializeValue()
+		@handleReadonly()
+		@handleDisabled()
+		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
+
+	setPresetRanges: ->
+		@set('pluginPresetRanges',  $.merge(@get('defaultPresetRanges'), @get('presetRanges') || []))
+
+	attachPlugin: ->
 		widget = @
 		@set('dropdownId', @get('elementId') + "dropdown")
 		@set('plugin', @$('input').daterangepicker({
 				id: @get('dropdownId')
-				presetRanges: @get('presetRanges') if @get('presetRanges')?
+				presetRanges: @get('pluginPresetRanges')
 				presets: @get('presets') if @get('presets')?
 				rangeSplitter: @get('rangeSplitter') if @get('rangeSplitter')?
 				dateFormat: @get('dateFormat')
@@ -123,16 +187,13 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 					widget.change()
 			})
 		)
-		@initializeValue()
 		@listenForFuzzyCheckboxChanges()
 		@listenForFuzzyDropdownChanges()
-		@handleReadonly()
-		@handleDisabled()
-		@set('filterOp', Tent.Constants.get('OPERATOR_RANGE'))
 
 	willDestroyElement: ->
 		if not this.isDestroyed
 			@$('input').remove()
+
 
 	###*
 	* @method getValue Return the current value of the input field
@@ -171,12 +232,12 @@ Tent.DateRangeField = Tent.TextField.extend Tent.FuzzyDateSupport,
 		if e? and not $(e.originalTarget).is('.useFuzzy')
 			return
 
-		if not @isFuzzyDate(@get("formattedValue"))
-			@set('dateValue', @get("formattedValue"))
+		if not @isFuzzyDate(@getValue())
+			@set('dateValue', @getValue())
 		else 
-			@set('dateValue', @getDateStringFromFuzzyValue(@get("formattedValue")))
+			@set('dateValue', @getDateStringFromFuzzyValue(@getValue()))
 
-		@set("fuzzyValueTemp", @get("formattedValue"))
+		@set("fuzzyValueTemp", @getValue())
 		@set('isValid', @validate())
 		if @get('isValid')
 			unformatted = @unFormat(@get('dateValue'))

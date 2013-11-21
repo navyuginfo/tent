@@ -552,8 +552,17 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   margin-left: 0px;
   display: inline-block;
 }
-.filter-container .filterpanel {
-  background-color: white;
+.filter-container .filter-field {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  transition: all .2s ease;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0 0 10;
+}
+.filter-container .filter-field .operators {
+  display: inline-block!important;
 }
 .filter-container .filter-field .icon-lock {
   color: #aaa;
@@ -571,6 +580,35 @@ body > .modal-backdrop, body > .modal-backdrop.fade.in {
   color: #b94a48;
   font-size: .85em;
   text-shadow: 1px 1px 1px #fff2f2;
+}
+.filter-container .filter-field .position {
+  vertical-align: middle;
+  padding-right: 5px;
+  display: inline-block;
+  font-weight: bold;
+}
+.filter-container .filter-field .text-display-field.input-medium {
+  width: auto;
+}
+.filter-container .filter-field.text-display-filter .filter-controls {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+}
+.filter-container .filter-field.text-display-filter:hover {
+  border-color: #ccc;
+  background-color: white;
+}
+.filter-container .filter-field.text-display-filter:hover .filter-controls {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+.filter-container .filter-field.text-display-filter.error .text-display-text {
+  color: #C53D4A;
+}
+.filter-container .filter-controls {
+  display: inline;
+  transition: all .2s ease;
+  padding-left: 25px;
 }
 .filter-container .field-lock .icon-lock {
   color: #aaa;

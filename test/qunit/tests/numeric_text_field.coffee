@@ -97,7 +97,7 @@ test 'Formatting of read-only', ->
       label: 'FooBar'
 
     appendView()
-    equal view.$('.text-display').text(), '1234', 'Initial DOM value'
+    equal view.$('.text-display-text').text(), '1234', 'Initial DOM value'
 
 test 'Required behaviour', ->
   view = Ember.View.create
