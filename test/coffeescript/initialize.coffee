@@ -21,13 +21,13 @@
 	Pad.MainMenuView = Tent.MLPushMenuView.extend
 		templateName: 'main_menu'
 
-	Pad.initialize()
+	# Pad.initialize()
 
 	# TODO: Asynch binding is not functioning with this fixtureAdapter
 	# Ensure the Rest adapter is working correctly
 	Pad.pagingAdapter.simulateRemoteResponse = false;
 	Pad.store = DS.Store.create({
-		revision: 4,
+		revision: 13,
 		adapter: Pad.pagingAdapter
 	});
 
@@ -376,7 +376,7 @@
 
 	Pad.NodeSelection = Pad.SelectOptions[1]
 
-	Pad.TreeOptions = Ember.Object.create({
+	Pad.TreeOptionsExtend = Ember.Object.extend({
 		activeVisible: true,
 		aria: false,
 		autoActivate: true,
@@ -432,6 +432,8 @@
 		).property('radio','activeVisible','aria', 'autoActivate','autoCollapse','autoScroll','checkbox',
 			'disabled', 'icons', 'keyboard', 'tabbable', 'treeSelectValue', 'treeFolderValue')
 	})
+
+	Pad.TreeOptions = Pad.TreeOptionsExtend.create() 
 
 	Pad.treeTarget = Em.Object.create({
 		addRootChild: ->

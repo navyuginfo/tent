@@ -61,7 +61,7 @@ setup = ->
 	@colModel = [{name: 'name'},{name: 'gdp'}]
 
 	@store = DS.Store.create({
-		revision: 4,
+		revision: 13,
 		adapter: DS.FixtureAdapter
 	});
 
