@@ -9521,7 +9521,7 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile(&quot;&lt;ul {{bindAttr id=\&qu
     },
     updateTitle: (function() {
       var href, title;
-      if (!Ember.empty(this.get(&quot;title&quot;))) {
+      if (!Ember.isEmpty(this.get(&quot;title&quot;))) {
         title = Tent.I18n.loc(this.get(&quot;title&quot;));
         href = &quot;#&quot; + this.get(&quot;elementId&quot;);
         if (!this.exists(href)) {

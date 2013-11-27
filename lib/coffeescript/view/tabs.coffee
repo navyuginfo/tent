@@ -84,7 +84,7 @@ Tent.TabPane = Ember.View.extend
 
 
   updateTitle: (->
-    unless Ember.empty(@get("title"))
+    unless Ember.isEmpty(@get("title"))
       title = Tent.I18n.loc(@get("title"))
       href = "#" + @get("elementId")
       unless @exists(href)

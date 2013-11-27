@@ -10367,7 +10367,7 @@ Ember.TEMPLATES['tabs']=Ember.Handlebars.compile("<ul {{bindAttr id=\"id\"}} cla
     },
     updateTitle: (function() {
       var href, title;
-      if (!Ember.empty(this.get("title"))) {
+      if (!Ember.isEmpty(this.get("title"))) {
         title = Tent.I18n.loc(this.get("title"));
         href = "#" + this.get("elementId");
         if (!this.exists(href)) {
@@ -13010,7 +13010,7 @@ GridController
 (function() {
   var getPath, normalizePath;
 
-  getPath = Ember.Handlebars.getPath;
+  getPath = Ember.Handlebars.get;
 
   normalizePath = Ember.Handlebars.normalizePath;
 

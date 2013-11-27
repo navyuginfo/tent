@@ -1,4 +1,4 @@
-getPath = Ember.Handlebars.getPath
+getPath = Ember.Handlebars.get
 normalizePath = Ember.Handlebars.normalizePath
 
 Tent.Handlebars = Ember.Namespace.create
