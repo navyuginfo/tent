@@ -1,25 +1,26 @@
-Pad.Router = Ember.Router.extend
-  location: 'history'
-  enableLogging: true
-
-  root: Ember.Route.create
-    title: 'root'
-         
-    index: Ember.Route.create
-      route: '/'
-      title: 'index'
-      redirectsTo: 'home'
-
-    home: Ember.Route.create
-      route: '/home'
-      title: 'state.home'
-      redirectsTo: 'content'
-
-    content: Ember.Route.create
-      route: '/testpad.html'
-      title: 'state.content'
-      connectOutlets: (router) ->
-        router.get('applicationController').connectOutlet('mainheader', 'mainHeader')
-        router.get('applicationController').connectOutlet('mainmenu', 'mainMenu')
-       
-   
+#Pad.Router = Ember.Router.extend
+#  location: 'history'
+#  enableLogging: true
+#
+#  root: Ember.Route.create
+#    title: 'root'
+#
+#    index: Ember.Route.create
+#      route: '/'
+#      title: 'index'
+#      redirectsTo: 'home'
+#
+#    home: Ember.Route.create
+#      route: '/home'
+#      title: 'state.home'
+#      redirectsTo: 'content'
+#
+#    content: Ember.Route.create
+#      route: '/testpad.html'
+#      title: 'state.content'
+#      connectOutlets: (router) ->
+#        router.get('applicationController').connectOutlet('mainheader', 'mainHeader')
+#        router.get('applicationController').connectOutlet('mainmenu', 'mainMenu')
+#
+#
+Pad.Router.map ()->
